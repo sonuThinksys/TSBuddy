@@ -10,7 +10,12 @@
 import {Text} from 'react-native';
 
 const App = () => {
-  return <Text>Hello</Text>;
+  return (
+    <View>
+      <Text>Hello</Text>
+      <Text>Hello World!</Text>;
+    </View>
+  );
 };
 
 export default App;
