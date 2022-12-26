@@ -3,17 +3,18 @@ import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './AuthNavigator';
 import TabNavigator from './TabNavigator';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SplashScreen from '../screens/splashScreen/SplashScreen';
+import NavigationService from './NavigationService';
 const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   return (
     <NavigationContainer
-    // ref={(ref) => NavigationService.setTopLevelNavigator(ref)}
-    >
+      ref={ref => NavigationService.setTopLevelNavigator(ref)}>
       <Stack.Navigator initialRouteName="SplashScreen">
         <Stack.Screen
           name="MainRoute"
-          component={isLoggedIn ? TabNavigator : AuthNavigator}
+          component={!isLoggedIn ? TabNavigator : AuthNavigator}
           options={{headerShown: false}}
         />
         <Stack.Screen

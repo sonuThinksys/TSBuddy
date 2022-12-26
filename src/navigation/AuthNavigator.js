@@ -8,7 +8,8 @@ const AuthNavigator = () => {
       <Auth.Screen
         name="Login"
         component={Login}
-        options={{Header: () => false}}
+        //options={{Header: () => false}}
+        options={{headerShown: false}}
       />
     </Auth.Navigator>
   );
