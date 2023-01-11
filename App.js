@@ -1,25 +1,14 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-// import {
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
+import {StatusBar, SafeAreaView} from 'react-native';
 import MainNavigator from './src/navigation/MainNavigator';
 
 const App = () => {
-  return <MainNavigator />;
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: '#0073cf'}}>
+      <StatusBar backgroundColor="#44A72C" barStyle="light-content" />
+      <MainNavigator />
+    </SafeAreaView>
+  );
 };
 
 export default App;
