@@ -147,7 +147,7 @@ const Attendence = () => {
               week: {
                 // marginTop: 5,
                 // flex: 1,
-                // width: '100%',
+                width: '120%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 backgroundColor: 'green',
@@ -155,7 +155,7 @@ const Attendence = () => {
                 fontSize: 16,
               },
               header: {
-                // width: '120%',
+                width: '120%',
                 backgroundColor: 'green',
                 color: 'white',
                 // paddingHorizontal: 10,
@@ -174,10 +174,11 @@ const Attendence = () => {
                 fontWeight: 'bold',
                 fontSize: 18,
                 marginVertical: 10,
+                marginHorizontal: 100,
                 textAlign: 'center',
               },
               monthHeader: {
-                width: '100%',
+                width: '120%',
               },
             },
           }}

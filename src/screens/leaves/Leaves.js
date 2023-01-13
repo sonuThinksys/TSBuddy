@@ -109,12 +109,13 @@ const Leaves = () => {
         }}>
         <View
           style={{
-            paddingHorizontal: wp(1.5),
+            paddingHorizontal: wp(2),
             paddingVertical: hp(0.1),
             borderColor: '#FF7F50',
             borderRadius: 15,
             borderWidth: 2,
             justifyContent: 'center',
+            paddingBottom: 2.5,
           }}>
           <Text
             style={{
@@ -177,7 +178,7 @@ const renderItem = ({item}) => {
         <Text style={{textAlign: 'center', fontSize: 18}}>
           {item.daysOfLeaves} {item.typesOfLeaves}
         </Text>
-        <Text style={{textAlign: 'center'}}>(`${item.statusOfLeaves}`)</Text>
+        <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
       </View>
       <View
         style={{
@@ -189,7 +190,9 @@ const renderItem = ({item}) => {
           borderTopRightRadius: 5,
           borderBottomRightRadius: 5,
         }}>
-        <Text style={{fontWeight: 'bold'}}>{item.numberOfLeaves}</Text>
+        <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
+          {item.numberOfLeaves}
+        </Text>
         <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
         <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
       </View>

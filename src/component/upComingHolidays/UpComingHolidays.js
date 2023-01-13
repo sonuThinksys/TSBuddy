@@ -80,7 +80,9 @@ const renderItem = ({item}) => {
         }
         style={{height: 40, width: 40, marginTop: hp(1.8), flex: 1}}
       />
-      <Text style={{marginTop: hp(2.4), flex: 5}}>{item.nameOfLeaves}</Text>
+      <Text style={{marginTop: hp(2.4), flex: 5, marginLeft: wp(1)}}>
+        {item.nameOfLeaves}
+      </Text>
       <View style={{flex: 3}}>
         <View
           style={{

@@ -33,23 +33,54 @@ const RemainingLeaves = () => {
     },
   ];
 
-  var trace1 = {
-    type: 'bar',
-    x: [1, 2, 3],
-    y: [1, 2, 1],
-    marker: {
-      color: ['orange', '#0E5E6F', 'green'],
-      line: {
-        width: 2.5,
-        color: 'white',
-      },
+  // var trace1 = {
+  //   type: 'bar',
+  //   x: [1, 2, 3],
+  //   y: [1, 2, 1],
+  //   marker: {
+  //     color: ['orange', '#0E5E6F', 'green'],
+  //     line: {
+  //       width: 2.5,
+  //       color: 'white',
+  //     },
+  //   },
+  // };
+  // var data = [trace1];
+  // var layout = {
+  //   autosize: false,
+  //   width: 200,
+  //   height: 300,
+  //   scrollZoom: false,
+  //   displayModeBar: false,
+  //   margin: {
+  //     l: 50,
+  //     r: 50,
+  //     b: 100,
+  //     t: 100,
+  //     pad: 4,
+  //   },
+  // };
+
+  const layout = {
+    modebardisplay: false,
+    showlegend: false,
+    xaxis: {
+      type: 'category',
+      title: 'Earned Leave',
+      showticklabels: false,
+      fixedrange: true,
     },
-  };
-  var data = [trace1];
-  var layout = {
+    yaxis: {
+      linecolor: '#636363',
+      showgrid: false,
+      zeroline: false,
+      showline: true,
+      fixedrange: true,
+    },
     autosize: false,
     width: 200,
     height: 300,
+    scrollZoom: false,
     displayModeBar: false,
     margin: {
       l: 50,
@@ -59,9 +90,40 @@ const RemainingLeaves = () => {
       pad: 4,
     },
   };
-  const config = {
-    displayModeBar: false, // this is the line that hides the bar.
+  var trace1 = {
+    type: 'bar',
+    x: [1, 2, 3, 4],
+    y: [5, 4, 9, 3],
+    marker: {
+      color: ['orange', '#0E5E6F', 'green', 'red'],
+      line: {
+        color: 'white',
+        width: 2.5,
+      },
+      height: 200,
+    },
   };
+  var data = [trace1];
+  // const config = {
+  //   displayModeBar: false, // this is the line that hides the bar.
+  //   scrollZoom: false,
+  // };
+
+  const config = {
+    dragMode: false,
+    scrollZoom: false,
+    displayModeBar: false,
+  };
+  // return (
+  //   <Plotly
+  //     data={data}
+  //     layout={layout}
+  //     config={config}
+  //     // width={Dimensions.get('window').width / 2}
+  //     // enableFullPlotly={false}
+  //     // responsive={false}
+  //   />
+  // );
 
   return (
     <View style={{height: hp(30)}}>
@@ -86,16 +148,18 @@ const RemainingLeaves = () => {
           data={data}
           layout={layout}
           config={config}
-          width={Dimensions.get('window').width / 2}
+          // width={Dimensions.get('window').width / 2}
+          // enableFullPlotly={false}
+          // responsive={false}
         />
         <Plotly
           data={data}
           layout={layout}
           config={config}
-          width={Dimensions.get('window').width / 2}
+          // width={Dimensions.get('window').width / 2}
         />
       </View>
-      <View
+      {/* <View
         style={{
           paddingHorizontal: wp(10),
           display: 'flex',
@@ -105,7 +169,7 @@ const RemainingLeaves = () => {
         }}>
         <Text style={{fontSize: 13, opacity: 0.7}}>Earned Leave</Text>
         <Text style={{fontSize: 13, opacity: 0.7}}>Restricted Leave</Text>
-      </View>
+      </View> */}
       <View
         style={{
           display: 'flex',
@@ -161,3 +225,48 @@ const renderItem = ({item}) => {
   );
 };
 export default RemainingLeaves;
+
+// import React from 'react';
+// import Plotly from 'react-native-plotly';
+// export default () => {
+//   const layout = {
+//     xaxis: {
+//       type: 'category',
+//       title: 'Earned Leave',
+//       showticklabels: false,
+//       fixedrange: true,
+//     },
+//     yaxis: {
+//       linecolor: '#636363',
+//       showgrid: false,
+//       zeroline: false,
+//       showline: true,
+//       fixedrange: true,
+//     },
+//   };
+//   var trace1 = {
+//     type: 'bar',
+//     x: [1, 2, 3, 4, 7],
+//     y: [5, 10, 2, 5, 8],
+//     marker: {
+//       color: '#C8A2C8',
+//       line: {
+//         width: 2.5,
+//       },
+//       height: 200,
+//     },
+//   };
+//   var data = [trace1];
+//   return (
+//     <Plotly
+//       data={data}
+//       config={{
+//         dragMode: false,
+//         scrollZoom: false,
+//         displayModeBar: false,
+//       }}
+//       enableFullPlotly={true}
+//       layout={layout}
+//     />
+//   );
+// };

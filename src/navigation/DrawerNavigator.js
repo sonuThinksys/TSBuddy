@@ -22,6 +22,11 @@ import HolidaysIcon from 'assets/allImage/Holidays.imageset/holidaysIcon.png';
 import leavesImage from 'assets/allImage/Leaves.imageset/leavesImage.png';
 import salarySlipIcon from 'assets/allImage/SalarySlip.imageset/salarySlipIcon.png';
 import ProfileIcon from 'assets/allImage/DefaultImage.imageset/default_user_icon.png';
+import info_scopy from 'assets/allImage/info.imageset/info_scopy.png';
+import logoutmenuS from 'assets/allImage/Logout.imageset/logoutmenuS.png';
+import {loginStatus} from 'Auth/LoginSlice';
+import {useDispatch} from 'react-redux';
+import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -34,7 +39,7 @@ const SalarySlipStack = createNativeStackNavigator();
 const HomeStackScreen = ({navigation}) => {
   return (
     <HomeStack.Navigator
-      initialRouteName="Home"
+      // initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         headerStyle: {backgroundColor: 'red'},
@@ -62,7 +67,7 @@ const HomeStackScreen = ({navigation}) => {
 const AttendenceStackScreen = ({navigation}) => {
   return (
     <AttendenceStack.Navigator
-      initialRouteName="Attendence"
+      //  initialRouteName="Attendence"
       screenOptions={{headerShown: false}}>
       <AttendenceStack.Screen name="Attendence" component={Attendence} />
       {/* <Stack.Screen name="Holidays" component={Holidays} /> */}
@@ -72,7 +77,7 @@ const AttendenceStackScreen = ({navigation}) => {
 const ProfileStackScreen = ({navigation}) => {
   return (
     <ProfileStack.Navigator
-      initialRouteName="Profile"
+      //  initialRouteName="Profile"
       screenOptions={{headerShown: false}}>
       <ProfileStack.Screen name="Profile" component={Profile} />
     </ProfileStack.Navigator>
@@ -82,7 +87,7 @@ const ProfileStackScreen = ({navigation}) => {
 const HolidaysStackScreen = ({navigation}) => {
   return (
     <HolidaysStack.Navigator
-      initialRouteName="Holidays"
+      // initialRouteName="Holidays"
       screenOptions={{headerShown: false}}>
       <HolidaysStack.Screen name="Holidays" component={Holidays} />
       {/* <Stack.Screen name="Leaves" component={Leaves} /> */}
@@ -93,7 +98,7 @@ const HolidaysStackScreen = ({navigation}) => {
 const LeavesStackScreen = ({navigation}) => {
   return (
     <LeavesStack.Navigator
-      initialRouteName="Leaves"
+      //  initialRouteName="Leaves"
       screenOptions={{headerShown: false}}>
       <LeavesStack.Screen name="Leaves" component={Leaves} />
       {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
@@ -104,15 +109,19 @@ const LeavesStackScreen = ({navigation}) => {
 const SalarySlipScreen = ({navigation}) => {
   return (
     <SalarySlipStack.Navigator
-      initialRouteName="SalarySlip"
+      //  initialRouteName="SalarySlip"
       screenOptions={{headerShown: false}}>
       <SalarySlipStack.Screen name="SalarySlip" component={SalarySlip} />
       {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
     </SalarySlipStack.Navigator>
   );
 };
+const Logout = () => {
+  return <Text>Logout</Text>;
+};
 
 function DrawerNavigator() {
+  const dispatch = useDispatch();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -183,11 +192,13 @@ function DrawerNavigator() {
                   style={{
                     color: 'white',
                     marginRight: wp(2),
-                    paddingTop: hp(0.5),
+                    //paddingTop: hp(0.5),
+                    fontSize: 16,
+                    fontWeight: 'bold',
                   }}>
                   Home
                 </Text>
-                <Image source={LoginLock} style={{height: 20, width: 15}} />
+                <Image source={info_scopy} style={{height: 20, width: 20}} />
               </View>
             </TouchableOpacity>
           ),
@@ -384,6 +395,45 @@ function DrawerNavigator() {
           ),
         }}
         component={SalarySlipScreen}
+      />
+
+      <Drawer.Screen
+        name="logout"
+        options={{
+          drawerLabel: '',
+          title: 'Logout',
+          drawerIcon: ({tintColor}) => (
+            <View>
+              <TouchableOpacity onPress={() => dispatch(loginStatus(false))}>
+                <Image
+                  source={logoutmenuS}
+                  // style={[styles.icon, { tintColor: tintColor }]}
+                  style={{height: 50, width: 50}}
+                />
+                <Text
+                  style={{
+                    color: 'white',
+                    paddingTop: hp(1),
+                    textAlign: 'center',
+                    fontWeight: '600',
+                    fontSize: 16,
+                  }}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+              <Image
+                source={searchIconwhite}
+                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+        component={Logout}
       />
     </Drawer.Navigator>
   );

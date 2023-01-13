@@ -10,6 +10,9 @@ import mailEmp from 'assets/allImage/mailImg.imageset/mailEmp.png';
 import callEmp from 'assets/allImage/callImg.imageset/callEmp.png';
 import phnIcon from 'assets/allImage/userphone.imageset/phnIcon.png';
 import empMsg from 'assets/allImage/msg.imageset/empMsg.png';
+import empCallS from 'assets/allImage/call.imageset/empCallS.png';
+import empMailS from 'assets/allImage/mail.imageset/empMailS.png';
+import empWa from 'assets/allImage/wtsapp.imageset/empWa.png';
 const Profile = () => {
   const data = [
     {
@@ -90,12 +93,14 @@ const Profile = () => {
           </View>
           <View
             style={{
-              borderWidth: 1,
+              borderWidth: 0.3,
+              borderTopWidth: 0.1,
               marginHorizontal: wp(2),
               borderRadius: 5,
               marginVertical: hp(1),
               height: hp(35),
-              shadowOpacity: 0.1,
+              backgroundColor: 'white',
+              shadowOpacity: 0.3,
             }}>
             <FlatList
               data={data}
@@ -110,13 +115,16 @@ const Profile = () => {
               borderColor: 'gray',
               backgroundColor: 'white',
               marginTop: hp(1),
-              paddingVertical: hp(1),
+              // paddingVertical: hp(0.),
+              paddingBottom: hp(1),
+              shadowOpacity: 0.5,
+              borderRadius: 5,
             }}>
             <View
               style={{
                 paddingVertical: hp(1.5),
                 paddingHorizontal: wp(4),
-                backgroundColor: 'teal',
+                backgroundColor: '#0E5E6F',
               }}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
                 Manager Info
@@ -147,8 +155,8 @@ const Profile = () => {
                   style={{
                     marginTop: hp(1),
                     marginHorizontal: wp(4),
-                    color: 'steelblue',
-                    fontWeight: 'bold',
+                    color: 'black',
+                    opacity: 0.6,
                     fontSize: 18,
                   }}>
                   Mayank Sharma
@@ -156,7 +164,7 @@ const Profile = () => {
                 <Text
                   style={{
                     marginHorizontal: wp(4),
-                    marginTop: hp(1),
+                    marginTop: hp(0.6),
                     opacity: 0.7,
                   }}>
                   sharma.mayank@thinksys.com
@@ -166,11 +174,12 @@ const Profile = () => {
                     display: 'flex',
                     flexDirection: 'row',
                     paddingHorizontal: wp(4),
+                    paddingVertical: hp(0.5),
                     justifyContent: 'space-around',
                   }}>
-                  <Image source={empMsg} style={{height: 30, width: 30}} />
-                  <Image source={empMsg} style={{height: 30, width: 30}} />
-                  <Image source={empMsg} style={{height: 30, width: 30}} />
+                  <Image source={empMailS} style={{height: 40, width: 40}} />
+                  <Image source={empCallS} style={{height: 40, width: 40}} />
+                  <Image source={empMsg} style={{height: 40, width: 40}} />
                 </View>
               </View>
             </View>
