@@ -4,6 +4,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -14,16 +15,6 @@ import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
 import SalarySlip from 'screens/salarySlip/SalarySlip';
-import LoginLock from 'assets/mipmap/loginLock.imageset/lock.png';
-import searchIconwhite from 'assets/mipmap/searchIconwhite.png';
-import HomeImage from 'assets/allImage/Home2.imageset/homeDrawer.png';
-import AttendanceDrawer from 'assets/allImage/Attendance.imageset/attendanceDrawer.png';
-import HolidaysIcon from 'assets/allImage/Holidays.imageset/holidaysIcon.png';
-import leavesImage from 'assets/allImage/Leaves.imageset/leavesImage.png';
-import salarySlipIcon from 'assets/allImage/SalarySlip.imageset/salarySlipIcon.png';
-import ProfileIcon from 'assets/allImage/DefaultImage.imageset/default_user_icon.png';
-import info_scopy from 'assets/allImage/info.imageset/info_scopy.png';
-import logoutmenuS from 'assets/allImage/Logout.imageset/logoutmenuS.png';
 import {loginStatus} from 'Auth/LoginSlice';
 import {useDispatch} from 'react-redux';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
@@ -168,7 +159,10 @@ function DrawerNavigator() {
 
           drawerIcon: ({tintColor}) => (
             <View>
-              <Image source={HomeImage} style={{height: 50, width: 50}} />
+              <Image
+                source={MonthImages.HomeImage}
+                style={{height: 50, width: 50}}
+              />
               <Text
                 style={{
                   color: 'white',
@@ -198,7 +192,10 @@ function DrawerNavigator() {
                   }}>
                   Home
                 </Text>
-                <Image source={info_scopy} style={{height: 20, width: 20}} />
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
               </View>
             </TouchableOpacity>
           ),
@@ -206,7 +203,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{
                   height: 25,
                   width: 25,
@@ -227,7 +224,10 @@ function DrawerNavigator() {
           title: 'Profile',
           drawerIcon: ({tintColor}) => (
             <View>
-              <Image source={ProfileIcon} style={{height: 60, width: 60}} />
+              <Image
+                source={MonthImages.ProfileIcon}
+                style={{height: 60, width: 60}}
+              />
               <Text
                 style={{
                   color: 'white',
@@ -244,7 +244,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>
@@ -260,7 +260,7 @@ function DrawerNavigator() {
           drawerIcon: ({tintColor}) => (
             <View>
               <Image
-                source={AttendanceDrawer}
+                source={MonthImages.AttendanceDrawer}
                 // style={[styles.icon, { tintColor: tintColor }]}
                 style={{height: 50, width: 50}}
               />
@@ -280,7 +280,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>
@@ -296,7 +296,7 @@ function DrawerNavigator() {
           drawerIcon: ({tintColor}) => (
             <View>
               <Image
-                source={HolidaysIcon}
+                source={MonthImages.HolidaysIcon}
                 // style={[styles.icon, { tintColor: tintColor }]}
                 style={{height: 50, width: 50}}
               />
@@ -316,7 +316,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>
@@ -332,7 +332,7 @@ function DrawerNavigator() {
           drawerIcon: ({tintColor}) => (
             <View>
               <Image
-                source={leavesImage}
+                source={MonthImages.leavesImage}
                 // style={[styles.icon, { tintColor: tintColor }]}
                 style={{height: 50, width: 50}}
               />
@@ -352,7 +352,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>
@@ -368,7 +368,7 @@ function DrawerNavigator() {
           drawerIcon: ({tintColor}) => (
             <View>
               <Image
-                source={salarySlipIcon}
+                source={MonthImages.salarySlipIcon}
                 // style={[styles.icon, { tintColor: tintColor }]}
                 style={{height: 50, width: 50}}
               />
@@ -388,7 +388,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>
@@ -406,7 +406,7 @@ function DrawerNavigator() {
             <View>
               <TouchableOpacity onPress={() => dispatch(loginStatus(false))}>
                 <Image
-                  source={logoutmenuS}
+                  source={MonthImages.logoutmenuS}
                   // style={[styles.icon, { tintColor: tintColor }]}
                   style={{height: 50, width: 50}}
                 />
@@ -427,7 +427,7 @@ function DrawerNavigator() {
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
               <Image
-                source={searchIconwhite}
+                source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               />
             </TouchableOpacity>

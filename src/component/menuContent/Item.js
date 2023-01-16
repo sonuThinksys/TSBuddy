@@ -4,17 +4,13 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import Lunch from 'assets/allImage/Lunch.imageset/lunchh.png';
-import breakfastImgS from 'assets/allImage/Breakfast.imageset/breakfastImgS.png';
-import snacksS from 'assets/allImage/Snacks.imageset/snacksS.png';
-import LikeImage from 'assets/allImage/like.imageset/likeimg.png';
-import dislikesm from 'assets/allImage/dislike.imageset/dislikesm.png';
-import {color} from 'react-native-reanimated';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+
 const Item = () => {
   const data = [
     {
       type_of_food: 'Breafast',
-      img_url: breakfastImgS,
+      img_url: MonthImages.breakfastImgS,
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
@@ -22,7 +18,7 @@ const Item = () => {
     },
     {
       type_of_food: 'Lunch',
-      img_url: Lunch,
+      img_url: MonthImages.Lunch,
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
@@ -30,7 +26,7 @@ const Item = () => {
     },
     {
       type_of_food: 'Snacks',
-      img_url: snacksS,
+      img_url: MonthImages.snacksS,
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
@@ -100,7 +96,7 @@ const renderItem = ({item}) => {
             marginLeft: wp(2),
             marginBottom: 5,
           }}
-          source={LikeImage}
+          source={MonthImages.LikeImage}
         />
         <Text style={{flex: 1, marginTop: 2}}> {item.numberOfLikes}</Text>
         <Image
@@ -110,7 +106,7 @@ const renderItem = ({item}) => {
             marginLeft: wp(20),
             marginTop: 4,
           }}
-          source={dislikesm}
+          source={MonthImages.dislikesm}
         />
         <Text style={{flex: 1, marginTop: 2}}>{item.numberOfDislike}</Text>
       </View>

@@ -1,5 +1,12 @@
 import React, {useEffect} from 'react';
-import {View, TouchableOpacity, Text, Modal, TextInput} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Modal,
+  Image,
+  TextInput,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
@@ -7,6 +14,8 @@ import {
 } from 'utils/Responsive';
 import SalarSlipModal from 'modals/SalarySlipModal';
 import {authLoginStatus} from 'Auth/LoginSlice';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+
 const SalarySlip = ({navigation}) => {
   const dispatch = useDispatch();
   const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
@@ -22,6 +31,19 @@ const SalarySlip = ({navigation}) => {
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
+
+  const data = [
+    {
+      month: 'January',
+      year: 2022,
+      id: 1,
+    },
+    {
+      month: 'February',
+      year: 2022,
+      id: 2,
+    },
+  ];
 
   return (
     <View>
@@ -41,6 +63,10 @@ const SalarySlip = ({navigation}) => {
       ) : (
         <View>
           <Text>fgf</Text>
+          <Image
+            source={MonthImages.janImage}
+            style={{height: 50, width: 50}}
+          />
         </View>
       )}
     </View>

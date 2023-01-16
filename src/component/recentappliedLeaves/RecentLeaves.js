@@ -4,8 +4,8 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import absentEmpl from 'assets/allImage/DismissedLeave.imageset/absentEmpl.png';
-import presentEmpS from 'assets/allImage/EmployeeAttendance.imageset/presentEmpS.png';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+
 const RecentLeaves = () => {
   const data = [
     {
@@ -61,7 +61,11 @@ const renderItem = ({item}) => {
       }}>
       <Image
         resizeMode="contain"
-        source={item.statusOfLeave === 'Dissmissed' ? absentEmpl : presentEmpS}
+        source={
+          item.statusOfLeave === 'Dissmissed'
+            ? MonthImages.absentEmpl
+            : MonthImages.presentEmpS
+        }
         style={{height: 25, width: 25, marginTop: hp(1.8)}}
       />
       <Text style={{marginTop: hp(2.4), marginLeft: wp(2)}}>

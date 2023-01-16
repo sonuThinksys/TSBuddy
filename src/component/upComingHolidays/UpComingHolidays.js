@@ -4,11 +4,8 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import diwali from 'assets/allImage/diwali.imageset/diwali.png';
-import gandhiJayantiS from 'assets/allImage/gandhiJayanti.imageset/gandhiJayantiS.png';
-import holi from 'assets/allImage/holi.imageset/holi.png';
-import independenceDay from 'assets/allImage/independenceDay.imageset/independenceDay.png';
-import republicDay from 'assets/allImage/republicDay.imageset/republicDay.png';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+
 const UpComingHolidays = () => {
   const data = [
     {
@@ -69,14 +66,14 @@ const renderItem = ({item}) => {
         resizeMode="contain"
         source={
           item.nameOfLeaves === 'Republic Day'
-            ? republicDay
+            ? MonthImages.republicDay
             : item.nameOfLeaves === 'Holi'
-            ? holi
+            ? MonthImages.holi
             : item.nameOfLeaves === 'Independence Day'
-            ? independenceDay
+            ? MonthImages.independenceDay
             : item.nameOfLeaves === 'Diwali'
-            ? diwali
-            : gandhiJayantiS
+            ? MonthImages.diwali
+            : MonthImages.gandhiJayantiS
         }
         style={{height: 40, width: 40, marginTop: hp(1.8), flex: 1}}
       />

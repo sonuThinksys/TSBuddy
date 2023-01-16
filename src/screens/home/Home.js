@@ -13,8 +13,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import workAnniversaryy from 'assets/allImage/workAnniversary.imageset/workAnniversaryy.jpeg';
-import BirthdayImage from 'assets/allImage/birthdayImage.imageset/B5.jpg';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import Item from 'component/menuContent/Item';
@@ -23,10 +22,10 @@ import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 const Home = () => {
   const imageArr = [
-    workAnniversaryy,
-    BirthdayImage,
-    BirthdayImage,
-    workAnniversaryy,
+    MonthImages.workAnniversaryy,
+    MonthImages.BirthdayImage,
+    MonthImages.BirthdayImage,
+    MonthImages.workAnniversaryy,
   ];
 
   return (

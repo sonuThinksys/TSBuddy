@@ -4,49 +4,43 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import ProfileIcon from 'assets/allImage/DefaultImage.imageset/default_user_icon.png';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
-import mailEmp from 'assets/allImage/mailImg.imageset/mailEmp.png';
-import callEmp from 'assets/allImage/callImg.imageset/callEmp.png';
-import phnIcon from 'assets/allImage/userphone.imageset/phnIcon.png';
-import empMsg from 'assets/allImage/msg.imageset/empMsg.png';
-import empCallS from 'assets/allImage/call.imageset/empCallS.png';
-import empMailS from 'assets/allImage/mail.imageset/empMailS.png';
-import empWa from 'assets/allImage/wtsapp.imageset/empWa.png';
+
 const Profile = () => {
   const data = [
     {
-      image: mailEmp,
+      image: MonthImages.mailEmp,
       nameOfField: 'Email ID',
       email: 'gupta.radhika@thinksys.com',
       id: 1,
     },
     {
-      image: callEmp,
+      image: MonthImages.callEmp,
       nameOfField: 'Mobile No.',
       email: '8544946426',
       id: 2,
     },
     {
-      image: mailEmp,
+      image: MonthImages.mailEmp,
       nameOfField: 'Designation',
       email: 'Software Engineer',
       id: 3,
     },
     {
-      image: callEmp,
+      image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
       email: 'EMP/10863',
       id: 4,
     },
     {
-      image: mailEmp,
+      image: MonthImages.mailEmp,
       nameOfField: 'Date of Joining',
       email: '26-Apr-2022',
       id: 5,
     },
     {
-      image: callEmp,
+      image: MonthImages.callEmp,
       nameOfField: 'Education',
       email: 'NA',
       id: 6,
@@ -76,7 +70,7 @@ const Profile = () => {
               }}>
               <Image
                 resizeMode="cover"
-                source={ProfileIcon}
+                source={MonthImages.ProfileIcon}
                 style={{height: 120, width: 120, borderRadius: 60}}
               />
             </View>
@@ -146,7 +140,7 @@ const Profile = () => {
                 }}>
                 <Image
                   resizeMode="cover"
-                  source={ProfileIcon}
+                  source={MonthImages.ProfileIcon}
                   style={{height: 80, width: 80, borderRadius: 20}}
                 />
               </View>
@@ -177,9 +171,18 @@ const Profile = () => {
                     paddingVertical: hp(0.5),
                     justifyContent: 'space-around',
                   }}>
-                  <Image source={empMailS} style={{height: 40, width: 40}} />
-                  <Image source={empCallS} style={{height: 40, width: 40}} />
-                  <Image source={empMsg} style={{height: 40, width: 40}} />
+                  <Image
+                    source={MonthImages.empMailS}
+                    style={{height: 40, width: 40}}
+                  />
+                  <Image
+                    source={MonthImages.empCallS}
+                    style={{height: 40, width: 40}}
+                  />
+                  <Image
+                    source={MonthImages.empMsg}
+                    style={{height: 40, width: 40}}
+                  />
                 </View>
               </View>
             </View>
