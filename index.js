@@ -1,5 +1,5 @@
 //import ReactNativeForegroundService from '@supersami/rn-foreground-service';
-import {AppRegistry, LogBox} from 'react-native';
+import {AppRegistry, LogBox, Text, View} from 'react-native';
 
 import React, {useLayoutEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ const AppConfig = () => {
   useLayoutEffect(() => {
     SplashScreen.hide();
   }, []);
+
   return (
     <Provider store={store}>
       <App />

@@ -38,7 +38,7 @@ const HomeStackScreen = ({navigation}) => {
         headerTitleStyle: {fontWeight: 'bold'},
       }}>
       <HomeStack.Screen
-        name="Home"
+        name="home"
         component={Home}
         options={{
           title: 'overview',
@@ -60,7 +60,7 @@ const AttendenceStackScreen = ({navigation}) => {
     <AttendenceStack.Navigator
       //  initialRouteName="Attendence"
       screenOptions={{headerShown: false}}>
-      <AttendenceStack.Screen name="Attendence" component={Attendence} />
+      <AttendenceStack.Screen name="attendence" component={Attendence} />
       {/* <Stack.Screen name="Holidays" component={Holidays} /> */}
     </AttendenceStack.Navigator>
   );
@@ -70,7 +70,7 @@ const ProfileStackScreen = ({navigation}) => {
     <ProfileStack.Navigator
       //  initialRouteName="Profile"
       screenOptions={{headerShown: false}}>
-      <ProfileStack.Screen name="Profile" component={Profile} />
+      <ProfileStack.Screen name="profile" component={Profile} />
     </ProfileStack.Navigator>
   );
 };
@@ -80,7 +80,7 @@ const HolidaysStackScreen = ({navigation}) => {
     <HolidaysStack.Navigator
       // initialRouteName="Holidays"
       screenOptions={{headerShown: false}}>
-      <HolidaysStack.Screen name="Holidays" component={Holidays} />
+      <HolidaysStack.Screen name="holidays" component={Holidays} />
       {/* <Stack.Screen name="Leaves" component={Leaves} /> */}
     </HolidaysStack.Navigator>
   );
@@ -91,7 +91,7 @@ const LeavesStackScreen = ({navigation}) => {
     <LeavesStack.Navigator
       //  initialRouteName="Leaves"
       screenOptions={{headerShown: false}}>
-      <LeavesStack.Screen name="Leaves" component={Leaves} />
+      <LeavesStack.Screen name="leaves" component={Leaves} />
       {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
     </LeavesStack.Navigator>
   );
@@ -102,7 +102,7 @@ const SalarySlipScreen = ({navigation}) => {
     <SalarySlipStack.Navigator
       //  initialRouteName="SalarySlip"
       screenOptions={{headerShown: false}}>
-      <SalarySlipStack.Screen name="SalarySlip" component={SalarySlip} />
+      <SalarySlipStack.Screen name="salarySlip" component={SalarySlip} />
       {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
     </SalarySlipStack.Navigator>
   );

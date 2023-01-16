@@ -8,21 +8,28 @@ import {
   View,
   Text,
 } from 'react-native';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 const width = Dimensions.get('screen').width;
 
-const CarouselAutoScroll = ({data}) => {
-  console.log('data:----------', data);
+const CarouselAutoScroll = () => {
+  const imageArr = [
+    MonthImages.workAnniversaryy,
+    MonthImages.BirthdayImage,
+    MonthImages.BirthdayImage,
+    MonthImages.workAnniversaryy,
+  ];
+
   const imageRef = useRef();
   const [active, setActive] = useState(0);
   const indexRef = useRef(active);
   indexRef.current = active;
 
   useInterval(() => {
-    if (active < Number(data?.length) - 1) {
+    if (active < Number(imageArr?.length) - 1) {
       setActive(active + 1);
     } else {
       setActive(0);
@@ -51,7 +58,7 @@ const CarouselAutoScroll = ({data}) => {
       // }}
       ref={imageRef}
       pagingEnabled
-      data={data}
+      data={imageArr}
       horizontal
       renderItem={({item, index}) => (
         <ImageBackground

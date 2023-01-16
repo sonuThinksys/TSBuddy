@@ -7,13 +7,12 @@ import {
   ScrollView,
   Image,
   FlatList,
+  LogBox,
 } from 'react-native';
-import {AutoScrollFlatList} from 'react-native-autoscroll-flatlist';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import Item from 'component/menuContent/Item';
@@ -21,19 +20,19 @@ import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 const Home = () => {
-  const imageArr = [
-    MonthImages.workAnniversaryy,
-    MonthImages.BirthdayImage,
-    MonthImages.BirthdayImage,
-    MonthImages.workAnniversaryy,
-  ];
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
 
   return (
     <View style={{flex: 1}}>
       <View style={{height: hp(23), backgroundColor: 'white'}}>
-        <CarouselAutoScroll data={imageArr} />
+        <CarouselAutoScroll />
       </View>
-      <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        style={{flex: 1}}
+        horizontal={false}>
         <MenuDetails />
         <Item />
         <RecentLeaves />

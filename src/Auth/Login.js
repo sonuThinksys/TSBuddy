@@ -27,29 +27,29 @@ const Login = () => {
   const dispatch = useDispatch();
   console.log('backgroundVideo:------------------------', backgoundVideo);
 
-  const rnBiometrics = new ReactNativeBiometrics();
+  // const rnBiometrics = new ReactNativeBiometrics();
 
-  const {biometryType} = rnBiometrics.isSensorAvailable();
+  // const {biometryType} = rnBiometrics.isSensorAvailable();
 
-  if (biometryType === BiometryTypes.TouchID) {
-    //do something fingerprint specific
-    console.log('biometric available');
-  }
+  // if (biometryType === BiometryTypes.TouchID) {
+  //   //do something fingerprint specific
+  //   console.log('biometric available');
+  // }
 
-  if (biometryType !== BiometryTypes.TouchID) {
-    //do something fingerprint specific
-    console.log('not biometric available');
-  }
+  // if (biometryType !== BiometryTypes.TouchID) {
+  //   //do something fingerprint specific
+  //   console.log('not biometric available');
+  // }
 
-  if (biometryType === BiometryTypes.FaceID) {
-    //do something face id specific
-    console.log('helo avalialble');
-  }
+  // if (biometryType === BiometryTypes.FaceID) {
+  //   //do something face id specific
+  //   console.log('helo avalialble');
+  // }
 
-  if (biometryType === BiometryTypes.Biometrics) {
-    //do something face id specific
-    console.log('android biometric avalabvle');
-  }
+  // if (biometryType === BiometryTypes.Biometrics) {
+  //   //do something face id specific
+  //   console.log('android biometric avalabvle');
+  // }
 
   return (
     <View style={{backgroundColor: '#0073cf', height: '100%', width: '100%'}}>
