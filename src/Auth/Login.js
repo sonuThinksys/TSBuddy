@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 
 import {
@@ -10,46 +10,67 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
+import {Colors} from 'colors/Colors';
 import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
+import TouchID from 'react-native-touch-id';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import backgoundVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import {FlatList} from 'react-native-gesture-handler';
 import LoginUser from '../assets/mipmap/loginUser.imageset/user.png';
 import LoginLock from 'assets/mipmap/loginLock.imageset/lock.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
+import fingerPrint from 'assets/allImage/fingerPrint.png';
 import {loginStatus} from './LoginSlice';
 const Login = () => {
   const dispatch = useDispatch();
+  const [isAuth, setIsAuth] = useState(false);
   console.log('backgroundVideo:------------------------', backgoundVideo);
 
-  // const rnBiometrics = new ReactNativeBiometrics();
+  const enableTouchId = () => {
+    const optionalConfigObject = {
+      title: 'Authentication Required',
+      imageColor: '#0073cf',
+      imageErrorColor: '#ff0000',
+      sensorDescription: 'Touch sensor',
+      sensorErrorDescription: 'Failed',
+      cancelText: 'Cancel',
+      fallbackLabel: 'Show Passcode',
+      unifiedErrors: false,
+      passcodeFallback: false,
+    };
 
-  // const {biometryType} = rnBiometrics.isSensorAvailable();
-
-  // if (biometryType === BiometryTypes.TouchID) {
-  //   //do something fingerprint specific
-  //   console.log('biometric available');
-  // }
-
-  // if (biometryType !== BiometryTypes.TouchID) {
-  //   //do something fingerprint specific
-  //   console.log('not biometric available');
-  // }
-
-  // if (biometryType === BiometryTypes.FaceID) {
-  //   //do something face id specific
-  //   console.log('helo avalialble');
-  // }
-
-  // if (biometryType === BiometryTypes.Biometrics) {
-  //   //do something face id specific
-  //   console.log('android biometric avalabvle');
-  // }
+    TouchID.isSupported(optionalConfigObject)
+      .then(biometryType => {
+        if (biometryType === 'FaceID') {
+          console.log('FaceID is supported.');
+        } else {
+          console.log('TouchID is supported.');
+          if (isAuth) {
+            return null;
+          }
+          TouchID.authenticate('Authentication', optionalConfigObject)
+            .then(success => {
+              console.log('sucess:--------------', success);
+              setIsAuth(success);
+            })
+            .catch(err => {
+              console.log('error of atjfjfdf', err);
+              // BackHandler.exitApp();
+            });
+        }
+      })
+      .catch(error => {
+        // Failure code
+        console.log(error);
+      });
+  };
 
   return (
     <View style={{backgroundColor: '#0073cf', height: '100%', width: '100%'}}>
@@ -82,9 +103,9 @@ const Login = () => {
             backgroundColor: 'rgba(51, 51, 51, 0.8)',
             marginVertical: hp(5),
             paddingVertical: hp(5),
-            marginLeft: 20,
+            marginLeft: wp(5),
             borderRadius: 5,
-            paddingHorizontal: 10,
+            paddingHorizontal: wp(3),
           }}>
           <View
             style={{
@@ -162,7 +183,7 @@ const Login = () => {
             }}>
             <View style={{width: '50%', paddingVertical: hp(3)}}>
               <TouchableOpacity>
-                <Text style={{color: 'white', textDecorationLine: 1}}>
+                <Text style={{color: 'white', textDecorationLine: 'underline'}}>
                   Forgot Password
                 </Text>
               </TouchableOpacity>
@@ -222,6 +243,39 @@ const Login = () => {
             Guest Login
           </Text>
         </View>
+        {/* 
+        <View
+          style={{
+            backgroundColor: '#0073cf',
+            width: '90%',
+         }}> */}
+        <TouchableOpacity onPress={enableTouchId}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              paddingHorizontal: wp(5),
+              paddingVertical: hp(1),
+              backgroundColor: '#0073cf',
+              marginHorizontal: wp(10),
+              borderRadius: 5,
+              borderColor: 'white',
+              borderWidth: 1,
+            }}>
+            <Image source={fingerPrint} style={{height: 30, width: 35}} />
+            <Text
+              style={{
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 16,
+                paddingTop: hp(0.5),
+                paddingLeft: wp(15),
+              }}>
+              Biometric login
+            </Text>
+          </View>
+        </TouchableOpacity>
+        {/* </View> */}
       </View>
     </View>
   );

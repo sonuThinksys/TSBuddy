@@ -5,7 +5,7 @@ import MainNavigator from './src/navigation/MainNavigator';
 const App = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#0073cf'}}>
-      <StatusBar backgroundColor="#44A72C" barStyle="light-content" />
+      <StatusBar backgroundColor="#0073cf" barStyle="light-content" />
       <MainNavigator />
     </SafeAreaView>
   );
