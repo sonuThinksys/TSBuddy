@@ -17,10 +17,22 @@ const width = Dimensions.get('screen').width;
 
 const CarouselAutoScroll = () => {
   const imageArr = [
-    MonthImages.workAnniversaryy,
-    MonthImages.BirthdayImage,
-    MonthImages.BirthdayImage,
-    MonthImages.workAnniversaryy,
+    {
+      image: MonthImages.workAnniversaryy,
+      id: '1',
+    },
+    {
+      image: MonthImages.BirthdayImage,
+      id: '2',
+    },
+    {
+      image: MonthImages.BirthdayImage,
+      id: '3',
+    },
+    {
+      image: MonthImages.workAnniversaryy,
+      id: '4',
+    },
   ];
 
   const imageRef = useRef();
@@ -60,9 +72,10 @@ const CarouselAutoScroll = () => {
       pagingEnabled
       data={imageArr}
       horizontal
+      keyExtractor={item => item.id}
       renderItem={({item, index}) => (
         <ImageBackground
-          source={item}
+          source={item.image}
           resizeMode="contain"
           style={{
             //height: hp(20),

@@ -17,19 +17,19 @@ const RemainingLeaves = () => {
   const leavesData = [
     {
       text: 'Allocate',
-      id: 1,
+      id: '1',
     },
     {
       text: 'Taken',
-      id: 2,
+      id: '2',
     },
     {
       text: '-ve Balance',
-      id: 3,
+      id: '3',
     },
     {
       text: '+ve Balance',
-      id: 4,
+      id: '4',
     },
   ];
 

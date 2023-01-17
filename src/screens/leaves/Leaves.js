@@ -14,7 +14,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 1,
+      id: '1',
     },
     {
       daysOfLeaves: 5,
@@ -23,7 +23,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 2,
+      id: '2',
     },
 
     {
@@ -33,7 +33,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 3,
+      id: '3',
     },
     {
       daysOfLeaves: 5,
@@ -42,7 +42,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 4,
+      id: '4',
     },
     {
       daysOfLeaves: 5,
@@ -51,7 +51,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 5,
+      id: '5',
     },
     {
       daysOfLeaves: 5,
@@ -60,7 +60,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 6,
+      id: '6',
     },
 
     {
@@ -70,7 +70,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 7,
+      id: '7',
     },
     {
       daysOfLeaves: 5,
@@ -79,7 +79,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 8,
+      id: '8',
     },
     {
       daysOfLeaves: 5,
@@ -88,7 +88,7 @@ const Leaves = () => {
       numberOfLeaves: 'LEAP/63272',
       rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
       currentStatus: '29 days ago',
-      id: 9,
+      id: '9',
     },
   ];
 

@@ -32,6 +32,25 @@ const SalarySlip = ({navigation}) => {
     return unsubscribe;
   }, [navigation]);
 
+  const getData = () => {
+    fetch('db.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then(function (response) {
+        console.log('response:================', response);
+        return response.json();
+      })
+      .then(function (myJson) {
+        console.log('myjson-------------', myJson);
+      });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   const data = [
     {
       month: 'January',

@@ -4,7 +4,7 @@ import {
   Text,
   StatusBar,
   SafeAreaView,
-  ScrollView,
+  // ScrollView,
   Image,
   FlatList,
   LogBox,
@@ -13,12 +13,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {ScrollView} from 'react-native-virtualized-view';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import Item from 'component/menuContent/Item';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
+
 const Home = () => {
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);

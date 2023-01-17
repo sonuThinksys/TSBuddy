@@ -24,11 +24,12 @@ const SalarSlipModal = () => {
         style={{
           backgroundColor: '#0073cf',
           marginHorizontal: wp(7),
-          marginVertical: '90%',
+          marginVertical: '85%',
           display: 'flex',
           justifyContent: 'center',
           borderRadius: 10,
           shadowOpacity: 0.2,
+          paddingVertical: hp(2),
         }}>
         <Text
           style={{
@@ -36,7 +37,8 @@ const SalarSlipModal = () => {
             color: 'white',
             textAlign: 'center',
             fontWeight: 'bold',
-            paddingVertical: hp(2),
+            marginVertical: hp(1),
+            paddingHorizontal: wp(5),
           }}>
           Please authenticate with your password
         </Text>
@@ -53,7 +55,7 @@ const SalarSlipModal = () => {
           <View
             style={{
               paddingHorizontal: wp(32),
-              paddingVertical: hp(1),
+              paddingTop: hp(1),
               borderRadius: 5,
               shadowOpacity: 0.4,
             }}>
@@ -64,7 +66,7 @@ const SalarSlipModal = () => {
                 paddingVertical: hp(1),
                 backgroundColor: '#1b5583',
                 color: 'white',
-                marginBottom: hp(1),
+                borderRadius: 5,
               }}>
               Continue
             </Text>

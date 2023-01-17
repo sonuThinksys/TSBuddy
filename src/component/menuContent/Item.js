@@ -14,7 +14,7 @@ const Item = () => {
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
-      id: 1,
+      id: '1',
     },
     {
       type_of_food: 'Lunch',
@@ -22,7 +22,7 @@ const Item = () => {
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
-      id: 2,
+      id: '2',
     },
     {
       type_of_food: 'Snacks',
@@ -30,7 +30,7 @@ const Item = () => {
       menu: 'NA',
       numberOfLikes: 0,
       numberOfDislike: 0,
-      id: 3,
+      id: '3',
     },
   ];
   return (

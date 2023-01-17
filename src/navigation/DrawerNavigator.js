@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -185,7 +185,8 @@ function DrawerNavigator() {
                 <Text
                   style={{
                     color: 'white',
-                    marginRight: wp(2),
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
@@ -240,6 +241,28 @@ function DrawerNavigator() {
               </Text>
             </View>
           ),
+
+          headerTitle: () => (
+            <TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                    //paddingTop: hp(0.5),
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Profile
+                </Text>
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </TouchableOpacity>
+          ),
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -276,6 +299,29 @@ function DrawerNavigator() {
               </Text>
             </View>
           ),
+
+          headerTitle: () => (
+            <TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                    //paddingTop: hp(0.5),
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Attendence
+                </Text>
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </TouchableOpacity>
+          ),
+
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -312,6 +358,29 @@ function DrawerNavigator() {
               </Text>
             </View>
           ),
+
+          headerTitle: () => (
+            <TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                    //paddingTop: hp(0.5),
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Holiday
+                </Text>
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </TouchableOpacity>
+          ),
+
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -348,6 +417,28 @@ function DrawerNavigator() {
               </Text>
             </View>
           ),
+
+          headerTitle: () => (
+            <TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                    //paddingTop: hp(0.5),
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Leave
+                </Text>
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </TouchableOpacity>
+          ),
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
@@ -383,6 +474,29 @@ function DrawerNavigator() {
                 SalarySlip
               </Text>
             </View>
+          ),
+
+          headerTitle: () => (
+            <TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    color: 'white',
+                    textAlign: 'center',
+                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                    //paddingTop: hp(0.5),
+                    //textAlign: 'center',
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  SalarySlip
+                </Text>
+                <Image
+                  source={MonthImages.info_scopy}
+                  style={{height: 20, width: 20}}
+                />
+              </View>
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <TouchableOpacity

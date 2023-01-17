@@ -13,37 +13,37 @@ const Profile = () => {
       image: MonthImages.mailEmp,
       nameOfField: 'Email ID',
       email: 'gupta.radhika@thinksys.com',
-      id: 1,
+      id: '1',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Mobile No.',
       email: '8544946426',
-      id: 2,
+      id: '2',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Designation',
       email: 'Software Engineer',
-      id: 3,
+      id: '3',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
       email: 'EMP/10863',
-      id: 4,
+      id: '4',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Date of Joining',
       email: '26-Apr-2022',
-      id: 5,
+      id: '5',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Education',
       email: 'NA',
-      id: 6,
+      id: '6',
     },
   ];
 
@@ -51,7 +51,6 @@ const Profile = () => {
     <>
       <View style={{}}>
         <ImageBackground
-          resizeMethod="contain"
           style={{height: '60%', width: '100%'}}
           source={TSBuddyBackImage}>
           <View
@@ -69,7 +68,6 @@ const Profile = () => {
                 backgroundColor: 'gray',
               }}>
               <Image
-                resizeMode="cover"
                 source={MonthImages.ProfileIcon}
                 style={{height: 120, width: 120, borderRadius: 60}}
               />

@@ -11,22 +11,22 @@ const UpComingHolidays = () => {
     {
       nameOfLeaves: 'Republic Day',
       dataOfLeave: '26 Jan 2023',
-      id: 1,
+      id: "1",
     },
     {
       nameOfLeaves: 'Holi',
       dataOfLeave: '08 Mar 2023',
-      id: 2,
+      id: "2",
     },
     {
       nameOfLeaves: 'Independence Day',
       dataOfLeave: '15 Aug 2023',
-      id: 3,
+      id: "3",
     },
     {
       nameOfLeaves: 'Diwali',
       dataOfLeave: '15 Oct 2023',
-      id: 4,
+      id: "4",
     },
   ];
   return (

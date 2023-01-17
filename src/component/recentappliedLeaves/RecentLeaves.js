@@ -12,19 +12,19 @@ const RecentLeaves = () => {
       NumberOfLeaves: '7.0 Days',
       dataOfLeave: '25 Dec 2022',
       statusOfLeave: 'Dissmissed',
-      id: 1,
+      id: '1',
     },
     {
       NumberOfLeaves: '7.0 Days',
       dataOfLeave: '25 Dec 2022',
       statusOfLeave: 'Approved',
-      id: 2,
+      id: '2',
     },
     {
       NumberOfLeaves: '7.0 Days',
       dataOfLeave: '25 Dec 2022',
       statusOfLeave: 'Approved',
-      id: 3,
+      id: '3',
     },
   ];
   return (

@@ -31,6 +31,7 @@ import {loginStatus} from './LoginSlice';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
+  const [isBiometric, setIsBiometric] = useState(true);
   console.log('backgroundVideo:------------------------', backgoundVideo);
 
   const enableTouchId = () => {
@@ -53,7 +54,9 @@ const Login = () => {
         } else {
           console.log('TouchID is supported.');
           if (isAuth) {
-            return null;
+            console.log('fgfdkgj:-', isAuth);
+            dispatch(loginStatus(true));
+            // return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
@@ -68,6 +71,7 @@ const Login = () => {
       })
       .catch(error => {
         // Failure code
+        setIsBiometric(false);
         console.log(error);
       });
   };
@@ -249,6 +253,7 @@ const Login = () => {
             backgroundColor: '#0073cf',
             width: '90%',
          }}> */}
+        {/* {isBiometric ? ( */}
         <TouchableOpacity onPress={enableTouchId}>
           <View
             style={{
@@ -275,6 +280,8 @@ const Login = () => {
             </Text>
           </View>
         </TouchableOpacity>
+        {/* ) : null} */}
+
         {/* </View> */}
       </View>
     </View>

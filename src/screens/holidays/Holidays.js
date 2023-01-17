@@ -9,17 +9,17 @@ const Holidays = () => {
     {
       dateOfLeaves: '01 Jan 2023',
       typesOfHoliday: 'New Year',
-      id: 1,
+      id: '1',
     },
     {
       dateOfLeaves: '26 Jan 2023',
       typesOfHoliday: 'Republic Day',
-      id: 2,
+      id: '2',
     },
     {
       dateOfLeaves: '08 Mar 2023',
       typesOfHoliday: 'Holi',
-      id: 3,
+      id: '3',
     },
   ];
   return (
