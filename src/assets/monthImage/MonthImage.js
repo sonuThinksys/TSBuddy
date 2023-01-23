@@ -72,6 +72,16 @@ import logoutmenuS from 'assets/allImage/Logout.imageset/logoutmenuS.png';
 
 import absentEmpl from 'assets/allImage/DismissedLeave.imageset/absentEmpl.png';
 import presentEmpS from 'assets/allImage/EmployeeAttendance.imageset/presentEmpS.png';
+import arrwWhite from 'assets/allImage/ arrwWhite.png';
+import thumbnailS from 'assets/allImage/gridIcon.imageset/thumbnailS.png';
+import listS from 'assets/allImage/listIcon.imageset/listS.png';
+import arrowSecond from 'assets/allImage/arrowSecond.png';
+import backArrowS from 'assets/allImage/BackButton.imageset/backArrowS.png';
+import empbgS from 'assets/allImage/employeeBg.imageset/empbgS.png';
+
+import emailUS from 'assets/allImage/useremail.imageset/emailUS.png';
+import userPS from 'assets/allImage/userimage.imageset/userPS.png';
+import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
 
 export const MonthImages = {
   janImage: janS,
@@ -135,4 +145,13 @@ export const MonthImages = {
   // absent and present icons
   absentEmpl: absentEmpl,
   presentEmpS: presentEmpS,
+  arrwWhite: arrwWhite,
+  thumbnailS: thumbnailS,
+  listS: listS,
+  arrowSecond: arrowSecond,
+  backArrowS: backArrowS,
+  empbgS: empbgS,
+  emailUS: emailUS,
+  userPS: userPS,
+  checkedS: checkedS,
 };
