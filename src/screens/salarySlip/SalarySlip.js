@@ -20,7 +20,6 @@ import {getSalarySlipData} from 'redux/dataSlice';
 const SalarySlip = ({navigation}) => {
   const dispatch = useDispatch();
   const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
-  console.log('isAuthLoggedIn:-------', isAuthLoggedIn);
 
   useEffect(() => {
     dispatch(getSalarySlipData());
@@ -44,13 +43,14 @@ const SalarySlip = ({navigation}) => {
       },
     })
       .then(function (response) {
-        console.log('response:================', response);
         return response.json();
       })
-      .then(function (myJson) {
-        console.log('myjson-------------', myJson);
+      .then(function (myJson) {})
+      .catch(err => {
+        console.log('error aa gyi!', err);
       });
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -69,7 +69,10 @@ const SalarySlip = ({navigation}) => {
   ];
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+      }}>
       <Text
         style={{
           paddingVertical: hp(1.5),

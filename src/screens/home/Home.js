@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  Text,
-  StatusBar,
-  SafeAreaView,
+  // Text,
+  // StatusBar,
+  // SafeAreaView,
   // ScrollView,
   Image,
   FlatList,
@@ -32,6 +32,7 @@ const Home = () => {
         <CarouselAutoScroll />
       </View>
       <ScrollView
+        nestedScrollEnabled={false}
         contentContainerStyle={{flexGrow: 1}}
         style={{flex: 1}}
         //  horizontal={false}
