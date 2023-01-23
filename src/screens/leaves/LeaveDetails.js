@@ -11,7 +11,6 @@ const LeaveDetails = ({leaveCount, leaveType, status}) => {
       </View>
     </View>;
   };
-
   return (
     <View style={styles.mainContainer}>
       <View>
