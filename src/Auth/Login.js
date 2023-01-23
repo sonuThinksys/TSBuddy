@@ -32,7 +32,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
-  console.log('backgroundVideo:-------', backgoundVideo);
+  console.log('backgroundVideo:------------------------', backgoundVideo);
 
   const enableTouchId = () => {
     const optionalConfigObject = {

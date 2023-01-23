@@ -49,7 +49,13 @@ const Profile = () => {
 
   return (
     <>
-      <View style={{}}>
+      <View
+        style={
+          {
+            // borderColor: '#000',
+            // borderWidth: 10,
+          }
+        }>
         <ImageBackground
           style={{height: '60%', width: '100%'}}
           source={TSBuddyBackImage}>

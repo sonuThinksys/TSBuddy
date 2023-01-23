@@ -5,7 +5,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {NavigationContainer} from '@react-navigation/native';
+import {DrawerActions, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Icon} from 'react-native-vector-icons/Ionicons';
@@ -18,6 +18,8 @@ import SalarySlip from 'screens/salarySlip/SalarySlip';
 import {loginStatus} from 'Auth/LoginSlice';
 import {useDispatch} from 'react-redux';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
+import CustomDrawer from './CustomDrawer';
+import {Colors} from 'colors/Colors';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -65,6 +67,7 @@ const AttendenceStackScreen = ({navigation}) => {
     </AttendenceStack.Navigator>
   );
 };
+
 const ProfileStackScreen = ({navigation}) => {
   return (
     <ProfileStack.Navigator
@@ -111,26 +114,21 @@ const Logout = () => {
   return <Text>Logout</Text>;
 };
 
-function DrawerNavigator() {
+function DrawerNavigator({navigation}) {
   const dispatch = useDispatch();
   return (
     <Drawer.Navigator
+      drawerContent={CustomDrawer}
       initialRouteName="Home"
-      // drawerContentOptions={{
-      //   activeTintColor: 'black' /* font color for active screen label */,
-      //   activeBackgroundColor: 'black' /* bg color for active screen */,
-      //   inactiveTintColor:
-      //     'black' /* Font color for inactive screens' labels */,
-      // }}
       screenOptions={{
         drawerStyle: {
           backgroundColor: '#002147', //Set Drawer background
-          width: wp(36),
-          paddingHorizontal: wp(2),
+          width: wp(35),
           borderBottomWidth: 1,
-          borderColor: 'white',
-          //height: 40,
-          //Set Drawer width
+          borderBottomColor: '#fff',
+          // justifyContent: 'center',
+          // alignItems: 'center',
+          // paddingLeft: 0,
         },
         headerStyle: {
           backgroundColor: '#1b5583',
@@ -142,15 +140,15 @@ function DrawerNavigator() {
         headerTitleStyle: {
           fontWeight: 'bold', //Set Header text style
         },
-        // headerLeft: ({navigation}) => (
-        //   <TouchableOpacity
-        //     onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-        //     <Image
-        //       source={searchIconwhite}
-        //       style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-        //     />
-        //   </TouchableOpacity>
-        // ),
+
+        activeTintColor: '#fff',
+        itemStyle: {
+          borderRadius: 0,
+          marginVertical: 0,
+          borderBottomWidth: 0.5,
+          borderBottomColor: '#D09900',
+        },
+        drawerActiveBackgroundColor: Colors.lightBlue,
       }}>
       <Drawer.Screen
         name="Home"
@@ -158,7 +156,7 @@ function DrawerNavigator() {
           drawerLabel: '',
 
           drawerIcon: ({tintColor}) => (
-            <View>
+            <View style={{}}>
               <Image
                 source={MonthImages.HomeImage}
                 style={{height: 50, width: 50}}
@@ -190,6 +188,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: 4,
                   }}>
                   Home
                 </Text>
