@@ -18,6 +18,8 @@ import SalarySlip from 'screens/salarySlip/SalarySlip';
 import {loginStatus} from 'Auth/LoginSlice';
 import {useDispatch} from 'react-redux';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
+import Header from 'component/header/Header';
+import UserProfile from 'component/useProfile/UserProfile';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -30,7 +32,7 @@ const SalarySlipStack = createNativeStackNavigator();
 const HomeStackScreen = ({navigation}) => {
   return (
     <HomeStack.Navigator
-      // initialRouteName="Home"
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         headerStyle: {backgroundColor: 'red'},
@@ -190,6 +192,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   Home
                 </Text>
@@ -203,7 +206,7 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{
                   height: 25,
@@ -211,7 +214,8 @@ function DrawerNavigator() {
                   marginRight: wp(5),
                   color: 'white',
                 }}
-              />
+              /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}
@@ -253,6 +257,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   Profile
                 </Text>
@@ -266,10 +271,11 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
+              /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}
@@ -311,6 +317,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   Attendence
                 </Text>
@@ -325,10 +332,11 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
+              /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}
@@ -370,6 +378,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   Holiday
                 </Text>
@@ -384,10 +393,11 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
+              /> */}
+              <Image />
             </TouchableOpacity>
           ),
         }}
@@ -429,6 +439,7 @@ function DrawerNavigator() {
                     //paddingTop: hp(0.5),
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   Leave
                 </Text>
@@ -442,10 +453,11 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
+              /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}
@@ -488,6 +500,7 @@ function DrawerNavigator() {
                     //textAlign: 'center',
                     fontSize: 16,
                     fontWeight: 'bold',
+                    marginRight: wp(2),
                   }}>
                   SalarySlip
                 </Text>
@@ -501,10 +514,11 @@ function DrawerNavigator() {
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
+              {/* <Image
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
+              /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}

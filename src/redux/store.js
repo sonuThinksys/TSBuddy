@@ -4,6 +4,7 @@ import logger from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers} from 'redux';
 import Reactotron from '../../ReactotronConfig';
+import dataSlice from './dataSlice';
 //import HomeSlice from 'screens/home/HomeSlice';
 
 import {
@@ -18,7 +19,7 @@ import {
 
 const reducers = combineReducers({
   auth: loginSlice,
-  // home: HomeSlice,
+  dataReducer: dataSlice,
 });
 
 const persistConfig = {

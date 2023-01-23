@@ -34,7 +34,8 @@ const Home = () => {
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         style={{flex: 1}}
-        horizontal={false}>
+        //  horizontal={false}
+        nestedScrollEnabled={true}>
         <MenuDetails />
         <Item />
         <RecentLeaves />
