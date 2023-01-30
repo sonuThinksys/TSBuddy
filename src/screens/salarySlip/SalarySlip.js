@@ -15,15 +15,19 @@ import {
 import SalarSlipModal from 'modals/SalarySlipModal';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import {getSalarySlipData} from 'redux/dataSlice';
 
 const SalarySlip = ({navigation}) => {
   const dispatch = useDispatch();
   const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
 
   useEffect(() => {
+    dispatch(getSalarySlipData());
+
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
       // Call any action
+      // dispatch();
       dispatch(authLoginStatus(false));
     });
     //  dispatch(authLoginStatus(false));
