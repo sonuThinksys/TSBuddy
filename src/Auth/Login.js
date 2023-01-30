@@ -32,7 +32,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
-  console.log('backgroundVideo:------------------------', backgoundVideo);
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -50,21 +49,21 @@ const Login = () => {
     TouchID.isSupported(optionalConfigObject)
       .then(biometryType => {
         if (biometryType === 'FaceID') {
-          console.log('FaceID is supported.');
+          // console.log('FaceID is supported.');
         } else {
-          console.log('TouchID is supported.');
+          // console.log('TouchID is supported.');
           if (isAuth) {
-            console.log('fgfdkgj:-', isAuth);
+            // console.log('fgfdkgj:-', isAuth);
             dispatch(loginStatus(true));
             // return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
-              console.log('sucess:--------------', success);
+              // console.log('sucess:--------------', success);
               setIsAuth(success);
             })
             .catch(err => {
-              console.log('error of atjfjfdf', err);
+              // console.log('error of atjfjfdf', err);
               // BackHandler.exitApp();
             });
         }
@@ -72,7 +71,7 @@ const Login = () => {
       .catch(error => {
         // Failure code
         setIsBiometric(false);
-        console.log(error);
+        // console.log(error);
       });
   };
 

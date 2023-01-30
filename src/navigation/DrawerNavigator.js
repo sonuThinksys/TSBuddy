@@ -20,6 +20,7 @@ import {useDispatch} from 'react-redux';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
+import LeavesStackNavigator from 'navigators/LeaveStackNavigators';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -133,8 +134,6 @@ function DrawerNavigator({navigation}) {
         headerStyle: {
           backgroundColor: '#1b5583',
           height: 55,
-
-          //Set Header color
         },
         headerTintColor: 'white', //Set Header text color
         headerTitleStyle: {
@@ -173,9 +172,6 @@ function DrawerNavigator({navigation}) {
               </Text>
             </View>
           ),
-
-          // title: 'Home',
-          //  icon: <Image source={LoginLock} style={{height: 30, width: 30}} />,
 
           headerTitle: () => (
             <TouchableOpacity>
@@ -394,61 +390,71 @@ function DrawerNavigator({navigation}) {
       />
       <Drawer.Screen
         name="Leaves"
-        options={{
-          drawerLabel: '',
-          title: 'Leaves',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.leavesImage}
-                // style={[styles.icon, { tintColor: tintColor }]}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Leaves
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
+        options={props => {
+          return {
+            headerShown: false,
+            drawerLabel: '',
+            title: 'Leaves',
+            drawerIcon: ({tintColor}) => (
+              <View>
+                <Image
+                  source={MonthImages.leavesImage}
+                  // style={[styles.icon, { tintColor: tintColor }]}
+                  style={{height: 50, width: 50}}
+                />
                 <Text
                   style={{
                     color: 'white',
+                    paddingTop: hp(1),
                     textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
+                    fontWeight: '600',
                     fontSize: 16,
-                    fontWeight: 'bold',
                   }}>
-                  Leave
+                  Leaves
                 </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
               </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
+            ),
+
+            headerTitle: props => {
+              return (
+                <TouchableOpacity>
+                  <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        textAlign: 'center',
+                        marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                        //paddingTop: hp(0.5),
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                      }}>
+                      Leave
+                    </Text>
+                    <Image
+                      source={MonthImages.info_scopy}
+                      style={{height: 20, width: 20}}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+                <Image
+                  source={MonthImages.searchIconwhite}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    marginRight: 20,
+                    color: 'white',
+                  }}
+                />
+              </TouchableOpacity>
+            ),
+          };
         }}
-        component={LeavesStackScreen}
+        component={LeavesStackNavigator}
       />
       <Drawer.Screen
         name="SalarySlip"

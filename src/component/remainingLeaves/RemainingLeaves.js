@@ -1,190 +1,161 @@
 import React from 'react';
-import {View, Text, Dimensions, Image, FlatList} from 'react-native';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-} from 'react-native-chart-kit';
-import Plotly from 'react-native-plotly';
-import RefreshImage from 'assets/allImage/refresh.imageset/refresh.png';
+
+import {BarChart} from 'react-native-chart-kit';
 
 const RemainingLeaves = () => {
-  const leavesData = [
-    {
-      text: 'Allocate',
-      id: '1',
-    },
-    {
-      text: 'Taken',
-      id: '2',
-    },
-    {
-      text: '-ve Balance',
-      id: '3',
-    },
-    {
-      text: '+ve Balance',
-      id: '4',
-    },
-  ];
-
-  // var trace1 = {
-  //   type: 'bar',
-  //   x: [1, 2, 3],
-  //   y: [1, 2, 1],
-  //   marker: {
-  //     color: ['orange', '#0E5E6F', 'green'],
-  //     line: {
-  //       width: 2.5,
-  //       color: 'white',
-  //     },
-  //   },
-  // };
-  // var data = [trace1];
-  // var layout = {
-  //   autosize: false,
-  //   width: 200,
-  //   height: 300,
-  //   scrollZoom: false,
-  //   displayModeBar: false,
-  //   margin: {
-  //     l: 50,
-  //     r: 50,
-  //     b: 100,
-  //     t: 100,
-  //     pad: 4,
-  //   },
-  // };
-
-  const layout = {
-    modebardisplay: false,
-    showlegend: false,
-    xaxis: {
-      type: 'category',
-      title: 'Earned Leave',
-      showticklabels: false,
-      fixedrange: true,
-    },
-    yaxis: {
-      linecolor: '#636363',
-      showgrid: false,
-      zeroline: false,
-      showline: true,
-      fixedrange: true,
-    },
-    autosize: false,
-    width: 200,
-    height: 300,
-    scrollZoom: false,
-    displayModeBar: false,
-    margin: {
-      l: 50,
-      r: 50,
-      b: 100,
-      t: 100,
-      pad: 4,
-    },
-  };
-  var trace1 = {
-    type: 'bar',
-    x: [1, 2, 3, 4],
-    y: [5, 4, 9, 3],
-    marker: {
-      color: ['orange', '#0E5E6F', 'green', 'red'],
-      line: {
-        color: 'white',
-        width: 2.5,
-      },
-      height: 200,
-    },
-  };
-  var data = [trace1];
-  // const config = {
-  //   displayModeBar: false, // this is the line that hides the bar.
-  //   scrollZoom: false,
-  // };
-
-  const config = {
-    dragMode: false,
-    scrollZoom: false,
-    displayModeBar: false,
-  };
-  // return (
-  //   <Plotly
-  //     data={data}
-  //     layout={layout}
-  //     config={config}
-  //     // width={Dimensions.get('window').width / 2}
-  //     // enableFullPlotly={false}
-  //     // responsive={false}
-  //   />
-  // );
+  const earnedLeavesData = [20, 6, 14, 4];
+  const restrictedLeavesData = [20, 6, 14];
+  const totalEarnedTypesAvailable = earnedLeavesData.length;
+  const totalRestrictedTypesAvailable = restrictedLeavesData.length;
 
   return (
-    <View style={{height: hp(30)}}>
+    <View>
       <View
         style={{
-          paddingVertical: hp(1),
-          paddingHorizontal: wp(3),
-          backgroundColor: '#C3F8FF',
-          marginVertical: hp(1),
+          flexDirection: 'row',
         }}>
-        <Text style={{fontWeight: 'bold', fontSize: 16}}>Remaining Leaves</Text>
-      </View>
+        <View style={{}}>
+          <BarChart
+            segments={4}
+            spacingInner={0}
+            flatColor={true}
+            showValuesOnTopOfBars={true}
+            showBarTops={false}
+            withInnerLines={false}
+            fromZero={true}
+            withVerticalLabels={false}
+            withCustomBarColorFromData={true}
+            data={{
+              datasets: [
+                {
+                  data: earnedLeavesData,
+                  colors: [
+                    () => 'orange',
+                    () => '#0E5E6F',
+                    () => 'green',
+                    () => 'red',
+                  ],
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width * 0.48}
+            height={220}
+            chartConfig={{
+              backgroundGradientFrom: '#f1f3f5',
+              backgroundGradientTo: '#f1f3f5',
+              decimalPlaces: 0,
+              fillShadowGradientOpacity: '0.5',
+              barPercentage: totalEarnedTypesAvailable === 3 ? 0.8 : 0.64,
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 0,
+              },
+            }}
+            style={{
+              marginVertical: 10,
+              // borderColor: 'red',
+              // borderWidth: 1,
+              // marginRight: 4,
+              // padding: 5,
+              // paddingLeft: -20,
+              // paddingRight: 40,
+            }}
+          />
 
-      <View
-        style={{
-          justifyContent: 'center',
-          display: 'flex',
-          flexDirection: 'row',
-          flex: 1,
-        }}>
-        <Plotly
-          data={data}
-          layout={layout}
-          config={config}
-          // width={Dimensions.get('window').width / 2}
-          // enableFullPlotly={false}
-          // responsive={false}
-        />
-        <Plotly
-          data={data}
-          layout={layout}
-          config={config}
-          // width={Dimensions.get('window').width / 2}
-        />
+          <Text
+            style={{
+              textAlign: 'center',
+              position: 'absolute',
+              top: 200,
+              left: wp(19),
+            }}>
+            Earned Leave
+          </Text>
+        </View>
+        <View>
+          <BarChart
+            segments={4}
+            spacingInner={0}
+            flatColor={true}
+            showValuesOnTopOfBars={true}
+            // withCustomBarColorFromData={true}
+            showBarTops={false}
+            withInnerLines={false}
+            fromZero={true}
+            withVerticalLabels={false}
+            withCustomBarColorFromData={true}
+            data={{
+              datasets: [
+                {
+                  data: restrictedLeavesData,
+                  colors: [
+                    () => 'orange',
+                    () => '#0E5E6F',
+                    () => 'green',
+                    () => 'red',
+                  ],
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width * 0.48}
+            height={220}
+            chartConfig={{
+              backgroundGradientFrom: '#f1f3f5',
+              backgroundGradientTo: '#f1f3f5',
+              decimalPlaces: 0,
+              fillShadowGradientOpacity: '0.5',
+              barPercentage: totalRestrictedTypesAvailable === 3 ? 0.8 : 0.64,
+
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 0,
+              },
+            }}
+            style={{
+              marginVertical: 10,
+              marginLeft: 0,
+              // borderRadius: 16,
+
+              marginRight: 4,
+              // paddingRight: 0,
+              // borderColor: 'blue',
+              // borderWidth: 1,
+            }}
+          />
+          <Text
+            style={{
+              textAlign: 'center',
+              position: 'absolute',
+              bottom: 0,
+              top: 200,
+              right: 10,
+            }}>
+            Restricted Leave
+          </Text>
+        </View>
       </View>
-      {/* <View
-        style={{
-          paddingHorizontal: wp(10),
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          backgroundColor: 'white',
-        }}>
-        <Text style={{fontSize: 13, opacity: 0.7}}>Earned Leave</Text>
-        <Text style={{fontSize: 13, opacity: 0.7}}>Restricted Leave</Text>
-      </View> */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          paddingHorizontal: wp(5),
-          backgroundColor: 'white',
-          // justifyContent: 'space-around',
-          paddingVertical: hp(1),
-        }}>
-        <FlatList
-          data={leavesData}
-          horizontal={true}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
+      <View style={styles.leavesTypeContainer}>
+        <View style={styles.leaveType}>
+          <View style={styles.leavesType1}></View>
+          <Text>Allocated</Text>
+        </View>
+        <View style={styles.leaveType}>
+          <View style={styles.leavesType2}></View>
+          <Text>Taken</Text>
+        </View>
+        <View style={styles.leaveType}>
+          <View style={styles.leavesType3}></View>
+          <Text>-ve Balance</Text>
+        </View>
+        <View style={styles.leaveType}>
+          <View style={styles.leavesType4}></View>
+          <Text>+ve Balance</Text>
+        </View>
       </View>
     </View>
   );
@@ -270,3 +241,45 @@ export default RemainingLeaves;
 //     />
 //   );
 // };
+
+const styles = StyleSheet.create({
+  leavesTypeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  leaveType: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'red',
+    justifyContent: 'space-around',
+    paddingRight: 10,
+    // paddingHorizontal: 10,
+    // minWidth: wp(20),
+  },
+  leavesType1: {
+    height: 12,
+    width: 12,
+    backgroundColor: 'orange',
+    marginRight: 5,
+  },
+  leavesType2: {
+    height: 12,
+    width: 12,
+    backgroundColor: '#0E5E6F',
+    marginRight: 5,
+  },
+  leavesType3: {
+    height: 12,
+    width: 12,
+    backgroundColor: 'green',
+    marginRight: 5,
+  },
+  leavesType4: {
+    height: 12,
+    width: 12,
+    backgroundColor: 'red',
+    marginRight: 5,
+  },
+  leaveTextColor: {},
+});

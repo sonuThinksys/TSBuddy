@@ -103,33 +103,14 @@ const renderDrawerItem = (
   {navigation, key, screen, label, dispatch, icon},
   index,
 ) => {
-  console.log('navigation=====', navigation.getState().index + 1 === key);
   const selected = navigation.getState().index + 1 === key;
-  //   let check = key === 5;
   return (
     <TouchableOpacity
       key={index}
       onPress={() => {
         if (dispatch) {
           dispatch(loginStatus(false));
-          //   Alert.alert(
-          //     'Log Out',
-          //     'Are you sure you want to Log Out from this app?',
-          //     [
-          //       {
-          //         text: 'Cancel',
-          //         onPress: () => null,
-          //       },
-          //       {
-          //         text: 'Log Out',
-          //         onPress: () => {
-          //           dispatch(loginStatus(false));
-          //           // dispatch(resetNeighborhoodData());
-          //           // dispatch(resetNeighborhoodBestOfData());
-          //         },
-          //       },
-          //     ],
-          //   );
+
           navigation.closeDrawer();
         } else {
           navigation.closeDrawer();
@@ -140,7 +121,6 @@ const renderDrawerItem = (
         paddingVertical: wp(3),
         borderBottomWidth: 1,
         borderBottomColor: '#495057',
-        // paddingHorizontal: wp(4),
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: selected ? Colors.lightBlue : null,
@@ -149,16 +129,10 @@ const renderDrawerItem = (
       <Text
         style={{
           color: Colors.white,
-          //   fontFamily: FontFamily.BOLD,
-          //   marginVertical: 0,
-          //   paddingLeft: wp(2),
           fontSize: FontSize.h18,
         }}>
         {label}
       </Text>
-      {/* {check ? (
-        <View style={{height: 1, backgroundColor: Colors.white}} />
-      ) : null} */}
     </TouchableOpacity>
   );
 };

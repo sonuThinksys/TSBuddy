@@ -38,8 +38,8 @@ const Home = () => {
         horizontal={false}>
         <MenuDetails />
         <Item />
-        <RecentLeaves />
         <RemainingLeaves />
+        <RecentLeaves />
         <UpComingHolidays />
       </ScrollView>
     </View>

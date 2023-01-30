@@ -35,5 +35,6 @@ const dataSlice = createSlice({
     });
   },
 });
+
 export default dataSlice.reducer;
 export const {loadingStatus} = dataSlice.actions;
