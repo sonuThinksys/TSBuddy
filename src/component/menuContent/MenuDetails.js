@@ -1,10 +1,14 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {View, Text, TouchableOpacity, Pressable} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import RequestLunch from 'screens/requestLunch/RequestLunch';
+// import {SharedElement} from 'react-navigation-shared-element';
 const MenuDetails = () => {
+  const navigation = useNavigation();
   return (
     <View>
       <View
@@ -20,6 +24,7 @@ const MenuDetails = () => {
           style={{fontWeight: 'bold', fontSize: 16, marginTop: hp(1), flex: 2}}>
           Today's Menu
         </Text>
+        {/* <SharedElement id="enter" style={{flex: 1}}> */}
         <View
           style={{
             // marginLeft: wp(30),
@@ -31,13 +36,24 @@ const MenuDetails = () => {
             borderRadius: 4,
             opacity: 1,
           }}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('RequestLunch', navigation);
+            }}
+            > */}
+          <Pressable
+            onPress={() => {
+              navigation.navigate('RequestLunch', navigation);
+            }}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
               {' '}
               + Lunch Request
             </Text>
-          </TouchableOpacity>
+          </Pressable>
+
+          {/* </TouchableOpacity> */}
         </View>
+        {/* </SharedElement> */}
       </View>
     </View>
   );

@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  // Text,
-  // StatusBar,
-  // SafeAreaView,
+  Text,
+  StatusBar,
+  SafeAreaView,
   // ScrollView,
   Image,
   FlatList,
@@ -20,30 +20,32 @@ import Item from 'component/menuContent/Item';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
-
+let data = [MenuDetails, Item, RecentLeaves, RemainingLeaves, UpComingHolidays];
 const Home = () => {
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
-
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <View style={{height: hp(23), backgroundColor: 'white'}}>
         <CarouselAutoScroll />
       </View>
-      <ScrollView
-        nestedScrollEnabled={false}
+      <FlatList
+        data={data}
+        style={{flex: 1}}
+        keyExtractor={(item, index) => `key-${index}`}
+        renderItem={({item}) => {
+          console.log('item', item);
+          let Component = item;
+          return <Component />;
+        }}
+      />
+      {/* <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         style={{flex: 1}}
-        //  horizontal={false}
         nestedScrollEnabled={true}>
-        <MenuDetails />
-        <Item />
-        <RecentLeaves />
-        <RemainingLeaves />
-        <UpComingHolidays />
-      </ScrollView>
-    </View>
+      </ScrollView> */}
+    </SafeAreaView>
   );
 };
 export default Home;

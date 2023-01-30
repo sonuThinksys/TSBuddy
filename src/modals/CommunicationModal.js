@@ -21,10 +21,41 @@ import {modalStatus} from 'redux/dataSlice';
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
   const isShowModal = useSelector(state => state.dataReducer.isShowModal);
-  console.log(
-    'empDetail:==============================================',
-    empDetail,
-  );
+
+  const connectThrouMedium = () => {
+    if (empDetail.text == 'Call') {
+      const url = `tel://:+${empDetail.medium}`;
+      Linking.openURL(url);
+    } else if (empDetail.text == 'Send Mail to') {
+      Linking.openURL(`mailto:${empDetail.medium}`);
+    } else if (empDetail.text == 'Send WhatsApp to') {
+      let msg = 'type something';
+      let phoneWithCountryCode = `91${empDetail.medium}`;
+
+      let mobile =
+        Platform.OS == 'ios'
+          ? phoneWithCountryCode
+          : '+' + phoneWithCountryCode;
+      if (mobile) {
+        if (msg) {
+          let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
+          Linking.openURL(url)
+            .then(data => {
+              console.log('WhatsApp Opened');
+            })
+            .catch(() => {
+              alert('Make sure WhatsApp installed on your device');
+            });
+        } else {
+          alert('Please insert message to send');
+        }
+      } else {
+        alert('Please insert mobile no');
+      }
+    } else if (empDetail.text == 'Send SMS to') {
+      Linking.openURL(`smsto:${empDetail.medium}`);
+    }
+  };
 
   return (
     <Modal
@@ -55,14 +86,14 @@ const CommunicationModal = ({empDetail}) => {
         }}>
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 16,
             color: 'white',
             textAlign: 'center',
             fontWeight: 'bold',
             paddingHorizontal: wp(5),
-            paddingVertical: hp(1),
+            paddingVertical: hp(1.5),
           }}>
-          Call {empDetail.nameOfEmployee}
+          {empDetail.text} {empDetail.nameOfEmployee}
         </Text>
         {/* <Image source={Month} /> */}
         <View
@@ -76,7 +107,7 @@ const CommunicationModal = ({empDetail}) => {
             source={MonthImages.checkedS}
             style={{height: 25, width: 25}}
           />
-          <Text style={{margin: wp(1)}}> {empDetail.email}</Text>
+          <Text style={{margin: wp(1)}}> {empDetail.medium}</Text>
         </View>
 
         <View
@@ -101,10 +132,7 @@ const CommunicationModal = ({empDetail}) => {
               <Text style={{color: 'white', fontWeight: 'bold'}}>No</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              Linking.openURL(`${empDetail.email}`);
-            }}>
+          <TouchableWithoutFeedback onPress={connectThrouMedium}>
             <View
               style={{
                 backgroundColor: 'green',

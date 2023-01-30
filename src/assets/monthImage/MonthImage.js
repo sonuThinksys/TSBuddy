@@ -82,6 +82,7 @@ import empbgS from 'assets/allImage/employeeBg.imageset/empbgS.png';
 import emailUS from 'assets/allImage/useremail.imageset/emailUS.png';
 import userPS from 'assets/allImage/userimage.imageset/userPS.png';
 import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
+import EventImage from 'assets/allImage/eventBG.imageset/EventImage.png';
 
 export const MonthImages = {
   janImage: janS,
@@ -154,4 +155,5 @@ export const MonthImages = {
   emailUS: emailUS,
   userPS: userPS,
   checkedS: checkedS,
+  EventImage: EventImage,
 };

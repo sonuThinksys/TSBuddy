@@ -11,7 +11,7 @@ import UserProfile from 'component/useProfile/UserProfile';
 import {useNavigation} from '@react-navigation/native';
 const Header = () => {
   const navigation = useNavigation();
-  console.log('navigation', navigation);
+
   const dispatch = useDispatch();
   return (
     <View>

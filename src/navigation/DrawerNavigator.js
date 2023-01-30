@@ -395,7 +395,8 @@ function DrawerNavigator({navigation}) {
                 source={MonthImages.searchIconwhite}
                 style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
               /> */}
-              <Image />
+              {/* <Image /> */}
+              <Header />
             </TouchableOpacity>
           ),
         }}

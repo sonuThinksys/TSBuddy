@@ -28,60 +28,48 @@ const UserDetail = ({navigation, route}) => {
     reporting,
   } = route.params;
   const dispatch = useDispatch();
+  const [empDetail, setClickData] = useState({});
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
 
   console.log('isShowModall', isShowModall);
   const dialCall = () => {
-    const url = `tel://:+${mobileNumber}`;
-    Linking.openURL(url);
+    setClickData({
+      id: id,
+      medium: mobileNumber,
+      nameOfEmployee: nameOfEmployee,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
   };
 
   const whtsappEmployee = () => {
-    // Linking.openURL(`whatsapp://send?text=hello&phone=${mobileNumber}`);
-
-    let msg = 'type something';
-    let phoneWithCountryCode = `91${mobileNumber}`;
-
-    let mobile =
-      Platform.OS == 'ios' ? phoneWithCountryCode : '+' + phoneWithCountryCode;
-    if (mobile) {
-      if (msg) {
-        let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
-        Linking.openURL(url)
-          .then(data => {
-            console.log('WhatsApp Opened');
-          })
-          .catch(() => {
-            alert('Make sure WhatsApp installed on your device');
-          });
-      } else {
-        alert('Please insert message to send');
-      }
-    } else {
-      alert('Please insert mobile no');
-    }
+    setClickData({
+      id: id,
+      medium: mobileNumber,
+      nameOfEmployee: nameOfEmployee,
+      text: 'Send WhatsApp to',
+    });
+    dispatch(modalStatus(true));
   };
 
   const sendMail = () => {
-    Linking.openURL(`mailto:${email}`);
-    // dispatch(modalStatus(true));
+    setClickData({
+      id: id,
+      medium: email,
+      nameOfEmployee: nameOfEmployee,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
   };
 
   const snedMessage = async () => {
-    // const onSendSMSMessage = useCallback(async phoneNumber => {
-    //   const message = 'ghfghfjh';
-    //   const separator = Platform.OS === 'ios' ? '&' : '?';
-    //   const url = `sms:${phoneNumber}${separator}body=${message}`;
-    //   await Linking.openURL(url);
-    // }, []);
-    // return onSendSMSMessage;
-    Linking.openURL(`smsto:${phoneNumber}`);
-  };
-  const empDetail = {
-    nameOfEmployee: nameOfEmployee,
-    mobileNumber: mobileNumber,
-    email: email,
-    id: id,
+    setClickData({
+      id: id,
+      medium: mobileNumber,
+      nameOfEmployee: nameOfEmployee,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
   };
 
   return (
