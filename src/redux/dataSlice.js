@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {employeeData} from '../../db';
+import {holidayData} from '../../db';
 const initialState = {
   isLoading: true,
   isShowModal: false,
@@ -9,6 +10,9 @@ const initialState = {
   employeeData: {},
   employeeDataLoading: false,
   employeeDataError: false,
+  holidayData: {},
+  holidayDataLoading: false,
+  holidayDataError: false,
 };
 
 export const getSalarySlipData = createAsyncThunk(
@@ -47,6 +51,13 @@ export const getEmployeeData = createAsyncThunk(
   'dataReducer/employeeData',
   async () => {
     return Promise.resolve(employeeData);
+  },
+);
+
+export const getHolidaysData = createAsyncThunk(
+  'dataReducer/holidayData',
+  async () => {
+    return Promise.resolve(holidayData);
   },
 );
 
@@ -89,6 +100,20 @@ const dataSlice = createSlice({
       state.employeeDataLoading = false;
       state.employeeData = [];
       state.employeeDataError = action.payload;
+    });
+    builder.addCase(getHolidaysData.pending, state => {
+      state.holidayDataLoading = true;
+    });
+    builder.addCase(getHolidaysData.fulfilled, (state, action) => {
+      state.holidayDataLoading = false;
+      console.log('response:------------', action.payload);
+      state.holidayData = action.payload;
+      state.holidayDataError = undefined;
+    });
+    builder.addCase(getHolidaysData.rejected, (state, action) => {
+      state.holidayDataLoading = false;
+      state.holidayData = [];
+      state.holidayDataError = action.payload;
     });
   },
 });

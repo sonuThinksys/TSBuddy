@@ -13,13 +13,13 @@ import {
   BackHandler,
 } from 'react-native';
 import {Colors} from 'colors/Colors';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
 import TouchID from 'react-native-touch-id';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import backgoundVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import {FlatList} from 'react-native-gesture-handler';
@@ -76,6 +76,19 @@ const Login = () => {
       });
   };
 
+  const textInputData = [
+    {
+      placeholderText: 'username',
+      icon: MonthImages.LoginUser,
+      id: '1',
+    },
+    {
+      placeholderText: 'LDAP Password',
+      icon: MonthImages.LoginLock,
+      id: '2',
+    },
+  ];
+
   return (
     <View style={{backgroundColor: '#0073cf', height: '100%', width: '100%'}}>
       <View
@@ -111,6 +124,10 @@ const Login = () => {
             borderRadius: 5,
             paddingHorizontal: wp(3),
           }}>
+          {/* <FlatList 
+            data={}
+            
+            /> */}
           <View
             style={{
               height: hp(7),

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, TextView, Text, Image} from 'react-native';
+import {View, TextView, Text, Image, StyleSheet} from 'react-native';
 import AppIcon from '../../assets/mipmap/appIcon120-1.png';
 import {
   heightPercentageToDP as hp,
@@ -13,20 +13,8 @@ const SplashScreen = ({navigation}) => {
     }, 3000);
   }, []);
   return (
-    <View
-      style={{
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        paddingHorizontal: wp(40),
-      }}>
-      <View
-        style={{
-          height: hp(20),
-          width: wp(20),
-          display: 'flex',
-        }}>
+    <View style={styles.container}>
+      <View style={styles.imageContiner}>
         <Image
           style={{height: '100%', width: '100%', marginBottom: hp(33)}}
           source={{
@@ -38,4 +26,20 @@ const SplashScreen = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    paddingHorizontal: wp(40),
+  },
+  imageContiner: {
+    height: hp(20),
+    width: wp(20),
+    display: 'flex',
+  },
+});
+
 export default SplashScreen;
