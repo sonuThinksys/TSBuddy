@@ -10,9 +10,11 @@ import {
   Image,
   Pressable,
   Linking,
+  StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
+import {Colors} from 'colors/Colors';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -31,46 +33,15 @@ const SelectDateModal = ({modalData}) => {
       visible={openModal}
       backdropOpacity={0.3}
       onBackdropPress={() => {
-        // dispatch(modalStatus(false));
         setOpenModal(false);
       }}
       onBackButtonPress={() => {
-        // dispatch(modalStatus(false));
         setOpenModal(false);
       }}>
-      <View
-        style={{
-          backgroundColor: 'green',
-          marginHorizontal: wp(6),
-          justifyContent: 'center',
-          borderRadius: 10,
-          shadowOpacity: 0.2,
-          paddingVertical: hp(2),
-        }}>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            paddingHorizontal: wp(5),
-            paddingVertical: hp(1.5),
-          }}>
-          Select Start Date
-        </Text>
-        <View
-          style={{
-            paddingVertical: hp(1),
-            backgroundColor: 'white',
-            paddingHorizontal: wp(4),
-          }}>
-          <View
-            style={{
-              paddingVertical: hp(1),
-              backgroundColor: 'white',
-              flexDirection: 'row',
-              paddingHorizontal: wp(4),
-            }}>
+      <View style={styles.container}>
+        <Text style={styles.SelectText}>Select Start Date</Text>
+        <View style={styles.container2}>
+          <View style={styles.container3}>
             <Ripple
               rippleColor={'red'}
               rippleOpacity={0.5}
@@ -92,27 +63,13 @@ const SelectDateModal = ({modalData}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                {select ? (
-                  <View
-                    style={{
-                      backgroundColor: 'red',
-                      height: 10,
-                      width: 10,
-                      borderRadius: 10,
-                    }}></View>
-                ) : null}
+                {select ? <View style={styles.container4}></View> : null}
               </View>
             </Ripple>
 
             <Text style={{margin: wp(1)}}>1-February-2023</Text>
           </View>
-          <View
-            style={{
-              paddingVertical: hp(1),
-              backgroundColor: 'white',
-              flexDirection: 'row',
-              paddingHorizontal: wp(4),
-            }}>
+          <View style={styles.reppleView}>
             <Ripple
               onPress={() => {
                 setSecondSlected(true);
@@ -146,23 +103,12 @@ const SelectDateModal = ({modalData}) => {
             **Monthly lunch can only be started from 1st or 16th of any month
           </Text>
         </View>
-        <View
-          style={{
-            paddingTop: hp(1),
-            borderRadius: 5,
-            shadowOpacity: 0.4,
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
+        <View style={styles.okView}>
           <TouchableWithoutFeedback
             onPress={() => {
               setOpenModal(false);
             }}>
-            <View
-              style={{
-                paddingVertical: hp(1),
-                paddingHorizontal: wp(8),
-              }}>
+            <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
                 OK
               </Text>
@@ -173,4 +119,52 @@ const SelectDateModal = ({modalData}) => {
     </Modal>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'green',
+    marginHorizontal: wp(6),
+    justifyContent: 'center',
+    borderRadius: 10,
+    shadowOpacity: 0.2,
+    paddingVertical: hp(2),
+  },
+  SelectText: {
+    fontSize: 16,
+    color: Colors.white,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(1.5),
+  },
+  container2: {
+    paddingVertical: hp(1),
+    backgroundColor: 'white',
+    paddingHorizontal: wp(4),
+  },
+  container3: {
+    paddingVertical: hp(1),
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    paddingHorizontal: wp(4),
+  },
+  container4: {
+    backgroundColor: 'red',
+    height: 10,
+    width: 10,
+    borderRadius: 10,
+  },
+  reppleView: {
+    paddingVertical: hp(1),
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    paddingHorizontal: wp(4),
+  },
+  okView: {
+    paddingTop: hp(1),
+    borderRadius: 5,
+    shadowOpacity: 0.4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+});
 export default SelectDateModal;

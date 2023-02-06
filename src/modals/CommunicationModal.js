@@ -9,6 +9,7 @@ import {
   Image,
   Pressable,
   Linking,
+  StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
@@ -18,6 +19,7 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/dataSlice';
+import {Colors} from 'colors/Colors';
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
   const isShowModal = useSelector(state => state.dataReducer.isShowModal);
@@ -75,34 +77,11 @@ const CommunicationModal = ({empDetail}) => {
       //   setModalVisible(!modalVisible);
       // }}
     >
-      <View
-        style={{
-          backgroundColor: '#0073cf',
-          marginHorizontal: wp(6),
-          justifyContent: 'center',
-          borderRadius: 10,
-          shadowOpacity: 0.2,
-          paddingVertical: hp(2),
-        }}>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            paddingHorizontal: wp(5),
-            paddingVertical: hp(1.5),
-          }}>
+      <View style={styles.container}>
+        <Text style={styles.text1}>
           {empDetail.text} {empDetail.nameOfEmployee}
         </Text>
-        {/* <Image source={Month} /> */}
-        <View
-          style={{
-            paddingVertical: hp(1),
-            backgroundColor: 'white',
-            flexDirection: 'row',
-            paddingHorizontal: wp(4),
-          }}>
+        <View style={styles.imageView}>
           <Image
             source={MonthImages.checkedS}
             style={{height: 25, width: 25}}
@@ -110,36 +89,17 @@ const CommunicationModal = ({empDetail}) => {
           <Text style={{margin: wp(1)}}> {empDetail.medium}</Text>
         </View>
 
-        <View
-          style={{
-            paddingTop: hp(1),
-            borderRadius: 5,
-            shadowOpacity: 0.4,
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
+        <View style={styles.container2}>
           <TouchableWithoutFeedback
             onPress={() => {
               dispatch(modalStatus(false));
             }}>
-            <View
-              style={{
-                backgroundColor: 'red',
-                paddingVertical: hp(1),
-                paddingHorizontal: wp(8),
-                borderRadius: 5,
-              }}>
+            <View style={styles.container3}>
               <Text style={{color: 'white', fontWeight: 'bold'}}>No</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={connectThrouMedium}>
-            <View
-              style={{
-                backgroundColor: 'green',
-                paddingVertical: hp(1),
-                paddingHorizontal: wp(8),
-                borderRadius: 5,
-              }}>
+            <View style={styles.container4}>
               <Text style={{color: 'white', fontWeight: 'bold'}}>Yes</Text>
             </View>
           </TouchableWithoutFeedback>
@@ -148,4 +108,47 @@ const CommunicationModal = ({empDetail}) => {
     </Modal>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#0073cf',
+    marginHorizontal: wp(6),
+    justifyContent: 'center',
+    borderRadius: 10,
+    shadowOpacity: 0.2,
+    paddingVertical: hp(2),
+  },
+  text1: {
+    fontSize: 16,
+    color: Colors.white,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(1.5),
+  },
+  imageView: {
+    paddingVertical: hp(1),
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    paddingHorizontal: wp(4),
+  },
+  container2: {
+    paddingTop: hp(1),
+    borderRadius: 5,
+    shadowOpacity: 0.4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  container3: {
+    backgroundColor: 'red',
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(8),
+    borderRadius: 5,
+  },
+  container4: {
+    backgroundColor: 'green',
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(8),
+    borderRadius: 5,
+  },
+});
 export default CommunicationModal;

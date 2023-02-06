@@ -6,13 +6,13 @@ import {
   Image,
   TextInput,
   Button,
-  //DatePicker,
+  StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import SelectDropdown from 'react-native-select-dropdown';
 import DatePicker from 'react-native-date-picker';
-
+import styles from './RequestLunchStyle';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -61,15 +61,7 @@ const RequestLunch = ({navigation}) => {
   return (
     // <SharedElement id="enter">
     <View>
-      <View
-        style={{
-          backgroundColor: Colors.darkBlue,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          paddingHorizontal: wp(5),
-          paddingVertical: hp(2),
-        }}>
+      <View style={styles.container}>
         <View style={{flex: 1}}>
           <TouchableOpacity
             onPress={() => {
@@ -81,22 +73,8 @@ const RequestLunch = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 4,
-            justifyContent: 'center',
-            paddingTop: hp(0.5),
-          }}>
-          <Text
-            style={{
-              color: Colors.white,
-              marginRight: wp(2),
-              fontSize: 18,
-              fontWeight: 'bold',
-            }}>
-            Request Lunch
-          </Text>
+        <View style={styles.lunchTextView}>
+          <Text style={styles.text1}>Request Lunch</Text>
           <Image
             source={MonthImages.info_scopy}
             style={{height: 20, width: 20}}
@@ -104,44 +82,9 @@ const RequestLunch = ({navigation}) => {
         </View>
       </View>
 
-      <View
-        style={{
-          backgroundColor: 'white',
-          shadowOpacity: 0.1,
-          top: hp(1),
-          marginHorizontal: wp(2),
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(2),
-          display: 'flex',
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-            zIndex: 1000,
-          }}>
+      <View style={styles.secondView}>
+        <View style={styles.dropDownView}>
           <Text style={{flex: 1, fontSize: 20}}>Request Lunch :</Text>
-          {/* <SelectDropdown
-            data={dropData}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-            }}
-            defaultButtonText="Please Select"
-            buttonTextAfterSelection={(selectedItem, index) => {
-              // text represented after item is selected
-              // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-              // text represented for each item in dropdown
-              // if data array is an array of objects then return item.property to represent item in dropdown
-              return item;
-            }}
-            style={{backgroundColor: 'red'}}
-          /> */}
-
           <DropDownPicker
             open={open}
             placeholder={'Please Select'}
@@ -179,14 +122,7 @@ const RequestLunch = ({navigation}) => {
             }}
           />
         ) : null}
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-            marginTop: hp(2),
-          }}>
+        <View style={styles.thirdView}>
           {openModal ? <SelectDateModal modalData={modalData} /> : null}
           <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
           <TouchableOpacity
@@ -198,108 +134,37 @@ const RequestLunch = ({navigation}) => {
                 setOpenCalender(true);
               }
             }}>
-            <View
-              style={{
-                borderRadius: 4,
-                borderWidth: 1,
-                width: wp(50),
-                height: hp(4),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+            <View style={styles.fourthView}>
               <Text style={{fontSize: 16, opacity: 0.7}}>{startDate}</Text>
             </View>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-          }}>
+        <View style={styles.fifthView}>
           <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
           <TouchableOpacity
             onPress={() => {
               setOpenCalender(true);
             }}>
-            <View
-              style={{
-                borderRadius: 4,
-                borderWidth: 1,
-                width: wp(50),
-                height: hp(4),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+            <View style={styles.sixthView}>
               <Text style={{fontSize: 16, opacity: 0.7}}>{endDate}</Text>
             </View>
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: Colors.darkBlue,
-              paddingVertical: hp(1.5),
-              width: wp(50),
-              marginHorizontal: wp(20),
-            }}>
+          <View style={styles.submitView}>
             <Text style={{color: 'white', textAlign: 'center'}}>Submit</Text>
           </View>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          backgroundColor: 'white',
-          shadowOpacity: 0.1,
-          top: hp(2),
-          marginHorizontal: wp(2),
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(2),
-          display: 'flex',
-          height: hp(52),
-        }}>
-        <View
-          style={{
-            backgroundColor: '#C0C0C0',
-            paddingVertical: hp(1.5),
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              color: 'rgb(1,98,143)',
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Applied Subscriptions
-          </Text>
+      <View style={styles.buttomView}>
+        <View style={styles.appliedView}>
+          <Text style={styles.appliedText}>Applied Subscriptions</Text>
         </View>
 
-        <View
-          style={{
-            // backgroundColor: '#C0C0C0',
-            marginTop: hp(1),
-            shadowOpacity: 0.4,
-            borderRadius: 2,
-            backgroundColor: '#F4F5FA',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              borderBottomWidth: 1,
-              paddingVertical: hp(2),
-              paddingHorizontal: wp(4),
-            }}>
+        <View style={styles.monthlyRequestView}>
+          <View style={styles.monthlyView}>
             <Text style={{fontSize: 15}}>Monthly Request</Text>
-            <View
-              style={{
-                backgroundColor: 'red',
-                paddingVertical: hp(0.5),
-                paddingHorizontal: wp(1),
-                borderRadius: 4,
-              }}>
+            <View style={styles.cancelView}>
               <Text
                 style={{
                   color: 'white',
@@ -309,21 +174,8 @@ const RequestLunch = ({navigation}) => {
               </Text>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: wp(20),
-              paddingVertical: hp(3),
-            }}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: 'bold',
-                color: Colors.lightBlue,
-              }}>
-              Start Date :
-            </Text>
+          <View style={styles.buttomTextView}>
+            <Text style={styles.buttomText}>Start Date :</Text>
             <Text style={{fontSize: 16}}>01/Sep/2022</Text>
           </View>
         </View>

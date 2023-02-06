@@ -40,11 +40,6 @@ const Home = () => {
           return <Component />;
         }}
       />
-      {/* <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
-        style={{flex: 1}}
-        nestedScrollEnabled={true}>
-      </ScrollView> */}
     </SafeAreaView>
   );
 };

@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, FlatList} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-
+import {Colors} from 'colors/Colors';
+import styles from './LeaveStyles';
 const Leaves = () => {
   const data = [
     {
@@ -94,49 +95,11 @@ const Leaves = () => {
 
   return (
     <View style={{paddingVertical: hp(2)}}>
-      <View
-        style={{
-          paddingHorizontal: wp(5),
-          paddingVertical: hp(1),
-          borderWidth: 1,
-          borderColor: 'black',
-          marginHorizontal: wp(3),
-          display: 'flex',
-          flexDirection: 'row',
-          borderRadius: 5,
-          backgroundColor: 'gainsboro',
-          marginBottom: hp(1),
-        }}>
-        <View
-          style={{
-            paddingHorizontal: wp(2),
-            paddingVertical: hp(0.1),
-            borderColor: '#FF7F50',
-            borderRadius: 15,
-            borderWidth: 2,
-            justifyContent: 'center',
-            paddingBottom: 2.5,
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#FF7F50',
-            }}>
-            +
-          </Text>
+      <View style={styles.container}>
+        <View style={styles.plusView}>
+          <Text style={styles.plusText}>+</Text>
         </View>
-        <Text
-          style={{
-            marginTop: hp(0.5),
-            marginLeft: wp(10),
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: '#483D8B',
-          }}>
-          Make a new Leave Application
-        </Text>
+        <Text style={styles.text1}>Make a new Leave Application</Text>
       </View>
       <FlatList
         data={data}
@@ -149,25 +112,14 @@ const Leaves = () => {
 
 const renderItem = ({item}) => {
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        // paddingVertical: hp(0.5),
-        // paddingHorizontal: wp(2),
-        borderRadius: 5,
-        // borderWidth: 1,
-        marginVertical: hp(0.5),
-        marginHorizontal: wp(2),
-        backgroundColor: 'lightcyan',
-        shadowOpacity: 0.1,
-      }}>
+    <View style={styles.flateListView}>
       <View
         style={{
           flex: 1,
-          //  backgroundColor: 'lightseagreen',
           backgroundColor:
-            item.statusOfLeaves === 'Dismissed' ? '#FFB6C1' : 'lightseagreen',
+            item.statusOfLeaves === 'Dismissed'
+              ? Colors.pink
+              : Colors.lightseagreen,
           paddingHorizontal: wp(2),
           paddingVertical: hp(1),
           justifyContent: 'center',
@@ -180,16 +132,7 @@ const renderItem = ({item}) => {
         </Text>
         <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
       </View>
-      <View
-        style={{
-          flex: 2,
-          backgroundColor: 'lightcyan',
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(1),
-          justifyContent: 'center',
-          borderTopRightRadius: 5,
-          borderBottomRightRadius: 5,
-        }}>
+      <View style={styles.secondView}>
         <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
           {item.numberOfLeaves}
         </Text>

@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, Dimensions, Image, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Dimensions,
+  Image,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -32,34 +39,6 @@ const RemainingLeaves = () => {
       id: '4',
     },
   ];
-
-  // var trace1 = {
-  //   type: 'bar',
-  //   x: [1, 2, 3],
-  //   y: [1, 2, 1],
-  //   marker: {
-  //     color: ['orange', '#0E5E6F', 'green'],
-  //     line: {
-  //       width: 2.5,
-  //       color: 'white',
-  //     },
-  //   },
-  // };
-  // var data = [trace1];
-  // var layout = {
-  //   autosize: false,
-  //   width: 200,
-  //   height: 300,
-  //   scrollZoom: false,
-  //   displayModeBar: false,
-  //   margin: {
-  //     l: 50,
-  //     r: 50,
-  //     b: 100,
-  //     t: 100,
-  //     pad: 4,
-  //   },
-  // };
 
   const layout = {
     modebardisplay: false,
@@ -114,36 +93,14 @@ const RemainingLeaves = () => {
     scrollZoom: false,
     displayModeBar: false,
   };
-  // return (
-  //   <Plotly
-  //     data={data}
-  //     layout={layout}
-  //     config={config}
-  //     // width={Dimensions.get('window').width / 2}
-  //     // enableFullPlotly={false}
-  //     // responsive={false}
-  //   />
-  // );
 
   return (
     <View style={{height: hp(30)}}>
-      <View
-        style={{
-          paddingVertical: hp(1),
-          paddingHorizontal: wp(3),
-          backgroundColor: '#C3F8FF',
-          marginVertical: hp(1),
-        }}>
+      <View style={styles.container}>
         <Text style={{fontWeight: 'bold', fontSize: 16}}>Remaining Leaves</Text>
       </View>
 
-      <View
-        style={{
-          justifyContent: 'center',
-          display: 'flex',
-          flexDirection: 'row',
-          flex: 1,
-        }}>
+      <View style={styles.plotlyContainer}>
         <Plotly
           data={data}
           layout={layout}
@@ -159,26 +116,8 @@ const RemainingLeaves = () => {
           // width={Dimensions.get('window').width / 2}
         />
       </View>
-      {/* <View
-        style={{
-          paddingHorizontal: wp(10),
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          backgroundColor: 'white',
-        }}>
-        <Text style={{fontSize: 13, opacity: 0.7}}>Earned Leave</Text>
-        <Text style={{fontSize: 13, opacity: 0.7}}>Restricted Leave</Text>
-      </View> */}
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          paddingHorizontal: wp(5),
-          backgroundColor: 'white',
-          // justifyContent: 'space-around',
-          paddingVertical: hp(1),
-        }}>
+
+      <View style={styles.flatlistView}>
         <FlatList
           data={leavesData}
           horizontal={true}
@@ -224,49 +163,24 @@ const renderItem = ({item}) => {
     </>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(3),
+    backgroundColor: '#C3F8FF',
+    marginVertical: hp(1),
+  },
+  plotlyContainer: {
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  flatlistView: {
+    flexDirection: 'row',
+    paddingHorizontal: wp(5),
+    backgroundColor: 'white',
+    paddingVertical: hp(1),
+  },
+});
 export default RemainingLeaves;
-
-// import React from 'react';
-// import Plotly from 'react-native-plotly';
-// export default () => {
-//   const layout = {
-//     xaxis: {
-//       type: 'category',
-//       title: 'Earned Leave',
-//       showticklabels: false,
-//       fixedrange: true,
-//     },
-//     yaxis: {
-//       linecolor: '#636363',
-//       showgrid: false,
-//       zeroline: false,
-//       showline: true,
-//       fixedrange: true,
-//     },
-//   };
-//   var trace1 = {
-//     type: 'bar',
-//     x: [1, 2, 3, 4, 7],
-//     y: [5, 10, 2, 5, 8],
-//     marker: {
-//       color: '#C8A2C8',
-//       line: {
-//         width: 2.5,
-//       },
-//       height: 200,
-//     },
-//   };
-//   var data = [trace1];
-//   return (
-//     <Plotly
-//       data={data}
-//       config={{
-//         dragMode: false,
-//         scrollZoom: false,
-//         displayModeBar: false,
-//       }}
-//       enableFullPlotly={true}
-//       layout={layout}
-//     />
-//   );
-// };

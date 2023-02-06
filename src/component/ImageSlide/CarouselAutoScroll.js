@@ -97,27 +97,8 @@ const CarouselAutoScroll = () => {
               <ImageBackground
                 source={item.image}
                 resizeMode="contain"
-                style={{
-                  //height: hp(20),
-                  // width: wp(75),
-                  borderRadius: 10,
-                  marginVertical: hp(1),
-                  marginHorizontal: wp(4),
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                }}>
-                <View
-                  style={{
-                    // height: hp(4),
-                    //  width: wp(40),
-                    paddingHorizontal: wp(3),
-                    paddingVertical: hp(1),
-                    backgroundColor: 'rgba(51, 51, 51, 0.8)',
-                    justifyContent: 'center',
-                    marginTop: hp(14),
-                    marginHorizontal: wp(20),
-                    borderRadius: 5,
-                  }}>
+                style={styles.backgroundImage}>
+                <View style={styles.backgroundImageView}>
                   <Text style={{color: 'white', textAlign: 'center'}}>
                     {item.text}
                   </Text>
@@ -149,4 +130,23 @@ const useInterval = (callback, delay) => {
     }
   }, [delay]);
 };
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    borderRadius: 10,
+    marginVertical: hp(1),
+    marginHorizontal: wp(4),
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  backgroundImageView: {
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
+    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    justifyContent: 'center',
+    marginTop: hp(14),
+    marginHorizontal: wp(20),
+    borderRadius: 5,
+  },
+});
 export default CarouselAutoScroll;
