@@ -46,7 +46,6 @@ const CarouselAutoScroll = () => {
   const [active, setActive] = useState(0);
   const indexRef = useRef(active);
   indexRef.current = active;
-  console.log('showModal:--------------------', showModal);
   useInterval(() => {
     if (active < Number(imageArr?.length) - 1) {
       setActive(active + 1);

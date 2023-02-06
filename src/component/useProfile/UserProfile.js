@@ -27,12 +27,10 @@ const UserProfile = () => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
-  console.log('employeeData:===================', employeeData);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const employeeData = useSelector(state => state.dataReducer.employeeData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  console.log('employeeData:---------------', employeeData);
   let b = 'thumbnailS';
   return (
     <View>
@@ -177,7 +175,6 @@ const renderItem = (
   empDetail,
   showHoriZontal,
 ) => {
-  console.log('clickData:===============================', empDetail);
   return (
     <View>
       {showHoriZontal ? (

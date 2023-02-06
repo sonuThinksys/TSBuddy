@@ -23,7 +23,6 @@ import {modalStatus} from 'redux/dataSlice';
 const BirthdayAnniV = ({modalData}) => {
   // const [isShowModal, setIsShowModal] = useState(false);
   const {id, text, showModal, setShowModal} = modalData;
-  console.log('text:=====================', showModal, text);
 
   return (
     <>
@@ -41,7 +40,6 @@ const BirthdayAnniV = ({modalData}) => {
               setShowModal(false);
             }}
             onBackButtonPress={() => {
-              // console.log('PRESSED');
               setShowModal(false);
             }}
             onRequestClose={() => {

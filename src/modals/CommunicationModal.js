@@ -11,7 +11,7 @@ import {
   Linking,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import Modal from 'react-native-modal';
+// import Modal from 'react-native-modal';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -41,7 +41,7 @@ const CommunicationModal = ({empDetail}) => {
           let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
           Linking.openURL(url)
             .then(data => {
-              console.log('WhatsApp Opened');
+              // console.log('WhatsApp Opened');
             })
             .catch(() => {
               alert('Make sure WhatsApp installed on your device');
@@ -56,6 +56,8 @@ const CommunicationModal = ({empDetail}) => {
       Linking.openURL(`smsto:${empDetail.medium}`);
     }
   };
+
+  return null;
 
   return (
     <Modal

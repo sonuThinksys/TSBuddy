@@ -9,16 +9,15 @@ import {
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import SelectDropdown from 'react-native-select-dropdown';
+// import SelectDropdown from 'react-native-select-dropdown';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-//import {SharedElement} from 'react-navigation-shared-element';
-import DropDownPicker from 'react-native-dropdown-picker';
+// import {SharedElement} from 'react-navigation-shared-element';
+// import DropDownPicker from 'react-native-dropdown-picker';
 const RequestLunch = ({navigation}) => {
   const dropData = ['TODAY', 'REQUEST FOR DURATION', 'MONTHLY LUNCH'];
-
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -110,7 +109,7 @@ const RequestLunch = ({navigation}) => {
             style={{backgroundColor: 'red'}}
           /> */}
 
-          <DropDownPicker
+          {/* <DropDownPicker
             open={open}
             label="Request for"
             value={value}
@@ -121,7 +120,7 @@ const RequestLunch = ({navigation}) => {
             // maxHeight={hp(50)}
             containerStyle={{width: wp(50)}}
             style={{height: hp(1), height: 10, borderRadius: 4}}
-          />
+          /> */}
         </View>
         <View
           style={{

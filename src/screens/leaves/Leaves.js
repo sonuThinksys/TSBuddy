@@ -190,9 +190,14 @@ const Leaves = ({navigation}) => {
     },
   ];
 
+  const applyForLeave = () => {
+    navigation.navigate('ApplyLeave');
+  };
+
   return (
     <View style={{paddingVertical: hp(2)}}>
-      <View
+      <Pressable
+        onPress={applyForLeave}
         style={{
           paddingHorizontal: wp(5),
           paddingVertical: hp(1),
@@ -208,18 +213,17 @@ const Leaves = ({navigation}) => {
         <View
           style={{
             paddingHorizontal: wp(2),
-            paddingVertical: hp(0.1),
             borderColor: '#FF7F50',
-            borderRadius: 15,
-            borderWidth: 2,
+            borderRadius: 50,
+            borderWidth: 1,
             justifyContent: 'center',
             paddingBottom: 2.5,
           }}>
           <Text
             style={{
               textAlign: 'center',
-              fontSize: 18,
-              fontWeight: 'bold',
+              fontSize: 22,
+              // fontWeight: 'bold',
               color: '#FF7F50',
             }}>
             +
@@ -235,7 +239,7 @@ const Leaves = ({navigation}) => {
           }}>
           Make a new Leave Application
         </Text>
-      </View>
+      </Pressable>
       <FlatList
         data={data}
         renderItem={renderItem}

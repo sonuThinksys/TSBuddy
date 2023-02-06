@@ -17,6 +17,7 @@ import {
 } from 'utils/Responsive';
 import {DrawerActions} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
+import ApplyLeave from 'screens/leaves/ApplyLeave';
 
 const Stack = createNativeStackNavigator();
 const LeavesStackNavigator = ({navigation}) => {
@@ -109,6 +110,104 @@ const LeavesStackNavigator = ({navigation}) => {
         name="LeavesDetailsPage"
         component={LeaveDetails}
         // options={{headerShown: false}}
+
+        options={props => {
+          return {
+            headerTintColor: Colors.white,
+            headerStyle: {backgroundColor: '#1b5583', height: 55},
+
+            drawerLabel: '',
+            headerTitle: props => {
+              return (
+                <TouchableOpacity>
+                  <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        textAlign: 'center',
+                        marginLeft: Platform.OS === 'ios' ? 0.1 : wp(20),
+                        //paddingTop: hp(0.5),
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        // paddingRight: 8,
+                      }}>
+                      Leave Detail
+                    </Text>
+                    {/* <Image
+                      source={MonthImages.info_scopy}
+                      style={{height: 20, width: 20}}
+                    /> */}
+                  </View>
+                </TouchableOpacity>
+              );
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+                <Image
+                  source={MonthImages.searchIconwhite}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    marginRight: 20,
+                    color: 'white',
+                  }}
+                />
+              </TouchableOpacity>
+            ),
+          };
+        }}
+      />
+
+      <Stack.Screen
+        name="ApplyLeave"
+        component={ApplyLeave}
+        options={props => {
+          return {
+            headerTintColor: Colors.white,
+            headerStyle: {backgroundColor: '#1b5583', height: 55},
+
+            drawerLabel: '',
+            headerTitle: props => {
+              return (
+                <TouchableOpacity>
+                  <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        textAlign: 'center',
+                        marginLeft: Platform.OS === 'ios' ? 0.1 : wp(20),
+                        //paddingTop: hp(0.5),
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        // paddingRight: 8,
+                      }}>
+                      Leave Detail
+                    </Text>
+                    {/* <Image
+                      source={MonthImages.info_scopy}
+                      style={{height: 20, width: 20}}
+                    /> */}
+                  </View>
+                </TouchableOpacity>
+              );
+            },
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+                <Image
+                  source={MonthImages.searchIconwhite}
+                  style={{
+                    height: 25,
+                    width: 25,
+                    marginRight: 20,
+                    color: 'white',
+                  }}
+                />
+              </TouchableOpacity>
+            ),
+          };
+        }}
       />
     </Stack.Navigator>
   );

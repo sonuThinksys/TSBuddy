@@ -17,11 +17,11 @@ export const getSalarySlipData = createAsyncThunk(
     fetch('http://localhost:4000/salaryData')
       .then(res => res.json())
       .then(result => {
-        console.log('result:--------', result);
+        // console.log('result:--------', result);
         return Promise.resolve(result);
       })
       .catch(err => {
-        console.log('error:=======', err);
+        // console.log('error:=======', err);
         return Promise.reject(err);
       });
   },
