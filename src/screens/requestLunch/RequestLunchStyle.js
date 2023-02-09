@@ -126,5 +126,6 @@ export default StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: Colors.lightBlue,
+    marginRight: wp(5),
   },
 });

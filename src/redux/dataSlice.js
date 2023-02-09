@@ -13,6 +13,7 @@ const initialState = {
   holidayData: {},
   holidayDataLoading: false,
   holidayDataError: false,
+  dateData: '',
 };
 
 export const getSalarySlipData = createAsyncThunk(
@@ -71,6 +72,9 @@ const dataSlice = createSlice({
     modalStatus: (state, action) => {
       state.isShowModal = action.payload;
     },
+    dateOfModal: (state, action) => {
+      state.dateData = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getSalarySlipData.pending, state => {
@@ -118,4 +122,4 @@ const dataSlice = createSlice({
   },
 });
 export default dataSlice.reducer;
-export const {loadingStatus, modalStatus} = dataSlice.actions;
+export const {loadingStatus, modalStatus, dateOfModal} = dataSlice.actions;

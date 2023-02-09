@@ -20,15 +20,26 @@ import {
 //import {SharedElement} from 'react-navigation-shared-element';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {useSelector} from 'react-redux';
+
 const RequestLunch = ({navigation}) => {
+  const MonthlyDate = useSelector(state => state.dataReducer.dateData);
   const [date, setDate] = useState(new Date());
+  console.log('MonthlyDate:-----------------------------', MonthlyDate);
   const [startDate, setStartDate] = useState('');
+  const [modalForStartDate, setModalForStartDate] = useState(false);
   const [endDate, setEndDate] = useState('');
-  const [opentCalender, setOpenCalender] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [permReq, setPermReq] = useState(false);
+  const [permissionForClick, setPersssionForClick] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+
+  const [satrtDate1, setStartDate1] = useState('');
+  const [endDate1, setEndDate1] = useState('');
+
   const [items, setItems] = useState([
     {label: 'TODAY', value: 'today'},
     {label: 'REQUEST FOR DURATION', value: 'req_duration'},
@@ -36,26 +47,71 @@ const RequestLunch = ({navigation}) => {
   ]);
 
   const onSelectItem = item => {
+    let date = new Date().getDate();
+    const name = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const d = new Date();
+    let month = name[d.getMonth()];
+    let year = new Date().getFullYear();
     if (item.value === 'today') {
-      let date = new Date().getDate();
-      const datee = new Date(2009, 10, 10);
-      const month = datee.toLocaleString('default', {month: 'long'});
-      let year = new Date().getFullYear();
       setStartDate(date + '/' + month + '/' + year);
       setEndDate(date + '/' + month + '/' + year);
+      setPermReq(false);
+      setPersssionForClick(false);
     } else if (item.value === 'req_duration') {
       setStartDate('');
       setEndDate('');
-      // setPermReq(true);
+      setPermReq(false);
+      setPersssionForClick(true);
     } else {
       setStartDate('');
       setEndDate('');
       setPermReq(true);
+      setPersssionForClick(true);
+      if (date === 1) {
+        month = name[d.getMonth()];
+        setStartDate1(date + '-' + month + '-' + year);
+        setEndDate1(16 + '-' + month + '-' + year);
+      } else if (date > 1 && date <= 16) {
+        month = name[d.getMonth()];
+        setStartDate1(16 + '-' + month + '-' + year);
+        month = name[d.getMonth() + 1];
+        setEndDate1(1 + '-' + month + '-' + year);
+      }
     }
   };
   const modalData = {
     openModal: openModal,
     setOpenModal: setOpenModal,
+    satrtDate1: satrtDate1,
+    endDate1: endDate1,
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    console.log('A date has been picked: ', date);
+
+    if (modalForStartDate) {
+      setStartDate(date.toString());
+    } else {
+      setEndDate(date.toString());
+    }
+    hideDatePicker();
   };
 
   return (
@@ -108,18 +164,12 @@ const RequestLunch = ({navigation}) => {
             }}
           />
         </View>
-        {opentCalender ? (
-          <DatePicker
-            modal
-            open={opentCalender}
-            date={date}
-            onConfirm={date => {
-              setOpenCalender(false);
-              setDate(date);
-            }}
-            onCancel={() => {
-              setOpenCalender(false);
-            }}
+        {isDatePickerVisible ? (
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
           />
         ) : null}
         <View style={styles.thirdView}>
@@ -127,15 +177,22 @@ const RequestLunch = ({navigation}) => {
           <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
           <TouchableOpacity
             onPress={() => {
-              // setOpenCalender(true);
-              if (permReq) {
-                setOpenModal(true);
-              } else {
-                setOpenCalender(true);
+              if (permissionForClick) {
+                if (permReq) {
+                  console.log(
+                    'permReq:---------------------------------------------',
+                    permReq,
+                  );
+                  setOpenModal(true);
+                  setStartDate(MonthlyDate);
+                } else {
+                  setModalForStartDate(true);
+                  setDatePickerVisibility(true);
+                }
               }
             }}>
             <View style={styles.fourthView}>
-              <Text style={{fontSize: 16, opacity: 0.7}}>{startDate}</Text>
+              <TextInput editable={false} value={startDate} />
             </View>
           </TouchableOpacity>
         </View>
@@ -143,10 +200,17 @@ const RequestLunch = ({navigation}) => {
           <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
           <TouchableOpacity
             onPress={() => {
-              setOpenCalender(true);
+              if (permissionForClick) {
+                if (permReq) {
+                  setOpenModal(false);
+                } else {
+                  setModalForStartDate(false);
+                  setDatePickerVisibility(true);
+                }
+              }
             }}>
             <View style={styles.sixthView}>
-              <Text style={{fontSize: 16, opacity: 0.7}}>{endDate}</Text>
+              <TextInput editable={false} value={endDate} />
             </View>
           </TouchableOpacity>
         </View>
@@ -176,7 +240,7 @@ const RequestLunch = ({navigation}) => {
           </View>
           <View style={styles.buttomTextView}>
             <Text style={styles.buttomText}>Start Date :</Text>
-            <Text style={{fontSize: 16}}>01/Sep/2022</Text>
+            <TextInput editable={false} value={'1/September/2022'} />
           </View>
         </View>
       </View>

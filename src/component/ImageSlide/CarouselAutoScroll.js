@@ -70,7 +70,9 @@ const CarouselAutoScroll = () => {
 
   return (
     <View style={{flex: 1}}>
-      {showModal ? <BirthdayAnniV modalData={modalData} /> : null}
+      {showModal ? (
+        <BirthdayAnniV modalData={modalData} showModal={showModal} />
+      ) : null}
       <FlatList
         showsHorizontalScrollIndicator={false}
         // onViewableItemsChanged={onViewableItemsChangedHandler}
@@ -89,7 +91,6 @@ const CarouselAutoScroll = () => {
                 setModalData({
                   id: item.id,
                   text: item.text,
-                  showModal: showModal,
                   setShowModal: setShowModal,
                 });
                 setShowModal(true);
