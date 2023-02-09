@@ -9,4 +9,11 @@ export const Colors = {
   menuTransparentColor: 'rgba(0, 76, 153, 0.8)',
   orange: 'orange',
   green: 'green',
+  pink: '#FFB6C1',
+  orangeColor: '#FF7F50',
+  lightseagreen: 'lightseagreen',
+  purple: '#483D8B',
+  gainsboro: 'gainsboro',
+  lightcyan: 'lightcyan',
+  darkpurple: '#088bf3',
 };

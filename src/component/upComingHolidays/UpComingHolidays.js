@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -31,13 +38,7 @@ const UpComingHolidays = () => {
   ];
   return (
     <View>
-      <View
-        style={{
-          paddingVertical: hp(1),
-          paddingHorizontal: wp(3),
-          backgroundColor: '#C3F8FF',
-          marginTop: hp(1),
-        }}>
+      <View style={styles.container}>
         <Text style={{fontWeight: 'bold', fontSize: 16}}>
           Upcoming Holidays
         </Text>
@@ -53,15 +54,7 @@ const UpComingHolidays = () => {
 };
 const renderItem = ({item}) => {
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        marginTop: hp(0.6),
-        shadowOpacity: 0.1,
-        paddingLeft: wp(1),
-      }}>
+    <View style={styles.imageView}>
       <Image
         resizeMode="contain"
         source={
@@ -81,16 +74,7 @@ const renderItem = ({item}) => {
         {item.nameOfLeaves}
       </Text>
       <View style={{flex: 3}}>
-        <View
-          style={{
-            paddingVertical: hp(1.6),
-            paddingHorizontal: wp(5),
-            backgroundColor: 'pink',
-            width: wp(40),
-            borderRadius: 5,
-            marginVertical: hp(0.5),
-            backgroundColor: '#0E5E6F',
-          }}>
+        <View style={styles.textView}>
           <TouchableOpacity>
             <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
               {item.dataOfLeave}
@@ -101,4 +85,29 @@ const renderItem = ({item}) => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(3),
+    backgroundColor: '#C3F8FF',
+    marginTop: hp(1),
+  },
+  imageView: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    marginTop: hp(0.6),
+    shadowOpacity: 0.1,
+    paddingLeft: wp(1),
+  },
+  textView: {
+    paddingVertical: hp(1.6),
+    paddingHorizontal: wp(5),
+    backgroundColor: 'pink',
+    width: wp(40),
+    borderRadius: 5,
+    marginVertical: hp(0.5),
+    backgroundColor: '#0E5E6F',
+  },
+});
 export default UpComingHolidays;

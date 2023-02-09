@@ -20,6 +20,8 @@ import {useDispatch} from 'react-redux';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
+import Header from 'component/header/Header';
+import UserProfile from 'component/useProfile/UserProfile';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -32,7 +34,7 @@ const SalarySlipStack = createNativeStackNavigator();
 const HomeStackScreen = ({navigation}) => {
   return (
     <HomeStack.Navigator
-      // initialRouteName="Home"
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         headerStyle: {backgroundColor: 'red'},
@@ -115,6 +117,40 @@ const Logout = () => {
 };
 
 function DrawerNavigator({navigation}) {
+  const drawerOption = ({label, headerIconName}) => {
+    return {
+      label: ({label}) => <Text>{label}</Text>,
+
+      headerTitle: () => (
+        <TouchableOpacity>
+          <View style={{display: 'flex', flexDirection: 'row'}}>
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+                //paddingTop: hp(0.5),
+                fontSize: 16,
+                fontWeight: 'bold',
+                marginRight: wp(2),
+              }}>
+              {label}
+            </Text>
+            {headerIconName ? (
+              <Image source={headerIconName} style={{height: 20, width: 20}} />
+            ) : null}
+          </View>
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Header />
+        </TouchableOpacity>
+      ),
+    };
+  };
+
   const dispatch = useDispatch();
   return (
     <Drawer.Navigator
@@ -152,402 +188,53 @@ function DrawerNavigator({navigation}) {
       }}>
       <Drawer.Screen
         name="Home"
-        options={{
-          drawerLabel: '',
-
-          drawerIcon: ({tintColor}) => (
-            <View style={{}}>
-              <Image
-                source={MonthImages.HomeImage}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Home
-              </Text>
-            </View>
-          ),
-
-          // title: 'Home',
-          //  icon: <Image source={LoginLock} style={{height: 30, width: 30}} />,
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    marginRight: 4,
-                  }}>
-                  Home
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{
-                  height: 25,
-                  width: 25,
-                  marginRight: wp(5),
-                  color: 'white',
-                }}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'Home',
+          headerIconName: MonthImages.info_scopy,
+        })}
         component={HomeStackScreen}
       />
 
       <Drawer.Screen
         name="Profile"
-        options={{
-          drawerLabel: '',
-          title: 'Profile',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.ProfileIcon}
-                style={{height: 60, width: 60}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Profile
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  Profile
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'profile',
+        })}
         component={ProfileStackScreen}
       />
       <Drawer.Screen
         name="Attendence"
-        options={{
-          drawerLabel: '',
-          title: 'Attendence',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.AttendanceDrawer}
-                // style={[styles.icon, { tintColor: tintColor }]}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Attendence
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  Attendence
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'Attendence',
+          headerIconName: MonthImages.info_scopy,
+        })}
         component={AttendenceStackScreen}
       />
       <Drawer.Screen
         name="Holidays"
-        options={{
-          drawerLabel: '',
-          title: 'Holidays',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.HolidaysIcon}
-                // style={[styles.icon, { tintColor: tintColor }]}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Holidays
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  Holiday
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'Holidays',
+        })}
         component={HolidaysStackScreen}
       />
       <Drawer.Screen
         name="Leaves"
-        options={{
-          drawerLabel: '',
-          title: 'Leaves',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.leavesImage}
-                // style={[styles.icon, { tintColor: tintColor }]}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Leaves
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  Leave
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'Leaves',
+          headerIconName: MonthImages.info_scopy,
+        })}
         component={LeavesStackScreen}
       />
       <Drawer.Screen
         name="SalarySlip"
-        options={{
-          drawerLabel: '',
-          title: 'SalarySlip',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <Image
-                source={MonthImages.salarySlipIcon}
-                // style={[styles.icon, { tintColor: tintColor }]}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                SalarySlip
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    //textAlign: 'center',
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  SalarySlip
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
+        options={drawerOption({
+          label: 'SalarySlip',
+          headerIconName: MonthImages.info_scopy,
+        })}
         component={SalarySlipScreen}
       />
 
-      <Drawer.Screen
-        name="logout"
-        options={{
-          drawerLabel: '',
-          title: 'Logout',
-          drawerIcon: ({tintColor}) => (
-            <View>
-              <TouchableOpacity onPress={() => dispatch(loginStatus(false))}>
-                <Image
-                  source={MonthImages.logoutmenuS}
-                  // style={[styles.icon, { tintColor: tintColor }]}
-                  style={{height: 50, width: 50}}
-                />
-                <Text
-                  style={{
-                    color: 'white',
-                    paddingTop: hp(1),
-                    textAlign: 'center',
-                    fontWeight: '600',
-                    fontSize: 16,
-                  }}>
-                  Logout
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{height: 25, width: 25, marginRight: 20, color: 'white'}}
-              />
-            </TouchableOpacity>
-          ),
-        }}
-        component={Logout}
-      />
+      <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>
   );
 }
