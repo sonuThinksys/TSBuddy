@@ -83,6 +83,8 @@ import emailUS from 'assets/allImage/useremail.imageset/emailUS.png';
 import userPS from 'assets/allImage/userimage.imageset/userPS.png';
 import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
 import EventImage from 'assets/allImage/eventBG.imageset/EventImage.png';
+import CalenderIcon from 'assets/allImage/profilecal.imageset/Calender2x.png';
+import DropDownIcon from 'assets/allImage/downimg.imageset/dropdown2.png';
 
 export const MonthImages = {
   janImage: janS,
@@ -156,4 +158,6 @@ export const MonthImages = {
   userPS: userPS,
   checkedS: checkedS,
   EventImage: EventImage,
+  CalenderIcon,
+  DropDownIcon,
 };

@@ -58,12 +58,6 @@ const RemainingLeaves = () => {
             }}
             style={{
               marginVertical: 10,
-              // borderColor: 'red',
-              // borderWidth: 1,
-              // marginRight: 4,
-              // padding: 5,
-              // paddingLeft: -20,
-              // paddingRight: 40,
             }}
           />
 
@@ -83,7 +77,6 @@ const RemainingLeaves = () => {
             spacingInner={0}
             flatColor={true}
             showValuesOnTopOfBars={true}
-            // withCustomBarColorFromData={true}
             showBarTops={false}
             withInnerLines={false}
             fromZero={true}
@@ -119,12 +112,7 @@ const RemainingLeaves = () => {
             style={{
               marginVertical: 10,
               marginLeft: 0,
-              // borderRadius: 16,
-
               marginRight: 4,
-              // paddingRight: 0,
-              // borderColor: 'blue',
-              // borderWidth: 1,
             }}
           />
           <Text
@@ -197,51 +185,6 @@ const renderItem = ({item}) => {
 };
 export default RemainingLeaves;
 
-// import React from 'react';
-// import Plotly from 'react-native-plotly';
-// export default () => {
-//   const layout = {
-//     xaxis: {
-//       type: 'category',
-//       title: 'Earned Leave',
-//       showticklabels: false,
-//       fixedrange: true,
-//     },
-//     yaxis: {
-//       linecolor: '#636363',
-//       showgrid: false,
-//       zeroline: false,
-//       showline: true,
-//       fixedrange: true,
-//     },
-//   };
-//   var trace1 = {
-//     type: 'bar',
-//     x: [1, 2, 3, 4, 7],
-//     y: [5, 10, 2, 5, 8],
-//     marker: {
-//       color: '#C8A2C8',
-//       line: {
-//         width: 2.5,
-//       },
-//       height: 200,
-//     },
-//   };
-//   var data = [trace1];
-//   return (
-//     <Plotly
-//       data={data}
-//       config={{
-//         dragMode: false,
-//         scrollZoom: false,
-//         displayModeBar: false,
-//       }}
-//       enableFullPlotly={true}
-//       layout={layout}
-//     />
-//   );
-// };
-
 const styles = StyleSheet.create({
   leavesTypeContainer: {
     flexDirection: 'row',
@@ -250,12 +193,8 @@ const styles = StyleSheet.create({
   leaveType: {
     flexDirection: 'row',
     alignItems: 'center',
-    // borderWidth: 1,
-    // borderColor: 'red',
     justifyContent: 'space-around',
     paddingRight: 10,
-    // paddingHorizontal: 10,
-    // minWidth: wp(20),
   },
   leavesType1: {
     height: 12,

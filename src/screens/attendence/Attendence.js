@@ -11,7 +11,6 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {Calendar, CalendarList} from 'react-native-calendars';
 import {Header} from 'react-native/Libraries/NewAppScreen';
 const Attendence = () => {
   const DATA = [

@@ -10,4 +10,6 @@ export const Colors = {
   orange: 'orange',
   green: 'green',
   lightGray: '#dee2e6',
+  parrotGreen: '#2f9e44',
+  whitishGray: '#e9ecef',
 };

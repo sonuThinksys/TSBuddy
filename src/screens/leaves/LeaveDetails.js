@@ -55,11 +55,11 @@ export default LeaveDetails;
 const styles = StyleSheet.create({
   mainContainer: {
     // flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     marginHorizontal: 8,
     marginTop: 8,
     borderWidth: 2,
-    borderColor: '#2f9e44',
+    borderColor: Colors.parrotGreen,
     marginBottom: 40,
   },
 
@@ -67,10 +67,10 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
+    borderBottomColor: Colors.whitishGray,
   },
   header: {
-    backgroundColor: '#2f9e44',
+    backgroundColor: Colors.parrotGreen,
     padding: 10,
   },
   headerText: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: wp(32),
     paddingHorizontal: 10,
     paddingVertical: 14,
-    backgroundColor: '#dee2e6',
+    backgroundColor: Colors.whitishGray,
   },
   cardRightTextContainer: {
     justifyContent: 'center',

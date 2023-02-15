@@ -212,7 +212,7 @@ const Leaves = ({navigation}) => {
         }}>
         <View
           style={{
-            paddingHorizontal: wp(2),
+            paddingHorizontal: wp(2.5),
             borderColor: '#FF7F50',
             borderRadius: 50,
             borderWidth: 1,
