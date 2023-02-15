@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 
 import {
@@ -29,11 +29,20 @@ import LoginLock from 'assets/mipmap/loginLock.imageset/lock.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import {loginStatus} from './LoginSlice';
+import {getUserToken} from './LoginSlice';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
-  console.log('backgroundVideo:------------------------', backgoundVideo);
+  // const [inputData, setInputData] = useState('');
+  const [username, setUserName] = useState('gupta.radhika');
+  const [password, setPassword] = useState('radhikathinksys@123');
+
+  console.log(
+    'username,password:-----------------------------',
+    password,
+    username,
+  );
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -90,6 +99,10 @@ const Login = () => {
     },
   ];
 
+  const onPressLogin = () => {
+    dispatch(getUserToken({username, password}));
+  };
+
   return (
     <View style={styles.container}>
       <Video
@@ -110,25 +123,64 @@ const Login = () => {
         />
       </View>
       <View style={styles.textInputContainer}>
-        <FlatList
+        {/* <FlatList
           data={textInputData}
           keyExtractor={item => item.id}
-          renderItem={item => {
-            return (
-              <View style={styles.textinputView}>
-                <View style={styles.iconView}>
-                  <Image style={{height: 30, width: 25}} source={item.icon} />
-                </View>
-                <View style={styles.textinput}>
-                  <TextInput
-                    style={{height: '100%', width: '100%'}}
-                    placeholder={item.placeholderText}
-                  />
-                </View>
-              </View>
-            );
-          }}
-        />
+          renderItem={({item, index}) => ( */}
+        <View style={styles.textinputView}>
+          <View style={styles.iconView}>
+            <Image
+              style={{height: 30, width: 25}}
+              source={MonthImages.LoginUser}
+            />
+          </View>
+          <View style={styles.textinput}>
+            <TextInput
+              style={{height: '100%', width: '100%'}}
+              maxLength={256}
+              name="username"
+              returnKeyType="next"
+              placeholder="Username"
+              placeholderTextColor={Colors.silver}
+              //  onSubmitEditing={() => this.passwordRef.current.focus()}
+              // onChangeText={value => {
+              //   this.onChange({name: 'username', value});
+              // }}
+              // onChange={onChangeTextInput}
+              onChangeText={e => setUserName(e)}
+              value={username}
+            />
+          </View>
+        </View>
+        <View style={styles.textinputView}>
+          <View style={styles.iconView}>
+            <Image
+              style={{height: 24, width: 18}}
+              source={MonthImages.LoginLock}
+            />
+          </View>
+          <View style={styles.textinput}>
+            <TextInput
+              style={{height: '100%', width: '100%'}}
+              // ref={this.passwordRef}
+
+              name="password"
+              maxLength={256}
+              returnKeyType="done"
+              secureTextEntry
+              placeholder="Password"
+              placeholderTextColor={Colors.silver}
+              // onChangeText={value => {
+              //   this.onChange({name: 'password', value});
+              // }}
+              // onChange={onChangeTextInput}
+              onChangeText={e => setPassword(e)}
+              value={password}
+            />
+          </View>
+        </View>
+        {/* )}
+        /> */}
         <View style={styles.passwordView}>
           <TouchableOpacity>
             <Text style={{color: 'white', textDecorationLine: 'underline'}}>
@@ -153,7 +205,13 @@ const Login = () => {
           </View>
         </View>
 
-        <TouchableOpacity onPress={() => dispatch(loginStatus(true))}>
+        <TouchableOpacity
+          // onPress={() => {
+          //   console.log('inputData:----------------------', inputData);
+          //   setInputData('radhika');
+          //   dispatch(loginStatus(true));
+          // }}
+          onPress={onPressLogin}>
           <View style={styles.loginView}>
             <Text style={styles.loginText}>Login</Text>
           </View>

@@ -159,7 +159,7 @@ const RequestLunch = ({navigation}) => {
             labelStyle={{
               fontSize: wp('3.5%'),
               textAlign: 'left',
-              color: 'red',
+              color: Colors.black,
               alignSelf: 'center',
             }}
           />
@@ -179,12 +179,7 @@ const RequestLunch = ({navigation}) => {
             onPress={() => {
               if (permissionForClick) {
                 if (permReq) {
-                  console.log(
-                    'permReq:---------------------------------------------',
-                    permReq,
-                  );
                   setOpenModal(true);
-                  setStartDate(MonthlyDate);
                 } else {
                   setModalForStartDate(true);
                   setDatePickerVisibility(true);

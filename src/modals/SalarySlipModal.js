@@ -14,6 +14,7 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import CustomModal from 'components/CustomModal';
+import {getSalarySlipData} from 'redux/dataSlice';
 import {Colors} from 'colors/Colors';
 const SalarSlipModal = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,10 @@ const SalarSlipModal = () => {
             alignItems: 'center',
             paddingVertical: hp(1),
           }}
-          onPress={() => dispatch(authLoginStatus(true))}>
+          onPress={() => {
+            dispatch(authLoginStatus(true));
+            dispatch(getSalarySlipData());
+          }}>
           <View style={styles.secondTextView}>
             <Text style={styles.contnueText}>Continue</Text>
           </View>

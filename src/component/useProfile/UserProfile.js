@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -23,17 +23,56 @@ import CommunicationModal from 'modals/CommunicationModal';
 import {modalStatus} from 'redux/dataSlice';
 //import {employeeData} from '../../../db';
 const UserProfile = () => {
+  const [input, setInput] = useState('');
   const [showHoriZontal, setShowHorizontal] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
+  const [allEmpData, setEmpData] = useState({});
   console.log('employeeData:===================', employeeData);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const employeeData = useSelector(state => state.dataReducer.employeeData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  console.log('employeeData:---------------', employeeData);
-  let b = 'thumbnailS';
+  console.log('allEmpData:---------------+++++++', allEmpData);
+  useEffect(() => {
+    setEmpData(employeeData);
+  }, []);
+
+  const onChangeText = e => {
+    let str = '';
+    str += e;
+
+    setInput(str);
+    const newSplitSearch = str.split('');
+    const finalArray = [];
+    if (Array.isArray(allEmpData)) {
+      allEmpData.map(data => {
+        const nameData = data.nameOfEmployee;
+        console.log('nameData:-----------------------------------', nameData);
+        let shouldBeAdded = true;
+        for (let i = 0; i < newSplitSearch.length; i++) {
+          console.log('hi radhika fvkdk k');
+          if (nameData.includes(newSplitSearch[i])) {
+          } else {
+            shouldBeAdded = false;
+          }
+        }
+        // }
+        if (shouldBeAdded) {
+          finalArray.push(data);
+        }
+      });
+    }
+    console.log('finalArray:-----------------------', finalArray);
+    if (str === '') {
+      setEmpData(employeeData);
+    } else {
+      setEmpData(finalArray);
+      return finalArray;
+    }
+  };
+
   return (
     <View>
       <View
@@ -141,12 +180,19 @@ const UserProfile = () => {
               color: 'white',
             }}
           />
-          <TextInput selectionColor={'white'} color="white" />
+          <TextInput
+            selectionColor={'white'}
+            color="white"
+            value={input}
+            onChangeText={onChangeText}
+            isEditble
+            style={{height: '120%', width: '90%'}}
+          />
         </View>
       ) : null}
 
       <FlatList
-        data={employeeData}
+        data={allEmpData}
         key={numValue}
         numColumns={numValue}
         keyExtractor={item => item.id}

@@ -1,10 +1,11 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {employeeData} from '../../db';
 import {holidayData} from '../../db';
+import {salaryData} from '../../slaryData';
 const initialState = {
   isLoading: true,
   isShowModal: false,
-  salarySlipData: [],
+  salarySlipData: {},
   salarySlipDataLoading: false,
   salarySlipDataError: false,
   employeeData: {},
@@ -16,19 +17,26 @@ const initialState = {
   dateData: '',
 };
 
+// export const getSalarySlipData = createAsyncThunk(
+//   'dataRducer/salarySlip',
+//   async () => {
+//     fetch('http://localhost:4000/salaryData')
+//       .then(res => res.json())
+//       .then(result => {
+//         console.log('result:--------', result);
+//         return Promise.resolve(result);
+//       })
+//       .catch(err => {
+//         console.log('error:=======', err);
+//         return Promise.reject(err);
+//       });
+//   },
+// );
+
 export const getSalarySlipData = createAsyncThunk(
-  'dataRducer/salarySlip',
+  'dataReducer/salarySlipData',
   async () => {
-    fetch('http://localhost:4000/salaryData')
-      .then(res => res.json())
-      .then(result => {
-        console.log('result:--------', result);
-        return Promise.resolve(result);
-      })
-      .catch(err => {
-        console.log('error:=======', err);
-        return Promise.reject(err);
-      });
+    return Promise.resolve(salaryData);
   },
 );
 
