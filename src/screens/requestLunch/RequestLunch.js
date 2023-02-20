@@ -6,39 +6,118 @@ import {
   Image,
   TextInput,
   Button,
+  StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-// import SelectDropdown from 'react-native-select-dropdown';
+import SelectDropdown from 'react-native-select-dropdown';
+import DatePicker from 'react-native-date-picker';
+import styles from './RequestLunchStyle';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-// import {SharedElement} from 'react-navigation-shared-element';
-// import DropDownPicker from 'react-native-dropdown-picker';
+//import {SharedElement} from 'react-navigation-shared-element';
+import DropDownPicker from 'react-native-dropdown-picker';
+import SelectDateModal from 'modals/SelectDateModal';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {useSelector} from 'react-redux';
+
 const RequestLunch = ({navigation}) => {
-  const dropData = ['TODAY', 'REQUEST FOR DURATION', 'MONTHLY LUNCH'];
+  const MonthlyDate = useSelector(state => state.dataReducer.dateData);
+  const [date, setDate] = useState(new Date());
+  console.log('MonthlyDate:-----------------------------', MonthlyDate);
+  const [startDate, setStartDate] = useState('');
+  const [modalForStartDate, setModalForStartDate] = useState(false);
+  const [endDate, setEndDate] = useState('');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [permReq, setPermReq] = useState(false);
+  const [permissionForClick, setPersssionForClick] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+
+  const [satrtDate1, setStartDate1] = useState('');
+  const [endDate1, setEndDate1] = useState('');
+
   const [items, setItems] = useState([
-    {label: 'Apple', value: 'apple'},
-    {label: 'Apple1', value: 'apple1'},
-    {label: 'Banana', value: 'banana'},
-    {label: 'Banana1', value: 'banana1'},
+    {label: 'TODAY', value: 'today'},
+    {label: 'REQUEST FOR DURATION', value: 'req_duration'},
+    {label: 'MONTHLY LUNCH', value: 'monthly_lunch'},
   ]);
+
+  const onSelectItem = item => {
+    let date = new Date().getDate();
+    const name = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const d = new Date();
+    let month = name[d.getMonth()];
+    let year = new Date().getFullYear();
+    if (item.value === 'today') {
+      setStartDate(date + '/' + month + '/' + year);
+      setEndDate(date + '/' + month + '/' + year);
+      setPermReq(false);
+      setPersssionForClick(false);
+    } else if (item.value === 'req_duration') {
+      setStartDate('');
+      setEndDate('');
+      setPermReq(false);
+      setPersssionForClick(true);
+    } else {
+      setStartDate('');
+      setEndDate('');
+      setPermReq(true);
+      setPersssionForClick(true);
+      if (date === 1) {
+        month = name[d.getMonth()];
+        setStartDate1(date + '-' + month + '-' + year);
+        setEndDate1(16 + '-' + month + '-' + year);
+      } else if (date > 1 && date <= 16) {
+        month = name[d.getMonth()];
+        setStartDate1(16 + '-' + month + '-' + year);
+        month = name[d.getMonth() + 1];
+        setEndDate1(1 + '-' + month + '-' + year);
+      }
+    }
+  };
+  const modalData = {
+    openModal: openModal,
+    setOpenModal: setOpenModal,
+    satrtDate1: satrtDate1,
+    endDate1: endDate1,
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    console.log('A date has been picked: ', date);
+
+    if (modalForStartDate) {
+      setStartDate(date.toString());
+    } else {
+      setEndDate(date.toString());
+    }
+    hideDatePicker();
+  };
 
   return (
     // <SharedElement id="enter">
     <View>
-      <View
-        style={{
-          backgroundColor: Colors.darkBlue,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          paddingHorizontal: wp(5),
-          paddingVertical: hp(2),
-        }}>
+      <View style={styles.container}>
         <View style={{flex: 1}}>
           <TouchableOpacity
             onPress={() => {
@@ -50,22 +129,8 @@ const RequestLunch = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 4,
-            justifyContent: 'center',
-            paddingTop: hp(0.5),
-          }}>
-          <Text
-            style={{
-              color: Colors.white,
-              marginRight: wp(2),
-              fontSize: 18,
-              fontWeight: 'bold',
-            }}>
-            Request Lunch
-          </Text>
+        <View style={styles.lunchTextView}>
+          <Text style={styles.text1}>Request Lunch</Text>
           <Image
             source={MonthImages.info_scopy}
             style={{height: 20, width: 20}}
@@ -73,100 +138,106 @@ const RequestLunch = ({navigation}) => {
         </View>
       </View>
 
-      <View
-        style={{
-          backgroundColor: 'white',
-          shadowOpacity: 0.1,
-          top: hp(1),
-          marginHorizontal: wp(2),
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(2),
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-          }}>
+      <View style={styles.secondView}>
+        <View style={styles.dropDownView}>
           <Text style={{flex: 1, fontSize: 20}}>Request Lunch :</Text>
-          {/* <SelectDropdown
-            data={dropData}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-            }}
-            defaultButtonText="Please Select"
-            buttonTextAfterSelection={(selectedItem, index) => {
-              // text represented after item is selected
-              // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-              // text represented for each item in dropdown
-              // if data array is an array of objects then return item.property to represent item in dropdown
-              return item;
-            }}
-            style={{backgroundColor: 'red'}}
-          /> */}
-
-          {/* <DropDownPicker
+          <DropDownPicker
             open={open}
-            label="Request for"
+            placeholder={'Please Select'}
             value={value}
             items={items}
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
-            // maxHeight={hp(50)}
+            onSelectItem={onSelectItem}
             containerStyle={{width: wp(50)}}
             style={{height: hp(1), height: 10, borderRadius: 4}}
-          /> */}
+            dropDownStyle={{
+              backgroundColor: Colors.lightBlue,
+              borderBottomWidth: 1,
+            }}
+            labelStyle={{
+              fontSize: wp('3.5%'),
+              textAlign: 'left',
+              color: Colors.black,
+              alignSelf: 'center',
+            }}
+          />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-            marginTop: hp(2),
-          }}>
+        {isDatePickerVisible ? (
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
+        ) : null}
+        <View style={styles.thirdView}>
+          {openModal ? <SelectDateModal modalData={modalData} /> : null}
           <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
-          <TextInput
-            style={{
-              borderRadius: 4,
-              borderWidth: 1,
-              width: wp(50),
-              height: hp(4),
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              if (permissionForClick) {
+                if (permReq) {
+                  setOpenModal(true);
+                } else {
+                  setModalForStartDate(true);
+                  setDatePickerVisibility(true);
+                }
+              }
+            }}>
+            <View style={styles.fourthView}>
+              <TextInput editable={false} value={startDate} />
+            </View>
+          </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(2),
-            alignItems: 'center',
-          }}>
+        <View style={styles.fifthView}>
           <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
-          <TextInput
-            style={{
-              borderRadius: 4,
-              borderWidth: 1,
-              width: wp(50),
-              height: hp(4),
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              if (permissionForClick) {
+                if (permReq) {
+                  setOpenModal(false);
+                } else {
+                  setModalForStartDate(false);
+                  setDatePickerVisibility(true);
+                }
+              }
+            }}>
+            <View style={styles.sixthView}>
+              <TextInput editable={false} value={endDate} />
+            </View>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: Colors.darkBlue,
-              paddingVertical: hp(1),
-              width: wp(30),
-            }}>
-            <Text style={{color: 'white'}}>Submit</Text>
+          <View style={styles.submitView}>
+            <Text style={{color: 'white', textAlign: 'center'}}>Submit</Text>
           </View>
         </TouchableOpacity>
+      </View>
+      <View style={styles.buttomView}>
+        <View style={styles.appliedView}>
+          <Text style={styles.appliedText}>Applied Subscriptions</Text>
+        </View>
+
+        <View style={styles.monthlyRequestView}>
+          <View style={styles.monthlyView}>
+            <Text style={{fontSize: 15}}>Monthly Request</Text>
+            <View style={styles.cancelView}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                }}>
+                Cancel Request
+              </Text>
+            </View>
+          </View>
+          <View style={styles.buttomTextView}>
+            <Text style={styles.buttomText}>Start Date :</Text>
+            <TextInput editable={false} value={'1/September/2022'} />
+          </View>
+        </View>
       </View>
     </View>
     // </SharedElement>

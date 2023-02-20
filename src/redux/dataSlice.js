@@ -1,18 +1,40 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {employeeData} from '../../db';
+import {holidayData} from '../../db';
+import {salaryData} from '../../slaryData';
 const initialState = {
   isLoading: true,
   isShowModal: false,
-  salarySlipData: [],
+  salarySlipData: {},
   salarySlipDataLoading: false,
   salarySlipDataError: false,
   employeeData: {},
   employeeDataLoading: false,
   employeeDataError: false,
+  holidayData: {},
+  holidayDataLoading: false,
+  holidayDataError: false,
+  dateData: '',
 };
 
+// export const getSalarySlipData = createAsyncThunk(
+//   'dataRducer/salarySlip',
+//   async () => {
+//     fetch('http://localhost:4000/salaryData')
+//       .then(res => res.json())
+//       .then(result => {
+//         console.log('result:--------', result);
+//         return Promise.resolve(result);
+//       })
+//       .catch(err => {
+//         console.log('error:=======', err);
+//         return Promise.reject(err);
+//       });
+//   },
+// );
+
 export const getSalarySlipData = createAsyncThunk(
-  'dataRducer/salarySlip',
+  'dataReducer/salarySlipData',
   async () => {
     fetch('http://localhost:4000/salaryData')
       .then(res => res.json())
@@ -24,6 +46,7 @@ export const getSalarySlipData = createAsyncThunk(
         // console.log('error:=======', err);
         return Promise.reject(err);
       });
+    return Promise.resolve(salaryData);
   },
 );
 
@@ -50,6 +73,13 @@ export const getEmployeeData = createAsyncThunk(
   },
 );
 
+export const getHolidaysData = createAsyncThunk(
+  'dataReducer/holidayData',
+  async () => {
+    return Promise.resolve(holidayData);
+  },
+);
+
 const dataSlice = createSlice({
   name: 'dataa',
   initialState,
@@ -59,6 +89,9 @@ const dataSlice = createSlice({
     },
     modalStatus: (state, action) => {
       state.isShowModal = action.payload;
+    },
+    dateOfModal: (state, action) => {
+      state.dateData = action.payload;
     },
   },
   extraReducers: builder => {
@@ -90,8 +123,22 @@ const dataSlice = createSlice({
       state.employeeData = [];
       state.employeeDataError = action.payload;
     });
+    builder.addCase(getHolidaysData.pending, state => {
+      state.holidayDataLoading = true;
+    });
+    builder.addCase(getHolidaysData.fulfilled, (state, action) => {
+      state.holidayDataLoading = false;
+      console.log('response:------------', action.payload);
+      state.holidayData = action.payload;
+      state.holidayDataError = undefined;
+    });
+    builder.addCase(getHolidaysData.rejected, (state, action) => {
+      state.holidayDataLoading = false;
+      state.holidayData = [];
+      state.holidayDataError = action.payload;
+    });
   },
 });
 
 export default dataSlice.reducer;
-export const {loadingStatus, modalStatus} = dataSlice.actions;
+export const {loadingStatus, modalStatus, dateOfModal} = dataSlice.actions;

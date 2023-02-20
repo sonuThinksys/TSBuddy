@@ -1,9 +1,17 @@
 import React from 'react';
-import {View, Image, Text, ImageBackground, FlatList} from 'react-native';
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  FlatList,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import styles from './ProfileStyle';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 
@@ -49,99 +57,34 @@ const Profile = () => {
 
   return (
     <>
-      <View
-        style={
-          {
-            // borderColor: '#000',
-            // borderWidth: 10,
-          }
-        }>
+      <View>
         <ImageBackground
           style={{height: '60%', width: '100%'}}
           source={TSBuddyBackImage}>
-          <View
-            style={{
-              paddingHorizontal: wp(5),
-              paddingTop: hp(12),
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <View
-              style={{
-                height: 120,
-                width: 120,
-                borderRadius: 60,
-                backgroundColor: 'gray',
-              }}>
+          <View style={styles.container}>
+            <View style={styles.profileView}>
               <Image
                 source={MonthImages.ProfileIcon}
                 style={{height: 120, width: 120, borderRadius: 60}}
               />
             </View>
-            <Text
-              style={{
-                marginTop: hp(7.5),
-                marginHorizontal: wp(4),
-                color: 'steelblue',
-                fontWeight: 'bold',
-                fontSize: 18,
-              }}>
-              Radhika Gupta
-            </Text>
+            <Text style={styles.text}>Radhika Gupta</Text>
           </View>
-          <View
-            style={{
-              borderWidth: 0.3,
-              borderTopWidth: 0.1,
-              marginHorizontal: wp(2),
-              borderRadius: 5,
-              marginVertical: hp(1),
-              height: hp(35),
-              backgroundColor: 'white',
-              shadowOpacity: 0.3,
-            }}>
+          <View style={styles.detailsView}>
             <FlatList
               data={data}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
           </View>
-          <View
-            style={{
-              marginHorizontal: wp(2),
-              borderWidth: 0.1,
-              borderColor: 'gray',
-              backgroundColor: 'white',
-              marginTop: hp(1),
-              // paddingVertical: hp(0.),
-              paddingBottom: hp(1),
-              shadowOpacity: 0.5,
-              borderRadius: 5,
-            }}>
-            <View
-              style={{
-                paddingVertical: hp(1.5),
-                paddingHorizontal: wp(4),
-                backgroundColor: '#0E5E6F',
-              }}>
+          <View style={styles.managerDetailView}>
+            <View style={styles.managerDetailView1}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
                 Manager Info
               </Text>
             </View>
-            <View
-              style={{
-                paddingHorizontal: wp(5),
-                paddingTop: hp(0.5),
-                display: 'flex',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  height: 80,
-                  width: 80,
-                  borderRadius: 40,
-                  backgroundColor: 'gray',
-                }}>
+            <View style={styles.managerDetailView2}>
+              <View style={styles.roundIcon}>
                 <Image
                   resizeMode="cover"
                   source={MonthImages.ProfileIcon}
@@ -149,32 +92,9 @@ const Profile = () => {
                 />
               </View>
               <View>
-                <Text
-                  style={{
-                    marginTop: hp(1),
-                    marginHorizontal: wp(4),
-                    color: 'black',
-                    opacity: 0.6,
-                    fontSize: 18,
-                  }}>
-                  Mayank Sharma
-                </Text>
-                <Text
-                  style={{
-                    marginHorizontal: wp(4),
-                    marginTop: hp(0.6),
-                    opacity: 0.7,
-                  }}>
-                  sharma.mayank@thinksys.com
-                </Text>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    paddingHorizontal: wp(4),
-                    paddingVertical: hp(0.5),
-                    justifyContent: 'space-around',
-                  }}>
+                <Text style={styles.managerNameText}>Mayank Sharma</Text>
+                <Text style={styles.emailText}>sharma.mayank@thinksys.com</Text>
+                <View style={styles.socialIconView}>
                   <Image
                     source={MonthImages.empMailS}
                     style={{height: 40, width: 40}}
@@ -199,16 +119,7 @@ const Profile = () => {
 
 const renderItem = ({item}) => {
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        borderWidth: 0.5,
-        borderColor: 'gray',
-        paddingHorizontal: wp(2),
-        paddingVertical: hp(1),
-      }}>
+    <View style={styles.flatelistView}>
       <Image source={item.image} style={{height: 20, width: 20}} />
       <Text
         style={{flex: 1, marginLeft: wp(3), marginTop: hp(1), fontSize: 12}}>
@@ -221,4 +132,5 @@ const renderItem = ({item}) => {
     </View>
   );
 };
+
 export default Profile;

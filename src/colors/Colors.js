@@ -12,4 +12,11 @@ export const Colors = {
   lightGray: '#dee2e6',
   parrotGreen: '#2f9e44',
   whitishGray: '#e9ecef',
+  pink: '#FFB6C1',
+  orangeColor: '#FF7F50',
+  lightseagreen: 'lightseagreen',
+  purple: '#483D8B',
+  gainsboro: 'gainsboro',
+  lightcyan: 'lightcyan',
+  darkpurple: '#088bf3',
 };

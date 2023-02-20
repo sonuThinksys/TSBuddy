@@ -11,6 +11,7 @@ import {
   Linking,
   ImageBackground,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
@@ -20,7 +21,7 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/dataSlice';
-const BirthdayAnniV = ({modalData}) => {
+const BirthdayAnniV = ({modalData, showModal}) => {
   // const [isShowModal, setIsShowModal] = useState(false);
   const {id, text, showModal, setShowModal} = modalData;
 
@@ -47,16 +48,9 @@ const BirthdayAnniV = ({modalData}) => {
               setShowModal(false);
             }}>
             <ImageBackground
+              style={styles.backgroundImage}
               source={MonthImages.EventImage}
-              resizeMode="contain"
-              style={{
-                height: '100%',
-                width: '100%',
-                // backgroundColor: 'green',
-                justifyContent: 'center',
-                position: 'relative',
-                alignItems: 'center',
-              }}>
+              resizeMode="contain">
               <Text
                 style={{
                   top: hp(9),
@@ -67,19 +61,10 @@ const BirthdayAnniV = ({modalData}) => {
                 30
               </Text>
               <Text style={{top: hp(8.5), color: 'green'}}>jan 2023</Text>
-              <View
-                style={{
-                  marginTop: hp(15),
-                  paddingHorizontal: wp(5),
-                  paddingVertical: hp(1.5),
-                  backgroundColor: 'rgba(51, 51, 51, 0.8)',
-
-                  borderRadius: 5,
-                }}>
+              <View style={styles.textView}>
                 <Text
                   style={{
                     textAlign: 'center',
-
                     color: 'white',
                     fontWeight: 'bold',
                   }}>
@@ -101,4 +86,20 @@ const BirthdayAnniV = ({modalData}) => {
     </>
   );
 };
+const styles = StyleSheet.create({
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    position: 'relative',
+    alignItems: 'center',
+  },
+  textView: {
+    marginTop: hp(15),
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(1.5),
+    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    borderRadius: 5,
+  },
+});
 export default BirthdayAnniV;

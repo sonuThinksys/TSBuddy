@@ -15,6 +15,9 @@ const RemainingLeaves = () => {
 
   return (
     <View>
+      <View style={styles.container}>
+        <Text style={{fontWeight: 'bold', fontSize: 16}}>Remaining Leaves</Text>
+      </View>
       <View
         style={{
           flexDirection: 'row',
@@ -185,7 +188,58 @@ const renderItem = ({item}) => {
 };
 export default RemainingLeaves;
 
+// import React from 'react';
+// import Plotly from 'react-native-plotly';
+// export default () => {
+//   const layout = {
+//     xaxis: {
+//       type: 'category',
+//       title: 'Earned Leave',
+//       showticklabels: false,
+//       fixedrange: true,
+//     },
+//     yaxis: {
+//       linecolor: '#636363',
+//       showgrid: false,
+//       zeroline: false,
+//       showline: true,
+//       fixedrange: true,
+//     },
+//   };
+//   var trace1 = {
+//     type: 'bar',
+//     x: [1, 2, 3, 4, 7],
+//     y: [5, 10, 2, 5, 8],
+//     marker: {
+//       color: '#C8A2C8',
+//       line: {
+//         width: 2.5,
+//       },
+//       height: 200,
+//     },
+//   };
+//   var data = [trace1];
+//   return (
+//     <Plotly
+//       data={data}
+//       config={{
+//         dragMode: false,
+//         scrollZoom: false,
+//         displayModeBar: false,
+//       }}
+//       enableFullPlotly={true}
+//       layout={layout}
+//     />
+//   );
+// };
+
 const styles = StyleSheet.create({
+  container: {
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(3),
+    backgroundColor: '#C3F8FF',
+    marginTop: hp(1),
+  },
   leavesTypeContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -193,8 +247,12 @@ const styles = StyleSheet.create({
   leaveType: {
     flexDirection: 'row',
     alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'red',
     justifyContent: 'space-around',
     paddingRight: 10,
+    // paddingHorizontal: 10,
+    // minWidth: wp(20),
   },
   leavesType1: {
     height: 12,

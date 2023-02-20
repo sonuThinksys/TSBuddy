@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,6 +6,9 @@ import {
   Modal,
   Image,
   TextInput,
+  ImageBackground,
+  FlatList,
+  Button,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
@@ -15,58 +18,34 @@ import {
 import SalarSlipModal from 'modals/SalarySlipModal';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getSalarySlipData} from 'redux/dataSlice';
+import {Colors} from 'colors/Colors';
 
 const SalarySlip = ({navigation}) => {
+  const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();
   const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
-
+  const salarySlipData = useSelector(state => state.dataReducer.salarySlipData);
+  console.log(
+    'newyearWiseData:----------------------------------------------',
+    newyearWiseData,
+  );
   useEffect(() => {
-    dispatch(getSalarySlipData());
-
     const unsubscribe = navigation.addListener('focus', () => {
-      // The screen is focused
-      // Call any action
-      // dispatch();
       dispatch(authLoginStatus(false));
     });
-    //  dispatch(authLoginStatus(false));
-    // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
 
-  const getData = () => {
-    fetch('db.json', {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (myJson) {})
-      .catch(err => {
-        console.log('error aa gyi!', err);
-      });
-  };
-
   useEffect(() => {
-    getData();
-  }, []);
-
-  const data = [
-    {
-      month: 'January',
-      year: 2022,
-      id: 1,
-    },
-    {
-      month: 'February',
-      year: 2022,
-      id: 2,
-    },
-  ];
+    const newObj = {};
+    salarySlipData &&
+      salarySlipData.length &&
+      salarySlipData?.map(val => {
+        newObj[val.year] = newObj[val.year] || [];
+        newObj[val.year].push(val);
+      });
+    setnewyearWiseData(newObj);
+  }, [salarySlipData]);
 
   return (
     <View
@@ -87,14 +66,133 @@ const SalarySlip = ({navigation}) => {
       {!isAuthLoggedIn ? (
         <SalarSlipModal />
       ) : (
-        <View>
-          <Text>fgf</Text>
-          <Image
-            source={MonthImages.janImage}
-            style={{height: 50, width: 50}}
-          />
+        <View style={{paddingHorizontal: wp(2)}}>
+          {newyearWiseData &&
+            newyearWiseData.length &&
+            newyearWiseData.map(el => {
+              console.log('el:-------------------', el);
+              return (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: hp(2),
+                      alignItems: 'center',
+                      paddingRight: wp(1),
+                    }}>
+                    <View
+                      style={{
+                        flex: 3,
+                        backgroundColor: 'gray',
+                        height: 1,
+                      }}></View>
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: 'gray',
+                        paddingVertical: hp(1),
+                        paddingHorizontal: wp(3),
+                        borderRadius: 1,
+                      }}>
+                      <Text
+                        style={{
+                          color: Colors.darkBlue,
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          fontSize: 18,
+                        }}>
+                        2022
+                      </Text>
+                    </View>
+                  </View>
+
+                  <FlatList
+                    data={el}
+                    keyExtractor={item => item.name}
+                    key={3}
+                    numColumns={3}
+                    renderItem={renderItems}
+                  />
+                </>
+              );
+            })}
         </View>
       )}
+    </View>
+  );
+};
+
+const renderItems = item => {
+  return (
+    <View
+      style={{
+        paddingVertical: hp(1),
+        flex: 1,
+      }}>
+      <View
+        style={{
+          borderRadius: 5,
+          height: hp(18),
+          width: wp(33),
+          shadowOpacity: 0.5,
+          backgroundColor: 'gray',
+          backgroundColor: 'white',
+          marginRight: wp(3),
+        }}>
+        <ImageBackground
+          resizeMode="contain"
+          source={MonthImages.janImage}
+          style={{height: hp(11), width: '100%'}}>
+          <View
+            style={{
+              height: 40,
+              width: 40,
+              backgroundColor: 'blue',
+              borderBottomRightRadius: 30,
+              borderTopRightRadius: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={MonthImages.janIcon}
+              style={{height: 20, width: 20}}
+            />
+          </View>
+          <Text
+            style={{
+              textAlign: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 24,
+            }}>
+            January
+          </Text>
+        </ImageBackground>
+        <View
+          style={{
+            height: hp(6),
+            width: wp(35),
+            backgroundColor: 'white',
+            paddingTop: hp(1),
+            paddingHorizontal: wp(2),
+            // marginHorizontal: wp(1),
+            borderRadius: 5,
+            shadowOpacity: 0.5,
+          }}>
+          <View
+            style={{
+              backgroundColor: Colors.lightBlue,
+              padding: hp(1),
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 5,
+            }}>
+            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 17}}>
+              Download
+            </Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 };

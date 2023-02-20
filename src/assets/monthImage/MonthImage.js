@@ -22,6 +22,7 @@ import novS from 'assets/allImage/nov.imageset/novS.png';
 import Nov from 'assets/allImage/November.imageset/Nov.png';
 import decS from 'assets/allImage/dec.imageset/decS.png';
 import Dec from 'assets/allImage/December.imageset/Dec.png';
+import checkedSS from 'assets/allImage/SelectedMode.imageset/checkedS.png';
 
 // menu Images
 
@@ -34,11 +35,15 @@ import dislikesm from 'assets/allImage/dislike.imageset/dislikesm.png';
 // festival images
 
 import diwali from 'assets/allImage/diwali.imageset/diwali.png';
+import DiwaliMax from 'assets/allImage/diwaliMax.imageset/DiwaliMax.png';
 import gandhiJayantiS from 'assets/allImage/gandhiJayanti.imageset/gandhiJayantiS.png';
+import GandhiMax from 'assets/allImage/gandhiMax.imageset/GandhiMax.png';
 import holi from 'assets/allImage/holi.imageset/holi.png';
+import HoliMax from 'assets/allImage/holiMax.imageset/HoliMax.png';
 import independenceDay from 'assets/allImage/independenceDay.imageset/independenceDay.png';
+import IndpendenceMax from 'assets/allImage/independenceMax.imageset/IndpendenceMax.png';
 import republicDay from 'assets/allImage/republicDay.imageset/republicDay.png';
-
+import RepublicMax from 'assets/allImage/republicMax.imageset/RepublicMax.png';
 // birthday and anniversary image
 
 import workAnniversaryy from 'assets/allImage/workAnniversary.imageset/workAnniversaryy.jpeg';
@@ -85,6 +90,11 @@ import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
 import EventImage from 'assets/allImage/eventBG.imageset/EventImage.png';
 import CalenderIcon from 'assets/allImage/profilecal.imageset/Calender2x.png';
 import DropDownIcon from 'assets/allImage/downimg.imageset/dropdown2.png';
+import whiteBlank from 'assets/allImage/topBg.imageset/whiteBlank.png';
+
+import LoginUser from 'assets/mipmap/loginUser.imageset/user.png';
+import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
+import fingerPrint from 'assets/allImage/fingerPrint.png';
 
 export const MonthImages = {
   janImage: janS,
@@ -113,10 +123,15 @@ export const MonthImages = {
   decIcon: Dec,
   //Festivals Icons and Images
   diwali: diwali,
+  DiwaliMax: DiwaliMax,
   gandhiJayantiS: gandhiJayantiS,
+  GandhiMax: GandhiMax,
   holi: holi,
+  HoliMax: HoliMax,
   independenceDay: independenceDay,
+  IndpendenceMax: IndpendenceMax,
   republicDay: republicDay,
+  RepublicMax: RepublicMax,
   // Menu Images and Icons
   Lunch: Lunch,
   breakfastImgS: breakfastImgS,
@@ -160,4 +175,9 @@ export const MonthImages = {
   EventImage: EventImage,
   CalenderIcon,
   DropDownIcon,
+  checkedSS: checkedSS,
+  whiteBlank: whiteBlank,
+  LoginUser: LoginUser,
+  LoginCheck: LoginCheck,
+  fingerPrint: fingerPrint,
 };

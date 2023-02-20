@@ -5,6 +5,7 @@ import {
   Text,
   ImageBackground,
   FlatList,
+  StyleSheet,
 } from 'react-native';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {
@@ -12,6 +13,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Header} from 'react-native/Libraries/NewAppScreen';
+import styles from './AttendenceStyle';
 const Attendence = () => {
   const DATA = [
     {
@@ -32,84 +34,23 @@ const Attendence = () => {
   ];
 
   return (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-      }}>
+    <View style={styles.container}>
       <ImageBackground
         resizeMode="cover"
         source={TSBuddyBackImage}
-        style={{
-          height: '100%',
-          width: '100%',
-        }}>
-        <View
-          style={{
-            borderColor: 'white',
-            borderColor: 'white',
-            // paddingVertical: hp(1),
-            //  paddingHorizontal: wp(5),
-            borderWidth: 1,
-            marginVertical: hp(7),
-            marginHorizontal: wp(6),
-            borderRadius: 10,
-          }}>
+        style={{height: '100%', width: '100%'}}>
+        <View style={styles.secondContainer}>
           <View>
-            <Text
-              style={{
-                color: '#FFE4E1',
-                fontSize: 30,
-                fontWeight: 'bold',
-                textAlign: 'center',
-                marginHorizontal: wp(10),
-                marginVertical: hp(1.5),
-              }}>
-              09 January Monday
-            </Text>
+            <Text style={styles.monthText}>09 January Monday</Text>
           </View>
-          <View
-            style={{
-              borderColor: 'white',
-              // borderColor: 'white',
-              // paddingVertical: hp(1),
-              //   paddingHorizontal: wp(5),
-              borderTopWidth: 1,
-              display: 'flex',
-              flexDirection: 'row',
-            }}>
-            <View
-              style={{
-                borderRightWidth: 1,
-                borderColor: 'white',
-                borderWidth: 1,
-                flex: 1,
-                paddingHorizontal: wp(2),
-                paddingVertical: hp(2),
-              }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  color: '#3CB371',
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                }}>
+          <View style={styles.reportView}>
+            <View style={styles.weekliyTextView}>
+              <Text style={styles.reportText}>
                 Weekly Report 02 Jan - 08 Jan
               </Text>
             </View>
-            <View
-              style={{
-                flex: 1,
-                paddingHorizontal: wp(2),
-                paddingVertical: hp(2),
-              }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  color: '#9370DB',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                }}>
+            <View style={styles.timeSpendView}>
+              <Text style={styles.timeSpendText}>
                 Total Hour Spend 38:51{' '}
                 <Text style={{color: 'red'}}> ( -06:09)</Text>
               </Text>

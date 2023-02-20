@@ -1,67 +1,12 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, FlatList, Pressable} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-
-const Leaves = ({navigation}) => {
-  const renderItem = ({item}) => {
-    return (
-      <Pressable
-        onPress={() => {
-          navigation.navigate('LeavesDetailsPage', item);
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            borderRadius: 5,
-            marginVertical: hp(0.5),
-            marginHorizontal: wp(2),
-            backgroundColor: 'lightcyan',
-            shadowOpacity: 0.1,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              //  backgroundColor: 'lightseagreen',
-              backgroundColor:
-                item.statusOfLeaves === 'Dismissed'
-                  ? '#FFB6C1'
-                  : 'lightseagreen',
-              paddingHorizontal: wp(2),
-              paddingVertical: hp(1),
-              justifyContent: 'center',
-              borderTopLeftRadius: 5,
-              borderBottomLeftRadius: 5,
-              shadowOpacity: 0.1,
-            }}>
-            <Text style={{textAlign: 'center', fontSize: 18}}>
-              {item.daysOfLeaves} {item.typesOfLeaves}
-            </Text>
-            <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
-          </View>
-          <View
-            style={{
-              flex: 2,
-              backgroundColor: 'lightcyan',
-              paddingHorizontal: wp(2),
-              paddingVertical: hp(1),
-              justifyContent: 'center',
-              borderTopRightRadius: 5,
-              borderBottomRightRadius: 5,
-            }}>
-            <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
-              {item.numberOfLeaves}
-            </Text>
-            <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
-            <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
-          </View>
-        </View>
-      </Pressable>
-    );
-  };
-
+import {Colors} from 'colors/Colors';
+import styles from './LeaveStyles';
+const Leaves = () => {
   const data = [
     {
       daysOfLeaves: 5,
@@ -240,11 +185,50 @@ const Leaves = ({navigation}) => {
           Make a new Leave Application
         </Text>
       </Pressable>
+      <View style={styles.container}>
+        <View style={styles.plusView}>
+          <Text style={styles.plusText}>+</Text>
+        </View>
+        <Text style={styles.text1}>Make a new Leave Application</Text>
+      </View>
       <FlatList
         data={data}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+    </View>
+  );
+};
+
+const renderItem = ({item}) => {
+  return (
+    <View style={styles.flateListView}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor:
+            item.statusOfLeaves === 'Dismissed'
+              ? Colors.pink
+              : Colors.lightseagreen,
+          paddingHorizontal: wp(2),
+          paddingVertical: hp(1),
+          justifyContent: 'center',
+          borderTopLeftRadius: 5,
+          borderBottomLeftRadius: 5,
+          shadowOpacity: 0.1,
+        }}>
+        <Text style={{textAlign: 'center', fontSize: 18}}>
+          {item.daysOfLeaves} {item.typesOfLeaves}
+        </Text>
+        <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
+      </View>
+      <View style={styles.secondView}>
+        <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
+          {item.numberOfLeaves}
+        </Text>
+        <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
+        <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
+      </View>
     </View>
   );
 };

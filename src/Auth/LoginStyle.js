@@ -1,0 +1,91 @@
+import {StyleSheet} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'utils/Responsive';
+import {Colors} from 'colors/Colors';
+export default StyleSheet.create({
+  container: {
+    backgroundColor: Colors.lightBlue,
+    height: '100%',
+    width: '100%',
+  },
+  textInputContainer: {
+    width: '90%',
+    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    marginVertical: hp(4),
+    paddingVertical: hp(4),
+    marginLeft: wp(5),
+    borderRadius: 5,
+    paddingHorizontal: wp(3),
+  },
+  textinputView: {
+    height: hp(7),
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    flexDirection: 'row',
+    marginVertical: hp(3),
+  },
+  iconView: {
+    width: '20%',
+    height: '100%',
+    justifyContent: 'center',
+    backgroundColor: Colors.lightBlue,
+    paddingHorizontal: wp(5),
+  },
+  textinput: {
+    width: '80%',
+    height: '100%',
+    backgroundColor: 'white',
+    paddingLeft: wp(5),
+  },
+  passwordView: {
+    paddingHorizontal: wp(2),
+    paddingVertical: hp(3),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  loginView: {
+    height: hp(7),
+    backgroundColor: '#0073cf',
+    borderColor: 'white',
+    borderWidth: 1,
+    borderRadius: 1,
+    justifyContent: 'center',
+  },
+  loginText: {color: 'white', fontWeight: 'bold', textAlign: 'center'},
+  orText: {
+    textAlign: 'center',
+    color: 'blue',
+    fontSize: 18,
+    marginTop: hp(2),
+    fontWeight: '200',
+  },
+  bioMetricView: {
+    flexDirection: 'row',
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(1),
+    backgroundColor: '#0073cf',
+    marginHorizontal: wp(10),
+    borderRadius: 5,
+    borderColor: 'white',
+    borderWidth: 1,
+  },
+  bioMetricText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+    paddingTop: hp(0.5),
+    paddingLeft: wp(15),
+  },
+  backgroundVideo: {
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    alignItems: 'stretch',
+    bottom: 0,
+    right: 0,
+  },
+});
