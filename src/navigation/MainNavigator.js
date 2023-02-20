@@ -23,7 +23,7 @@ const MainNavigator = () => {
       <Stack.Navigator initialRouteName="SplashScreen">
         <Stack.Screen
           name="MainRoute"
-          component={isLoggedIn ? DrawerNavigator : AuthNavigator}
+          component={!isLoggedIn ? DrawerNavigator : AuthNavigator}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -31,7 +31,7 @@ const MainNavigator = () => {
           component={SplashScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="UserProfile"
           component={UserProfile}
           options={{headerShown: false}}
@@ -40,13 +40,13 @@ const MainNavigator = () => {
           name="UserDetail"
           component={UserDetail}
           options={{headerShown: false}}
-        />
+        /> */}
 
-        <Stack.Screen
+        {/* <Stack.Screen
           name="RequestLunch"
           component={RequestLunch}
           options={{headerShown: false}}
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

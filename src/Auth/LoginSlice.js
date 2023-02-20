@@ -29,15 +29,15 @@ export const getUserToken = createAsyncThunk(
           'result:================================================',
           data,
         );
+        const responsetoken = data.token;
         const {response = {}, status} = result || {};
         if (status === 200) {
           // await AsyncStorage.setItem('accessToken', response?.token);
           console.log(
             'response:---------------------------------------------------------',
-            status,
-            response,
+            responsetoken,
           );
-          return Promise.resolve(response);
+          return Promise.resolve(responsetoken);
         } else {
           const {data} = response || {};
 
@@ -67,6 +67,10 @@ const loginSlice = createSlice({
     });
     builder.addCase(getUserToken.fulfilled, (state, action) => {
       state.userToken = action.payload;
+      console.log(
+        'userToken:-----------------------------------------',
+        state.userToken,
+      );
       state.isLoading = false;
       state.isLoggedIn = true;
     });
