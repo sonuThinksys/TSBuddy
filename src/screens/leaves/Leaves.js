@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, TouchableOpacity, StyleSheet, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, Pressable, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import styles from './LeaveStyles';
-const Leaves = () => {
+const Leaves = ({navigation}) => {
   const data = [
     {
       daysOfLeaves: 5,
@@ -185,12 +185,6 @@ const Leaves = () => {
           Make a new Leave Application
         </Text>
       </Pressable>
-      <View style={styles.container}>
-        <View style={styles.plusView}>
-          <Text style={styles.plusText}>+</Text>
-        </View>
-        <Text style={styles.text1}>Make a new Leave Application</Text>
-      </View>
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -203,6 +197,7 @@ const Leaves = () => {
 const renderItem = ({item}) => {
   return (
     <View style={styles.flateListView}>
+      {/* <TouchableOpacity> */}
       <View
         style={{
           flex: 1,
@@ -229,6 +224,7 @@ const renderItem = ({item}) => {
         <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
         <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
       </View>
+      {/* </TouchableOpacity> */}
     </View>
   );
 };

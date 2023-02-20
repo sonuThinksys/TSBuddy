@@ -14,6 +14,7 @@ import {
 } from 'utils/Responsive';
 import {Header} from 'react-native/Libraries/NewAppScreen';
 import styles from './AttendenceStyle';
+import {CalendarList} from 'react-native-calendars';
 const Attendence = () => {
   const DATA = [
     {

@@ -1,23 +1,12 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  Button,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import SelectDropdown from 'react-native-select-dropdown';
-import DatePicker from 'react-native-date-picker';
 import styles from './RequestLunchStyle';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-//import {SharedElement} from 'react-navigation-shared-element';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';

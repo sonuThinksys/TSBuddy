@@ -21,7 +21,7 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/dataSlice';
-const BirthdayAnniV = ({modalData, showModal}) => {
+const BirthdayAnniV = ({modalData}) => {
   // const [isShowModal, setIsShowModal] = useState(false);
   const {id, text, showModal, setShowModal} = modalData;
 

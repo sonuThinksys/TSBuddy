@@ -182,7 +182,7 @@ const LeavesStackNavigator = ({navigation}) => {
                         fontWeight: 'bold',
                         // paddingRight: 8,
                       }}>
-                      Leave Detail
+                      Apply Leave
                     </Text>
                     {/* <Image
                       source={MonthImages.info_scopy}
