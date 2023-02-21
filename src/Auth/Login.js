@@ -35,8 +35,8 @@ const Login = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
   // const [inputData, setInputData] = useState('');
-  const [username, setUserName] = useState('gupta.radhika');
-  const [password, setPassword] = useState('radhikathinksys@123');
+  const [username, setUserName] = useState('pant.amit');
+  const [password, setPassword] = useState('thinksys@321');
 
   console.log(
     'username,password:-----------------------------',

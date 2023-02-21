@@ -23,7 +23,7 @@ const MainNavigator = () => {
       <Stack.Navigator initialRouteName="SplashScreen">
         <Stack.Screen
           name="MainRoute"
-          component={!isLoggedIn ? DrawerNavigator : AuthNavigator}
+          component={isLoggedIn ? DrawerNavigator : AuthNavigator}
           options={{headerShown: false}}
         />
         <Stack.Screen

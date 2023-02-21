@@ -25,6 +25,7 @@ import UserProfile from 'component/useProfile/UserProfile';
 import RequestLunch from 'screens/requestLunch/RequestLunch';
 import UserDetail from 'component/useProfile/UserDetail';
 import SalaryDetail from 'screens/salarySlip/SalaryDetail';
+import SalaryPdf from 'screens/salarySlip/SalaryPdf';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -218,6 +219,11 @@ const SalarySlipScreen = ({navigation}) => {
         name="SalaryDetail"
         component={SalaryDetail}
         options={{headerShown: false}}
+      />
+      <SalarySlipStack.Screen
+        name="SalaryPdf"
+        component={SalaryPdf}
+        options={{headerShown: true}}
       />
     </SalarySlipStack.Navigator>
   );
