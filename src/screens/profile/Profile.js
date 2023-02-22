@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Image,
@@ -14,37 +14,56 @@ import {
 import styles from './ProfileStyle';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
-
+import {useSelector, useDispatch} from 'react-redux';
+import jwt_decode from 'jwt-decode';
+import {getEmployeeProfileData} from 'redux/dataSlice';
+import moment from 'moment';
 const Profile = () => {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.userToken);
+  var decoded = jwt_decode(token);
+  const employeeID =
+    decoded[
+      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+    ];
+  useEffect(() => {
+    dispatch(getEmployeeProfileData({token: token, employeeID: employeeID}));
+  }, []);
+
+  const profileData = useSelector(state => state.dataReducer.employeeProfile);
+
+  console.log('profileData:---------------------------------', profileData);
+
   const data = [
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Email ID',
-      email: 'gupta.radhika@thinksys.com',
+      email: profileData.companyEmail,
       id: '1',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Mobile No.',
-      email: '8544946426',
+      email: profileData.cellNumber,
       id: '2',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Designation',
-      email: 'Software Engineer',
+      email: profileData.designation,
       id: '3',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
-      email: 'EMP/10863',
+      email: `EMP/${employeeID}`,
       id: '4',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Date of Joining',
-      email: '26-Apr-2022',
+      // email: profileData.dateOfJoining,
+      email: moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
       id: '5',
     },
     {
@@ -54,6 +73,10 @@ const Profile = () => {
       id: '6',
     },
   ];
+  console.log(
+    'profile-image:---------------------------------------',
+    profileData.image,
+  );
 
   return (
     <>
@@ -64,11 +87,11 @@ const Profile = () => {
           <View style={styles.container}>
             <View style={styles.profileView}>
               <Image
-                source={MonthImages.ProfileIcon}
+                source={{uri: profileData.image}}
                 style={{height: 120, width: 120, borderRadius: 60}}
               />
             </View>
-            <Text style={styles.text}>Radhika Gupta</Text>
+            <Text style={styles.text}>{profileData.employeeName}</Text>
           </View>
           <View style={styles.detailsView}>
             <FlatList
@@ -92,8 +115,12 @@ const Profile = () => {
                 />
               </View>
               <View>
-                <Text style={styles.managerNameText}>Mayank Sharma</Text>
-                <Text style={styles.emailText}>sharma.mayank@thinksys.com</Text>
+                <Text style={styles.managerNameText}>
+                  {profileData.managerInfoDto.employeeName}
+                </Text>
+                <Text style={styles.emailText}>
+                  {profileData.managerInfoDto.companyEmail}
+                </Text>
                 <View style={styles.socialIconView}>
                   <Image
                     source={MonthImages.empMailS}

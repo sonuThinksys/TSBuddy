@@ -23,7 +23,12 @@ const Holidays = () => {
   console.log('holidays token gor ', token);
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
   var decoded = jwt_decode(token);
-  console.log('decode :-----------------------------------------', decoded);
+  console.log(
+    'decode :-----------------------------------------',
+    decoded[
+      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+    ],
+  );
   console.log(
     'holidaysData in screen:----------------------------------------',
     holidaysData,
