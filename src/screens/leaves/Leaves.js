@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, FlatList, Pressable, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -6,7 +6,24 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import styles from './LeaveStyles';
+import {getLeaveDetails} from 'redux/dataSlice';
+import {useDispatch, useSelector} from 'react-redux';
+
+const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDIwNjlkNC1hYTExLTQ5ZjktOTc4Ni0wMGM1NGVkZjdjMGUiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc3MDYxNjcwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.xgn-cvGjakJqg_SEkIoRBADL_hNuDzH1czAoSrivHOc';
+
 const Leaves = ({navigation}) => {
+  const leaveData = useSelector(state => state.dataReducer.leavesData);
+  console.log('leaveData:', leaveData[2]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      let res = await dispatch(getLeaveDetails({token}));
+      console.log('res:=========', res.payload);
+    })();
+  }, []);
+
   const data = [
     {
       daysOfLeaves: 5,
@@ -139,6 +156,42 @@ const Leaves = ({navigation}) => {
     navigation.navigate('ApplyLeave');
   };
 
+  const renderItem = ({item}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('leaveDetails', item)}>
+        <View style={styles.flateListView}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor:
+                item.statusOfLeaves === 'Dismissed'
+                  ? Colors.pink
+                  : Colors.lightseagreen,
+              paddingHorizontal: wp(2),
+              paddingVertical: hp(1),
+              justifyContent: 'center',
+              borderTopLeftRadius: 5,
+              borderBottomLeftRadius: 5,
+              shadowOpacity: 0.1,
+            }}>
+            <Text style={{textAlign: 'center', fontSize: 18}}>
+              {item.daysOfLeaves} {item.typesOfLeaves}
+            </Text>
+            <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
+          </View>
+          <View style={styles.secondView}>
+            <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
+              {item.numberOfLeaves}
+            </Text>
+            <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
+            <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={{paddingVertical: hp(2)}}>
       <Pressable
@@ -190,41 +243,6 @@ const Leaves = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
-    </View>
-  );
-};
-
-const renderItem = ({item}) => {
-  return (
-    <View style={styles.flateListView}>
-      {/* <TouchableOpacity> */}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor:
-            item.statusOfLeaves === 'Dismissed'
-              ? Colors.pink
-              : Colors.lightseagreen,
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(1),
-          justifyContent: 'center',
-          borderTopLeftRadius: 5,
-          borderBottomLeftRadius: 5,
-          shadowOpacity: 0.1,
-        }}>
-        <Text style={{textAlign: 'center', fontSize: 18}}>
-          {item.daysOfLeaves} {item.typesOfLeaves}
-        </Text>
-        <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
-      </View>
-      <View style={styles.secondView}>
-        <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
-          {item.numberOfLeaves}
-        </Text>
-        <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
-        <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
-      </View>
-      {/* </TouchableOpacity> */}
     </View>
   );
 };

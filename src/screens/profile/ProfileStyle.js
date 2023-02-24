@@ -8,7 +8,6 @@ export default StyleSheet.create({
   container: {
     paddingHorizontal: wp(5),
     paddingTop: hp(12),
-    display: 'flex',
     flexDirection: 'row',
   },
   profileView: {

@@ -1,4 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+const jwtDecode = require('jwt-decode');
 
 import endPoints from '../config';
 const initialState = {
@@ -8,12 +9,13 @@ const initialState = {
   userToken: {},
   userTokenGettingError: false,
   userTokenGettingLoading: false,
+  formInput: {},
+  employeeDetails: {},
 };
 
 export const getUserToken = createAsyncThunk(
   'auth/getuserToken',
   async formInput => {
-    console.log('formInput:---------------------------------', formInput);
     try {
       const LoginUrl = endPoints.authTokenAPI;
       return fetch(LoginUrl, {
@@ -25,19 +27,13 @@ export const getUserToken = createAsyncThunk(
         body: JSON.stringify(formInput),
       }).then(async result => {
         let data = await result.json();
-        console.log(
-          'result:================================================',
-          data,
-        );
+
+        const responsetoken = data.token;
         const {response = {}, status} = result || {};
         if (status === 200) {
           // await AsyncStorage.setItem('accessToken', response?.token);
-          console.log(
-            'response:---------------------------------------------------------',
-            status,
-            response,
-          );
-          return Promise.resolve(response);
+
+          return Promise.resolve({data, formInput});
         } else {
           const {data} = response || {};
 
@@ -66,7 +62,11 @@ const loginSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getUserToken.fulfilled, (state, action) => {
-      state.userToken = action.payload;
+      state.userToken = action.payload.data.token;
+      state.formInput = action.payload.formInput;
+      const decodedData = jwtDecode(state.userToken);
+      console.log('decodedData:', decodedData);
+      state.employeeDetails = decodedData;
       state.isLoading = false;
       state.isLoggedIn = true;
     });

@@ -193,7 +193,7 @@ const UserProfile = () => {
       ) : null}
 
       <FlatList
-        data={allEmpData}
+        data={employeeData}
         key={numValue}
         numColumns={numValue}
         keyExtractor={item => item.id}

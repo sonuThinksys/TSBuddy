@@ -34,6 +34,25 @@ const Attendence = () => {
     },
   ];
 
+  const date = new Date();
+  const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
+  const presentDate = String(date.getDate()).padStart(2, '0');
+  const presentMonth = date.toLocaleString('default', {month: 'long'});
+  const presentYear = date.getFullYear();
+  const currentDayIndex = date.getDay();
+  const currentDay = days[currentDayIndex];
+
+  const finalTodayDate = `${presentDate}, ${presentMonth}`;
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -42,7 +61,8 @@ const Attendence = () => {
         style={{height: '100%', width: '100%'}}>
         <View style={styles.secondContainer}>
           <View>
-            <Text style={styles.monthText}>09 January Monday</Text>
+            <Text style={styles.monthText}>{finalTodayDate}</Text>
+            <Text style={styles.dayText}>{currentDay}</Text>
           </View>
           <View style={styles.reportView}>
             <View style={styles.weekliyTextView}>

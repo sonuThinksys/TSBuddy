@@ -83,12 +83,21 @@ const ApplyLeave = () => {
   };
 
   const fromCalenderConfirm = date => {
-    // const today = new Date();
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
 
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
+    // console.log('finalTodayDate:', finalTodayDate);
+
+    if (toDate.toDateObj) {
+      const diffInMs = toDate.toDateObj.getTime() - date.getTime();
+      const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
+      setTotalNumberOfLeaveDays(diffInDays);
+    }
+
+    // const totalDays=+presentDate
+
     setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     fromOnCancel();
   };
@@ -139,9 +148,10 @@ const ApplyLeave = () => {
     rightOnPress,
     rightDropdown,
     leftDropdown,
+    zIndex,
   }) => {
     return (
-      <View style={[styles.fromToContainer]}>
+      <View style={[styles.fromToContainer, {zIndex}]}>
         {leftDropdown ? (
           <View style={styles.fromContainer}>
             <Text style={styles.fromText}>{leftLabel}</Text>
@@ -281,29 +291,44 @@ const ApplyLeave = () => {
     </View>
   );
 
+  const renderButtonText = option => {
+    return (
+      <View
+        style={{
+          // paddingLeft: 8,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={{fontSize: 16}}>{option}</Text>
+      </View>
+    );
+  };
+
   const applyLeave = () => {};
   return (
     <View style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
 
-      <DropDown
-        field="country"
-        value={typeState.type}
-        label="Type:"
-        state={typeState}
-        setState={setTypeValue}
-        fieldOpen="typeOpen"
-        list={holidayTypeOptions || []}
-        // setFirstSelected={setFirstSelected}
-        maxHeight={20}
-        styles={styles}
-        // maxHeight={styles.dropDownHeightStyle}
-        containerStyle={{
-          marginHorizontal: '5%',
-        }}
-        display={'flex'}
-      />
-      {/* // ) : null} */}
+      <View style={{zIndex: 1000}}>
+        <DropDown
+          field="country"
+          value={typeState.type}
+          label="Type:"
+          state={typeState}
+          setState={setTypeValue}
+          fieldOpen="typeOpen"
+          list={holidayTypeOptions || []}
+          // setFirstSelected={setFirstSelected}
+          maxHeight={20}
+          styles={styles}
+          // maxHeight={styles.dropDownHeightStyle}
+          containerStyle={{
+            marginHorizontal: '5%',
+          }}
+          display={'flex'}
+        />
+      </View>
+
       <View style={styles.mainPart}>
         <View style={[styles.formContainer]}>
           {card({
@@ -317,8 +342,10 @@ const ApplyLeave = () => {
             rightOnPress: showToDatePicker,
             leftText: fromDate.fromDateStr,
             rightText: toDate.toDateStr,
+            zIndex: 1000,
           })}
           {card({
+            zIndex: 1000,
             leftLabel: 'Created Date',
             rightLabel: 'Half Day',
             selectableRight: true,
@@ -326,13 +353,9 @@ const ApplyLeave = () => {
             iconRight: MonthImages.DropDownIcon,
             rightText: 'None',
             rightDropdown: (
-              <View
-                style={{
-                  // marginHorizontal: '5%',
-                  // zIndex: -5,
-                  zIndex: 99999,
-                }}>
+              <View>
                 <ModalDropdown
+                  renderButtonText={renderButtonText}
                   // renderRightComponent={
                   //   <Image
                   //     source={MonthImages.DropDownIcon}
@@ -400,6 +423,7 @@ const ApplyLeave = () => {
             ),
           })}
           {card({
+            zIndex: 1000,
             leftLabel: 'Leave Type',
             rightLabel: 'Number of Days',
             selectableLeft: true,
@@ -422,8 +446,9 @@ const ApplyLeave = () => {
                   options={leaveTypes}
                   dropdownStyle={{
                     width: '45%',
-                    paddingLeft: 10,
+                    paddingLeft: 6,
                   }}
+                  animated={true}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
                     setLeaveType(itemName);

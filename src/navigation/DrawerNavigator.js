@@ -5,24 +5,24 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {DrawerActions, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Icon} from 'react-native-vector-icons/Ionicons';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
 import SalarySlip from 'screens/salarySlip/SalarySlip';
-import {loginStatus} from 'Auth/LoginSlice';
 import {useDispatch} from 'react-redux';
-import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
-import LeavesStackNavigator from 'navigators/LeaveStackNavigators';
 import Header from 'component/header/Header';
 import UserProfile from 'component/useProfile/UserProfile';
+import RequestLunch from 'screens/requestLunch/RequestLunch';
+import UserDetail from 'component/useProfile/UserDetail';
+import SalaryDetail from 'screens/salarySlip/SalaryDetail';
+import ApplyLeave from 'screens/leaves/ApplyLeave';
+import LeaveDetails from 'screens/leaves/LeaveDetails';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -32,29 +32,114 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 
+const drawerOption = ({
+  label,
+  headerIconName,
+  navigation,
+  showDrawer = true,
+  showHeaderRight = true,
+}) => {
+  return {
+    label: () => <Text>{label}</Text>,
+    headerShown: true,
+    headerLeft: showDrawer
+      ? props => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.openDrawer();
+            }}>
+            <Image
+              source={MonthImages.DrwaerMenu}
+              style={{height: 22, width: 22}}
+            />
+          </TouchableOpacity>
+        )
+      : null,
+    headerStyle: {backgroundColor: Colors.darkBlue},
+    headerTintColor: Colors.white,
+    headerTitle: () => (
+      <TouchableOpacity>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              textAlign: 'center',
+              marginLeft:
+                Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
+              //paddingTop: hp(0.5),
+              fontSize: 16,
+              fontWeight: 'bold',
+              marginRight: wp(2),
+            }}>
+            {label}
+          </Text>
+          {/* {headerIconName ? (
+            <Image source={headerIconName} style={{height: 20, width: 20}} />
+          ) : null} */}
+        </View>
+      </TouchableOpacity>
+    ),
+    headerRight: showHeaderRight
+      ? () => (
+          <TouchableOpacity>
+            <Header />
+          </TouchableOpacity>
+        )
+      : null,
+  };
+};
+
 const HomeStackScreen = ({navigation}) => {
+  const dispatch = useDispatch();
   return (
     <HomeStack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-        headerStyle: {backgroundColor: 'red'},
-        headerTintColor: 'white',
-        headerTitleStyle: {fontWeight: 'bold'},
-      }}>
+      initialRouteName="HomeDashboard"
+      // screenOptions={() => {
+      //   return {
+      //     headerShown: false,
+      //     // headerStyle: {backgroundColor: 'red'},
+      //     // headerTintColor: 'white',
+      //     // headerTitleStyle: {fontWeight: 'bold'},
+      //   };
+      // }}
+      headerMode="none">
       <HomeStack.Screen
         name="home"
         component={Home}
-        options={{
-          title: 'overview',
-          // headerLeft: () => (
-          //   <Icon.Button
-          //     name="ios-menu"
-          //     size={25}
-          //     backgroundColor="pink"
-          //     onPress={() => navigation.openDrawer()}></Icon.Button>
-          // ),
-        }}
+        options={drawerOption({
+          label: 'Home',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        // options={{
+        //   headerShown: true,
+        //   headerLeft: () => {
+        //     return <Text>fgfgdfgfdg</Text>;
+        //   },
+        // }}
+      />
+      <HomeStack.Screen
+        name="RequestLunch"
+        component={RequestLunch}
+        options={{headerShown: false}}
+        // options={drawerOption({
+        //   label: 'Request Lunch',
+        //   headerIconName: MonthImages.info_scopy,
+        // })}
+      />
+      <HomeStack.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{headerShown: false}}
+      />
+      <HomeStack.Screen
+        name="UserDetail"
+        component={UserDetail}
+        options={{headerShown: false}}
       />
     </HomeStack.Navigator>
   );
@@ -62,32 +147,48 @@ const HomeStackScreen = ({navigation}) => {
 
 const AttendenceStackScreen = ({navigation}) => {
   return (
-    <AttendenceStack.Navigator
-      //  initialRouteName="Attendence"
-      screenOptions={{headerShown: false}}>
-      <AttendenceStack.Screen name="attendence" component={Attendence} />
-      {/* <Stack.Screen name="Holidays" component={Holidays} /> */}
+    <AttendenceStack.Navigator screenOptions={{headerShown: false}}>
+      <AttendenceStack.Screen
+        options={drawerOption({
+          label: 'Attendence',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="attendence"
+        component={Attendence}
+      />
     </AttendenceStack.Navigator>
   );
 };
 
 const ProfileStackScreen = ({navigation}) => {
   return (
-    <ProfileStack.Navigator
-      //  initialRouteName="Profile"
-      screenOptions={{headerShown: false}}>
-      <ProfileStack.Screen name="profile" component={Profile} />
+    <ProfileStack.Navigator screenOptions={{headerShown: false}}>
+      <ProfileStack.Screen
+        options={drawerOption({
+          label: 'Profile',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="profile"
+        component={Profile}
+      />
     </ProfileStack.Navigator>
   );
 };
 
 const HolidaysStackScreen = ({navigation}) => {
   return (
-    <HolidaysStack.Navigator
-      // initialRouteName="Holidays"
-      screenOptions={{headerShown: false}}>
-      <HolidaysStack.Screen name="holidays" component={Holidays} />
-      {/* <Stack.Screen name="Leaves" component={Leaves} /> */}
+    <HolidaysStack.Navigator screenOptions={{headerShown: false}}>
+      <HolidaysStack.Screen
+        options={drawerOption({
+          label: 'Holidays',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="holidays"
+        component={Holidays}
+      />
     </HolidaysStack.Navigator>
   );
 };
@@ -95,64 +196,69 @@ const HolidaysStackScreen = ({navigation}) => {
 const LeavesStackScreen = ({navigation}) => {
   return (
     <LeavesStack.Navigator
-      //  initialRouteName="Leaves"
+      initialRouteName="leaves"
       screenOptions={{headerShown: false}}>
-      <LeavesStack.Screen name="leaves" component={Leaves} />
-      {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
+      <LeavesStack.Screen
+        options={drawerOption({
+          label: 'Leaves',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="leaves"
+        component={Leaves}
+      />
+      <LeavesStack.Screen
+        options={drawerOption({
+          label: 'Leave Details',
+          showDrawer: false,
+          showHeaderRight: false,
+          // headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="leaveDetails"
+        component={LeaveDetails}
+      />
+      <LeavesStack.Screen
+        options={drawerOption({
+          label: 'Apply Leave',
+          showDrawer: false,
+          showHeaderRight: false,
+          // headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="ApplyLeave"
+        component={ApplyLeave}
+      />
     </LeavesStack.Navigator>
   );
 };
 
 const SalarySlipScreen = ({navigation}) => {
   return (
-    <SalarySlipStack.Navigator
-      //  initialRouteName="SalarySlip"
-      screenOptions={{headerShown: false}}>
-      <SalarySlipStack.Screen name="salarySlip" component={SalarySlip} />
-      {/* <Stack.Screen name="SalarySlip" component={SalarySlip} /> */}
+    <SalarySlipStack.Navigator screenOptions={{headerShown: false}}>
+      <SalarySlipStack.Screen
+        options={drawerOption({
+          label: 'Salary Slip',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name="salarySlip"
+        component={SalarySlip}
+      />
+      <SalarySlipStack.Screen
+        name="SalaryDetail"
+        component={SalaryDetail}
+        options={{headerShown: false}}
+      />
     </SalarySlipStack.Navigator>
   );
 };
+
 const Logout = () => {
   return <Text>Logout</Text>;
 };
 
 function DrawerNavigator({navigation}) {
-  const drawerOption = ({label, headerIconName}) => {
-    return {
-      label: ({label}) => <Text>{label}</Text>,
-
-      headerTitle: () => (
-        <TouchableOpacity>
-          <View style={{display: 'flex', flexDirection: 'row'}}>
-            <Text
-              style={{
-                color: 'white',
-                textAlign: 'center',
-                marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                //paddingTop: hp(0.5),
-                fontSize: 16,
-                fontWeight: 'bold',
-                marginRight: wp(2),
-              }}>
-              {label}
-            </Text>
-            {headerIconName ? (
-              <Image source={headerIconName} style={{height: 20, width: 20}} />
-            ) : null}
-          </View>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-          <Header />
-        </TouchableOpacity>
-      ),
-    };
-  };
-
-  const dispatch = useDispatch();
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}
@@ -167,6 +273,7 @@ function DrawerNavigator({navigation}) {
           // alignItems: 'center',
           // paddingLeft: 0,
         },
+        headerShown: false,
         headerStyle: {
           backgroundColor: '#1b5583',
           height: 55,
@@ -188,168 +295,16 @@ function DrawerNavigator({navigation}) {
       <Drawer.Screen
         name="Home"
         options={{
-          drawerLabel: '',
-
-          drawerIcon: ({tintColor}) => (
-            <View style={{}}>
-              <Image
-                source={MonthImages.HomeImage}
-                style={{height: 50, width: 50}}
-              />
-              <Text
-                style={{
-                  color: 'white',
-                  paddingTop: hp(1),
-                  textAlign: 'center',
-                  fontWeight: '600',
-                  fontSize: 16,
-                }}>
-                Home
-              </Text>
-            </View>
-          ),
-
-          headerTitle: () => (
-            <TouchableOpacity>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                    //paddingTop: hp(0.5),
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    marginRight: wp(2),
-                  }}>
-                  Home
-                </Text>
-                <Image
-                  source={MonthImages.info_scopy}
-                  style={{height: 20, width: 20}}
-                />
-              </View>
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              {/* <Image
-                source={MonthImages.searchIconwhite}
-                style={{
-                  height: 25,
-                  width: 25,
-                  marginRight: wp(5),
-                  color: 'white',
-                }}
-              /> */}
-              <Header />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
         component={HomeStackScreen}
       />
 
-      <Drawer.Screen
-        name="Profile"
-        options={drawerOption({
-          label: 'profile',
-        })}
-        component={ProfileStackScreen}
-      />
-      <Drawer.Screen
-        name="Attendence"
-        options={drawerOption({
-          label: 'Attendence',
-          headerIconName: MonthImages.info_scopy,
-        })}
-        component={AttendenceStackScreen}
-      />
-      <Drawer.Screen
-        name="Holidays"
-        options={drawerOption({
-          label: 'Holidays',
-        })}
-        component={HolidaysStackScreen}
-      />
-      <Drawer.Screen
-        name="Leaves"
-        options={props => {
-          return {
-            headerShown: false,
-            drawerLabel: '',
-            title: 'Leaves',
-            drawerIcon: ({tintColor}) => (
-              <View>
-                <Image
-                  source={MonthImages.leavesImage}
-                  // style={[styles.icon, { tintColor: tintColor }]}
-                  style={{height: 50, width: 50}}
-                />
-                <Text
-                  style={{
-                    color: 'white',
-                    paddingTop: hp(1),
-                    textAlign: 'center',
-                    fontWeight: '600',
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    marginRight: wp(2),
-                  }}>
-                  Leaves
-                </Text>
-              </View>
-            ),
-
-            headerTitle: props => {
-              return (
-                <TouchableOpacity>
-                  <View style={{display: 'flex', flexDirection: 'row'}}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        textAlign: 'center',
-                        marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
-                        //paddingTop: hp(0.5),
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                      }}>
-                      Leave
-                    </Text>
-                    <Image
-                      source={MonthImages.info_scopy}
-                      style={{height: 20, width: 20}}
-                    />
-                  </View>
-                </TouchableOpacity>
-              );
-            },
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-                <Image
-                  source={MonthImages.searchIconwhite}
-                  style={{
-                    height: 25,
-                    width: 25,
-                    marginRight: 20,
-                    color: 'white',
-                  }}
-                />
-              </TouchableOpacity>
-            ),
-          };
-        }}
-        component={LeavesStackNavigator}
-      />
-      <Drawer.Screen
-        name="SalarySlip"
-        options={drawerOption({
-          label: 'SalarySlip',
-          headerIconName: MonthImages.info_scopy,
-        })}
-        component={SalarySlipScreen}
-      />
+      <Drawer.Screen name="Profile" component={ProfileStackScreen} />
+      <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
+      <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
+      <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
+      <Drawer.Screen name="SalarySlip" component={SalarySlipScreen} />
 
       <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>

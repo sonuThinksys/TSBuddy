@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -19,21 +19,47 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {getholidayDataIWithImage} from 'redux/dataSlice';
 import {Colors} from 'colors/Colors';
 import CustomModal from 'components/CustomModal';
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
-  const {
-    nameOfHolidays,
-    dateOfHolidays,
-    daysOfHoliday,
-    description,
-    imageOfHoliday,
-    id,
-    holidaysSetShowModal,
-    // holidaysShowModal,
-  } = HolidaysData;
+  const {description, holidayDate, newDateFormate, holidaysSetShowModal} =
+    HolidaysData;
+  const [image, setImage] = useState('');
+  const [definition, setDefinition] = useState('');
+  const [days, setDays] = useState('');
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getholidayDataIWithImage());
+  }, []);
 
-  console.log('first time:-------', holidaysShowModal);
+  const holidayDataIWithImage = useSelector(
+    state => state.dataReducer.holidayDataIWithImage,
+  );
+
+  let daysArray = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  let day = new Date(holidayDate).getDay();
+  let dayName = daysArray[day];
+
+  useEffect(() => {
+    holidayDataIWithImage &&
+      holidayDataIWithImage.length &&
+      holidayDataIWithImage.map(el => {
+        if (el.nameOfHolidays === description) {
+          setImage(el.imageOfHoliday);
+          setDefinition(el.descriptions);
+        }
+      });
+  }, [holidayDataIWithImage]);
+
   return (
     <>
       {holidaysShowModal ? (
@@ -60,18 +86,16 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
           >
             <View style={styles.container}>
               <ImageBackground
-                source={imageOfHoliday}
+                source={image}
                 resizeMode="contain"
                 style={{height: '100%', width: '100%'}}>
                 <View style={styles.secondContainer}>
-                  <Text style={{color: Colors.darkBlue}}>{dateOfHolidays}</Text>
-                  <Text style={{color: Colors.darkBlue}}>{daysOfHoliday}</Text>
+                  <Text style={{color: Colors.darkBlue}}>{newDateFormate}</Text>
+                  <Text style={{color: Colors.darkBlue}}>{dayName}</Text>
                 </View>
                 <View style={styles.thirdView}>
-                  <Text style={styles.textline}>{nameOfHolidays}</Text>
-                  <Text style={{opacity: 0.6, fontSize: 16}}>
-                    {description}
-                  </Text>
+                  <Text style={styles.textline}>{description}</Text>
+                  <Text style={{opacity: 0.6, fontSize: 16}}>{definition}</Text>
                 </View>
               </ImageBackground>
             </View>

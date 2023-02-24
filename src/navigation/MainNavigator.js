@@ -2,21 +2,22 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './AuthNavigator';
-
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from '../screens/splashScreen/SplashScreen';
 import NavigationService from './NavigationService';
 import DrawerNavigator from './DrawerNavigator';
-import UserDetail from 'component/useProfile/UserDetail';
-import UserProfile from 'component/useProfile/UserProfile';
-import RequestLunch from 'screens/requestLunch/RequestLunch';
+
 //import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 const Stack = createNativeStackNavigator();
 //const AppStack = createSharedElementStackNavigator();
 
 const MainNavigator = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  //const isLoggedIn = false;
+  console.log('isLoggedIn:', isLoggedIn);
+
+  // ============================================================================================
+
+  // ============================================================================================
   return (
     <NavigationContainer
       ref={ref => NavigationService.setTopLevelNavigator(ref)}>
@@ -29,22 +30,6 @@ const MainNavigator = () => {
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="UserDetail"
-          component={UserDetail}
-          options={{headerShown: false}}
-        />
-
-        <Stack.Screen
-          name="RequestLunch"
-          component={RequestLunch}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

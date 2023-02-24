@@ -95,6 +95,7 @@ import whiteBlank from 'assets/allImage/topBg.imageset/whiteBlank.png';
 import LoginUser from 'assets/mipmap/loginUser.imageset/user.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
+import DrwaerMenu from 'assets/allImage/Menu.imageset/DrwaerMenu.png';
 
 export const MonthImages = {
   janImage: janS,
@@ -180,4 +181,5 @@ export const MonthImages = {
   LoginUser: LoginUser,
   LoginCheck: LoginCheck,
   fingerPrint: fingerPrint,
+  DrwaerMenu: DrwaerMenu,
 };

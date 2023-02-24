@@ -1,31 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-
-import {
-  View,
-  Text,
-  ImageBackground,
-  TextView,
-  StyleSheet,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  BackHandler,
-  FlatList,
-} from 'react-native';
+import {View, Text, TextInput, Image, TouchableOpacity} from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
 import styles from './LoginStyle';
 import TouchID from 'react-native-touch-id';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import backgoundVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
-import LoginUser from '../assets/mipmap/loginUser.imageset/user.png';
-import LoginLock from 'assets/mipmap/loginLock.imageset/lock.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import {loginStatus} from './LoginSlice';
@@ -34,15 +18,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
-  // const [inputData, setInputData] = useState('');
-  const [username, setUserName] = useState('gupta.radhika');
-  const [password, setPassword] = useState('radhikathinksys@123');
-
-  console.log(
-    'username,password:-----------------------------',
-    password,
-    username,
-  );
+  // const [username, setUserName] = useState('gupta.radhika');
+  // const [password, setPassword] = useState('radhikathinksys@123');
+  const [username, setUserName] = useState('pant.amit');
+  const [password, setPassword] = useState('thinksys@321');
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -60,17 +39,13 @@ const Login = () => {
     TouchID.isSupported(optionalConfigObject)
       .then(biometryType => {
         if (biometryType === 'FaceID') {
-          // console.log('FaceID is supported.');
         } else {
-          // console.log('TouchID is supported.');
           if (isAuth) {
-            // console.log('fgfdkgj:-', isAuth);
             dispatch(loginStatus(true));
             // return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
-              // console.log('sucess:--------------', success);
               setIsAuth(success);
             })
             .catch(err => {
@@ -86,18 +61,18 @@ const Login = () => {
       });
   };
 
-  const textInputData = [
-    {
-      placeholderText: 'username',
-      icon: MonthImages.LoginUser,
-      id: '1',
-    },
-    {
-      placeholderText: 'LDAP Password',
-      icon: MonthImages.LoginLock,
-      id: '2',
-    },
-  ];
+  // const textInputData = [
+  //   {
+  //     placeholderText: 'username',
+  //     icon: MonthImages.LoginUser,
+  //     id: '1',
+  //   },
+  //   {
+  //     placeholderText: 'LDAP Password',
+  //     icon: MonthImages.LoginLock,
+  //     id: '2',
+  //   },
+  // ];
 
   const onPressLogin = () => {
     dispatch(getUserToken({username, password}));

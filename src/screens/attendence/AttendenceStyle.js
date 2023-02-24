@@ -22,7 +22,14 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginHorizontal: wp(10),
-    marginVertical: hp(1.5),
+    // marginVertical: hp(1.5),
+  },
+  dayText: {
+    color: '#FFE4E1',
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginHorizontal: wp(10),
   },
   reportView: {borderColor: 'white', borderTopWidth: 1, flexDirection: 'row'},
   weekliyTextView: {

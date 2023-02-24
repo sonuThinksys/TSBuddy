@@ -9,15 +9,23 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getHolidaysData} from 'redux/dataSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
+import moment from 'moment';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getHolidaysData());
+    dispatch(getHolidaysData(token));
   }, []);
   console.log('holidaysShowModal:---------------', holidaysShowModal);
+  const token = useSelector(state => state.auth.userToken);
+  console.log('holidays token gor ', token);
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
+
+  console.log(
+    'holidaysData in screen:----------------------------------------',
+    holidaysData,
+  );
 
   const data1 = [
     {
@@ -35,7 +43,7 @@ const Holidays = () => {
     <View style={{paddingTop: hp(1), flex: 1}}>
       <FlatList
         data={holidaysData}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return renderItem(
             item,
@@ -45,6 +53,7 @@ const Holidays = () => {
             dispatch,
             setHolidaysData,
             HolidaysData,
+            moment,
           );
         }}
       />
@@ -64,14 +73,7 @@ const Holidays = () => {
 };
 
 const renderItem = (
-  {
-    nameOfHolidays,
-    dateOfHolidays,
-    daysOfHoliday,
-    description,
-    imageOfHoliday,
-    id,
-  },
+  {description, holidayDate},
   index,
   holidaysShowModal,
   holidaysSetShowModal,
@@ -79,25 +81,19 @@ const renderItem = (
   setHolidaysData,
   HolidaysData,
 ) => {
-  // console.log('clicke holidaysShowModal:--------', holidaysShowModal);
-  console.log('clicke data:--------', HolidaysData);
+  const newDateFormate = moment(holidayDate).format(`DD-MMM-YYYY`);
+
   return (
     <TouchableOpacity
       onPress={() => {
         holidaysSetShowModal(true);
         setHolidaysData({
           ...HolidaysData,
-          nameOfHolidays,
-          dateOfHolidays,
-          daysOfHoliday,
           description,
-          imageOfHoliday,
-          id,
+          holidayDate,
+          newDateFormate,
           holidaysSetShowModal,
-          //  holidaysShowModal,
         });
-
-        console.log('"hello clicked', holidaysShowModal);
       }}>
       {holidaysShowModal ? (
         <HolidayModal
@@ -109,11 +105,11 @@ const renderItem = (
       <View style={styles.flatelistView}>
         <View style={styles.flatelistView1}>
           <Text style={{textAlign: 'center', color: 'white', fontSize: 18}}>
-            {dateOfHolidays}
+            {newDateFormate}
           </Text>
         </View>
         <View style={styles.flatelistView2}>
-          <Text style={{fontWeight: 'bold'}}>{nameOfHolidays}</Text>
+          <Text style={{fontWeight: 'bold'}}>{description}</Text>
         </View>
       </View>
     </TouchableOpacity>
