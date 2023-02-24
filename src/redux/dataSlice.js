@@ -25,6 +25,9 @@ const initialState = {
   leavesData: [],
   leavesDataError: undefined,
   isLeaveDataLoading: false,
+  employeeProfile: {},
+  employeeProfileLoading: false,
+  employeeProfileError: false,
 };
 
 // ============================================================================================
@@ -80,13 +83,13 @@ export const getLeaveDetails = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
+
     return axios(config)
       .then(async response => {
         const {data, status} = response;
         console.log('data:', data);
 
         if (status === 200) {
-          // return Promise.resolve({page:body.page, status: walkthroughStatus, data: newData });
           return Promise.resolve(data);
         } else {
           return Promise.reject(new Error(ERROR));
@@ -105,6 +108,46 @@ export const getLeaveDetails = createAsyncThunk(
       });
   },
 );
+
+export const getEmployeeProfileData = createAsyncThunk(
+  'dataReducer/employeeProfile',
+  async ({token, employeeID}) => {
+    console.log('employeid:0-----------------------', employeeID);
+    var config = {
+      method: 'get',
+      url: `${endPoints.employeeProfileAPI}${employeeID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    console.log('config . url:---------------------------', config.url);
+    return axios(config)
+      .then(async response => {
+        console.log('response:------------------------------', response);
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error(ERROR));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+// return Promise.resolve({page:body.page, status: walkthroughStatus, data: newData });
 
 // ========================================================================================
 
@@ -239,6 +282,21 @@ const dataSlice = createSlice({
       state.holidayDataWithImageLoading = false;
       state.holidayDataIWithImage = [];
       state.holidayDataWithImageError = action.payload;
+    });
+
+    //fgfgfg
+    builder.addCase(getEmployeeProfileData.pending, state => {
+      state.employeeProfileLoading = true;
+    });
+    builder.addCase(getEmployeeProfileData.fulfilled, (state, action) => {
+      state.employeeProfileLoading = false;
+      state.employeeProfile = action.payload;
+      state.employeeProfileError = undefined;
+    });
+    builder.addCase(getEmployeeProfileData.rejected, (state, action) => {
+      state.employeeProfileLoading = false;
+      state.employeeProfile = [];
+      state.employeeProfileError = action.payload;
     });
   },
 });

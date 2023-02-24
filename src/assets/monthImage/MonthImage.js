@@ -96,8 +96,12 @@ import LoginUser from 'assets/mipmap/loginUser.imageset/user.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import DrwaerMenu from 'assets/allImage/Menu.imageset/DrwaerMenu.png';
-
+import download from 'assets/allImage/download.imageset/download.png';
+import plus from 'assets/allImage/plus.imageset/plus.png';
+import minus from 'assets/allImage/minus.imageset/minus.png';
 export const MonthImages = {
+  plus: plus,
+  minus: minus,
   janImage: janS,
   janIcon: Jan,
   febImage: febS,
@@ -182,4 +186,5 @@ export const MonthImages = {
   LoginCheck: LoginCheck,
   fingerPrint: fingerPrint,
   DrwaerMenu: DrwaerMenu,
+  download: download,
 };

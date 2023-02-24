@@ -26,67 +26,71 @@ const SalarySlip = ({navigation}) => {
   const dispatch = useDispatch();
   const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
   const salarySlipData = useSelector(state => state.dataReducer.salarySlipData);
+  const [newObjectData, setnewObjectData] = useState([]);
+  const [salaryDetailsData, setSalaryDetailsData] = useState({});
+
   useEffect(() => {
+    const newObjectDataaa = [];
     salarySlipData &&
       salarySlipData.length &&
       salarySlipData.map(el => {
+        const newdata = {...el};
         if (el.month === 'January') {
-          const newdata = {...el};
-          console.log('newdata:----------------------', newdata);
-          Object.assign(newdata, {monthImage: 'MonthImages.janImage'});
-          Object.assign(newdata, {monthIcon: ' MonthImages.janIcon'});
+          Object.assign(newdata, {monthImage: MonthImages.janImage});
+          Object.assign(newdata, {monthIcon: MonthImages.janIcon});
+        } else if (el.month === 'February') {
+          Object.assign(newdata, {monthImage: MonthImages.febImage});
+          Object.assign(newdata, {monthIcon: MonthImages.febIcon});
+        } else if (el.month === 'March') {
+          Object.assign(newdata, {monthImage: MonthImages.marchImage});
+          Object.assign(newdata, {monthIcon: MonthImages.marchIcon});
+        } else if (el.month === 'April') {
+          Object.assign(newdata, {monthImage: MonthImages.aprilImage});
+          Object.assign(newdata, {monthIcon: MonthImages.aprilIcon});
+        } else if (el.month === 'May') {
+          Object.assign(newdata, {monthImage: MonthImages.mayImage});
+          Object.assign(newdata, {monthIcon: MonthImages.mayIcon});
+        } else if (el.month === 'June') {
+          Object.assign(newdata, {monthImage: MonthImages.junImage});
+          Object.assign(newdata, {monthIcon: MonthImages.junIcon});
+        } else if (el.month === 'Jully') {
+          Object.assign(newdata, {monthImage: MonthImages.julyImage});
+          Object.assign(newdata, {monthIcon: MonthImages.julyIcon});
+        } else if (el.month === 'August') {
+          Object.assign(newdata, {monthImage: MonthImages.augImage});
+          Object.assign(newdata, {monthIcon: MonthImages.augIcon});
+        } else if (el.month === 'September') {
+          Object.assign(newdata, {monthImage: MonthImages.sepImage});
+          Object.assign(newdata, {monthIcon: MonthImages.sepIcon});
+        } else if (el.month === 'October') {
+          Object.assign(newdata, {monthImage: MonthImages.octImage});
+          Object.assign(newdata, {monthIcon: MonthImages.octIcon});
+        } else if (el.month === 'November') {
+          Object.assign(newdata, {monthImage: MonthImages.novImage});
+          Object.assign(newdata, {monthIcon: MonthImages.novIcon});
+        } else if (el.month === 'December') {
+          Object.assign(newdata, {monthImage: MonthImages.decImage});
+          Object.assign(newdata, {monthIcon: MonthImages.decIcon});
         }
-        // else if (el.month === 'February') {
-        //   Object.assign(el, {monthImage: MonthImages.febImage});
-        //   Object.assign(el, {monthIcon: MonthImages.febIcon});
-        // } else if (el.month === 'March') {
-        //   Object.assign(el, {monthImage: MonthImages.marchImage});
-        //   Object.assign(el, {monthIcon: MonthImages.marchIcon});
-        // } else if (el.month === 'April') {
-        //   Object.assign(el, {monthImage: MonthImages.aprilImage});
-        //   Object.assign(el, {monthIcon: MonthImages.aprilIcon});
-        // } else if (el.month === 'May') {
-        //   Object.assign(el, {monthImage: MonthImages.mayImage});
-        //   Object.assign(el, {monthIcon: MonthImages.mayIcon});
-        // } else if (el.month === 'June') {
-        //   Object.assign(el, {monthImage: MonthImages.junImage});
-        //   Object.assign(el, {monthIcon: MonthImages.junIcon});
-        // } else if (el.month === 'Jully') {
-        //   Object.assign(el, {monthImage: MonthImages.julyImage});
-        //   Object.assign(el, {monthIcon: MonthImages.julyIcon});
-        // } else if (el.month === 'August') {
-        //   Object.assign(el, {monthImage: MonthImages.augImage});
-        //   Object.assign(el, {monthIcon: MonthImages.augIcon});
-        // } else if (el.month === 'September') {
-        //   Object.assign(el, {monthImage: MonthImages.sepImage});
-        //   Object.assign(el, {monthIcon: MonthImages.sepIcon});
-        // } else if (el.month === 'October') {
-        //   Object.assign(el, {monthImage: MonthImages.octImage});
-        //   Object.assign(el, {monthIcon: MonthImages.octIcon});
-        // } else if (el.month === 'November') {
-        //   Object.assign(el, {monthImage: MonthImages.novImage});
-        //   Object.assign(el, {monthIcon: MonthImages.novIcon});
-        // } else if (el.month === 'December') {
-        //   Object.assign(el, {monthImage: MonthImages.decImage});
-        //   Object.assign(el, {monthIcon: MonthImages.decIcon});
-        // }
+        newObjectDataaa.push(newdata);
       });
+
+    setnewObjectData(newObjectDataaa);
   }, [salarySlipData]);
 
   const keyOfObject = Object.keys(newyearWiseData);
-  console.log('keyOfObject:-------------------', keyOfObject);
 
   useEffect(() => {
     const newObj = {};
-    salarySlipData &&
-      salarySlipData.length &&
-      salarySlipData?.map(val => {
+    newObjectData &&
+      newObjectData.length &&
+      newObjectData?.map(val => {
         newObj[val.year] = newObj[val.year] || [];
         newObj[val.year].push(val);
       });
 
     setnewyearWiseData(newObj);
-  }, [salarySlipData]);
+  }, [newObjectData]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -176,11 +180,12 @@ const SalarySlip = ({navigation}) => {
                               }}> */}
                             <TouchableOpacity
                               onPress={() => {
-                                navigation.navigate('SalaryDetail');
+                                // setSalaryDetailsData(elemnt);
+                                navigation.navigate('SalaryDetail', elemnt);
                               }}>
                               <ImageBackground
                                 resizeMode="contain"
-                                source={MonthImages.janImage}
+                                source={elemnt.monthImage}
                                 style={{height: hp(10), width: '100%'}}>
                                 <View
                                   style={{
@@ -193,7 +198,7 @@ const SalarySlip = ({navigation}) => {
                                     justifyContent: 'center',
                                   }}>
                                   <Image
-                                    source={MonthImages.janIcon}
+                                    source={elemnt.monthIcon}
                                     style={{height: 20, width: 20}}
                                   />
                                 </View>
@@ -208,33 +213,39 @@ const SalarySlip = ({navigation}) => {
                                 </Text>
                               </ImageBackground>
                             </TouchableOpacity>
-                            <View
-                              style={{
-                                backgroundColor: 'white',
-                                paddingVertical: hp(1),
-                                paddingHorizontal: wp(2),
-                                borderRadius: 5,
-                                shadowOpacity: 0.5,
+                            <TouchableOpacity
+                              onPress={() => {
+                                //setSalaryDetailsData(elemnt);
+                                navigation.navigate('SalaryPdf', elemnt);
                               }}>
                               <View
                                 style={{
-                                  backgroundColor: Colors.lightBlue,
-                                  padding: hp(1),
-                                  height: hp(5),
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
+                                  backgroundColor: 'white',
+                                  paddingVertical: hp(1),
+                                  paddingHorizontal: wp(2),
                                   borderRadius: 5,
+                                  shadowOpacity: 0.5,
                                 }}>
-                                <Text
+                                <View
                                   style={{
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    fontSize: 17,
+                                    backgroundColor: Colors.lightBlue,
+                                    padding: hp(1),
+                                    height: hp(5),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: 5,
                                   }}>
-                                  Download
-                                </Text>
+                                  <Text
+                                    style={{
+                                      color: 'white',
+                                      fontWeight: 'bold',
+                                      fontSize: 17,
+                                    }}>
+                                    Download
+                                  </Text>
+                                </View>
                               </View>
-                            </View>
+                            </TouchableOpacity>
                             {/* </View> */}
                           </View>
                         );

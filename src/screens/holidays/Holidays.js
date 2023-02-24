@@ -10,6 +10,7 @@ import {getHolidaysData} from 'redux/dataSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
+import jwt_decode from 'jwt-decode';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
@@ -21,7 +22,13 @@ const Holidays = () => {
   const token = useSelector(state => state.auth.userToken);
   console.log('holidays token gor ', token);
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
-
+  var decoded = jwt_decode(token);
+  console.log(
+    'decode :-----------------------------------------',
+    decoded[
+      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+    ],
+  );
   console.log(
     'holidaysData in screen:----------------------------------------',
     holidaysData,

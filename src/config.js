@@ -5,4 +5,5 @@ export default {
   authTokenAPI: `${API_URL}/Account/login`,
   holidaysAPI: `${API_URL}/Holiday?year=${year}`,
   leaveDetails: `http://10.101.23.48:81/api/Leave/AppliedLeaves?empId=10843`,
+  employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
 };
