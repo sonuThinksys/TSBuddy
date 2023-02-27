@@ -74,7 +74,7 @@ const UserDetail = ({navigation, route}) => {
 
   return (
     <View>
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {/* {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null} */}
 
       <View
         style={{
@@ -182,6 +182,7 @@ const UserDetail = ({navigation, route}) => {
           }}>
           + Add To Contacts
         </Text>
+        {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
         <View
           style={{
             display: 'flex',

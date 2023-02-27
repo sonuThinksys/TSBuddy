@@ -115,6 +115,7 @@ const SalarySlip = ({navigation}) => {
         }}>
         Radhika Gupta
       </Text>
+
       {!isAuthLoggedIn ? (
         <SalarSlipModal />
       ) : (
@@ -164,73 +165,82 @@ const SalarySlip = ({navigation}) => {
                           <View
                             key={index}
                             style={{
-                              paddingHorizontal: wp(1),
-                              width: '33.3%',
+                              width: '31.8%',
+                              marginVertical: hp(0.5),
+                              marginHorizontal: 2.1,
                             }}>
-                            {/* <View
+                            <View
                               style={{
+                                width: '100%',
+                                height: hp(11.15),
+                                marginHorizontal: 3.1,
                                 borderRadius: 5,
-                                // height: hp(18),
-                                // width: '30%',
-                                //  flex: 1,
-                                shadowOpacity: 0.5,
-                                backgroundColor: 'gray',
+                                //  borderWidth: 1,
+                                shadowOpacity: 0.7,
                                 backgroundColor: 'white',
-                                marginRight: wp(3),
-                              }}> */}
-                            <TouchableOpacity
-                              onPress={() => {
-                                // setSalaryDetailsData(elemnt);
-                                navigation.navigate('SalaryDetail', elemnt);
+                                padding: 2,
+                                //  paddingBottom: 1,
                               }}>
-                              <ImageBackground
-                                resizeMode="contain"
-                                source={elemnt.monthImage}
-                                style={{height: hp(10), width: '100%'}}>
-                                <View
+                              <TouchableOpacity
+                                style={{borderRadius: 5}}
+                                onPress={() => {
+                                  navigation.navigate('SalaryDetail', elemnt);
+                                }}>
+                                <ImageBackground
+                                  resizeMode="cover"
+                                  source={elemnt.monthImage}
                                   style={{
-                                    height: 40,
-                                    width: 40,
-                                    backgroundColor: 'blue',
-                                    borderBottomRightRadius: 30,
-                                    borderTopRightRadius: 1,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
+                                    height: hp(10.3),
+                                    borderRadius: 5,
                                   }}>
-                                  <Image
-                                    source={elemnt.monthIcon}
-                                    style={{height: 20, width: 20}}
-                                  />
-                                </View>
-                                <Text
-                                  style={{
-                                    textAlign: 'center',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    fontSize: 24,
-                                  }}>
-                                  January
-                                </Text>
-                              </ImageBackground>
-                            </TouchableOpacity>
+                                  <View
+                                    style={{
+                                      height: 40,
+                                      width: 40,
+                                      backgroundColor: 'blue',
+                                      borderBottomRightRadius: 30,
+                                      borderTopRightRadius: 1,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}>
+                                    <Image
+                                      source={elemnt.monthIcon}
+                                      style={{height: 20, width: 20}}
+                                    />
+                                  </View>
+                                  <Text
+                                    style={{
+                                      textAlign: 'center',
+                                      color: 'white',
+                                      fontWeight: 'bold',
+                                      fontSize: 24,
+                                    }}>
+                                    {elemnt.month}
+                                  </Text>
+                                </ImageBackground>
+                              </TouchableOpacity>
+                            </View>
                             <TouchableOpacity
                               onPress={() => {
-                                //setSalaryDetailsData(elemnt);
                                 navigation.navigate('SalaryPdf', elemnt);
                               }}>
                               <View
                                 style={{
+                                  width: '101%',
+                                  height: hp(6.3),
+                                  // marginTop: hp(1),
+                                  marginHorizontal: 3.0,
                                   backgroundColor: 'white',
+                                  borderRadius: 4,
                                   paddingVertical: hp(1),
                                   paddingHorizontal: wp(2),
-                                  borderRadius: 5,
                                   shadowOpacity: 0.5,
                                 }}>
                                 <View
                                   style={{
                                     backgroundColor: Colors.lightBlue,
-                                    padding: hp(1),
-                                    height: hp(5),
+                                    paddingVertical: hp(1),
+                                    // height: hp(4),
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     borderRadius: 5,
@@ -246,7 +256,6 @@ const SalarySlip = ({navigation}) => {
                                 </View>
                               </View>
                             </TouchableOpacity>
-                            {/* </View> */}
                           </View>
                         );
                       })}
@@ -260,81 +269,5 @@ const SalarySlip = ({navigation}) => {
   );
 };
 
-const renderItems = (item, index) => {
-  console.log('index:--------------------------', index);
-  return (
-    <View
-      key={index}
-      style={{
-        paddingVertical: hp(1),
-        flex: 1,
-      }}>
-      <View
-        style={{
-          borderRadius: 5,
-          height: hp(18),
-          width: wp(33),
-          shadowOpacity: 0.5,
-          backgroundColor: 'gray',
-          backgroundColor: 'white',
-          marginRight: wp(3),
-        }}>
-        <ImageBackground
-          resizeMode="contain"
-          source={MonthImages.janImage}
-          style={{height: hp(11), width: '100%'}}>
-          <View
-            style={{
-              height: 40,
-              width: 40,
-              backgroundColor: 'blue',
-              borderBottomRightRadius: 30,
-              borderTopRightRadius: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              source={MonthImages.janIcon}
-              style={{height: 20, width: 20}}
-            />
-          </View>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: 24,
-            }}>
-            January
-          </Text>
-        </ImageBackground>
-        <View
-          style={{
-            height: hp(6),
-            width: wp(35),
-            backgroundColor: 'white',
-            paddingTop: hp(1),
-            paddingHorizontal: wp(2),
-            // marginHorizontal: wp(1),
-            borderRadius: 5,
-            shadowOpacity: 0.5,
-          }}>
-          <View
-            style={{
-              backgroundColor: Colors.lightBlue,
-              padding: hp(1),
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 5,
-            }}>
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 17}}>
-              Download
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
-
 export default SalarySlip;
+// https://github.com/RadhikaThinksys/TSBuddy/invitations
