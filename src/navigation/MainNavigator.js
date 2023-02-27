@@ -13,7 +13,6 @@ const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  console.log('isLoggedIn:', isLoggedIn);
 
   // ============================================================================================
 

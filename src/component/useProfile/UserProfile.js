@@ -29,13 +29,11 @@ const UserProfile = () => {
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
   const [allEmpData, setEmpData] = useState({});
-  console.log('employeeData:===================', employeeData);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const employeeData = useSelector(state => state.dataReducer.employeeData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
   let b = 'thumbnailS';
-  console.log('allEmpData:---------------+++++++', allEmpData);
   useEffect(() => {
     setEmpData(employeeData);
   }, []);
@@ -50,10 +48,8 @@ const UserProfile = () => {
     if (Array.isArray(allEmpData)) {
       allEmpData.map(data => {
         const nameData = data.nameOfEmployee;
-        console.log('nameData:-----------------------------------', nameData);
         let shouldBeAdded = true;
         for (let i = 0; i < newSplitSearch.length; i++) {
-          console.log('hi radhika fvkdk k');
           if (nameData.includes(newSplitSearch[i])) {
           } else {
             shouldBeAdded = false;
@@ -65,7 +61,6 @@ const UserProfile = () => {
         }
       });
     }
-    console.log('finalArray:-----------------------', finalArray);
     if (str === '') {
       setEmpData(employeeData);
     } else {

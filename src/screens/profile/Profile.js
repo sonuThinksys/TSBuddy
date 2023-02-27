@@ -32,8 +32,6 @@ const Profile = () => {
 
   const profileData = useSelector(state => state.dataReducer.employeeProfile);
 
-  console.log('profileData:---------------------------------', profileData);
-
   const data = [
     {
       image: MonthImages.mailEmp,
@@ -73,10 +71,6 @@ const Profile = () => {
       id: '6',
     },
   ];
-  console.log(
-    'profile-image:---------------------------------------',
-    profileData.image,
-  );
 
   return (
     <>
@@ -116,10 +110,11 @@ const Profile = () => {
               </View>
               <View>
                 <Text style={styles.managerNameText}>
-                  {profileData.managerInfoDto.employeeName}
+                  {/* {profileData.managerInfoDto.employeeName} */}iosfojfno
+                  sjkdfn
                 </Text>
                 <Text style={styles.emailText}>
-                  {profileData.managerInfoDto.companyEmail}
+                  {/* {profileData.managerInfoDto.companyEmail} */}erf ernfe
                 </Text>
                 <View style={styles.socialIconView}>
                   <Image

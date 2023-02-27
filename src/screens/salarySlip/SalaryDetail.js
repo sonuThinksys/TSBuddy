@@ -17,7 +17,6 @@ const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
   const [show, setShow] = useState(false);
   const [secondShow, setSecondShow] = useState(false);
-  console.log('data:------------------------------', data);
   const renderData = [
     {lable: 'Arrear Amount', value: data.arrear_amount},
     {lable: 'Bank Account No', value: data.bank_account_no},

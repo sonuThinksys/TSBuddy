@@ -4,7 +4,7 @@ import {holidayDatawithImage} from '../../db';
 import {salaryData} from '../../slaryData';
 import endPoints from '../config';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import {v4 as uuidv4} from 'uuid';
 
 const initialState = {
   isLoading: true,
@@ -53,7 +53,7 @@ export const getHolidaysData = createAsyncThunk(
         if (status === 200) {
           return Promise.resolve(data);
         } else {
-          return Promise.reject(new Error(ERROR));
+          return Promise.reject(new Error('Something Went Wrong1!'));
         }
       })
       .catch(err => {
@@ -87,12 +87,11 @@ export const getLeaveDetails = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
-        console.log('data:', data);
 
         if (status === 200) {
           return Promise.resolve(data);
         } else {
-          return Promise.reject(new Error(ERROR));
+          return Promise.reject(new Error('Something Went Wrong2!'));
         }
       })
       .catch(err => {
@@ -112,7 +111,6 @@ export const getLeaveDetails = createAsyncThunk(
 export const getEmployeeProfileData = createAsyncThunk(
   'dataReducer/employeeProfile',
   async ({token, employeeID}) => {
-    console.log('employeid:0-----------------------', employeeID);
     var config = {
       method: 'get',
       url: `${endPoints.employeeProfileAPI}${employeeID}`,
@@ -122,15 +120,13 @@ export const getEmployeeProfileData = createAsyncThunk(
       },
     };
 
-    console.log('config . url:---------------------------', config.url);
     return axios(config)
       .then(async response => {
-        console.log('response:------------------------------', response);
         const {data, status} = response;
         if (status === 200) {
           return Promise.resolve(data);
         } else {
-          return Promise.reject(new Error(ERROR));
+          return Promise.reject(new Error('Something Went Wrong3!'));
         }
       })
       .catch(err => {
@@ -163,7 +159,6 @@ export const getEmployeeProfileData = createAsyncThunk(
 //       },
 //     };
 //     const response = await axios(configurations);
-//     console.log('response:', response);
 //     Promise.resolve(response);
 //     // return data;
 //   },
@@ -177,11 +172,9 @@ export const getSalarySlipData = createAsyncThunk(
     fetch('http://localhost:4000/salaryData')
       .then(res => res.json())
       .then(result => {
-        // console.log('result:--------', result);
         return Promise.resolve(result);
       })
       .catch(err => {
-        // console.log('error:=======', err);
         return Promise.reject(err);
       });
     return Promise.resolve(salaryData);
@@ -262,6 +255,8 @@ const dataSlice = createSlice({
     });
     builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
       state.isLeaveDataLoading = false;
+      // const dataWithId = action.payload.map(item => ({...item, id: uuidv4()}));
+
       state.leavesData = action.payload;
       state.leavesDataError = undefined;
     });

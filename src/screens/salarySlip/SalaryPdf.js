@@ -4,7 +4,6 @@ import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view
 import {MonthImages} from 'assets/monthImage/MonthImage';
 export default function SalaryPdf() {
   const [increment, setIncrement] = React.useState(0);
-  console.log('increment:---------------------------', increment);
   return (
     <View style={styles.container}>
       <View

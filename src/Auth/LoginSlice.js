@@ -65,7 +65,6 @@ const loginSlice = createSlice({
       state.userToken = action.payload.data.token;
       state.formInput = action.payload.formInput;
       const decodedData = jwtDecode(state.userToken);
-      console.log('decodedData:', decodedData);
       state.employeeDetails = decodedData;
       state.isLoading = false;
       state.isLoggedIn = true;

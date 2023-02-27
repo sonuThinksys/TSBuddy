@@ -31,7 +31,6 @@ const UserDetail = ({navigation, route}) => {
   const [empDetail, setClickData] = useState({});
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
 
-  console.log('isShowModall', isShowModall);
   const dialCall = () => {
     setClickData({
       id: id,

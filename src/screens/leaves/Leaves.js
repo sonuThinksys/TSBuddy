@@ -9,148 +9,15 @@ import styles from './LeaveStyles';
 import {getLeaveDetails} from 'redux/dataSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDIwNjlkNC1hYTExLTQ5ZjktOTc4Ni0wMGM1NGVkZjdjMGUiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc3MDYxNjcwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.xgn-cvGjakJqg_SEkIoRBADL_hNuDzH1czAoSrivHOc';
-
 const Leaves = ({navigation}) => {
-  const leaveData = useSelector(state => state.dataReducer.leavesData);
-  console.log('leaveData:', leaveData[2]);
+  const token = useSelector(state => state.auth.userToken);
+  const leavesData = useSelector(state => state.dataReducer.leavesData);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      let res = await dispatch(getLeaveDetails({token}));
-      console.log('res:=========', res.payload);
-    })();
+    dispatch(getLeaveDetails({token}));
   }, []);
-
-  const data = [
-    {
-      daysOfLeaves: 5,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/63272',
-      rangeOfdate: '26 Dec 2022 - 30 Dec 2022',
-      currentStatus: '29 days ago',
-      id: '11',
-      reason: 'Went to home for christmas.',
-      applyingDate: '28 Oct 2022',
-    },
-    {
-      daysOfLeaves: 5,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/63272',
-      rangeOfdate: '25 Oct 2022 - 29 Oct 2022',
-      currentStatus: '3 months ago',
-      id: '10',
-      reason: 'Went to home to celebrate Diwali',
-      applyingDate: '25 Oct 2022',
-    },
-    {
-      daysOfLeaves: 15,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/63272',
-      rangeOfdate: '15 Aug 2022 - 30 Aug 2022',
-      currentStatus: '4 Months ago',
-      id: '9',
-      reason: 'Went for a tour.',
-      applyingDate: '15 Aug 2022',
-    },
-
-    {
-      daysOfLeaves: 9,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/34782',
-      rangeOfdate: '10 July 2022 - 19 July 2022',
-      currentStatus: '5 Months ago',
-      id: '8',
-      reason: "Went to home to celebrate my brother's birthday.",
-      applyingDate: '12 July 2022',
-    },
-
-    {
-      daysOfLeaves: 9,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Dismissed',
-      numberOfLeaves: 'LEAPP/24983',
-      rangeOfdate: '10 July 2022 - 19 July 2022',
-      currentStatus: '5 Months ago',
-      id: '7',
-      reason: 'celebrated my birthday at home.',
-      applyingDate: '10 Jul 2022',
-    },
-    {
-      daysOfLeaves: 24,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/24733',
-      rangeOfdate: '3 June 2022 - 27 June 2022',
-      currentStatus: '6 Months ago',
-      id: '6',
-      reason: 'Sunstroke',
-      applyingDate: '16 June 2022',
-    },
-    {
-      daysOfLeaves: 1,
-      typesOfLeaves: 'RH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/47832',
-      rangeOfdate: '15 May 2022 - 15 May 2022',
-      currentStatus: '7 Months ago',
-      id: '5',
-      reason: 'too hot today.',
-      applyingDate: '14 May 2022',
-    },
-    {
-      daysOfLeaves: 7,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/1272',
-      rangeOfdate: '3 Apr 2022 - 10 Apr 2022',
-      currentStatus: '8 Months ago',
-      id: '4',
-      reason: "don't have money to travel.",
-      applyingDate: '8 Apr 2022',
-    },
-
-    {
-      daysOfLeaves: 3,
-      typesOfLeaves: 'EL',
-      statusOfLeaves: 'Dismissed',
-      numberOfLeaves: 'LEAPP/6322',
-      rangeOfdate: '1 Mar 2022 - 4 Mar 2022',
-      currentStatus: '9 months ago',
-      id: '3',
-      reason: 'Went to home to celebrate Holi',
-      applyingDate: '2 March 2022',
-    },
-    {
-      daysOfLeaves: 6,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/3272',
-      rangeOfdate: '11 Feb 2022 - 17 Feb 2022',
-      currentStatus: '10 Months ago',
-      id: '2',
-      reason: 'Not feeling well.',
-      applyingDate: '16 Feb 2022',
-    },
-
-    {
-      daysOfLeaves: 16,
-      typesOfLeaves: 'WFH',
-      statusOfLeaves: 'Approved',
-      numberOfLeaves: 'LEAPP/63274',
-      rangeOfdate: '26 Jan 2022 - 30 Jan 2022',
-      currentStatus: '11 Months ago',
-      id: '1',
-      reason: 'I am Ill now.',
-      applyingDate: '28 Jan 2022',
-    },
-  ];
 
   const applyForLeave = () => {
     navigation.navigate('ApplyLeave');
@@ -165,7 +32,7 @@ const Leaves = ({navigation}) => {
             style={{
               flex: 1,
               backgroundColor:
-                item.statusOfLeaves === 'Dismissed'
+                item.status === 'Rejected' || item.status === 'Dismissed'
                   ? Colors.pink
                   : Colors.lightseagreen,
               paddingHorizontal: wp(2),
@@ -176,15 +43,31 @@ const Leaves = ({navigation}) => {
               shadowOpacity: 0.1,
             }}>
             <Text style={{textAlign: 'center', fontSize: 18}}>
-              {item.daysOfLeaves} {item.typesOfLeaves}
+              {item.totalLeaveDays}{' '}
+              {item.leaveType
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase())
+                .join('')}
             </Text>
-            <Text style={{textAlign: 'center'}}>({item.statusOfLeaves})</Text>
+            <Text style={{textAlign: 'center'}}>({item.status})</Text>
           </View>
           <View style={styles.secondView}>
             <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
-              {item.numberOfLeaves}
+              {item.leaveApplicationId}
             </Text>
-            <Text style={{opacity: 0.6}}>{item.rangeOfdate}</Text>
+            <Text style={{opacity: 0.6}}>
+              {`${new Date(item.fromDate).getDate()} ${new Date(
+                item.fromDate,
+              ).toLocaleString('default', {month: 'short'})} ${new Date(
+                item.fromDate,
+              ).getFullYear()}`}
+              {' - '}
+              {`${new Date(item.toDate).getDate()} ${new Date(
+                item.toDate,
+              ).toLocaleString('default', {month: 'short'})} ${new Date(
+                item.toDate,
+              ).getFullYear()}`}
+            </Text>
             <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
           </View>
         </View>
@@ -239,9 +122,9 @@ const Leaves = ({navigation}) => {
         </Text>
       </Pressable>
       <FlatList
-        data={data}
+        data={leavesData}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(_, index) => index}
       />
     </View>
   );

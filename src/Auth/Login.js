@@ -49,7 +49,6 @@ const Login = () => {
               setIsAuth(success);
             })
             .catch(err => {
-              // console.log('error of atjfjfdf', err);
               // BackHandler.exitApp();
             });
         }
@@ -57,7 +56,6 @@ const Login = () => {
       .catch(error => {
         // Failure code
         setIsBiometric(false);
-        // console.log(error);
       });
   };
 
@@ -182,7 +180,6 @@ const Login = () => {
 
         <TouchableOpacity
           // onPress={() => {
-          //   console.log('inputData:----------------------', inputData);
           //   setInputData('radhika');
           //   dispatch(loginStatus(true));
           // }}

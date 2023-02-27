@@ -35,7 +35,6 @@ const Home = () => {
         style={{flex: 1}}
         keyExtractor={(item, index) => `key-${index}`}
         renderItem={({item}) => {
-          // console.log('item', item);
           let Component = item;
           return <Component />;
         }}

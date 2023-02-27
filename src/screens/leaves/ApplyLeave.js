@@ -88,7 +88,6 @@ const ApplyLeave = () => {
     const presentYear = date.getFullYear();
 
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
-    // console.log('finalTodayDate:', finalTodayDate);
 
     if (toDate.toDateObj) {
       const diffInMs = toDate.toDateObj.getTime() - date.getTime();
@@ -308,26 +307,6 @@ const ApplyLeave = () => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
-
-      <View style={{zIndex: 1000}}>
-        <DropDown
-          field="country"
-          value={typeState.type}
-          label="Type:"
-          state={typeState}
-          setState={setTypeValue}
-          fieldOpen="typeOpen"
-          list={holidayTypeOptions || []}
-          // setFirstSelected={setFirstSelected}
-          maxHeight={20}
-          styles={styles}
-          // maxHeight={styles.dropDownHeightStyle}
-          containerStyle={{
-            marginHorizontal: '5%',
-          }}
-          display={'flex'}
-        />
-      </View>
 
       <View style={styles.mainPart}>
         <View style={[styles.formContainer]}>

@@ -76,7 +76,6 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
               holidaysSetShowModal(false);
             }}
             onBackButtonPress={() => {
-              // console.log('PRESSED');
               holidaysSetShowModal(false);
             }}
             // onRequestClose={() => {

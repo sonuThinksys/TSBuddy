@@ -15,7 +15,6 @@ import {useSelector} from 'react-redux';
 const RequestLunch = ({navigation}) => {
   const MonthlyDate = useSelector(state => state.dataReducer.dateData);
   const [date, setDate] = useState(new Date());
-  console.log('MonthlyDate:-----------------------------', MonthlyDate);
   const [startDate, setStartDate] = useState('');
   const [modalForStartDate, setModalForStartDate] = useState(false);
   const [endDate, setEndDate] = useState('');
@@ -93,8 +92,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleConfirm = date => {
-    console.log('A date has been picked: ', date);
-
     if (modalForStartDate) {
       setStartDate(date.toString());
     } else {

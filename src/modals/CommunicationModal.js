@@ -42,9 +42,7 @@ const CommunicationModal = ({empDetail}) => {
         if (msg) {
           let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
           Linking.openURL(url)
-            .then(data => {
-              // console.log('WhatsApp Opened');
-            })
+            .then(data => {})
             .catch(() => {
               alert('Make sure WhatsApp installed on your device');
             });
@@ -71,7 +69,6 @@ const CommunicationModal = ({empDetail}) => {
         dispatch(modalStatus(false));
       }}
       onBackButtonPress={() => {
-        // console.log('PRESSED');
         dispatch(modalStatus(false));
       }}
       // onRequestClose={() => {

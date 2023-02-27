@@ -261,7 +261,6 @@ const SalarySlip = ({navigation}) => {
 };
 
 const renderItems = (item, index) => {
-  console.log('index:--------------------------', index);
   return (
     <View
       key={index}
