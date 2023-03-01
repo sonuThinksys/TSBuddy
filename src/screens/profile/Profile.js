@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ImageBackground,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -19,7 +20,11 @@ import jwt_decode from 'jwt-decode';
 import {getEmployeeProfileData} from 'redux/dataSlice';
 import baseUrl from 'services/Urls';
 import moment from 'moment';
+import {modalStatus} from 'redux/dataSlice';
+import CommunicationModal from 'modals/CommunicationModal';
+import Loader from 'component/loader/Loader';
 const Profile = () => {
+  const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
   var decoded = jwt_decode(token);
@@ -30,8 +35,12 @@ const Profile = () => {
   }, []);
 
   const profileData = useSelector(state => state.dataReducer.employeeProfile);
+  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
+  const isLoading = useSelector(
+    state => state.dataReducer.employeeProfileLoading,
+  );
 
-  console.log('profileData:-----------------------------', profileData);
+  console.log('isLoading:-----------------------------', isLoading);
 
   const data = [
     {
@@ -72,9 +81,40 @@ const Profile = () => {
       id: '6',
     },
   ];
+  const dialCall = () => {
+    setClickData({
+      id: profileData.id,
+      medium: profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      id: profileData.id,
+      medium: profileData.managerInfoDto.companyEmail,
+      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const snedMessage = async () => {
+    setClickData({
+      id: profileData.id,
+      medium: profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
 
   return (
     <>
+      {isLoading ? <Loader /> : null}
+      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
         <View>
           <ImageBackground
@@ -83,6 +123,7 @@ const Profile = () => {
             <View style={styles.container}>
               <View style={styles.profileView}>
                 <Image
+                  resizeMode="contain"
                   source={{uri: `${baseUrl}${profileData.image}`}}
                   style={{height: 120, width: 120, borderRadius: 60}}
                 />
@@ -121,18 +162,24 @@ const Profile = () => {
                     {profileData.managerInfoDto.companyEmail}
                   </Text>
                   <View style={styles.socialIconView}>
-                    <Image
-                      source={MonthImages.empMailS}
-                      style={{height: 40, width: 40}}
-                    />
-                    <Image
-                      source={MonthImages.empCallS}
-                      style={{height: 40, width: 40}}
-                    />
-                    <Image
-                      source={MonthImages.empMsg}
-                      style={{height: 40, width: 40}}
-                    />
+                    <TouchableOpacity onPress={sendMail}>
+                      <Image
+                        source={MonthImages.empMailS}
+                        style={{height: 40, width: 40}}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={dialCall}>
+                      <Image
+                        source={MonthImages.empCallS}
+                        style={{height: 40, width: 40}}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={snedMessage}>
+                      <Image
+                        source={MonthImages.empMsg}
+                        style={{height: 40, width: 40}}
+                      />
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>

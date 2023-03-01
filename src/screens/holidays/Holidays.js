@@ -10,6 +10,7 @@ import {getHolidaysData} from 'redux/dataSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
+import Loader from 'component/loader/Loader';
 import jwt_decode from 'jwt-decode';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
@@ -18,21 +19,12 @@ const Holidays = () => {
   useEffect(() => {
     dispatch(getHolidaysData(token));
   }, []);
-  console.log('holidaysShowModal:---------------', holidaysShowModal);
+
   const token = useSelector(state => state.auth.userToken);
-  console.log('holidays token gor ', token);
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
+  const isLoading = useSelector(state => state.dataReducer.holidayDataLoading);
+  console.log('isLoading:---------------', isLoading);
   var decoded = jwt_decode(token);
-  console.log(
-    'decode :-----------------------------------------',
-    decoded[
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-    ],
-  );
-  console.log(
-    'holidaysData in screen:----------------------------------------',
-    holidaysData,
-  );
 
   const data1 = [
     {
@@ -48,6 +40,7 @@ const Holidays = () => {
   ];
   return (
     <View style={{paddingTop: hp(1), flex: 1}}>
+      {isLoading ? <Loader /> : null}
       <FlatList
         data={holidaysData}
         keyExtractor={(item, index) => index}

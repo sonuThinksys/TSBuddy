@@ -21,9 +21,10 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/dataSlice';
+import {Colors} from 'colors/Colors';
 const BirthdayAnniV = ({modalData, showModal}) => {
   // const [isShowModal, setIsShowModal] = useState(false);
-  const {id, text, setShowModal} = modalData;
+  const {id, text, setShowModal} = modalData || {};
   console.log('text:=====================', showModal, text);
 
   return (
@@ -46,7 +47,6 @@ const BirthdayAnniV = ({modalData, showModal}) => {
               setShowModal(false);
             }}
             onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
               setShowModal(false);
             }}>
             <ImageBackground
@@ -58,7 +58,7 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                   top: hp(9),
                   fontWeight: 'bold',
                   fontSize: 38,
-                  color: 'green',
+                  color: Colors.green,
                 }}>
                 30
               </Text>

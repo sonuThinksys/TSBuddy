@@ -12,6 +12,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import {Colors} from 'colors/Colors';
 
 const Item = () => {
   const data = [
@@ -46,7 +47,7 @@ const Item = () => {
         horizontal={true}
         data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
       />
     </View>
   );
@@ -56,7 +57,7 @@ const renderItem = ({item}) => {
   return (
     <View style={styles.container}>
       <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
-        {item.type_of_food}
+        {item?.type_of_food}
       </Text>
       <View>
         <ImageBackground
@@ -64,19 +65,21 @@ const renderItem = ({item}) => {
           resizeMode="contain"
           style={styles.imagebackground}>
           <View style={styles.menuView}>
-            <Text style={{color: 'white', paddingVertical: hp(0.6)}}>Menu</Text>
-            <Text style={{color: 'white'}}> {item.menu}</Text>
+            <Text style={{color: Colors.white, paddingVertical: hp(0.6)}}>
+              Menu
+            </Text>
+            <Text style={{color: Colors.white}}> {item?.menu}</Text>
           </View>
         </ImageBackground>
       </View>
       <View style={styles.likeView}>
         <Image style={{height: 20, width: 20}} source={MonthImages.LikeImage} />
-        <Text style={{flex: 1}}> {item.numberOfLikes}</Text>
+        <Text style={{flex: 1}}> {item?.numberOfLikes}</Text>
         <Image
           style={{height: 20, width: 20, marginLeft: wp(20)}}
           source={MonthImages.dislikesm}
         />
-        <Text style={{flex: 1}}>{item.numberOfDislike}</Text>
+        <Text style={{flex: 1}}>{item?.numberOfDislike}</Text>
       </View>
     </View>
   );

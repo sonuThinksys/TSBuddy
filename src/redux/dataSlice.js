@@ -38,7 +38,6 @@ export const getHolidaysData = createAsyncThunk(
     };
     return axios(config)
       .then(async response => {
-        console.log('response:------------------------------', response);
         const {data, status} = response;
         if (status === 200) {
           return Promise.resolve(data);
@@ -63,7 +62,6 @@ export const getHolidaysData = createAsyncThunk(
 export const getEmployeeProfileData = createAsyncThunk(
   'dataReducer/employeeProfile',
   async ({token, employeeID}) => {
-    console.log('employeid:0-----------------------', employeeID);
     var config = {
       method: 'get',
       url: `${endPoints.employeeProfileAPI}${employeeID}`,
@@ -72,10 +70,8 @@ export const getEmployeeProfileData = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
-    console.log('config . url:---------------------------', config.url);
     return axios(config)
       .then(async response => {
-        console.log('response:------------------------------', response);
         const {data, status} = response;
         if (status === 200) {
           return Promise.resolve(data);

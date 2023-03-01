@@ -70,6 +70,12 @@ const Attendence = () => {
           markingType={'custom'}
           scrollEnabled={true}
           showScrollIndicator={true}
+          markedDates={{
+            '2023-02-16': {selected: true, marked: true, selectedColor: 'blue'},
+            '2023-02-17': {marked: true},
+            '2023-02-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+            '2023-02-19': {disabled: true, disableTouchEvent: true},
+          }}
           theme={{
             'stylesheet.calendar': {
               padding: 0,

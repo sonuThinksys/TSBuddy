@@ -44,7 +44,7 @@ const RecentLeaves = () => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         style={{marginHorizontal: 4}}
       />
     </View>
@@ -56,19 +56,19 @@ const renderItem = ({item}) => {
       <Image
         resizeMode="contain"
         source={
-          item.statusOfLeave === 'Dissmissed'
+          item?.statusOfLeave === 'Dissmissed'
             ? MonthImages.absentEmpl
             : MonthImages.presentEmpS
         }
         style={{height: 25, width: 25, marginTop: hp(1.8)}}
       />
       <Text style={{marginTop: hp(2.4), marginLeft: wp(2)}}>
-        {item.NumberOfLeaves}
+        {item?.NumberOfLeaves}
       </Text>
       <View style={styles.itemView}>
         <TouchableOpacity>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
-            {item.dataOfLeave}
+            {item?.dataOfLeave}
           </Text>
         </TouchableOpacity>
       </View>

@@ -16,4 +16,5 @@ export const Colors = {
   gainsboro: 'gainsboro',
   lightcyan: 'lightcyan',
   darkpurple: '#088bf3',
+  different: '#06566e',
 };
