@@ -355,49 +355,13 @@ const ApplyLeave = () => {
                   dropdownStyle={{
                     width: '45%',
                     paddingLeft: 10,
-                    // borderColor: Colors.black,
-                    // borderWidth: 1,
                   }}
-                  // dropdownTextStyle={{
-                  //   borderBottomWidth: 1,
-                  //   borderBottomColor: 'blue',
-                  // }}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
                     setHalfDay(itemName);
                   }}
-                  // renderRightComponent={() => (
-                  // <Image
-                  //   source={MonthImages.DropDownIcon}
-                  //   style={{
-                  //     height: 20,
-                  //     width: 20,
-                  //   }}
-                  // />
-                  // )}
-
                   renderRightComponent={renderRightComponent}
                 />
-
-                {/* <DropDown
-                  bottomStyle={styles.bottomStyle}
-                  field="country"
-                  value={typeState.type}
-                  label="Type:"
-                  state={typeState}
-                  setState={setTypeValue}
-                  fieldOpen="typeOpen"
-                  list={holidayTypeOptions || []}
-                  // setFirstSelected={setFirstSelected}
-                  maxHeight={20}
-                  styles={styles}
-                  // maxHeight={styles.dropDownHeightStyle}
-                  containerStyle={{
-                    marginHorizontal: '5%',
-                  }}
-                  display={'flex'}
-                /> */}
-                {/* // ) : null} */}
               </View>
             ),
           })}
@@ -673,112 +637,112 @@ const styles = StyleSheet.create({
 
 // =======================================================================================
 
-const DropDown = ({
-  value = '',
-  label = '',
-  field = '',
-  state = {},
-  list = [],
-  setState,
-  typeOpen = '',
-  disabled = false,
-  setFirstSelected,
-  styles = {},
-  width,
-  placeholder = '- Select -',
-  containerStyle = {},
-  multiple,
-  customMethod,
-  display,
-  setsearchFocussed,
-  fieldOpen,
-  bottomStyle = {},
-  ...props
-}) => {
-  return (
-    <DropDownPickerComponent
-      bottomStyle={bottomStyle}
-      value={multiple ? value || [] : value || undefined}
-      dropDownDirection={'AUTO'}
-      closeAfterSelecting={true}
-      label={label}
-      open={state[fieldOpen] || false}
-      onPress={() => {
-        setState && setState({...state, [fieldOpen]: !state[fieldOpen]});
-      }}
-      renderListItem={({item}) => {
-        return (
-          <TouchableOpacity
-            key={item?.label || 'key'}
-            style={{
-              paddingVertical: 5,
-              paddingHorizontal: 10,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-            onPress={() => {
-              setState &&
-                setState({
-                  ...state,
-                  id: item?.key,
-                  [field]: item?.value,
-                  ...item,
-                  [fieldOpen]: false,
-                });
-              setFirstSelected && setFirstSelected(true);
-            }}>
-            <Text
-              style={{
-                // fontFamily: FontFamily.REGULAR,
-                fontSize: FontSize.h16,
-                color: Colors.grey,
-                paddingVertical: 5,
-                color: state[field] == item.value ? Colors.purple : Colors.grey,
-                // fontFamily:
-                //   state[field] == item.value
-                //     ? FontFamily.SEMI_BOLD
-                //     : FontFamily.REGULAR,
-              }}>
-              {item?.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      }}
-      listMode={'SCROLLVIEW'}
-      items={list}
-      style={{
-        minHeight: 32,
-        borderRadius: 3,
-        borderWidth: 1,
-        borderColor: '#ccc',
-      }}
-      textStyle={[styles.textStyle, disabled && {color: '#adb5bd'}]}
-      placeholder={placeholder}
-      containerStyle={{
-        borderWidth: 0,
-      }}
-      showTickIcon={true}
-      dropDownContainerStyle={[styles.dropDownContainerStyle]}
-      itemSeparatorStyle={{backgroundColor: Colors.borderColor}}
-      itemSeparator={true}
-      disabled={disabled}
-      searchable={true}
-      searchPlaceholder={'Search...'}
-      searchContainerStyle={[
-        styles.searchContainerStyle,
-        {margin: 0, padding: 0, height: 30},
-      ]}
-      // ListHeaderComponentStyle={{zIndex: 10}}
-      searchTextInputStyle={{
-        borderWidth: 0,
-      }}
-      multiple={multiple ? true : false}
-      // searchTextInputProps={{
-      //   onFocus: () => setsearchFocussed(true),
-      //   onBlur: () => setsearchFocussed(false),
-      // }}
-      {...props}
-    />
-  );
-};
+// const DropDown = ({
+//   value = '',
+//   label = '',
+//   field = '',
+//   state = {},
+//   list = [],
+//   setState,
+//   typeOpen = '',
+//   disabled = false,
+//   setFirstSelected,
+//   styles = {},
+//   width,
+//   placeholder = '- Select -',
+//   containerStyle = {},
+//   multiple,
+//   customMethod,
+//   display,
+//   setsearchFocussed,
+//   fieldOpen,
+//   bottomStyle = {},
+//   ...props
+// }) => {
+//   return (
+//     <DropDownPickerComponent
+//       bottomStyle={bottomStyle}
+//       value={multiple ? value || [] : value || undefined}
+//       dropDownDirection={'AUTO'}
+//       closeAfterSelecting={true}
+//       label={label}
+//       open={state[fieldOpen] || false}
+//       onPress={() => {
+//         setState && setState({...state, [fieldOpen]: !state[fieldOpen]});
+//       }}
+//       renderListItem={({item}) => {
+//         return (
+//           <TouchableOpacity
+//             key={item?.label || 'key'}
+//             style={{
+//               paddingVertical: 5,
+//               paddingHorizontal: 10,
+//               flexDirection: 'row',
+//               justifyContent: 'space-between',
+//               alignItems: 'center',
+//             }}
+//             onPress={() => {
+//               setState &&
+//                 setState({
+//                   ...state,
+//                   id: item?.key,
+//                   [field]: item?.value,
+//                   ...item,
+//                   [fieldOpen]: false,
+//                 });
+//               setFirstSelected && setFirstSelected(true);
+//             }}>
+//             <Text
+//               style={{
+//                 // fontFamily: FontFamily.REGULAR,
+//                 fontSize: FontSize.h16,
+//                 color: Colors.grey,
+//                 paddingVertical: 5,
+//                 color: state[field] == item.value ? Colors.purple : Colors.grey,
+//                 // fontFamily:
+//                 //   state[field] == item.value
+//                 //     ? FontFamily.SEMI_BOLD
+//                 //     : FontFamily.REGULAR,
+//               }}>
+//               {item?.label}
+//             </Text>
+//           </TouchableOpacity>
+//         );
+//       }}
+//       listMode={'SCROLLVIEW'}
+//       items={list}
+//       style={{
+//         minHeight: 32,
+//         borderRadius: 3,
+//         borderWidth: 1,
+//         borderColor: '#ccc',
+//       }}
+//       textStyle={[styles.textStyle, disabled && {color: '#adb5bd'}]}
+//       placeholder={placeholder}
+//       containerStyle={{
+//         borderWidth: 0,
+//       }}
+//       showTickIcon={true}
+//       dropDownContainerStyle={[styles.dropDownContainerStyle]}
+//       itemSeparatorStyle={{backgroundColor: Colors.borderColor}}
+//       itemSeparator={true}
+//       disabled={disabled}
+//       searchable={true}
+//       searchPlaceholder={'Search...'}
+//       searchContainerStyle={[
+//         styles.searchContainerStyle,
+//         {margin: 0, padding: 0, height: 30},
+//       ]}
+//       // ListHeaderComponentStyle={{zIndex: 10}}
+//       searchTextInputStyle={{
+//         borderWidth: 0,
+//       }}
+//       multiple={multiple ? true : false}
+//       // searchTextInputProps={{
+//       //   onFocus: () => setsearchFocussed(true),
+//       //   onBlur: () => setsearchFocussed(false),
+//       // }}
+//       {...props}
+//     />
+//   );
+// };

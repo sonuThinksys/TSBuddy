@@ -1,14 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-  SafeAreaView,
-  // ScrollView,
-  Image,
-  FlatList,
-  LogBox,
-} from 'react-native';
+import {View, SafeAreaView, FlatList, LogBox} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,

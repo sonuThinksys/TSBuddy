@@ -8,15 +8,19 @@ import {Colors} from 'colors/Colors';
 import styles from './LeaveStyles';
 import {getLeaveDetails} from 'redux/dataSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import jwt_decode from 'jwt-decode';
 
 const Leaves = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
+  var decoded = jwt_decode(token);
+  const employeeID = decoded.Id;
+
   const leavesData = useSelector(state => state.dataReducer.leavesData);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getLeaveDetails({token}));
+    dispatch(getLeaveDetails({token, employeeID}));
   }, []);
 
   const applyForLeave = () => {

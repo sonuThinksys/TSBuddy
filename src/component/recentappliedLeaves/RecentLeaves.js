@@ -1,39 +1,32 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import {useDispatch, useSelector} from 'react-redux';
+import jwt_decode from 'jwt-decode';
+import {getLeaveDetails} from 'redux/dataSlice';
 
 const RecentLeaves = () => {
-  const data = [
-    {
-      NumberOfLeaves: '7.0 Days',
-      dataOfLeave: '25 Dec 2022',
-      statusOfLeave: 'Dissmissed',
-      id: 1,
-    },
-    {
-      NumberOfLeaves: '7.0 Days',
-      dataOfLeave: '25 Dec 2022',
-      statusOfLeave: 'Approved',
-      id: 2,
-    },
-    {
-      NumberOfLeaves: '7.0 Days',
-      dataOfLeave: '25 Dec 2022',
-      statusOfLeave: 'Approved',
-      id: 3,
-    },
-  ];
+  // =================================================================================
+
+  const token = useSelector(state => state.auth.userToken);
+  var decoded = jwt_decode(token);
+  const employeeID = decoded.Id;
+
+  const leavesData = useSelector(state => state.dataReducer.leavesData);
+  console.log('leavesData:', leavesData);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getLeaveDetails({token, employeeID}));
+  }, []);
+
+  // =================================================================================
+
   return (
     <View>
       <View style={styles.container}>
@@ -42,9 +35,9 @@ const RecentLeaves = () => {
         </Text>
       </View>
       <FlatList
-        data={data}
+        data={leavesData}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         style={{marginHorizontal: 4}}
       />
     </View>
@@ -56,21 +49,25 @@ const renderItem = ({item}) => {
       <Image
         resizeMode="contain"
         source={
-          item.statusOfLeave === 'Dissmissed'
+          item.status !== 'Approved'
             ? MonthImages.absentEmpl
             : MonthImages.presentEmpS
         }
         style={{height: 25, width: 25, marginTop: hp(1.8)}}
       />
       <Text style={{marginTop: hp(2.4), marginLeft: wp(2)}}>
-        {item.NumberOfLeaves}
+        {item.totalLeaveDays} {item.totalLeaveDays === 1 ? 'Day' : 'Days'}
       </Text>
       <View style={styles.itemView}>
-        <TouchableOpacity>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
-            {item.dataOfLeave}
-          </Text>
-        </TouchableOpacity>
+        {/* <TouchableOpacity> */}
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
+          {`${new Date(item.fromDate).getDate()} ${new Date(
+            item.fromDate,
+          ).toLocaleString('default', {month: 'short'})} ${new Date(
+            item.fromDate,
+          ).getFullYear()}`}
+        </Text>
+        {/* </TouchableOpacity> */}
       </View>
     </View>
   );

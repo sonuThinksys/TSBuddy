@@ -13,6 +13,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'utils/Responsive';
+import moment from 'moment';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
   const [show, setShow] = useState(false);
@@ -21,7 +22,7 @@ const SalaryDetail = ({route, navigation}) => {
     {lable: 'Arrear Amount', value: data.arrear_amount},
     {lable: 'Bank Account No', value: data.bank_account_no},
     {lable: 'Bank Name', value: data.bank_name},
-    {lable: 'Creation', value: data.creation},
+    {lable: 'Creation', value: moment(data.creation).format(`DD-MMM-YYYY`)},
     {lable: 'Employee ID', value: data.employee},
     {lable: 'Employee Name', value: data.employee_name},
     {lable: 'Fiscal Year', value: data.fiscal_year},
@@ -126,12 +127,13 @@ const SalaryDetail = ({route, navigation}) => {
                 key={index}
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  flex: 1,
+                  // justifyContent: 'space-between',
                   paddingVertical: hp(0.5),
                   paddingHorizontal: wp(4),
                 }}>
-                <Text>{element.lable}</Text>
-                <Text style={{color: 'gray'}}>{element.value}</Text>
+                <Text style={{flex: 0.6}}>{element.lable}</Text>
+                <Text style={{color: 'gray', flex: 0.4}}>{element.value}</Text>
               </View>
             );
           })}
@@ -217,7 +219,7 @@ const SalaryDetail = ({route, navigation}) => {
                   alignItems: 'center',
                 }}>
                 <Image
-                  source={show ? MonthImages.plus : MonthImages.minus}
+                  source={secondShow ? MonthImages.plus : MonthImages.minus}
                   style={{height: 15, width: 15}}
                 />
               </View>

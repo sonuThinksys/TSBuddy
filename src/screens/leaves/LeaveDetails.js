@@ -17,14 +17,12 @@ const LeaveDetails = ({route, navigation}) => {
   };
 
   const {params: data} = route;
-  console.log('data:', data);
 
   const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
     data.fromDate,
   ).toLocaleString('default', {month: 'short'})}-${new Date(
     data.fromDate,
   ).getFullYear()}`;
-  console.log('applyingDate:', applyingDate);
 
   const rangeOfdate = item =>
     `${new Date(item.fromDate).getDate()}-${new Date(

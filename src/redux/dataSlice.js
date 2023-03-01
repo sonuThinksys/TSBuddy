@@ -74,10 +74,10 @@ export const getHolidaysData = createAsyncThunk(
 
 export const getLeaveDetails = createAsyncThunk(
   'home/getWalkThroughList',
-  async ({token}) => {
+  async ({token, employeeID}) => {
     var config = {
       method: 'get',
-      url: endPoints.leaveDetails,
+      url: `${endPoints.leaveDetails}${employeeID}`,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -143,41 +143,21 @@ export const getEmployeeProfileData = createAsyncThunk(
   },
 );
 
-// return Promise.resolve({page:body.page, status: walkthroughStatus, data: newData });
-
-// ========================================================================================
-
-// export const getLeaveDetails = createAsyncThunk(
-//   '/leavedetails',
-//   async token => {
-//     const configurations = {
-//       method: 'get',
-//       url: endPoints.leaveDetails,
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         'Content-Type': 'application/json',
-//       },
-//     };
-//     const response = await axios(configurations);
-//     Promise.resolve(response);
-//     // return data;
-//   },
-// );
-
-// ========================================================================================
-
 export const getSalarySlipData = createAsyncThunk(
   'dataReducer/salarySlipData',
   async () => {
-    fetch('http://localhost:4000/salaryData')
-      .then(res => res.json())
-      .then(result => {
-        return Promise.resolve(result);
-      })
-      .catch(err => {
-        return Promise.reject(err);
-      });
     return Promise.resolve(salaryData);
+    //  fetch('http://localhost:4000/salaryData')
+    //     .then(res => {
+    //       res.json();
+    //     })
+    //     .then(result => {
+    //       return Promise.resolve(result);
+    //     })
+    //     .catch(err => {
+    //       return Promise.reject(err);
+    //     });
+    //   return Promise.resolve(salaryData);
   },
 );
 

@@ -186,7 +186,7 @@ const UserProfile = () => {
           />
         </View>
       ) : null}
-
+      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
         data={employeeData}
         key={numValue}
@@ -310,7 +310,7 @@ const renderItem = (
             });
           }}>
           <View style={{paddingVertical: hp(0.5), paddingHorizontal: wp(1)}}>
-            {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+            {/* {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null} */}
             <ImageBackground
               source={MonthImages.empbgS}
               style={{height: hp(18.5), width: wp(31)}}>

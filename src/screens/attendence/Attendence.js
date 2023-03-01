@@ -102,7 +102,7 @@ const Attendence = () => {
               },
               headerContainer: {
                 flexDirection: 'row',
-                width: '100%',
+                width: '90%',
               },
 
               week: {

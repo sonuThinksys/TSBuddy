@@ -83,7 +83,6 @@ export default ({navigation}) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{flexGrow: 1}}
       style={{
-        // paddingHorizontal: wp(2),
         flex: 1,
       }}>
       {/* <TouchableOpacity
