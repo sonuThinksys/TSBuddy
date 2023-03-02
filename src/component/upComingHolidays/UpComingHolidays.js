@@ -12,11 +12,14 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-
+import {useSelector, useDispatch} from 'react-redux';
+import moment from 'moment';
 const UpComingHolidays = () => {
+  const holidaysData = useSelector(state => state.dataReducer.holidayData);
+
   const data = [
     {
-      nameOfLeaves: 'Republic Day',
+      nameOfLeaves: holidaysData.description,
       dataOfLeave: '26 Jan 2023',
       id: '1',
     },
@@ -44,7 +47,7 @@ const UpComingHolidays = () => {
         </Text>
       </View>
       <FlatList
-        data={data}
+        data={holidaysData}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         style={{marginRight: wp(1)}}
@@ -53,31 +56,37 @@ const UpComingHolidays = () => {
   );
 };
 const renderItem = ({item}) => {
+  const newDateFormate = moment(item.holidayDate).format(`DD MMM YYYY`);
   return (
     <View style={styles.imageView}>
+      {/* {item.holidayData <= '30 Mar 2023' ? <Text></Text> : null} */}
       <Image
         resizeMode="contain"
         source={
-          item.nameOfLeaves === 'Republic Day'
+          item.description === 'Republic Day'
             ? MonthImages.republicDay
-            : item.nameOfLeaves === 'Holi'
+            : item.description === 'Holi'
             ? MonthImages.holi
-            : item.nameOfLeaves === 'Independence Day'
+            : item.description === 'Independence Day'
             ? MonthImages.independenceDay
-            : item.nameOfLeaves === 'Diwali'
+            : item.description === 'Diwali'
             ? MonthImages.diwali
+            : item.description === 'Dussehra'
+            ? MonthImages.diwali
+            : item.description === "Mahatma Gandhi's Birthday"
+            ? MonthImages.gandhiJayantiS
             : MonthImages.gandhiJayantiS
         }
         style={{height: 40, width: 40, marginTop: hp(1.8), flex: 1}}
       />
       <Text style={{marginTop: hp(2.4), flex: 5, marginLeft: wp(1)}}>
-        {item.nameOfLeaves}
+        {item.description}
       </Text>
       <View style={{flex: 3}}>
         <View style={styles.textView}>
           <TouchableOpacity>
             <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
-              {item.dataOfLeave}
+              {newDateFormate}
             </Text>
           </TouchableOpacity>
         </View>

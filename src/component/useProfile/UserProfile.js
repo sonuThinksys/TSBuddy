@@ -23,50 +23,25 @@ import CommunicationModal from 'modals/CommunicationModal';
 import {modalStatus} from 'redux/dataSlice';
 //import {employeeData} from '../../../db';
 const UserProfile = () => {
-  const [input, setInput] = useState('');
   const [showHoriZontal, setShowHorizontal] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
-  const [allEmpData, setEmpData] = useState({});
+  const [allEmpData, setEmpData] = useState([]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const employeeData = useSelector(state => state.dataReducer.employeeData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  let b = 'thumbnailS';
   useEffect(() => {
     setEmpData(employeeData);
-  }, []);
+  }, [employeeData]);
 
   const onChangeText = e => {
-    let str = '';
-    str += e;
+    const filterData = employeeData.filter(el => {
+      return el.nameOfEmployee.includes(e);
+    });
 
-    setInput(str);
-    const newSplitSearch = str.split('');
-    const finalArray = [];
-    if (Array.isArray(allEmpData)) {
-      allEmpData.map(data => {
-        const nameData = data.nameOfEmployee;
-        let shouldBeAdded = true;
-        for (let i = 0; i < newSplitSearch.length; i++) {
-          if (nameData.includes(newSplitSearch[i])) {
-          } else {
-            shouldBeAdded = false;
-          }
-        }
-        // }
-        if (shouldBeAdded) {
-          finalArray.push(data);
-        }
-      });
-    }
-    if (str === '') {
-      setEmpData(employeeData);
-    } else {
-      setEmpData(finalArray);
-      return finalArray;
-    }
+    setEmpData(filterData);
   };
 
   return (
@@ -77,17 +52,17 @@ const UserProfile = () => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-around',
-          paddingHorizontal: wp(2),
+          paddingHorizontal: wp(4),
           paddingVertical: hp(1),
         }}>
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: 'center'}}>
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
             }}>
             <Image
               source={MonthImages.backArrowS}
-              style={{height: 30, width: 30}}
+              style={{height: 20, width: 20}}
             />
           </TouchableOpacity>
         </View>
@@ -179,7 +154,7 @@ const UserProfile = () => {
           <TextInput
             selectionColor={'white'}
             color="white"
-            value={input}
+            // value={e}
             onChangeText={onChangeText}
             isEditble
             style={{height: '120%', width: '90%'}}
@@ -188,7 +163,7 @@ const UserProfile = () => {
       ) : null}
       {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
-        data={employeeData}
+        data={allEmpData}
         key={numValue}
         numColumns={numValue}
         keyExtractor={item => item.id}

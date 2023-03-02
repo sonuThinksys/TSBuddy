@@ -59,19 +59,6 @@ const Login = () => {
       });
   };
 
-  // const textInputData = [
-  //   {
-  //     placeholderText: 'username',
-  //     icon: MonthImages.LoginUser,
-  //     id: '1',
-  //   },
-  //   {
-  //     placeholderText: 'LDAP Password',
-  //     icon: MonthImages.LoginLock,
-  //     id: '2',
-  //   },
-  // ];
-
   const onPressLogin = () => {
     dispatch(getUserToken({username, password}));
   };
@@ -96,10 +83,6 @@ const Login = () => {
         />
       </View>
       <View style={styles.textInputContainer}>
-        {/* <FlatList
-          data={textInputData}
-          keyExtractor={item => item.id}
-          renderItem={({item, index}) => ( */}
         <View style={styles.textinputView}>
           <View style={styles.iconView}>
             <Image
@@ -115,11 +98,6 @@ const Login = () => {
               returnKeyType="next"
               placeholder="Username"
               placeholderTextColor={Colors.silver}
-              //  onSubmitEditing={() => this.passwordRef.current.focus()}
-              // onChangeText={value => {
-              //   this.onChange({name: 'username', value});
-              // }}
-              // onChange={onChangeTextInput}
               onChangeText={e => setUserName(e)}
               value={username}
             />
@@ -138,7 +116,7 @@ const Login = () => {
               // ref={this.passwordRef}
 
               name="password"
-              maxLength={256}
+              // maxLength={256}
               returnKeyType="done"
               secureTextEntry
               placeholder="Password"
@@ -178,12 +156,7 @@ const Login = () => {
           </View>
         </View>
 
-        <TouchableOpacity
-          // onPress={() => {
-          //   setInputData('radhika');
-          //   dispatch(loginStatus(true));
-          // }}
-          onPress={onPressLogin}>
+        <TouchableOpacity onPress={onPressLogin}>
           <View style={styles.loginView}>
             <Text style={styles.loginText}>Login</Text>
           </View>

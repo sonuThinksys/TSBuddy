@@ -119,7 +119,6 @@ export const getEmployeeProfileData = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
-
     return axios(config)
       .then(async response => {
         const {data, status} = response;

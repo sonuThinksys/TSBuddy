@@ -13,9 +13,9 @@ import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 let data = [MenuDetails, Item, RecentLeaves, RemainingLeaves, UpComingHolidays];
 const Home = () => {
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, []);
+  // useEffect(() => {
+  //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  // }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{height: hp(23), backgroundColor: 'white'}}>
@@ -24,7 +24,7 @@ const Home = () => {
       <FlatList
         data={data}
         style={{flex: 1}}
-        keyExtractor={(item, index) => `key-${index}`}
+        keyExtractor={(item, index) => index}
         renderItem={({item}) => {
           let Component = item;
           return <Component />;

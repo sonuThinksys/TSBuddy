@@ -58,14 +58,14 @@ const CarouselAutoScroll = () => {
     imageRef.current.scrollToIndex({index: active, animated: true});
   }, [active]);
 
-  const onViewableItemsChangedHandler = useCallback(
-    ({viewableItems, changed}) => {
-      if (active != 0) {
-        setActive(viewableItems[0].index);
-      }
-    },
-    [],
-  );
+  // const onViewableItemsChangedHandler = useCallback(
+  //   ({viewableItems, changed}) => {
+  //     if (active != 0) {
+  //       setActive(viewableItems[0].index);
+  //     }
+  //   },
+  //   [],
+  // );
 
   return (
     <View style={{flex: 1}}>

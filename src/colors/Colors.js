@@ -20,4 +20,5 @@ export const Colors = {
   lightcyan: 'lightcyan',
   darkpurple: '#088bf3',
   grey: '#adb5bd',
+  different: '#06566e',
 };
