@@ -19,14 +19,29 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import moment from 'moment';
 import {authLoginStatus} from 'Auth/LoginSlice';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 const BirthdayAnniV = ({modalData, showModal}) => {
-  // const [isShowModal, setIsShowModal] = useState(false);
-  const {id, text, setShowModal} = modalData || {};
-  console.log('text:=====================', showModal, text);
+  const {startsOn, dateOfJoining, name, description, setShowModal} =
+    modalData || {};
 
+  const date = moment(description === null ? dateOfJoining : startsOn).format(
+    'DD',
+  );
+  const Month = moment(description === null ? dateOfJoining : startsOn).format(
+    ' MMM ',
+  );
+
+  const currentYear = new Date().getFullYear();
+  console.log(
+    'month and date and year:-------------------------------',
+    date,
+    Month,
+    currentYear,
+  );
   return (
     <>
       {showModal ? (
@@ -43,7 +58,6 @@ const BirthdayAnniV = ({modalData, showModal}) => {
               setShowModal(false);
             }}
             onBackButtonPress={() => {
-              // console.log('PRESSED');
               setShowModal(false);
             }}
             onRequestClose={() => {
@@ -56,13 +70,21 @@ const BirthdayAnniV = ({modalData, showModal}) => {
               <Text
                 style={{
                   top: hp(9),
-                  fontWeight: 'bold',
-                  fontSize: 38,
+                  fontFamily: FontFamily.RobotoBold,
+                  fontSize: FontSize.h22,
                   color: Colors.green,
                 }}>
-                30
+                {date}
               </Text>
-              <Text style={{top: hp(8.5), color: 'green'}}>jan 2023</Text>
+              <Text
+                style={{
+                  top: hp(8.5),
+                  color: 'green',
+                  fontFamily: FontFamily.RobotoBold,
+                }}>
+                {Month}
+                {currentYear}
+              </Text>
               <View style={styles.textView}>
                 <Text
                   style={{
@@ -70,17 +92,26 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                     color: 'white',
                     fontWeight: 'bold',
                   }}>
-                  Birthday: {text}
+                  {description === null ? 'Work Aniversary' : 'Birthday'}:{' '}
+                  {name}
+                  {description === null ? ` on ${date}${Month}` : null}
                 </Text>
               </View>
               <View style={{paddingTop: hp(3), paddingBottom: hp(2)}}>
                 <Image
-                  source={MonthImages.BirthdayImage}
+                  source={
+                    description === null
+                      ? MonthImages.workAnniversaryy
+                      : MonthImages.BirthdayImage
+                  }
                   resizeMode="contain"
                   style={{height: 150, width: 150}}
                 />
               </View>
-              <Text style={{fontSize: 16}}>Happy Birthday! Devansh Sharma</Text>
+              <Text style={{fontSize: 16}}>
+                {' '}
+                {description === null ? `Congratulation: ${name}` : description}
+              </Text>
             </ImageBackground>
           </Modal>
         </TouchableWithoutFeedback>
@@ -98,9 +129,9 @@ const styles = StyleSheet.create({
   },
   textView: {
     marginTop: hp(15),
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(3),
     paddingVertical: hp(1.5),
-    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    backgroundColor: Colors.darkTransparentColor,
     borderRadius: 5,
   },
 });

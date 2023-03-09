@@ -1,14 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-  SafeAreaView,
-  // ScrollView,
-  Image,
-  FlatList,
-  LogBox,
-} from 'react-native';
+import {View, SafeAreaView, FlatList, LogBox} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -16,11 +7,17 @@ import {
 import {ScrollView} from 'react-native-virtualized-view';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
-import Item from 'component/menuContent/Item';
+import MenuItem from 'component/menuContent/MenuItem';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
-let data = [MenuDetails, Item, RecentLeaves, RemainingLeaves, UpComingHolidays];
+let data = [
+  MenuDetails,
+  MenuItem,
+  RecentLeaves,
+  RemainingLeaves,
+  UpComingHolidays,
+];
 const Home = () => {
   // useEffect(() => {
   //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);

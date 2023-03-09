@@ -2,7 +2,6 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './AuthNavigator';
-
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from '../screens/splashScreen/SplashScreen';
 import NavigationService from './NavigationService';
@@ -17,7 +16,10 @@ const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  //const isLoggedIn = false;
+
+  // ============================================================================================
+
+  // ============================================================================================
   return (
     <NavigationContainer
       ref={ref => NavigationService.setTopLevelNavigator(ref)}>

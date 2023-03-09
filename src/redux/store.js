@@ -1,25 +1,18 @@
 import {configureStore} from '@reduxjs/toolkit';
+import {persistReducer} from 'redux-persist';
 import loginSlice from 'Auth/LoginSlice';
 import logger from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {combineReducers} from 'redux';
 import Reactotron from '../../ReactotronConfig';
-import dataSlice from './dataSlice';
+import homeSlice from './homeSlice';
 //import HomeSlice from 'screens/home/HomeSlice';
 
-import {
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
+import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
 
 const reducers = combineReducers({
   auth: loginSlice,
-  dataReducer: dataSlice,
+  dataReducer: homeSlice,
 });
 
 const persistConfig = {
@@ -27,11 +20,14 @@ const persistConfig = {
   // devTools: process.env.NODE_ENV !== 'production',
   version: 1,
   storage: AsyncStorage,
+  // whitelist: ['auth'],
 };
+
+const persistedReducer = persistReducer(persistConfig, reducers);
 
 //const persistedReducer = persistReducer(persistConfig, reducers);
 let configureStoreObj = {
-  reducer: reducers,
+  reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

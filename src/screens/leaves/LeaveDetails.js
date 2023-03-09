@@ -1,39 +1,62 @@
-import {View, StyleSheet} from 'react-native';
-
-const LeaveDetails = ({leaveCount, leaveType, status}) => {
-  const card = (leftText, rightText) => {
-    <View style={styles.card}>
-      <View>
-        <Text>{leftText}</Text>
+import {Colors} from 'colors/Colors';
+import {View, StyleSheet, Text} from 'react-native';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
+import styles from './LeavesDetailsStyles';
+const LeaveDetails = ({route, navigation}) => {
+  const card = (leftText, rightText, index) => {
+    return (
+      <View key={index} style={styles.card}>
+        <View>
+          <Text style={styles.cardLeftText}>{leftText}</Text>
+        </View>
+        <View style={styles.cardRightTextContainer}>
+          <Text>{rightText}</Text>
+        </View>
       </View>
-      <View>
-        <Text>{rightText}</Text>
-      </View>
-    </View>;
+    );
   };
+
+  const {params: data} = route;
+
+  const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
+    data.fromDate,
+  ).toLocaleString('default', {month: 'short'})}-${new Date(
+    data.fromDate,
+  ).getFullYear()}`;
+
+  const rangeOfdate = item =>
+    `${new Date(item.fromDate).getDate()}-${new Date(
+      item.fromDate,
+    ).toLocaleString('default', {month: 'short'})}-${new Date(
+      item.fromDate,
+    ).getFullYear()} to ${new Date(item.toDate).getDate()}-${new Date(
+      item.toDate,
+    ).toLocaleString('default', {month: 'short'})}-${new Date(
+      item.toDate,
+    ).getFullYear()}`;
+
+  const details = [
+    ['Employee Name', data.employeeName],
+    ['Leave Approver', data.managerInfoDto.employeeName],
+    ['Leave Type', data.leaveType],
+    ['Leave Time Period', rangeOfdate(data)],
+    ['Leave Status', data.status],
+    ['Number Of Leaves', data.totalLeaveDays],
+    ['Leave Balance', data.currentLeaveBalance],
+    ['Applying Date', applyingDate],
+    ['Reason', data.description],
+  ];
 
   return (
     <View style={styles.mainContainer}>
-      <View>
-        <Text>
-          {leaveCount} {leaveType} {status}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>
+          {data.totalLeaveDays} {data.leaveType} {data.status}
         </Text>
       </View>
+      <View>{details.map((item, index) => card(item[0], item[1], index))}</View>
     </View>
   );
 };
 
 export default LeaveDetails;
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
-  statusContainer: {
-    backgroundColor: '#51cf66',
-  },
-  card: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-});

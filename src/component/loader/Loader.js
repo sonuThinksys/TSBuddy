@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   lottie: {
     width: 30,
     height: 30,
-    backgroundColor: 'black',
+    backgroundColor: Colors.black,
   },
 });
 export default Loader;

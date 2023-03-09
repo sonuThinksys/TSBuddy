@@ -1,51 +1,20 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
-import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
-import {MonthImages} from 'assets/monthImage/MonthImage';
+import {StyleSheet, View, Dimensions} from 'react-native';
 
-//import PhotoView from 'react-native-photo-view-ex';
-//import PDFReader from 'rn-pdf-reader-js';
 import Pdf from 'react-native-pdf';
 import {Colors} from 'colors/Colors';
-export default function SalaryPdf() {
-  const [increment, setIncrement] = React.useState(0);
-  console.log('increment:---------------------------', increment);
-  const source = {
-    uri: 'https://www.africau.edu/images/default/sample.pdf',
-    cache: true,
-  };
+import {MonthImages} from 'assets/monthImage/MonthImage';
+const SalaryPdf = () => {
   return (
     <View style={styles.container}>
       <Pdf
-        source={source}
-        onLoadComplete={(numberOfPages, filePath) => {
-          console.log(`Number of pages: ${numberOfPages}`);
-        }}
-        // onPageChanged={(page, numberOfPages) => {
-        //   console.log(`Current page: ${page}`);
-        // }}
-        // onError={error => {
-        //   console.log(error);
-        // }}
-        // onPressLink={uri => {
-        //   console.log(`Link pressed: ${uri}`);
-        // }}
+        source={MonthImages.BirthdayImage}
+        onLoadComplete={(numberOfPages, filePath) => {}}
         style={styles.pdf}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -67,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// export default SalaryPdf;
+export default SalaryPdf;

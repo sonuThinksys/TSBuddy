@@ -1,4 +1,7 @@
 {
   "name": "TSBuddy",
-  "displayName": "TSBuddy"
+  "displayName": "TSBuddy",
+  "expo": {
+    "userInterfaceStyle": "automatic"
+  }
 }

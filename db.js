@@ -1,4 +1,31 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
+
+export const Menudata = [
+  {
+    type_of_food: 'Breafast',
+    img_url: MonthImages.breakfastImgS,
+    menu: 'NA',
+    numberOfLikes: 0,
+    numberOfDislike: 0,
+    id: '1',
+  },
+  {
+    type_of_food: 'Lunch',
+    img_url: MonthImages.Lunch,
+    menu: 'NA',
+    numberOfLikes: 0,
+    numberOfDislike: 0,
+    id: '2',
+  },
+  {
+    type_of_food: 'Snacks',
+    img_url: MonthImages.snacksS,
+    menu: 'NA',
+    numberOfLikes: 0,
+    numberOfDislike: 0,
+    id: '3',
+  },
+];
 export const holidayDatawithImage = [
   {
     nameOfHolidays: 'New Year',

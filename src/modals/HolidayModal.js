@@ -19,7 +19,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {getholidayDataIWithImage} from 'redux/dataSlice';
+import {getholidayDataIWithImage} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import CustomModal from 'components/CustomModal';
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
@@ -76,7 +76,6 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
               holidaysSetShowModal(false);
             }}
             onBackButtonPress={() => {
-              // console.log('PRESSED');
               holidaysSetShowModal(false);
             }}
             // onRequestClose={() => {

@@ -12,14 +12,16 @@ import {
   StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import Modal from 'react-native-modal';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
+import Modal from 'react-native-modal';
+
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
   const isShowModal = useSelector(state => state.dataReducer.isShowModal);
@@ -42,9 +44,7 @@ const CommunicationModal = ({empDetail}) => {
         if (msg) {
           let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
           Linking.openURL(url)
-            .then(data => {
-              console.log('WhatsApp Opened');
-            })
+            .then(data => {})
             .catch(() => {
               alert('Make sure WhatsApp installed on your device');
             });
@@ -69,7 +69,6 @@ const CommunicationModal = ({empDetail}) => {
         dispatch(modalStatus(false));
       }}
       onBackButtonPress={() => {
-        // console.log('PRESSED');
         dispatch(modalStatus(false));
       }}
       // onRequestClose={() => {

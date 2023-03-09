@@ -5,10 +5,11 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getEmployeeData} from 'redux/dataSlice';
+import {getEmployeeData} from 'redux/homeSlice';
 import {useDispatch} from 'react-redux';
 import UserProfile from 'component/useProfile/UserProfile';
 import {useNavigation} from '@react-navigation/native';
+import {employeeProfileScreen} from 'navigation/Route';
 const Header = () => {
   const navigation = useNavigation();
 
@@ -18,7 +19,7 @@ const Header = () => {
       <TouchableOpacity
         onPress={() => {
           dispatch(getEmployeeData());
-          navigation.navigate('UserProfile');
+          navigation.navigate(employeeProfileScreen);
         }}>
         <Image
           source={MonthImages.searchIconwhite}

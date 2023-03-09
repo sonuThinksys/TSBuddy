@@ -1,10 +1,16 @@
 export const FontFamily = {
-  REGULAR: 'Lato-Regular',
-  SEMI_BOLD: 'Lato-Semibold',
-  BOLD: 'Lato-Bold',
-  BLACK: 'Lato-Black',
-  ITALIC: 'Lato-Italic',
-  SFPRO: 'SFPro-Semibold',
+  RobotoBlack: 'Roboto-Black',
+  RobotoBlackItalic: 'Roboto-BlackItalic',
+  RobotoBold: 'Roboto-Bold',
+  RobotoBoldItalic: 'Roboto-BoldItalic',
+  RobotoItalic: 'Roboto-Italic',
+  RobotoLight: 'Roboto-Light',
+  RobotoLightItalic: 'Roboto-LightItalic',
+  RobotoMedium: 'Roboto-Medium',
+  RobotoMediumItalic: 'Roboto-MediumItalic',
+  RobotoRegular: 'Roboto-Regular',
+  RobotoThin: 'Roboto-Thin',
+  RobotoThinItalic: 'Roboto-ThinItalic',
 };
 
 export const FontSize = {

@@ -14,7 +14,7 @@ import {
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
 import CustomModal from 'components/CustomModal';
-import {getSalarySlipData} from 'redux/dataSlice';
+import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 const SalarSlipModal = () => {
   const dispatch = useDispatch();

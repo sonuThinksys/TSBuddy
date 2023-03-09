@@ -1,23 +1,12 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  Button,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import SelectDropdown from 'react-native-select-dropdown';
-import DatePicker from 'react-native-date-picker';
 import styles from './RequestLunchStyle';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-//import {SharedElement} from 'react-navigation-shared-element';
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -26,7 +15,6 @@ import {useSelector} from 'react-redux';
 const RequestLunch = ({navigation}) => {
   const MonthlyDate = useSelector(state => state.dataReducer.dateData);
   const [date, setDate] = useState(new Date());
-  console.log('MonthlyDate:-----------------------------', MonthlyDate);
   const [startDate, setStartDate] = useState('');
   const [modalForStartDate, setModalForStartDate] = useState(false);
   const [endDate, setEndDate] = useState('');
@@ -104,8 +92,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleConfirm = date => {
-    console.log('A date has been picked: ', date);
-
     if (modalForStartDate) {
       setStartDate(date.toString());
     } else {

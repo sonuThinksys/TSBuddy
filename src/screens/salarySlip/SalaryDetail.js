@@ -13,12 +13,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'utils/Responsive';
+import styles from './SalaryDetailsStyles';
 import moment from 'moment';
+import {SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
   const [show, setShow] = useState(false);
   const [secondShow, setSecondShow] = useState(false);
-  console.log('data:------------------------------', data);
   const renderData = [
     {lable: 'Arrear Amount', value: data.arrear_amount},
     {lable: 'Bank Account No', value: data.bank_account_no},
@@ -47,18 +48,13 @@ const SalaryDetail = ({route, navigation}) => {
   const deductionData = [
     {lable: 'Employee PF', value: '60000'},
     {lable: 'Meal Charges', value: '600'},
+    {lable: 'Meal Charges', value: '600'},
+    {lable: 'Meal Charges', value: '600'},
+    {lable: 'Meal Charges', value: '800'},
   ];
   return (
-    <View>
-      <View
-        style={{
-          backgroundColor: Colors.darkBlue,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          paddingHorizontal: wp(2),
-          paddingVertical: hp(1.5),
-        }}>
+    <View style={{flex: 1}}>
+      <View style={styles.container}>
         <View style={{flex: 1}}>
           <TouchableOpacity
             onPress={() => {
@@ -70,49 +66,22 @@ const SalaryDetail = ({route, navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 2,
-            // justifyContent: 'center',
-            paddingTop: hp(0.5),
-          }}>
-          <Text
-            style={{
-              color: Colors.white,
-              marginRight: wp(2),
-              fontSize: 18,
-              fontWeight: '500',
-            }}>
-            Salary Detail
-          </Text>
+        <View style={styles.textView}>
+          <Text style={styles.text1}>Salary Detail</Text>
         </View>
       </View>
-      <View
-        style={{
-          height: 150,
-          backgroundColor: Colors.lightBlue,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: wp(3),
-        }}>
+      <View style={styles.imageView}>
         <Image
           source={data.monthImage}
           style={{height: 80, width: 120, marginRight: wp(4)}}
         />
-        <Text
-          style={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: 18,
-            marginRight: wp(3),
-          }}>
+        <Text style={styles.monthText}>
           {data.month} {data.year}
         </Text>
         <TouchableOpacity
           onPress={() => {
             // setSalaryDetailsData(elemnt);
-            navigation.navigate('SalaryPdf', data);
+            navigation.navigate(SalaryPDFDownloadScreen, data);
           }}>
           <Image
             source={MonthImages.download}
@@ -120,19 +89,13 @@ const SalaryDetail = ({route, navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView
+        style={{flex: 1, marginBottom: hp(2)}}
+        contentContainerStyle={{flexGrow: 1}}>
         <View style={{paddingHorizontal: wp(1)}}>
           {renderData.map((element, index) => {
             return (
-              <View
-                key={index}
-                style={{
-                  flexDirection: 'row',
-                  flex: 1,
-                  // justifyContent: 'space-between',
-                  paddingVertical: hp(0.5),
-                  paddingHorizontal: wp(4),
-                }}>
+              <View key={index} style={styles.labelView}>
                 <Text style={{flex: 0.6}}>{element.lable}</Text>
                 <Text style={{color: 'gray', flex: 0.4}}>{element.value}</Text>
               </View>
@@ -142,30 +105,11 @@ const SalaryDetail = ({route, navigation}) => {
             onPress={() => {
               setShow(show ? false : true);
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingVertical: hp(1),
-                backgroundColor: Colors.lightBlue,
-                borderRadius: 5,
-                alignItems: 'center',
-                paddingHorizontal: wp(3),
-                justifyContent: 'space-between',
-                marginVertical: hp(1),
-              }}>
+            <View style={styles.earningView}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
                 Earnings
               </Text>
-              <View
-                style={{
-                  height: 25,
-                  width: 25,
-                  borderColor: 'white',
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              <View style={styles.minusImageView}>
                 <Image
                   source={show ? MonthImages.plus : MonthImages.minus}
                   style={{height: 15, width: 15}}
@@ -177,16 +121,11 @@ const SalaryDetail = ({route, navigation}) => {
             <View>
               {earnindData.map((elemnt, index) => {
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingVertical: hp(0.5),
-                      paddingHorizontal: wp(4),
-                    }}>
-                    <Text>{elemnt.lable}</Text>
-                    <Text style={{color: 'gray'}}>{elemnt.value}</Text>
+                  <View key={index} style={styles.earningTextView}>
+                    <Text style={{flex: 0.6}}>{elemnt.lable}</Text>
+                    <Text style={{color: 'gray', flex: 0.4}}>
+                      {elemnt.value}
+                    </Text>
                   </View>
                 );
               })}
@@ -196,29 +135,11 @@ const SalaryDetail = ({route, navigation}) => {
             onPress={() => {
               setSecondShow(secondShow ? false : true);
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingVertical: hp(1),
-                backgroundColor: Colors.lightBlue,
-                borderRadius: 5,
-                alignItems: 'center',
-                paddingHorizontal: wp(3),
-                justifyContent: 'space-between',
-              }}>
+            <View style={styles.deductionView}>
               <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
                 Deductions
               </Text>
-              <View
-                style={{
-                  height: 25,
-                  width: 25,
-                  borderColor: 'white',
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              <View style={styles.deductionImageView}>
                 <Image
                   source={secondShow ? MonthImages.plus : MonthImages.minus}
                   style={{height: 15, width: 15}}
@@ -230,16 +151,11 @@ const SalaryDetail = ({route, navigation}) => {
             <View>
               {deductionData.map((elemnt, index) => {
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingVertical: hp(0.5),
-                      paddingHorizontal: wp(4),
-                    }}>
-                    <Text>{elemnt.lable}</Text>
-                    <Text style={{color: 'gray'}}>{elemnt.value}</Text>
+                  <View key={index} style={styles.deductionTextView}>
+                    <Text style={{flex: 0.6}}>{elemnt.lable}</Text>
+                    <Text style={{color: 'gray', flex: 0.4}}>
+                      {elemnt.value}
+                    </Text>
                   </View>
                 );
               })}
@@ -250,15 +166,5 @@ const SalaryDetail = ({route, navigation}) => {
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.darkBlue,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
-  },
-});
 
 export default SalaryDetail;

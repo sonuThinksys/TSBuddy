@@ -6,7 +6,9 @@ import {
 } from 'utils/Responsive';
 
 import {BarChart} from 'react-native-chart-kit';
-
+import styles from './RemainingLeavesStyles';
+import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 const RemainingLeaves = () => {
   const earnedLeavesData = [20, 6, 14, 4];
   const restrictedLeavesData = [20, 6, 14];
@@ -16,7 +18,7 @@ const RemainingLeaves = () => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={{fontWeight: 'bold', fontSize: 16}}>Remaining Leaves</Text>
+        <Text style={styles.remainingText}>Remaining Leaves</Text>
       </View>
       <View
         style={{
@@ -38,10 +40,10 @@ const RemainingLeaves = () => {
                 {
                   data: earnedLeavesData,
                   colors: [
-                    () => 'orange',
-                    () => '#0E5E6F',
-                    () => 'green',
-                    () => 'red',
+                    () => Colors.orange,
+                    () => Colors.darkBlue,
+                    () => Colors.green,
+                    () => Colors.red,
                   ],
                 },
               ],
@@ -61,12 +63,6 @@ const RemainingLeaves = () => {
             }}
             style={{
               marginVertical: 10,
-              // borderColor: 'red',
-              // borderWidth: 1,
-              // marginRight: 4,
-              // padding: 5,
-              // paddingLeft: -20,
-              // paddingRight: 40,
             }}
           />
 
@@ -86,7 +82,6 @@ const RemainingLeaves = () => {
             spacingInner={0}
             flatColor={true}
             showValuesOnTopOfBars={true}
-            // withCustomBarColorFromData={true}
             showBarTops={false}
             withInnerLines={false}
             fromZero={true}
@@ -97,10 +92,10 @@ const RemainingLeaves = () => {
                 {
                   data: restrictedLeavesData,
                   colors: [
-                    () => 'orange',
-                    () => '#0E5E6F',
-                    () => 'green',
-                    () => 'red',
+                    () => Colors.orange,
+                    () => Colors.darkBlue,
+                    () => Colors.green,
+                    () => Colors.red,
                   ],
                 },
               ],
@@ -122,12 +117,7 @@ const RemainingLeaves = () => {
             style={{
               marginVertical: 10,
               marginLeft: 0,
-              // borderRadius: 16,
-
               marginRight: 4,
-              // paddingRight: 0,
-              // borderColor: 'blue',
-              // borderWidth: 1,
             }}
           />
           <Text
@@ -175,23 +165,23 @@ const renderItem = ({item}) => {
           marginHorizontal: wp(1.5),
           backgroundColor:
             item.text === 'Allocate'
-              ? 'orange'
+              ? Colors.orange
               : item.text === 'Taken'
-              ? '#0E5E6F'
+              ? Colors.darkBlue
               : item.text === '-ve Balance'
-              ? 'red'
-              : 'green',
+              ? Colors.red
+              : Colors.green,
         }}></View>
       <Text
         style={{
           color:
             item.text === 'Allocate'
-              ? 'orange'
+              ? Colors.orange
               : item.text === 'Taken'
-              ? '#0E5E6F'
+              ? Colors.darkBlue
               : item.text === '-ve Balance'
-              ? 'red'
-              : 'green',
+              ? Colors.red
+              : Colors.green,
         }}>
         {item.text}
       </Text>
@@ -244,51 +234,3 @@ export default RemainingLeaves;
 //     />
 //   );
 // };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: hp(1),
-    paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
-    marginTop: hp(1),
-  },
-  leavesTypeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  leaveType: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // borderWidth: 1,
-    // borderColor: 'red',
-    justifyContent: 'space-around',
-    paddingRight: 10,
-    // paddingHorizontal: 10,
-    // minWidth: wp(20),
-  },
-  leavesType1: {
-    height: 12,
-    width: 12,
-    backgroundColor: 'orange',
-    marginRight: 5,
-  },
-  leavesType2: {
-    height: 12,
-    width: 12,
-    backgroundColor: '#0E5E6F',
-    marginRight: 5,
-  },
-  leavesType3: {
-    height: 12,
-    width: 12,
-    backgroundColor: 'green',
-    marginRight: 5,
-  },
-  leavesType4: {
-    height: 12,
-    width: 12,
-    backgroundColor: 'red',
-    marginRight: 5,
-  },
-  leaveTextColor: {},
-});

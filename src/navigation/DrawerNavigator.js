@@ -5,19 +5,15 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {DrawerActions, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {Icon} from 'react-native-vector-icons/Ionicons';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
 import SalarySlip from 'screens/salarySlip/SalarySlip';
-import {loginStatus} from 'Auth/LoginSlice';
 import {useDispatch} from 'react-redux';
-import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
 import Header from 'component/header/Header';
@@ -25,7 +21,25 @@ import UserProfile from 'component/useProfile/UserProfile';
 import RequestLunch from 'screens/requestLunch/RequestLunch';
 import UserDetail from 'component/useProfile/UserDetail';
 import SalaryDetail from 'screens/salarySlip/SalaryDetail';
+import ApplyLeave from 'screens/leaves/ApplyLeave';
+import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+import {
+  HomeScreen,
+  LoginScreen,
+  ProfileScreen,
+  AttendenceScreen,
+  HolidaysScreen,
+  LeavesScreen,
+  SalarySlipTab,
+  SalaryDetailsScreen,
+  SalaryPDFDownloadScreen,
+  RequestLunchScreen,
+  LeaveApplyScreen,
+  employeeProfileScreen,
+  employeeDetailsScreen,
+  LeaveDetailsScreen,
+} from './Route';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -35,37 +49,44 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 
-const drawerOption = ({label, headerIconName, navigation}) => {
-  console.log('naigation in draweroption:-------------------', navigation);
-
+const drawerOption = ({
+  label,
+  headerIconName,
+  navigation,
+  showDrawer = true,
+  showHeaderRight = true,
+}) => {
   return {
     label: () => <Text>{label}</Text>,
     headerShown: true,
-    headerLeft: props => (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.openDrawer();
-        }}>
-        <Image
-          source={MonthImages.DrwaerMenu}
-          style={{height: 22, width: 22}}
-        />
-      </TouchableOpacity>
-    ),
+    headerLeft: showDrawer
+      ? props => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.openDrawer();
+            }}>
+            <Image
+              source={MonthImages.DrwaerMenu}
+              style={{height: 22, width: 22}}
+            />
+          </TouchableOpacity>
+        )
+      : null,
     headerStyle: {backgroundColor: Colors.darkBlue},
+    headerTintColor: Colors.white,
     headerTitle: () => (
       <TouchableOpacity>
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
-            // backgroundColor: 'red',
           }}>
           <Text
             style={{
               color: 'white',
               textAlign: 'center',
-              marginLeft: Platform.OS === 'ios' ? 0.1 : wp(25),
+              marginLeft:
+                Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
               //paddingTop: hp(0.5),
               fontSize: 16,
               fontWeight: 'bold',
@@ -73,22 +94,23 @@ const drawerOption = ({label, headerIconName, navigation}) => {
             }}>
             {label}
           </Text>
-          {headerIconName ? (
+          {/* {headerIconName ? (
             <Image source={headerIconName} style={{height: 20, width: 20}} />
-          ) : null}
+          ) : null} */}
         </View>
       </TouchableOpacity>
     ),
-    headerRight: () => (
-      <TouchableOpacity>
-        <Header />
-      </TouchableOpacity>
-    ),
+    headerRight: showHeaderRight
+      ? () => (
+          <TouchableOpacity>
+            <Header />
+          </TouchableOpacity>
+        )
+      : null,
   };
 };
 
 const HomeStackScreen = ({navigation}) => {
-  const dispatch = useDispatch();
   return (
     <HomeStack.Navigator
       initialRouteName="HomeDashboard"
@@ -102,7 +124,7 @@ const HomeStackScreen = ({navigation}) => {
       // }}
       headerMode="none">
       <HomeStack.Screen
-        name="home"
+        name={HomeScreen}
         component={Home}
         options={drawerOption({
           label: 'Home',
@@ -117,7 +139,7 @@ const HomeStackScreen = ({navigation}) => {
         // }}
       />
       <HomeStack.Screen
-        name="RequestLunch"
+        name={RequestLunchScreen}
         component={RequestLunch}
         options={{headerShown: false}}
         // options={drawerOption({
@@ -126,7 +148,7 @@ const HomeStackScreen = ({navigation}) => {
         // })}
       />
       <HomeStack.Screen
-        name="UserProfile"
+        name={employeeProfileScreen}
         component={UserProfile}
         options={{headerShown: false}}
       />
@@ -148,7 +170,7 @@ const AttendenceStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="attendence"
+        name={AttendenceScreen}
         component={Attendence}
       />
     </AttendenceStack.Navigator>
@@ -164,7 +186,7 @@ const ProfileStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="profile"
+        name={ProfileScreen}
         component={Profile}
       />
     </ProfileStack.Navigator>
@@ -180,7 +202,7 @@ const HolidaysStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="holidays"
+        name={HolidaysScreen}
         component={Holidays}
       />
     </HolidaysStack.Navigator>
@@ -189,15 +211,39 @@ const HolidaysStackScreen = ({navigation}) => {
 
 const LeavesStackScreen = ({navigation}) => {
   return (
-    <LeavesStack.Navigator screenOptions={{headerShown: false}}>
+    <LeavesStack.Navigator
+      initialRouteName="leaves"
+      screenOptions={{headerShown: false}}>
       <LeavesStack.Screen
         options={drawerOption({
           label: 'Leaves',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="leaves"
+        name={LeavesScreen}
         component={Leaves}
+      />
+      <LeavesStack.Screen
+        options={drawerOption({
+          label: 'Leave Details',
+          showDrawer: false,
+          showHeaderRight: false,
+          // headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name={LeaveDetailsScreen}
+        component={LeaveDetails}
+      />
+      <LeavesStack.Screen
+        options={drawerOption({
+          label: 'Apply Leave',
+          showDrawer: false,
+          showHeaderRight: false,
+          // headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name={LeaveApplyScreen}
+        component={ApplyLeave}
       />
     </LeavesStack.Navigator>
   );
@@ -212,22 +258,23 @@ const SalarySlipScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="salarySlip"
+        name={SalarySlipTab}
         component={SalarySlip}
       />
       <SalarySlipStack.Screen
-        name="SalaryDetail"
+        name={SalaryDetailsScreen}
         component={SalaryDetail}
         options={{headerShown: false}}
       />
       <SalarySlipStack.Screen
-        name="SalaryPdf"
+        name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
         options={{headerShown: true}}
       />
     </SalarySlipStack.Navigator>
   );
 };
+
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -251,8 +298,6 @@ function DrawerNavigator({navigation}) {
         headerStyle: {
           backgroundColor: '#1b5583',
           height: 55,
-
-          //Set Header color
         },
         headerTintColor: 'white', //Set Header text color
         headerTitleStyle: {

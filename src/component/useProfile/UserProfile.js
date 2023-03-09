@@ -20,7 +20,7 @@ import {Colors} from 'colors/Colors';
 
 import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 //import {employeeData} from '../../../db';
 const UserProfile = () => {
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -32,6 +32,7 @@ const UserProfile = () => {
   const navigation = useNavigation();
   const employeeData = useSelector(state => state.dataReducer.employeeData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
+  console.log('isShowModall:--------------------', isShowModall);
   useEffect(() => {
     setEmpData(employeeData);
   }, [employeeData]);
@@ -152,8 +153,8 @@ const UserProfile = () => {
             }}
           />
           <TextInput
-            selectionColor={'white'}
-            color="white"
+            selectionColor={Colors.white}
+            color={Colors.white}
             // value={e}
             onChangeText={onChangeText}
             isEditble
@@ -161,7 +162,7 @@ const UserProfile = () => {
           />
         </View>
       ) : null}
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
         data={allEmpData}
         key={numValue}
