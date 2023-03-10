@@ -87,50 +87,56 @@ const CarouselAutoScroll = () => {
         // viewabilityConfig={{
         //   itemVisiblePercentThreshold: 50,
         // }}
-
+        contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         ref={imageRef}
         pagingEnabled
         data={CalaenderEventData}
         horizontal
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => (
-          <View key={index} style={styles.container}>
-            <TouchableOpacity
-              onPress={() => {
-                setModalData({
-                  startsOn: item.startsOn,
-                  dateOfJoining: item.dateOfJoining,
-                  name: item.employeeName,
-                  description: item.description,
+          // <View >
+          <TouchableOpacity
+            key={index}
+            style={styles.container}
+            // style={{marginHorizontal: 10}}
+            onPress={() => {
+              setModalData({
+                startsOn: item.startsOn,
+                dateOfJoining: item.dateOfJoining,
+                name: item.employeeName,
+                description: item.description,
 
-                  setShowModal: setShowModal,
-                });
-                setShowModal(true);
-              }}>
-              <ImageBackground
-                source={
-                  item.description === null
-                    ? MonthImages.workAnniversaryy
-                    : MonthImages.BirthdayImage
-                }
-                resizeMode="cover"
-                style={styles.backgroundImage}>
-                <View style={styles.backgroundImageView}>
-                  <Text
-                    numberOfLines={2}
-                    style={{color: 'white', textAlign: 'center'}}>
-                    {item.description === null
-                      ? `Happy Work Aniversary ${item.employeeName} on ${moment(
-                          item.dateOfJoining,
-                        ).format('DD MMM ')}`
-                      : `Happy Birthday ${item.employeeName} on ${moment(
-                          item.startsOn,
-                        ).format('DD MMM ')}`}
-                  </Text>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
+                setShowModal: setShowModal,
+              });
+              setShowModal(true);
+            }}>
+            <ImageBackground
+              source={
+                item.description === null
+                  ? MonthImages.workAnniversaryy
+                  : MonthImages.BirthdayImage
+              }
+              resizeMode="stretch"
+              imageStyle={{
+                borderRadius: 15,
+              }}
+              style={styles.backgroundImage}>
+              <View style={styles.textView}>
+                <Text
+                  numberOfLines={2}
+                  style={{color: 'white', textAlign: 'center'}}>
+                  {item.description === null
+                    ? `Happy Work Aniversary ${item.employeeName} on ${moment(
+                        item.dateOfJoining,
+                      ).format('DD MMM ')}`
+                    : `Happy Birthday ${item.employeeName} on ${moment(
+                        item.startsOn,
+                      ).format('DD MMM ')}`}
+                </Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+          // </View>
         )}
         // style={{...StyleSheet.AbsoluteFill}}
       />

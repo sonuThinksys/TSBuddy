@@ -34,11 +34,11 @@ export const getUserToken = createAsyncThunk(
         const {response = {}, status} = result || {};
         if (status === 200) {
           // await AsyncStorage.setItem('accessToken', response?.token);
-          const username = formInput.username;
-          const password = formInput.password;
+          // const username = formInput.username;
+          // const password = formInput.password;
 
           // Store the credentials
-          await Keychain.setGenericPassword(username, password);
+          // await Keychain.setGenericPassword(username, password);
 
           return Promise.resolve({data, formInput});
         } else {

@@ -25,4 +25,5 @@ export const Colors = {
   darkTransparentColor: 'rgba(51, 51, 51, 0.8)',
   dune: '#333333',
   lightGray1: '#666666',
+  lightGray2: 'rgb(190,190,190)',
 };

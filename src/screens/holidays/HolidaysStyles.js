@@ -34,7 +34,7 @@ export default StyleSheet.create({
   },
   flatelistView2: {
     flex: 3,
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
     justifyContent: 'center',

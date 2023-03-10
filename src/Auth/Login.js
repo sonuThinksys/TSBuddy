@@ -2,7 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
 
-import {View, Text, TextInput, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './LoginStyle';
@@ -17,6 +24,7 @@ import fingerPrint from 'assets/allImage/fingerPrint.png';
 import {loginStatus} from './LoginSlice';
 import {getUserToken} from './LoginSlice';
 import {FontFamily} from 'constants/fonts';
+import {useSelector} from 'react-redux';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
@@ -25,6 +33,10 @@ const Login = () => {
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
+
+  const token = useSelector(state => state.auth.userToken);
+  const formInput = useSelector(state => state.auth.formInput);
+  console.log('formadadfgdfg:------------------------------', token, formInput);
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -44,29 +56,27 @@ const Login = () => {
         if (biometryType === 'FaceID') {
         } else {
           if (isAuth) {
-            dispatch(loginStatus(true));
-            // return null;
+            // dispatch(loginStatus(true));
+            return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)
-            .then(async success => {
-              // getting credentials
-              const credentials = await Keychain.getGenericPassword();
-              if (credentials) {
+            .then(success => {
+              if (token !== '') {
                 console.log(
-                  'Credentials successfully loaded for user ' +
-                    credentials.username,
+                  'success:--------------------------------',
+                  success,
                 );
-              } else {
-                console.log('No credentials stored');
+                const username = formInput.username;
+                const password = formInput.password;
+                console.log(
+                  'username and padswer:-----------',
+                  username,
+                  password,
+                );
+                dispatch(getUserToken({username, password}));
               }
-              //end
-
-              await dispatch(
-                getUserToken(credentials.username, credentials.password),
-              );
-              await Keychain.resetGenericPassword();
-              setIsAuth(success);
             })
+
             .catch(err => {
               // BackHandler.exitApp();
             });
@@ -178,13 +188,14 @@ const Login = () => {
           Guest Login
         </Text>
       </View>
-
-      <TouchableOpacity onPress={enableTouchId}>
-        <View style={styles.bioMetricView}>
-          <Image source={fingerPrint} style={{height: 30, width: 35}} />
-          <Text style={styles.bioMetricText}>Biometric login</Text>
-        </View>
-      </TouchableOpacity>
+      {Platform.OS === 'android' ? (
+        <TouchableOpacity onPress={enableTouchId}>
+          <View style={styles.bioMetricView}>
+            <Image source={fingerPrint} style={{height: 30, width: 35}} />
+            <Text style={styles.bioMetricText}>Biometric login</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };
