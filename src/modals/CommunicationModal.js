@@ -12,15 +12,17 @@ import {
   StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-// import Modal from 'react-native-modal';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import { whatsappInstallationAlert } from 'utils/DummyData';
+import {whatsappInstallationAlert} from 'utils/DummyData';
+import Modal from 'react-native-modal';
+
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
   const isShowModal = useSelector(state => state.dataReducer.isShowModal);
@@ -57,8 +59,6 @@ const CommunicationModal = ({empDetail}) => {
       Linking.openURL(`smsto:${empDetail.medium}`);
     }
   };
-
-  return null;
 
   return (
     <Modal
@@ -108,6 +108,7 @@ const CommunicationModal = ({empDetail}) => {
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.lightBlue,

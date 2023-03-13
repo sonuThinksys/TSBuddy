@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {useSelector, useDispatch} from 'react-redux';
-import {getHolidaysData} from 'redux/dataSlice';
+import {getHolidaysData} from 'redux/homeSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';

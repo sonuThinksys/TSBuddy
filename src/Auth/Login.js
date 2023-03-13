@@ -1,6 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {View, Text, TextInput, Image, TouchableOpacity} from 'react-native';
+import * as Keychain from 'react-native-keychain';
+
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './LoginStyle';
@@ -17,6 +26,8 @@ import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import {loginStatus} from './LoginSlice';
 import {getUserToken} from './LoginSlice';
+import {FontFamily} from 'constants/fonts';
+import {useSelector} from 'react-redux';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
@@ -25,6 +36,10 @@ const Login = () => {
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
+
+  const token = useSelector(state => state.auth.userToken);
+  const formInput = useSelector(state => state.auth.formInput);
+  console.log('formadadfgdfg:------------------------------', token, formInput);
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -44,13 +59,27 @@ const Login = () => {
         if (biometryType === 'FaceID') {
         } else {
           if (isAuth) {
-            dispatch(loginStatus(true));
-            // return null;
+            // dispatch(loginStatus(true));
+            return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
-              setIsAuth(success);
+              if (token !== '') {
+                console.log(
+                  'success:--------------------------------',
+                  success,
+                );
+                const username = formInput.username;
+                const password = formInput.password;
+                console.log(
+                  'username and padswer:-----------',
+                  username,
+                  password,
+                );
+                dispatch(getUserToken({username, password}));
+              }
             })
+
             .catch(err => {
               // BackHandler.exitApp();
             });
@@ -62,7 +91,7 @@ const Login = () => {
       });
   };
 
-  const onPressLogin = () => {
+  const onPressLogin = async () => {
     dispatch(getUserToken({username, password}));
   };
 
@@ -78,7 +107,10 @@ const Login = () => {
         ignoreSilentSwitch={'obey'}
       />
       <View style={{alignItems: 'center'}}>
-        <Image style={{height: hp(10), width: wp(10)}} source={TSBuddyIcon} />
+        <Image
+          style={{height: hp(10), width: wp(10)}}
+          source={MonthImages.TSBudLogo}
+        />
       </View>
       <View style={styles.textInputContainer}>
         <View style={styles.textinputView}>
@@ -144,13 +176,7 @@ const Login = () => {
               paddingHorizontal: wp(2),
               alignItems: 'center',
             }}>
-            <Text
-              style={{
-                marginHorizontal: wp(1),
-                color: Colors.white,
-              }}>
-              Remember Me
-            </Text>
+            <Text style={styles.rememberText}>Remember Me</Text>
             <Image style={{height: 30, width: 30}} source={LoginCheck} />
           </View>
         </View>
@@ -167,13 +193,14 @@ const Login = () => {
           Guest Login
         </Text>
       </View>
-
-      <TouchableOpacity onPress={enableTouchId}>
-        <View style={styles.bioMetricView}>
-          <Image source={fingerPrint} style={{height: 30, width: 35}} />
-          <Text style={styles.bioMetricText}>Biometric login</Text>
-        </View>
-      </TouchableOpacity>
+      {Platform.OS === 'android' ? (
+        <TouchableOpacity onPress={enableTouchId}>
+          <View style={styles.bioMetricView}>
+            <Image source={fingerPrint} style={{height: 30, width: 35}} />
+            <Text style={styles.bioMetricText}>Biometric login</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };

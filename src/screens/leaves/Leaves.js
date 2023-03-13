@@ -6,31 +6,31 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import styles from './LeaveStyles';
-import {getLeaveDetails} from 'redux/dataSlice';
+import {getLeaveDetails} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
 
 const Leaves = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
-
-  const leavesData = useSelector(state => state.dataReducer.leavesData);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getLeaveDetails({token, employeeID}));
   }, []);
 
+  const leavesData = useSelector(state => state.dataReducer.leavesData);
+
   const applyForLeave = () => {
-    navigation.navigate('ApplyLeave');
+    navigation.navigate(LeaveApplyScreen);
   };
 
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('leaveDetails', item)}>
+        onPress={() => navigation.navigate(LeaveDetailsScreen, item)}>
         <View style={styles.flateListView}>
           <View
             style={{

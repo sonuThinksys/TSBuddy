@@ -28,6 +28,9 @@ const initialState = {
   employeeProfile: {},
   employeeProfileLoading: false,
   employeeProfileError: false,
+  calendereventDataLoading: false,
+  calendereventData: {},
+  calendereventDataError: false,
 };
 
 // ============================================================================================
@@ -119,6 +122,7 @@ export const getEmployeeProfileData = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
+
     return axios(config)
       .then(async response => {
         const {data, status} = response;
@@ -126,6 +130,39 @@ export const getEmployeeProfileData = createAsyncThunk(
           return Promise.resolve(data);
         } else {
           return Promise.reject(new Error('Something Went Wrong3!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+export const getCalendereventData = createAsyncThunk(
+  'dataReducer/getCalendereventData',
+  async token => {
+    var config = {
+      method: 'get',
+      url: endPoints.calenderEventAPI,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong1!'));
         }
       })
       .catch(err => {
@@ -174,7 +211,7 @@ export const getholidayDataIWithImage = createAsyncThunk(
   },
 );
 
-const dataSlice = createSlice({
+const homeSlice = createSlice({
   name: 'dataa',
   initialState,
   reducers: {
@@ -272,8 +309,21 @@ const dataSlice = createSlice({
       state.employeeProfile = [];
       state.employeeProfileError = action.payload;
     });
+    builder.addCase(getCalendereventData.pending, state => {
+      state.calendereventDataLoading = true;
+    });
+    builder.addCase(getCalendereventData.fulfilled, (state, action) => {
+      state.calendereventDataLoading = false;
+      state.calendereventData = action.payload;
+      state.calendereventDataError = undefined;
+    });
+    builder.addCase(getCalendereventData.rejected, (state, action) => {
+      state.calendereventDataLoading = false;
+      state.calendereventData = [];
+      state.calendereventDataError = action.payload;
+    });
   },
 });
 
-export default dataSlice.reducer;
-export const {loadingStatus, modalStatus, dateOfModal} = dataSlice.actions;
+export default homeSlice.reducer;
+export const {loadingStatus, modalStatus, dateOfModal} = homeSlice.actions;

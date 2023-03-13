@@ -6,8 +6,10 @@ import {
 } from 'utils/Responsive';
 
 import {BarChart} from 'react-native-chart-kit';
-import {Colors} from 'colors/Colors';
 
+import styles from './RemainingLeavesStyles';
+import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 const RemainingLeaves = () => {
   const earnedLeavesData = [20, 6, 14, 4];
   const restrictedLeavesData = [20, 6, 14];
@@ -17,7 +19,7 @@ const RemainingLeaves = () => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={{fontWeight: 'bold', fontSize: 16}}>Remaining Leaves</Text>
+        <Text style={styles.remainingText}>Remaining Leaves</Text>
       </View>
       <View
         style={{
@@ -40,7 +42,7 @@ const RemainingLeaves = () => {
                   data: earnedLeavesData,
                   colors: [
                     () => Colors.orange,
-                    () => Colors.darkGreen,
+                    () => Colors.darkBlue,
                     () => Colors.green,
                     () => Colors.red,
                   ],
@@ -93,7 +95,7 @@ const RemainingLeaves = () => {
                   data: restrictedLeavesData,
                   colors: [
                     () => Colors.orange,
-                    () => Colors.darkGreen,
+                    () => Colors.darkBlue,
                     () => Colors.green,
                     () => Colors.red,
                   ],
@@ -168,7 +170,7 @@ const renderItem = ({item}) => {
             item.text === 'Allocate'
               ? Colors.orange
               : item.text === 'Taken'
-              ? Colors.darkGreen
+              ? Colors.darkBlue
               : item.text === '-ve Balance'
               ? Colors.red
               : Colors.green,
@@ -179,7 +181,7 @@ const renderItem = ({item}) => {
             item.text === 'Allocate'
               ? Colors.orange
               : item.text === 'Taken'
-              ? Colors.darkGreen
+              ? Colors.darkBlue
               : item.text === '-ve Balance'
               ? Colors.red
               : Colors.green,
@@ -235,51 +237,3 @@ export default RemainingLeaves;
 //     />
 //   );
 // };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: hp(1),
-    paddingHorizontal: wp(3),
-    backgroundColor: Colors.skyColor,
-    marginTop: hp(1),
-  },
-  leavesTypeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  leaveType: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // borderWidth: 1,
-    // borderColor: Colors.red,
-    justifyContent: 'space-around',
-    paddingRight: 10,
-    // paddingHorizontal: 10,
-    // minWidth: wp(20),
-  },
-  leavesType1: {
-    height: 12,
-    width: 12,
-    backgroundColor: Colors.orange,
-    marginRight: 5,
-  },
-  leavesType2: {
-    height: 12,
-    width: 12,
-    backgroundColor: Colors.darkGreen,
-    marginRight: 5,
-  },
-  leavesType3: {
-    height: 12,
-    width: 12,
-    backgroundColor: Colors.green,
-    marginRight: 5,
-  },
-  leavesType4: {
-    height: 12,
-    width: 12,
-    backgroundColor: Colors.red,
-    marginRight: 5,
-  },
-  leaveTextColor: {},
-});

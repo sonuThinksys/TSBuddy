@@ -11,49 +11,28 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import styles from './MenudetailStyle';
 import RequestLunch from 'screens/requestLunch/RequestLunch';
+import {RequestLunchScreen} from 'navigation/Route';
+import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 // import {SharedElement} from 'react-navigation-shared-element';
 const MenuDetails = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <Text
-        style={{fontWeight: 'bold', fontSize: 16, marginTop: hp(1), flex: 2}}>
-        Today's Menu
-      </Text>
+      <Text style={styles.text1}>Today's Menu</Text>
       {/* <SharedElement id="enter" style={{flex: 1}}> */}
       <View style={styles.secondContainer}>
         <Pressable
           onPress={() => {
-            navigation.navigate('RequestLunch', navigation);
+            navigation.navigate(RequestLunchScreen, navigation);
           }}>
-          <Text style={{color: Colors.white, fontWeight: 'bold'}}>
-            {' '}
-            + Lunch Request
-          </Text>
+          <Text style={styles.text2}> + Lunch Request</Text>
         </Pressable>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingVertical: hp(1.4),
-    backgroundColor: Colors.skyColor,
-    paddingHorizontal: wp(2),
-    opacity: 1,
-  },
-  secondContainer: {
-    flex: 1,
-    backgroundColor: Colors.blue,
-    paddingVertical: hp(1.2),
-    paddingHorizontal: wp(2),
-    borderRadius: 4,
-    opacity: 1,
-  },
-});
 export default MenuDetails;

@@ -1,7 +1,7 @@
 import {Colors} from 'colors/Colors';
 import {View, StyleSheet, Text} from 'react-native';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
-
+import styles from './LeavesDetailsStyles';
 const LeaveDetails = ({route, navigation}) => {
   const card = (leftText, rightText, index) => {
     return (
@@ -60,41 +60,3 @@ const LeaveDetails = ({route, navigation}) => {
 };
 
 export default LeaveDetails;
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    backgroundColor: Colors.white,
-    marginHorizontal: 8,
-    marginTop: 8,
-    borderWidth: 2,
-    borderColor: Colors.parrotGreen,
-    marginBottom: 40,
-  },
-
-  card: {
-    // flex: 1,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.whitishGray,
-  },
-  header: {
-    backgroundColor: Colors.parrotGreen,
-    padding: 10,
-  },
-  headerText: {
-    color: Colors.white,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  cardLeftText: {
-    fontWeight: '700',
-    width: wp(32),
-    paddingHorizontal: 10,
-    paddingVertical: 14,
-    backgroundColor: Colors.whitishGray,
-  },
-  cardRightTextContainer: {
-    justifyContent: 'center',
-    paddingLeft: 10,
-  },
-});

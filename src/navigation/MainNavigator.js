@@ -35,6 +35,27 @@ const MainNavigator = () => {
           component={SplashScreen}
           options={{headerShown: false}}
         />
+        {/* <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UserDetail"
+          component={UserDetail}
+          options={{headerShown: false}}
+        /> */}
+
+        {/* <Stack.Screen
+          name="RequestLunch"
+          component={RequestLunch}
+          options={{headerShown: false}}
+        /> */}
+        {/* <Stack.Screen
+          name="Loader"
+          component={Loader}
+          options={{headerShown: false}}
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

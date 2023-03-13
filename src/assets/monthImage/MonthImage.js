@@ -99,6 +99,7 @@ import DrwaerMenu from 'assets/allImage/Menu.imageset/DrwaerMenu.png';
 import download from 'assets/allImage/download.imageset/download.png';
 import plus from 'assets/allImage/plus.imageset/plus.png';
 import minus from 'assets/allImage/minus.imageset/minus.png';
+import TSBudLogo from 'assets/allImage/TSBud.imageset/TSBudLogo.png';
 export const MonthImages = {
   plus: plus,
   minus: minus,
@@ -187,4 +188,5 @@ export const MonthImages = {
   fingerPrint: fingerPrint,
   DrwaerMenu: DrwaerMenu,
   download: download,
+  TSBudLogo: TSBudLogo,
 };

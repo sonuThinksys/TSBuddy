@@ -15,7 +15,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import Header from 'component/header/Header';
 import CommunicationModal from 'modals/CommunicationModal';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 const UserDetail = ({navigation, route}) => {
   const {

@@ -1,14 +1,11 @@
 import React, {useEffect} from 'react';
-import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {View, Text, FlatList, Image} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {getLeaveDetails} from 'redux/dataSlice';
 import {Colors} from 'colors/Colors';
+import {getLeaveDetails} from 'redux/homeSlice';
+import styles from './RecentLeavesStyles';
 
 const RecentLeaves = () => {
   // =================================================================================
@@ -31,9 +28,7 @@ const RecentLeaves = () => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={{fontWeight: 'bold', fontSize: 16}}>
-          Recent Applied Leaves
-        </Text>
+        <Text style={styles.recentText}>Recent Applied Leaves</Text>
       </View>
       <FlatList
         data={leavesData}
@@ -54,14 +49,15 @@ const renderItem = ({item}) => {
             ? MonthImages.absentEmpl
             : MonthImages.presentEmpS
         }
-        style={{height: 25, width: 25, marginTop: hp(1.8)}}
+        style={styles.image}
       />
-      <Text style={{marginTop: hp(2.4), marginLeft: wp(2)}}>
+
+      <Text style={{flex: 0.6}}>
         {item.totalLeaveDays} {item.totalLeaveDays === 1 ? 'Day' : 'Days'}
       </Text>
       <View style={styles.itemView}>
         {/* <TouchableOpacity> */}
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: Colors.white}}>
+        <Text style={styles.dateText}>
           {`${new Date(item.fromDate).getDate()} ${new Date(
             item.fromDate,
           ).toLocaleString('default', {month: 'short'})} ${new Date(
@@ -74,28 +70,4 @@ const renderItem = ({item}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: hp(1),
-    paddingHorizontal: wp(3),
-    backgroundColor: Colors.skyColor,
-    marginTop: hp(1),
-  },
-  imageView: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: Colors.white,
-    marginTop: hp(0.6),
-    shadowOpacity: 0.1,
-  },
-  itemView: {
-    paddingVertical: hp(1.6),
-    paddingHorizontal: wp(6),
-    backgroundColor: Colors.pink,
-    marginLeft: wp(40),
-    borderRadius: 5,
-    marginVertical: hp(0.5),
-    backgroundColor: Colors.bluishGreen,
-  },
-});
 export default RecentLeaves;

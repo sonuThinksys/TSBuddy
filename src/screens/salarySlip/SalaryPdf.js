@@ -3,17 +3,18 @@ import {StyleSheet, View, Dimensions} from 'react-native';
 
 import Pdf from 'react-native-pdf';
 import {Colors} from 'colors/Colors';
-export default function SalaryPdf() {
+import {MonthImages} from 'assets/monthImage/MonthImage';
+const SalaryPdf = () => {
   return (
     <View style={styles.container}>
       <Pdf
-        source={source}
+        source={MonthImages.BirthdayImage}
         onLoadComplete={(numberOfPages, filePath) => {}}
         style={styles.pdf}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -35,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// export default SalaryPdf;
+export default SalaryPdf;

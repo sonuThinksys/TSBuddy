@@ -7,6 +7,7 @@ export const Colors = {
   skyColor: '#C3F8FF',
   blue: '#3333FF',
   menuTransparentColor: 'rgba(0, 76, 153, 0.8)',
+
   orange: 'orange',
   green: 'green',
   lightGray: '#dee2e6',
@@ -30,4 +31,10 @@ export const Colors = {
   whitishPink: '#FFE4E1',
   violet: '#9370DB',
   customColor: ({opacity = 1, r, g, b}) => `rgba(${r}, ${g}, ${b}, ${opacity})`,
+  different: '#06566e',
+  grey: '#adb5bd',
+  darkTransparentColor: 'rgba(51, 51, 51, 0.8)',
+  dune: '#333333',
+  lightGray1: '#666666',
+  lightGray2: 'rgb(190,190,190)',
 };

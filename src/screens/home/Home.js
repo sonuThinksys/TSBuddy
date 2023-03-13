@@ -7,18 +7,30 @@ import {
 import {ScrollView} from 'react-native-virtualized-view';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
-import Item from 'component/menuContent/Item';
+import MenuItem from 'component/menuContent/MenuItem';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import {Colors} from 'colors/Colors';
-let data = [MenuDetails, Item, RecentLeaves, RemainingLeaves, UpComingHolidays];
+import {useSelector} from 'react-redux';
+import Loader from 'component/loader/Loader';
+let data = [
+  MenuDetails,
+  MenuItem,
+  RecentLeaves,
+  RemainingLeaves,
+  UpComingHolidays,
+];
+
 const Home = () => {
   // useEffect(() => {
   //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   // }, []);
+
+  const isLoading = useSelector(state => state.auth.isLoading);
   return (
     <SafeAreaView style={{flex: 1}}>
+      {isLoading ? <Loader /> : null}
       <View style={{height: hp(23), backgroundColor: Colors.white}}>
         <CarouselAutoScroll />
       </View>

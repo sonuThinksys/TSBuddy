@@ -5,6 +5,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import {appVersion} from '../../utils/AppVersion';
 import {Colors} from 'colors/Colors';
 const SplashScreen = ({navigation}) => {

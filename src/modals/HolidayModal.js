@@ -12,7 +12,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {getholidayDataIWithImage} from 'redux/dataSlice';
+import {getholidayDataIWithImage} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   const {description, holidayDate, newDateFormate, holidaysSetShowModal} =

@@ -3,6 +3,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
   container: {
@@ -12,7 +13,7 @@ export default StyleSheet.create({
   },
   textInputContainer: {
     width: '90%',
-    backgroundColor: Colors.brown,
+    backgroundColor: Colors.darkTransparentColor,
     marginVertical: hp(4),
     paddingVertical: hp(4),
     marginLeft: wp(5),
@@ -54,7 +55,11 @@ export default StyleSheet.create({
     borderRadius: 1,
     justifyContent: 'center',
   },
-  loginText: {color: Colors.white, fontWeight: 'bold', textAlign: 'center'},
+  loginText: {
+    color: Colors.white,
+    fontFamily: FontFamily.RobotoBold,
+    textAlign: 'center',
+  },
   orText: {
     textAlign: 'center',
     color: Colors.skyColor,
@@ -75,7 +80,7 @@ export default StyleSheet.create({
   bioMetricText: {
     textAlign: 'center',
     color: Colors.white,
-    fontSize: 16,
+    fontSize: FontSize.h16,
     paddingTop: hp(0.5),
     paddingLeft: wp(15),
   },
@@ -87,5 +92,10 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     bottom: 0,
     right: 0,
+  },
+  rememberText: {
+    marginHorizontal: wp(1),
+    color: Colors.white,
+    fontFamily: FontFamily.RobotoBold,
   },
 });

@@ -9,45 +9,77 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+import styles from './AutoscrollStyle';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import BirthdayAnniV from 'modals/BirthdayAnniV';
 import {Colors} from 'colors/Colors';
+import {getCalendereventData} from 'redux/homeSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import moment from 'moment';
 const width = Dimensions.get('screen').width;
 import {imageArr} from 'utils/DummyData';
 
 const CarouselAutoScroll = () => {
+  const dispatch = useDispatch();
+  const [CalaenderEventData, setCalenderEventData] = useState([]);
+  const token = useSelector(state => state.auth.userToken);
+  useEffect(() => {
+    dispatch(getCalendereventData(token));
+  }, []);
+  const calenderData = useSelector(
+    state => state.dataReducer.calendereventData,
+  );
+  const keyOfObject = Object.keys(calenderData);
+
+  useEffect(() => {
+    let arr = [];
+    keyOfObject.map(el => {
+      calenderData[el].map(element => {
+        arr.push(element);
+      });
+    });
+    setCalenderEventData(arr);
+  }, [calenderData]);
+  useEffect(() => {
+    console.log(
+      'CalaenderEventData:-------------------------------',
+      CalaenderEventData.length,
+    );
+  }, [calenderData]);
+
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
   const imageRef = useRef();
   const [active, setActive] = useState(0);
   const indexRef = useRef(active);
+
   indexRef.current = active;
   useInterval(() => {
-    if (active < Number(imageArr?.length) - 1) {
-      setActive(active + 1);
-    } else {
-      setActive(0);
+    if (CalaenderEventData && CalaenderEventData.length > 0) {
+      if (active < Number(CalaenderEventData?.length) - 1) {
+        setActive(active + 1);
+      } else {
+        setActive(0);
+      }
     }
   }, 5000);
 
   useEffect(() => {
-    imageRef.current.scrollToIndex({index: active, animated: true});
+    if (CalaenderEventData && CalaenderEventData.length > 0) {
+      imageRef.current.scrollToIndex({index: active, animated: true});
+    }
   }, [active]);
 
-  // const onViewableItemsChangedHandler = useCallback(
-  //   ({viewableItems, changed}) => {
-  //     if (active != 0) {
-  //       setActive(viewableItems[0].index);
-  //     }
-  //   },
-  //   [],
-  // );
-
   return (
-    <View style={{flex: 1}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+      }}>
       {showModal ? (
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
@@ -57,36 +89,58 @@ const CarouselAutoScroll = () => {
         // viewabilityConfig={{
         //   itemVisiblePercentThreshold: 50,
         // }}
+        contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         ref={imageRef}
         pagingEnabled
-        data={imageArr}
+        data={CalaenderEventData}
         horizontal
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         renderItem={({item, index}) => (
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                setModalData({
-                  id: item.id,
-                  text: item.text,
-                  setShowModal: setShowModal,
-                });
-                setShowModal(true);
-              }}>
-              <ImageBackground
-                source={item.image}
-                resizeMode="contain"
-                style={styles.backgroundImage}>
-                <View style={styles.backgroundImageView}>
-                  <Text style={{color: Colors.white, textAlign: 'center'}}>
-                    {item.text}
-                  </Text>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
+          // <View >
+          <TouchableOpacity
+            key={index}
+            style={styles.container}
+            // style={{marginHorizontal: 10}}
+            onPress={() => {
+              setModalData({
+                startsOn: item.startsOn,
+                dateOfJoining: item.dateOfJoining,
+                name: item.employeeName,
+                description: item.description,
+
+                setShowModal: setShowModal,
+              });
+              setShowModal(true);
+            }}>
+            <ImageBackground
+              source={
+                item.description === null
+                  ? MonthImages.workAnniversaryy
+                  : MonthImages.BirthdayImage
+              }
+              resizeMode="stretch"
+              imageStyle={{
+                borderRadius: 15,
+              }}
+              style={styles.backgroundImage}>
+              <View style={styles.textView}>
+                <Text
+                  numberOfLines={2}
+                  style={{color: Colors.white, textAlign: 'center'}}>
+                  {item.description === null
+                    ? `Happy Work Aniversary ${item.employeeName} on ${moment(
+                        item.dateOfJoining,
+                      ).format('DD MMM ')}`
+                    : `Happy Birthday ${item.employeeName} on ${moment(
+                        item.startsOn,
+                      ).format('DD MMM ')}`}
+                </Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+          // </View>
         )}
-        style={{...StyleSheet.AbsoluteFill}}
+        // style={{...StyleSheet.AbsoluteFill}}
       />
     </View>
   );
@@ -110,22 +164,4 @@ const useInterval = (callback, delay) => {
   }, [delay]);
 };
 
-const styles = StyleSheet.create({
-  backgroundImage: {
-    borderRadius: 10,
-    marginVertical: hp(1),
-    marginHorizontal: wp(4),
-    borderColor: Colors.grey,
-    borderWidth: 1,
-  },
-  backgroundImageView: {
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(1),
-    backgroundColor: Colors.brown,
-    justifyContent: 'center',
-    marginTop: hp(14),
-    marginHorizontal: wp(20),
-    borderRadius: 5,
-  },
-});
 export default CarouselAutoScroll;

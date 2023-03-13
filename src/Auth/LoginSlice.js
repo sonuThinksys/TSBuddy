@@ -1,4 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import * as Keychain from 'react-native-keychain';
+
 const jwtDecode = require('jwt-decode');
 
 import endPoints from '../config';
@@ -32,6 +34,11 @@ export const getUserToken = createAsyncThunk(
         const {response = {}, status} = result || {};
         if (status === 200) {
           // await AsyncStorage.setItem('accessToken', response?.token);
+          // const username = formInput.username;
+          // const password = formInput.password;
+
+          // Store the credentials
+          // await Keychain.setGenericPassword(username, password);
 
           return Promise.resolve({data, formInput});
         } else {

@@ -19,9 +19,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 import Ripple from 'react-native-material-ripple';
-import {dateOfModal} from 'redux/dataSlice';
+import {dateOfModal} from 'redux/homeSlice';
 const SelectDateModal = ({modalData}) => {
   const {openModal, setOpenModal, satrtDate1, endDate1} = modalData;
   const dispatch = useDispatch();

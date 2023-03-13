@@ -24,6 +24,22 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+import {
+  HomeScreen,
+  LoginScreen,
+  ProfileScreen,
+  AttendenceScreen,
+  HolidaysScreen,
+  LeavesScreen,
+  SalarySlipTab,
+  SalaryDetailsScreen,
+  SalaryPDFDownloadScreen,
+  RequestLunchScreen,
+  LeaveApplyScreen,
+  employeeProfileScreen,
+  employeeDetailsScreen,
+  LeaveDetailsScreen,
+} from './Route';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -95,7 +111,6 @@ const drawerOption = ({
 };
 
 const HomeStackScreen = ({navigation}) => {
-  const dispatch = useDispatch();
   return (
     <HomeStack.Navigator
       initialRouteName="HomeDashboard"
@@ -109,7 +124,7 @@ const HomeStackScreen = ({navigation}) => {
       // }}
       headerMode="none">
       <HomeStack.Screen
-        name="home"
+        name={HomeScreen}
         component={Home}
         options={drawerOption({
           label: 'Home',
@@ -124,7 +139,7 @@ const HomeStackScreen = ({navigation}) => {
         // }}
       />
       <HomeStack.Screen
-        name="RequestLunch"
+        name={RequestLunchScreen}
         component={RequestLunch}
         options={{headerShown: false}}
         // options={drawerOption({
@@ -133,7 +148,7 @@ const HomeStackScreen = ({navigation}) => {
         // })}
       />
       <HomeStack.Screen
-        name="UserProfile"
+        name={employeeProfileScreen}
         component={UserProfile}
         options={{headerShown: false}}
       />
@@ -155,7 +170,7 @@ const AttendenceStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="attendence"
+        name={AttendenceScreen}
         component={Attendence}
       />
     </AttendenceStack.Navigator>
@@ -171,7 +186,7 @@ const ProfileStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="profile"
+        name={ProfileScreen}
         component={Profile}
       />
     </ProfileStack.Navigator>
@@ -187,7 +202,7 @@ const HolidaysStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="holidays"
+        name={HolidaysScreen}
         component={Holidays}
       />
     </HolidaysStack.Navigator>
@@ -205,7 +220,7 @@ const LeavesStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="leaves"
+        name={LeavesScreen}
         component={Leaves}
       />
       <LeavesStack.Screen
@@ -216,7 +231,7 @@ const LeavesStackScreen = ({navigation}) => {
           // headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="leaveDetails"
+        name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
       <LeavesStack.Screen
@@ -227,7 +242,7 @@ const LeavesStackScreen = ({navigation}) => {
           // headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="ApplyLeave"
+        name={LeaveApplyScreen}
         component={ApplyLeave}
       />
     </LeavesStack.Navigator>
@@ -243,16 +258,16 @@ const SalarySlipScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
-        name="salarySlip"
+        name={SalarySlipTab}
         component={SalarySlip}
       />
       <SalarySlipStack.Screen
-        name="SalaryDetail"
+        name={SalaryDetailsScreen}
         component={SalaryDetail}
         options={{headerShown: false}}
       />
       <SalarySlipStack.Screen
-        name="SalaryPdf"
+        name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
         options={{headerShown: true}}
       />

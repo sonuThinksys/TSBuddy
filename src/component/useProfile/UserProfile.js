@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  StyleSheet,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -20,7 +21,7 @@ import {Colors} from 'colors/Colors';
 
 import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
-import {modalStatus} from 'redux/dataSlice';
+import {modalStatus} from 'redux/homeSlice';
 //import {employeeData} from '../../../db';
 const UserProfile = () => {
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -161,7 +162,7 @@ const UserProfile = () => {
           />
         </View>
       ) : null}
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
         data={allEmpData}
         key={numValue}
@@ -209,64 +210,19 @@ const renderItem = (
               reporting,
             });
           }}>
-          <View
-            style={{
-              backgroundColor: Colors.skyColor,
-              flexDirection: 'row',
-              width: '100%',
-              marginVertical: hp(0.6),
-              shadowOpacity: 0.2,
-            }}>
+          <View style={styles.container}>
             <View style={{}}>
-              <Image
-                source={{uri: imageURL}}
-                style={{
-                  height: hp(7),
-                  width: wp(15),
-                  borderRadius: 35,
-                  marginLeft: wp(5),
-                  marginTop: hp(1),
-                }}
-              />
+              <Image source={{uri: imageURL}} style={styles.image} />
             </View>
             <View style={{paddingLeft: wp(5)}}>
-              <Text
-                style={{
-                  // textAlign: 'center',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  color: Colors.black,
-                  opacity: 0.6,
-                }}>
-                {nameOfEmployee}
-              </Text>
-              <Text
-                style={{
-                  // textAlign: 'center',
-                  fontSize: 14,
-                  color: Colors.lightBlue,
-                }}>
-                {designation}
-              </Text>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  // paddingVertical: hp(1),
-                }}>
+              <Text style={styles.nameText}>{nameOfEmployee}</Text>
+              <Text style={styles.desniationText}>{designation}</Text>
+              <View style={styles.smallView}>
                 <Image
                   source={MonthImages.userPS}
                   style={{height: 30, width: 30}}
                 />
-                <Text
-                  style={{
-                    paddingTop: hp(1),
-                    marginLeft: wp(2),
-                    color: Colors.green,
-                  }}>
-                  {reporting}
-                </Text>
+                <Text style={styles.reportingText}>{reporting}</Text>
               </View>
             </View>
           </View>
@@ -284,45 +240,15 @@ const renderItem = (
               reporting,
             });
           }}>
-          <View style={{paddingVertical: hp(0.5), paddingHorizontal: wp(1)}}>
+          <View style={styles.container2}>
             {/* {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null} */}
             <ImageBackground
-              source={MonthImages.empbgS}
-              style={{height: hp(18.5), width: wp(31)}}>
-              <Image
-                source={{uri: imageURL}}
-                style={{
-                  height: hp(9),
-                  width: wp(20),
-                  borderRadius: 35,
-                  marginLeft: wp(5),
-                  marginTop: hp(1),
-                }}
-              />
-              <Text
-                style={{textAlign: 'center', fontWeight: 'bold', opacity: 0.8}}>
-                {nameOfEmployee}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  textAlign: 'center',
-                  color: Colors.blue,
-                  opacity: 0.6,
-                }}>
-                {designation}
-              </Text>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: wp(4),
-                  // backgroundColor: Colors.skyColor,
-                  borderTopWidth: 2,
-                  borderColor: Colors.white,
-                  marginTop: hp(0.5),
-                }}>
+              style={styles.backgroundImage}
+              source={MonthImages.empbgS}>
+              <Image source={{uri: imageURL}} style={styles.secondimage} />
+              <Text style={styles.nametext2}>{nameOfEmployee}</Text>
+              <Text style={styles.desText2}>{designation}</Text>
+              <View style={styles.iconView}>
                 <TouchableOpacity
                   onPress={() => {
                     setClickData({
@@ -334,19 +260,10 @@ const renderItem = (
                     // setClickData('fghfgh');
                     dispatch(modalStatus(true));
                   }}>
-                  <View
-                    style={{
-                      borderRightWidth: 4,
-                      borderColor: Colors.white,
-                      flex: 1,
-                    }}>
+                  <View style={styles.callimageView}>
                     <Image
+                      style={styles.callImage}
                       source={MonthImages.callEmp}
-                      style={{
-                        height: 20,
-                        width: 20,
-                        // marginTop: hp(0.1),
-                      }}
                     />
                   </View>
                 </TouchableOpacity>
@@ -361,10 +278,10 @@ const renderItem = (
                     // setClickData('fghfgh');
                     dispatch(modalStatus(true));
                   }}>
-                  <View style={{flex: 1, paddingLeft: wp(6)}}>
+                  <View style={styles.mailView}>
                     <Image
+                      style={styles.mailImage}
                       source={MonthImages.mailEmp}
-                      style={{height: 20, width: 20, marginTop: hp(0.1)}}
                     />
                   </View>
                 </TouchableOpacity>
@@ -376,4 +293,63 @@ const renderItem = (
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {
+    height: hp(7),
+    width: wp(15),
+    borderRadius: 35,
+    marginLeft: wp(5),
+    marginTop: hp(1),
+  },
+  container: {
+    backgroundColor: Colors.skyColor,
+    flexDirection: 'row',
+    width: '100%',
+    marginVertical: hp(0.6),
+    shadowOpacity: 0.2,
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    opacity: 0.6,
+  },
+  desniationText: {
+    fontSize: 14,
+    color: Colors.lightBlue,
+  },
+  smallView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // paddingVertical: hp(1),
+  },
+  reportingText: {paddingTop: hp(1), marginLeft: wp(2), color: 'green'},
+  container2: {paddingVertical: hp(0.5), paddingHorizontal: wp(1)},
+  backgroundImage: {height: hp(18.5), width: wp(31)},
+  secondimage: {
+    height: hp(9),
+    width: wp(20),
+    borderRadius: 35,
+    marginLeft: wp(5),
+    marginTop: hp(1),
+  },
+  nametext2: {textAlign: 'center', fontWeight: 'bold', opacity: 0.8},
+  desText2: {fontSize: 10, textAlign: 'center', color: 'blue', opacity: 0.6},
+  iconView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: wp(4),
+    // backgroundColor: '#C3F8FF',
+    borderTopWidth: 2,
+    borderColor: 'white',
+    marginTop: hp(0.5),
+  },
+  callimageView: {borderRightWidth: 4, borderColor: 'white', flex: 1},
+  callImage: {height: 20, width: 20},
+  mailView: {flex: 1, paddingLeft: wp(6)},
+  mailImage: {height: 20, width: 20, marginTop: hp(0.1)},
+});
 export default UserProfile;
