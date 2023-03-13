@@ -22,6 +22,12 @@ import {
 
 import DropDownPickerComponent from 'component/DropDownPicker';
 import {FontSize} from 'constants/fonts';
+import {
+  leaveTypes,
+  newDropDownOptions,
+  approver,
+  leaves,
+} from 'utils/DummyData';
 
 const ApplyLeave = () => {
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
@@ -45,26 +51,6 @@ const ApplyLeave = () => {
       return {...prevData, ...data};
     });
   };
-
-  const holidayTypeOptions = [
-    {label: 'First Half Day', value: 'firstHalf'},
-    {label: 'Second Half Day', value: 'secondHalf'},
-    {label: 'None', value: 'none'},
-  ];
-
-  const newDropDownOptions = ['First Half Day', 'Second Half Day', 'None'];
-
-  const leaveTypes = [
-    'Earned Leave',
-    'Restricted Holiday',
-    'Bereavement Leave',
-    'Compensatory Off',
-    'Maternity Leave',
-    'Paternity Leave',
-    'Work From Home',
-  ];
-
-  const approver = 'Mayank Sharma';
 
   const showFromDatePicker = () => {
     setFromCalenderVisible(true);
@@ -123,16 +109,6 @@ const ApplyLeave = () => {
   const presentYear = today.getFullYear();
 
   const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
-
-  const leaves = [
-    {leaveType: 'Earned Leave', allocated: 12.25, taken: 3, remaining: 9.25},
-    {leaveType: 'Restricted Holiday', allocated: 4, taken: 3, remaining: 1},
-    {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Work From Home', allocated: 13, taken: 23, remaining: -10},
-  ];
 
   const card = ({
     leftLabel,
@@ -586,7 +562,7 @@ const styles = StyleSheet.create({
   verticalLine: {
     height: '100%',
     borderWidth: 0.4,
-    borderColor: 'black',
+    borderColor: Colors.black,
   },
   leaveDetails: {
     // alignItems: 'center',
@@ -624,11 +600,11 @@ const styles = StyleSheet.create({
 
   row: {
     padding: 8,
-    borderBottomColor: 'lightgrey',
+    borderBottomColor: Colors.lightGray,
     borderBottomWidth: 1,
   },
   highlighted: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: Colors.lightGray,
   },
   rowText: {
     fontSize: 16,

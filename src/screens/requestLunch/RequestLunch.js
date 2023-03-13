@@ -11,6 +11,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSelector} from 'react-redux';
+import {name, RequestLunchLabel} from 'utils/DummyData';
 
 const RequestLunch = ({navigation}) => {
   const MonthlyDate = useSelector(state => state.dataReducer.dateData);
@@ -28,28 +29,11 @@ const RequestLunch = ({navigation}) => {
   const [satrtDate1, setStartDate1] = useState('');
   const [endDate1, setEndDate1] = useState('');
 
-  const [items, setItems] = useState([
-    {label: 'TODAY', value: 'today'},
-    {label: 'REQUEST FOR DURATION', value: 'req_duration'},
-    {label: 'MONTHLY LUNCH', value: 'monthly_lunch'},
-  ]);
+  const [items, setItems] = useState(RequestLunchLabel);
 
   const onSelectItem = item => {
     let date = new Date().getDate();
-    const name = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
+
     const d = new Date();
     let month = name[d.getMonth()];
     let year = new Date().getFullYear();
@@ -197,7 +181,9 @@ const RequestLunch = ({navigation}) => {
         </View>
         <TouchableOpacity>
           <View style={styles.submitView}>
-            <Text style={{color: 'white', textAlign: 'center'}}>Submit</Text>
+            <Text style={{color: Colors.white, textAlign: 'center'}}>
+              Submit
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -212,7 +198,7 @@ const RequestLunch = ({navigation}) => {
             <View style={styles.cancelView}>
               <Text
                 style={{
-                  color: 'white',
+                  color: Colors.white,
                   fontWeight: 'bold',
                 }}>
                 Cancel Request

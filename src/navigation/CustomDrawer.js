@@ -119,7 +119,7 @@ const renderDrawerItem = (
       style={{
         paddingVertical: wp(3),
         borderBottomWidth: 1,
-        borderBottomColor: '#495057',
+        borderBottomColor: Colors.lightBlack,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: selected ? Colors.lightBlue : null,

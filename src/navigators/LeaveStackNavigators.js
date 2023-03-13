@@ -29,7 +29,7 @@ const LeavesStackNavigator = ({navigation}) => {
         // options={{headerShown: false}}
         options={props => {
           return {
-            headerStyle: {backgroundColor: '#1b5583', height: 55},
+            headerStyle: {backgroundColor: Colors.darkBlue, height: 55},
             drawerLabel: '',
             title: 'Leaves',
             headerLeft: () => {
@@ -40,7 +40,7 @@ const LeavesStackNavigator = ({navigation}) => {
                   }}>
                   <Image
                     source={MenuIcon}
-                    style={{height: 20, width: 20, color: '#fff'}}
+                    style={{height: 20, width: 20, color: Colors.white}}
                   />
                 </Pressable>
               );
@@ -54,7 +54,7 @@ const LeavesStackNavigator = ({navigation}) => {
                 />
                 <Text
                   style={{
-                    color: 'white',
+                    color: Colors.white,
                     paddingTop: hp(1),
                     textAlign: 'center',
                     fontWeight: '600',
@@ -71,7 +71,7 @@ const LeavesStackNavigator = ({navigation}) => {
                   <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Text
                       style={{
-                        color: 'white',
+                        color: Colors.white,
                         textAlign: 'center',
                         marginLeft: Platform.OS === 'ios' ? 0.1 : wp(32),
                         //paddingTop: hp(0.5),
@@ -98,7 +98,7 @@ const LeavesStackNavigator = ({navigation}) => {
                     height: 25,
                     width: 25,
                     marginRight: 20,
-                    color: 'white',
+                    color: Colors.white,
                   }}
                 />
               </TouchableOpacity>
@@ -114,7 +114,7 @@ const LeavesStackNavigator = ({navigation}) => {
         options={props => {
           return {
             headerTintColor: Colors.white,
-            headerStyle: {backgroundColor: '#1b5583', height: 55},
+            headerStyle: {backgroundColor: Colors.darkBlue, height: 55},
 
             drawerLabel: '',
             headerTitle: props => {
@@ -123,7 +123,7 @@ const LeavesStackNavigator = ({navigation}) => {
                   <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Text
                       style={{
-                        color: 'white',
+                        color: Colors.white,
                         textAlign: 'center',
                         marginLeft: Platform.OS === 'ios' ? 0.1 : wp(20),
                         //paddingTop: hp(0.5),
@@ -150,7 +150,7 @@ const LeavesStackNavigator = ({navigation}) => {
                     height: 25,
                     width: 25,
                     marginRight: 20,
-                    color: 'white',
+                    color: Colors.white,
                   }}
                 />
               </TouchableOpacity>
@@ -165,7 +165,7 @@ const LeavesStackNavigator = ({navigation}) => {
         options={props => {
           return {
             headerTintColor: Colors.white,
-            headerStyle: {backgroundColor: '#1b5583', height: 55},
+            headerStyle: {backgroundColor: Colors.darkBlue, height: 55},
 
             drawerLabel: '',
             headerTitle: props => {
@@ -174,7 +174,7 @@ const LeavesStackNavigator = ({navigation}) => {
                   <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Text
                       style={{
-                        color: 'white',
+                        color: Colors.white,
                         textAlign: 'center',
                         marginLeft: Platform.OS === 'ios' ? 0.1 : wp(20),
                         //paddingTop: hp(0.5),
@@ -201,7 +201,7 @@ const LeavesStackNavigator = ({navigation}) => {
                     height: 25,
                     width: 25,
                     marginRight: 20,
-                    color: 'white',
+                    color: Colors.white,
                   }}
                 />
               </TouchableOpacity>

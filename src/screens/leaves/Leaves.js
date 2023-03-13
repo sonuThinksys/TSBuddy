@@ -87,18 +87,18 @@ const Leaves = ({navigation}) => {
           paddingHorizontal: wp(5),
           paddingVertical: hp(1),
           borderWidth: 1,
-          borderColor: 'black',
+          borderColor: Colors.black,
           marginHorizontal: wp(3),
           display: 'flex',
           flexDirection: 'row',
           borderRadius: 5,
-          backgroundColor: 'gainsboro',
+          backgroundColor: Colors.lightGray,
           marginBottom: hp(1),
         }}>
         <View
           style={{
             paddingHorizontal: wp(2.5),
-            borderColor: '#FF7F50',
+            borderColor: Colors.orangeColor,
             borderRadius: 50,
             borderWidth: 1,
             justifyContent: 'center',
@@ -109,7 +109,7 @@ const Leaves = ({navigation}) => {
               textAlign: 'center',
               fontSize: 22,
               // fontWeight: 'bold',
-              color: '#FF7F50',
+              color: Colors.orangeColor,
             }}>
             +
           </Text>
@@ -120,7 +120,7 @@ const Leaves = ({navigation}) => {
             marginLeft: wp(10),
             fontSize: 16,
             fontWeight: 'bold',
-            color: '#483D8B',
+            color: Colors.purple,
           }}>
           Make a new Leave Application
         </Text>

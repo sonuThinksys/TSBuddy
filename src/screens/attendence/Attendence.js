@@ -15,22 +15,23 @@ import {
 import {Header} from 'react-native/Libraries/NewAppScreen';
 import styles from './AttendenceStyle';
 import {CalendarList} from 'react-native-calendars';
+import {Colors} from 'colors/Colors';
 const Attendence = () => {
   const DATA = [
     {
       id: '1',
       title: 'Absent',
-      color: 'red',
+      color: Colors.red,
     },
     {
       id: '2',
       title: 'Half Day',
-      color: 'blue',
+      color: Colors.blue,
     },
     {
       id: '3',
       title: 'Holiday',
-      color: 'pink',
+      color: Colors.pink,
     },
   ];
 
@@ -73,7 +74,7 @@ const Attendence = () => {
             <View style={styles.timeSpendView}>
               <Text style={styles.timeSpendText}>
                 Total Hour Spend 38:51{' '}
-                <Text style={{color: 'red'}}> ( -06:09)</Text>
+                <Text style={{color: Colors.red}}> ( -06:09)</Text>
               </Text>
             </View>
           </View>
@@ -91,9 +92,17 @@ const Attendence = () => {
           scrollEnabled={true}
           showScrollIndicator={true}
           markedDates={{
-            '2023-02-16': {selected: true, marked: true, selectedColor: 'blue'},
+            '2023-02-16': {
+              selected: true,
+              marked: true,
+              selectedColor: Colors.blue,
+            },
             '2023-02-17': {marked: true},
-            '2023-02-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+            '2023-02-18': {
+              marked: true,
+              dotColor: Colors.red,
+              activeOpacity: 0,
+            },
             '2023-02-19': {disabled: true, disableTouchEvent: true},
           }}
           theme={{
@@ -101,7 +110,7 @@ const Attendence = () => {
               padding: 0,
               margin: 0,
             },
-            // arrowColor: 'green',
+            // arrowColor: Colors.green,
             'stylesheet.calendar.header': {
               partialHeader: {
                 paddingHorizontal: 1,
@@ -117,14 +126,14 @@ const Attendence = () => {
                 width: '120%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                backgroundColor: 'green',
+                backgroundColor: Colors.green,
                 fontWeight: 'bold',
                 fontSize: 16,
               },
               header: {
                 width: '120%',
-                backgroundColor: 'green',
-                color: 'white',
+                backgroundColor: Colors.green,
+                color: Colors.white,
                 // paddingHorizontal: 10,
                 // paddingLeft: 10,
                 // paddingRight: 10,
@@ -137,7 +146,7 @@ const Attendence = () => {
               },
 
               monthText: {
-                color: 'white',
+                color: Colors.white,
                 fontWeight: 'bold',
                 fontSize: 18,
                 marginVertical: 10,
@@ -163,16 +172,16 @@ const renderItem = ({item}) => {
           width: wp(5.5),
           height: hp(2.6),
           borderRadius: 20,
-          //   backgroundColor: 'red',
+          //   backgroundColor: Colors.red,
           backgroundColor:
             item.title === 'Absent'
-              ? 'red'
+              ? Colors.red
               : item.title === 'Half Day'
-              ? 'blue'
-              : '#FFB6C1',
+              ? Colors.blue
+              : Colors.pink,
           marginHorizontal: wp(4),
         }}></View>
-      <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
+      <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 18}}>
         {item.title}
       </Text>
     </View>

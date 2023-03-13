@@ -11,6 +11,7 @@ import Item from 'component/menuContent/Item';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
+import {Colors} from 'colors/Colors';
 let data = [MenuDetails, Item, RecentLeaves, RemainingLeaves, UpComingHolidays];
 const Home = () => {
   // useEffect(() => {
@@ -18,7 +19,7 @@ const Home = () => {
   // }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{height: hp(23), backgroundColor: 'white'}}>
+      <View style={{height: hp(23), backgroundColor: Colors.white}}>
         <CarouselAutoScroll />
       </View>
       <FlatList

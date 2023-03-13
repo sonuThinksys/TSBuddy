@@ -20,6 +20,7 @@ import {
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/dataSlice';
 import {Colors} from 'colors/Colors';
+import { whatsappInstallationAlert } from 'utils/DummyData';
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
   const isShowModal = useSelector(state => state.dataReducer.isShowModal);
@@ -44,7 +45,7 @@ const CommunicationModal = ({empDetail}) => {
           Linking.openURL(url)
             .then(data => {})
             .catch(() => {
-              alert('Make sure WhatsApp installed on your device');
+              alert(whatsappInstallationAlert);
             });
         } else {
           alert('Please insert message to send');
@@ -94,12 +95,12 @@ const CommunicationModal = ({empDetail}) => {
               dispatch(modalStatus(false));
             }}>
             <View style={styles.container3}>
-              <Text style={{color: 'white', fontWeight: 'bold'}}>No</Text>
+              <Text style={{color: Colors.white, fontWeight: 'bold'}}>No</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={connectThrouMedium}>
             <View style={styles.container4}>
-              <Text style={{color: 'white', fontWeight: 'bold'}}>Yes</Text>
+              <Text style={{color: Colors.white, fontWeight: 'bold'}}>Yes</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -109,7 +110,7 @@ const CommunicationModal = ({empDetail}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0073cf',
+    backgroundColor: Colors.lightBlue,
     marginHorizontal: wp(6),
     justifyContent: 'center',
     borderRadius: 10,
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   },
   imageView: {
     paddingVertical: hp(1),
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     flexDirection: 'row',
     paddingHorizontal: wp(4),
   },
@@ -138,13 +139,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container3: {
-    backgroundColor: 'red',
+    backgroundColor: Colors.red,
     paddingVertical: hp(1),
     paddingHorizontal: wp(8),
     borderRadius: 5,
   },
   container4: {
-    backgroundColor: 'green',
+    backgroundColor: Colors.green,
     paddingVertical: hp(1),
     paddingHorizontal: wp(8),
     borderRadius: 5,

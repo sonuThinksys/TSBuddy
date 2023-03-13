@@ -6,6 +6,7 @@ import {
 } from 'utils/Responsive';
 
 import {BarChart} from 'react-native-chart-kit';
+import {Colors} from 'colors/Colors';
 
 const RemainingLeaves = () => {
   const earnedLeavesData = [20, 6, 14, 4];
@@ -38,10 +39,10 @@ const RemainingLeaves = () => {
                 {
                   data: earnedLeavesData,
                   colors: [
-                    () => 'orange',
-                    () => '#0E5E6F',
-                    () => 'green',
-                    () => 'red',
+                    () => Colors.orange,
+                    () => Colors.darkGreen,
+                    () => Colors.green,
+                    () => Colors.red,
                   ],
                 },
               ],
@@ -54,7 +55,8 @@ const RemainingLeaves = () => {
               decimalPlaces: 0,
               fillShadowGradientOpacity: '0.5',
               barPercentage: totalEarnedTypesAvailable === 3 ? 0.8 : 0.64,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              color: (opacity = 1) =>
+                Colors.customColor({opacity, r: 0, g: 0, b: 0}),
               style: {
                 borderRadius: 0,
               },
@@ -90,10 +92,10 @@ const RemainingLeaves = () => {
                 {
                   data: restrictedLeavesData,
                   colors: [
-                    () => 'orange',
-                    () => '#0E5E6F',
-                    () => 'green',
-                    () => 'red',
+                    () => Colors.orange,
+                    () => Colors.darkGreen,
+                    () => Colors.green,
+                    () => Colors.red,
                   ],
                 },
               ],
@@ -107,7 +109,8 @@ const RemainingLeaves = () => {
               fillShadowGradientOpacity: '0.5',
               barPercentage: totalRestrictedTypesAvailable === 3 ? 0.8 : 0.64,
 
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              color: (opacity = 1) =>
+                Colors.customColor({opacity, r: 0, g: 0, b: 0}),
               style: {
                 borderRadius: 0,
               },
@@ -163,23 +166,23 @@ const renderItem = ({item}) => {
           marginHorizontal: wp(1.5),
           backgroundColor:
             item.text === 'Allocate'
-              ? 'orange'
+              ? Colors.orange
               : item.text === 'Taken'
-              ? '#0E5E6F'
+              ? Colors.darkGreen
               : item.text === '-ve Balance'
-              ? 'red'
-              : 'green',
+              ? Colors.red
+              : Colors.green,
         }}></View>
       <Text
         style={{
           color:
             item.text === 'Allocate'
-              ? 'orange'
+              ? Colors.orange
               : item.text === 'Taken'
-              ? '#0E5E6F'
+              ? Colors.darkGreen
               : item.text === '-ve Balance'
-              ? 'red'
-              : 'green',
+              ? Colors.red
+              : Colors.green,
         }}>
         {item.text}
       </Text>
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   leavesTypeContainer: {
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // borderWidth: 1,
-    // borderColor: 'red',
+    // borderColor: Colors.red,
     justifyContent: 'space-around',
     paddingRight: 10,
     // paddingHorizontal: 10,
@@ -257,25 +260,25 @@ const styles = StyleSheet.create({
   leavesType1: {
     height: 12,
     width: 12,
-    backgroundColor: 'orange',
+    backgroundColor: Colors.orange,
     marginRight: 5,
   },
   leavesType2: {
     height: 12,
     width: 12,
-    backgroundColor: '#0E5E6F',
+    backgroundColor: Colors.darkGreen,
     marginRight: 5,
   },
   leavesType3: {
     height: 12,
     width: 12,
-    backgroundColor: 'green',
+    backgroundColor: Colors.green,
     marginRight: 5,
   },
   leavesType4: {
     height: 12,
     width: 12,
-    backgroundColor: 'red',
+    backgroundColor: Colors.red,
     marginRight: 5,
   },
   leaveTextColor: {},

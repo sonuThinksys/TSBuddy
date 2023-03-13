@@ -1,3 +1,4 @@
+import {Colors} from 'colors/Colors';
 import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -9,15 +10,15 @@ export default StyleSheet.create({
     height: '100%',
   },
   secondContainer: {
-    borderColor: 'white',
-    borderColor: 'white',
+    borderColor: Colors.white,
+    borderColor: Colors.white,
     borderWidth: 1,
     marginVertical: hp(7),
     marginHorizontal: wp(6),
     borderRadius: 10,
   },
   monthText: {
-    color: '#FFE4E1',
+    color: Colors.whitishPink,
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -25,16 +26,20 @@ export default StyleSheet.create({
     // marginVertical: hp(1.5),
   },
   dayText: {
-    color: '#FFE4E1',
+    color: Colors.whitishPink,
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginHorizontal: wp(10),
   },
-  reportView: {borderColor: 'white', borderTopWidth: 1, flexDirection: 'row'},
+  reportView: {
+    borderColor: Colors.white,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+  },
   weekliyTextView: {
     borderRightWidth: 1,
-    borderColor: 'white',
+    borderColor: Colors.white,
     borderWidth: 1,
     flex: 1,
     paddingHorizontal: wp(2),
@@ -42,7 +47,7 @@ export default StyleSheet.create({
   },
   reportText: {
     textAlign: 'center',
-    color: '#3CB371',
+    color: Colors.parrotGreen,
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -53,7 +58,7 @@ export default StyleSheet.create({
   },
   timeSpendText: {
     textAlign: 'center',
-    color: '#9370DB',
+    color: Colors.violet,
     fontSize: 16,
     fontWeight: 'bold',
   },

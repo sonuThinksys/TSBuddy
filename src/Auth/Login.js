@@ -9,6 +9,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import TSBuddyIcon from '../assets/Icons/TSIcon.webp';
+console.log('TSBuddyIcon:', TSBuddyIcon);
+import LoginVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
@@ -26,8 +29,8 @@ const Login = () => {
   const enableTouchId = () => {
     const optionalConfigObject = {
       title: 'Authentication Required',
-      imageColor: '#0073cf',
-      imageErrorColor: '#ff0000',
+      imageColor: Colors.lightBlue,
+      imageErrorColor: Colors.red,
       sensorDescription: 'Touch sensor',
       sensorErrorDescription: 'Failed',
       cancelText: 'Cancel',
@@ -66,7 +69,7 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Video
-        source={require('../assets/video/backgoundVideo.mp4')}
+        source={LoginVideo}
         style={styles.backgroundVideo}
         muted={true}
         repeat={true}
@@ -75,12 +78,7 @@ const Login = () => {
         ignoreSilentSwitch={'obey'}
       />
       <View style={{alignItems: 'center'}}>
-        <Image
-          style={{height: hp(10), width: wp(10)}}
-          source={{
-            uri: 'https://play-lh.googleusercontent.com/FPGHGqbXGcZVIM3zv6FkuCanLdq8_VMszGKTSlXPB7LBfn4f6ZvMWkbiDMR8RPjx2YU=w480-h960-rw',
-          }}
-        />
+        <Image style={{height: hp(10), width: wp(10)}} source={TSBuddyIcon} />
       </View>
       <View style={styles.textInputContainer}>
         <View style={styles.textinputView}>
@@ -134,7 +132,8 @@ const Login = () => {
         /> */}
         <View style={styles.passwordView}>
           <TouchableOpacity>
-            <Text style={{color: 'white', textDecorationLine: 'underline'}}>
+            <Text
+              style={{color: Colors.white, textDecorationLine: 'underline'}}>
               Forgot Password
             </Text>
           </TouchableOpacity>
@@ -148,7 +147,7 @@ const Login = () => {
             <Text
               style={{
                 marginHorizontal: wp(1),
-                color: 'white',
+                color: Colors.white,
               }}>
               Remember Me
             </Text>
@@ -163,7 +162,8 @@ const Login = () => {
         </TouchableOpacity>
         {/* //closing  */}
         <Text style={styles.orText}>OR</Text>
-        <Text style={{color: 'white', textAlign: 'center', marginTop: hp(1)}}>
+        <Text
+          style={{color: Colors.white, textAlign: 'center', marginTop: hp(1)}}>
           Guest Login
         </Text>
       </View>

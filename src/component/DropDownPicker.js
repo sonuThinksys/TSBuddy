@@ -52,7 +52,7 @@ const DropDownPickerComponent = props => {
         }}
         listItemLabelStyle={
           listItemStyle && {
-            color: '#495057',
+            color: Colors.lightBlack,
           }
         }
         // ArrowDownIconComponent={() => <Image source={DropdownIcon} />}

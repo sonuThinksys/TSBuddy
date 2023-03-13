@@ -6,6 +6,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {appVersion} from '../../utils/AppVersion';
+import {Colors} from 'colors/Colors';
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
@@ -17,9 +18,7 @@ const SplashScreen = ({navigation}) => {
       <View style={styles.imageContiner}>
         <Image
           style={{height: '100%', width: '100%', marginBottom: hp(33)}}
-          source={{
-            uri: 'https://play-lh.googleusercontent.com/FPGHGqbXGcZVIM3zv6FkuCanLdq8_VMszGKTSlXPB7LBfn4f6ZvMWkbiDMR8RPjx2YU=w480-h960-rw',
-          }}
+          source={AppIcon}
         />
         <Text style={{textAlign: 'center'}}>{appVersion}</Text>
       </View>
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     justifyContent: 'center',
     paddingHorizontal: wp(40),
   },

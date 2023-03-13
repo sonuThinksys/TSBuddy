@@ -26,7 +26,7 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   secondView: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     shadowOpacity: 0.1,
     top: hp(1),
     marginHorizontal: wp(2),
@@ -77,7 +77,7 @@ export default StyleSheet.create({
     marginHorizontal: wp(20),
   },
   buttomView: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     shadowOpacity: 0.1,
     top: hp(2),
     marginHorizontal: wp(2),
@@ -87,12 +87,12 @@ export default StyleSheet.create({
     height: hp(52),
   },
   appliedView: {
-    backgroundColor: '#C0C0C0',
+    backgroundColor: Colors.lightGray,
     paddingVertical: hp(1.5),
     borderBottomWidth: 1,
   },
   appliedText: {
-    color: 'rgb(1,98,143)',
+    color: Colors.customColor({r: 1, g: 98, b: 43}),
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',
@@ -101,7 +101,7 @@ export default StyleSheet.create({
     marginTop: hp(1),
     shadowOpacity: 0.4,
     borderRadius: 2,
-    backgroundColor: '#F4F5FA',
+    backgroundColor: Colors.lightGray,
   },
   monthlyView: {
     flexDirection: 'row',

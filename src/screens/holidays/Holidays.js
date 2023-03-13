@@ -27,7 +27,7 @@ const Holidays = () => {
   const data1 = [
     {
       name: 'Past Holidays',
-      color: 'gray',
+      color: Colors.grey,
       id: '1',
     },
     {
@@ -102,7 +102,8 @@ const renderItem = (
       ) : null}
       <View style={styles.flatelistView}>
         <View style={styles.flatelistView1}>
-          <Text style={{textAlign: 'center', color: 'white', fontSize: 18}}>
+          <Text
+            style={{textAlign: 'center', color: Colors.white, fontSize: 18}}>
             {newDateFormate}
           </Text>
         </View>

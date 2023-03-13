@@ -19,12 +19,12 @@ export default StyleSheet.create({
     borderRadius: 5,
     marginVertical: hp(0.5),
     marginHorizontal: wp(1),
-    backgroundColor: 'lightcyan',
+    backgroundColor: Colors.skyColor,
     shadowOpacity: 0.1,
   },
   flatelistView1: {
     flex: 1,
-    backgroundColor: 'midnightblue',
+    backgroundColor: Colors.royalBlue,
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
     justifyContent: 'center',
@@ -34,7 +34,7 @@ export default StyleSheet.create({
   },
   flatelistView2: {
     flex: 3,
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
     justifyContent: 'center',
@@ -42,7 +42,7 @@ export default StyleSheet.create({
     borderBottomRightRadius: 5,
   },
   buttomView: {
-    backgroundColor: 'gray',
+    backgroundColor: Colors.grey,
     height: 30,
     width: 30,
     borderRadius: 5,

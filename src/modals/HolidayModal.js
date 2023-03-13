@@ -3,17 +3,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
   TouchableWithoutFeedback,
-  Pressable,
-  Linking,
-  Image,
-  Dimensions,
   ImageBackground,
   StyleSheet,
 } from 'react-native';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
 import {
   heightPercentageToDP as hp,
@@ -21,13 +14,11 @@ import {
 } from 'utils/Responsive';
 import {getholidayDataIWithImage} from 'redux/dataSlice';
 import {Colors} from 'colors/Colors';
-import CustomModal from 'components/CustomModal';
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   const {description, holidayDate, newDateFormate, holidaysSetShowModal} =
     HolidaysData;
   const [image, setImage] = useState('');
   const [definition, setDefinition] = useState('');
-  const [days, setDays] = useState('');
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getholidayDataIWithImage());
@@ -111,13 +102,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     alignSelf: 'center',
     marginBottom: 200,
     borderRadius: 5,
   },
   secondContainer: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     padding: 2,
     width: wp(32),
     height: hp(12),
@@ -129,7 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   thirdView: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     paddingHorizontal: wp(6),
     justifyContent: 'center',
     alignItems: 'center',
@@ -138,7 +129,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
   },
   textline: {
-    color: 'blue',
+    color: Colors.blue,
     fontWeight: 'bold',
     fontSize: 20,
     marginBottom: hp(1),

@@ -106,8 +106,8 @@ const SalarySlip = ({navigation}) => {
       <Text
         style={{
           paddingVertical: hp(1.5),
-          backgroundColor: '#0073cf',
-          color: 'white',
+          backgroundColor: Colors.lightBlue,
+          color: Colors.white,
           paddingHorizontal: wp(5),
           fontWeight: '500',
           fontSize: 18,
@@ -134,13 +134,17 @@ const SalarySlip = ({navigation}) => {
                     <View
                       style={{
                         flex: 3,
-                        backgroundColor: 'gray',
+                        backgroundColor: Colors.grey,
                         height: 1,
                       }}></View>
                     <View
                       style={{
                         flex: 1,
-                        backgroundColor: 'rgb(225,225,225)',
+                        backgroundColor: Colors.customColor({
+                          r: 225,
+                          g: 225,
+                          b: 225,
+                        }),
                         paddingVertical: hp(1),
                         paddingHorizontal: wp(3),
                         borderRadius: 1,
@@ -176,7 +180,7 @@ const SalarySlip = ({navigation}) => {
                                 borderRadius: 5,
                                 //  borderWidth: 1,
                                 shadowOpacity: 0.7,
-                                backgroundColor: 'white',
+                                backgroundColor: Colors.white,
                                 padding: 2,
                                 //  paddingBottom: 1,
                               }}>
@@ -196,7 +200,7 @@ const SalarySlip = ({navigation}) => {
                                     style={{
                                       height: 40,
                                       width: 40,
-                                      backgroundColor: 'blue',
+                                      backgroundColor: Colors.blue,
                                       borderBottomRightRadius: 30,
                                       borderTopRightRadius: 1,
                                       alignItems: 'center',
@@ -210,7 +214,7 @@ const SalarySlip = ({navigation}) => {
                                   <Text
                                     style={{
                                       textAlign: 'center',
-                                      color: 'white',
+                                      color: Colors.white,
                                       fontWeight: 'bold',
                                       fontSize: 24,
                                     }}>
@@ -229,7 +233,7 @@ const SalarySlip = ({navigation}) => {
                                   height: hp(6.3),
                                   // marginTop: hp(1),
                                   marginHorizontal: 3.0,
-                                  backgroundColor: 'white',
+                                  backgroundColor: Colors.white,
                                   borderRadius: 4,
                                   paddingVertical: hp(1),
                                   paddingHorizontal: wp(2),
@@ -246,7 +250,7 @@ const SalarySlip = ({navigation}) => {
                                   }}>
                                   <Text
                                     style={{
-                                      color: 'white',
+                                      color: Colors.white,
                                       fontWeight: 'bold',
                                       fontSize: 17,
                                     }}>

@@ -13,39 +13,14 @@ import {
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
+import {foodData} from 'utils/DummyData';
 
 const Item = () => {
-  const data = [
-    {
-      type_of_food: 'Breafast',
-      img_url: MonthImages.breakfastImgS,
-      menu: 'NA',
-      numberOfLikes: 0,
-      numberOfDislike: 0,
-      id: '1',
-    },
-    {
-      type_of_food: 'Lunch',
-      img_url: MonthImages.Lunch,
-      menu: 'NA',
-      numberOfLikes: 0,
-      numberOfDislike: 0,
-      id: '2',
-    },
-    {
-      type_of_food: 'Snacks',
-      img_url: MonthImages.snacksS,
-      menu: 'NA',
-      numberOfLikes: 0,
-      numberOfDislike: 0,
-      id: '3',
-    },
-  ];
   return (
     <View style={{paddingHorizontal: wp(0.1)}}>
       <FlatList
         horizontal={true}
-        data={data}
+        data={foodData}
         renderItem={renderItem}
         keyExtractor={(item, index) => index}
       />
@@ -87,7 +62,7 @@ const renderItem = ({item}) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#CFD2CF',
+    backgroundColor: Colors.lightGray,
     width: wp(50),
     marginTop: hp(1),
     marginHorizontal: wp(1),
@@ -97,12 +72,12 @@ const styles = StyleSheet.create({
   imagebackground: {
     height: hp(15),
     width: wp(50),
-    borderColor: 'black',
+    borderColor: Colors.black,
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
   },
   menuView: {
-    backgroundColor: 'rgba(0, 76, 153, 0.8)',
+    backgroundColor: Colors.menuTransparentColor,
     width: '42%',
     height: '100%',
     paddingLeft: wp(4),

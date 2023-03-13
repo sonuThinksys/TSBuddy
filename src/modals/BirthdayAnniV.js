@@ -3,14 +3,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
   TouchableWithoutFeedback,
   Image,
-  Pressable,
-  Linking,
   ImageBackground,
-  Dimensions,
   StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -19,13 +14,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {authLoginStatus} from 'Auth/LoginSlice';
-import {modalStatus} from 'redux/dataSlice';
+
 import {Colors} from 'colors/Colors';
 const BirthdayAnniV = ({modalData, showModal}) => {
   // const [isShowModal, setIsShowModal] = useState(false);
   const {id, text, setShowModal} = modalData || {};
-  console.log('text:=====================', showModal, text);
 
   return (
     <>
@@ -61,12 +54,12 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                 }}>
                 30
               </Text>
-              <Text style={{top: hp(8.5), color: 'green'}}>jan 2023</Text>
+              <Text style={{top: hp(8.5), color: Colors.green}}>jan 2023</Text>
               <View style={styles.textView}>
                 <Text
                   style={{
                     textAlign: 'center',
-                    color: 'white',
+                    color: Colors.white,
                     fontWeight: 'bold',
                   }}>
                   Birthday: {text}
@@ -99,7 +92,7 @@ const styles = StyleSheet.create({
     marginTop: hp(15),
     paddingHorizontal: wp(5),
     paddingVertical: hp(1.5),
-    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    backgroundColor: Colors.customColor({opacity: 0.8, r: 51, g: 51, b: 51}),
     borderRadius: 5,
   },
 });

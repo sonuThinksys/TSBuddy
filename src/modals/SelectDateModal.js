@@ -74,7 +74,7 @@ const SelectDateModal = ({modalData}) => {
             }}>
             <View style={styles.container3}>
               <Ripple
-                rippleColor={'red'}
+                rippleColor={Colors.red}
                 rippleOpacity={0.5}
                 rippleDuration={400}
                 rippleSize={500}
@@ -90,7 +90,7 @@ const SelectDateModal = ({modalData}) => {
                     width: 20,
                     borderRadius: 10,
                     borderWidth: 2,
-                    borderColor: select ? 'red' : 'gray',
+                    borderColor: select ? Colors.red : Colors.grey,
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginHorizontal: wp(1),
@@ -109,7 +109,7 @@ const SelectDateModal = ({modalData}) => {
             }}>
             <View style={styles.reppleView}>
               <Ripple
-                rippleColor={'red'}
+                rippleColor={Colors.red}
                 rippleOpacity={0.5}
                 rippleDuration={400}
                 rippleSize={500}
@@ -125,7 +125,7 @@ const SelectDateModal = ({modalData}) => {
                     width: 20,
                     borderRadius: 10,
                     borderWidth: 2,
-                    borderColor: secondSleceted ? 'red' : 'gray',
+                    borderColor: secondSleceted ? Colors.red : Colors.grey,
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginHorizontal: wp(1),
@@ -133,7 +133,7 @@ const SelectDateModal = ({modalData}) => {
                   {secondSleceted ? (
                     <View
                       style={{
-                        backgroundColor: 'red',
+                        backgroundColor: Colors.red,
                         height: 10,
                         width: 10,
                         borderRadius: 10,
@@ -145,7 +145,7 @@ const SelectDateModal = ({modalData}) => {
               <TextInput value={endDate1} />
             </View>
           </TouchableOpacity>
-          <Text style={{color: 'gray', fontSize: 13}}>
+          <Text style={{color: Colors.grey, fontSize: 13}}>
             **Monthly lunch can only be started from 1st or 16th of any month
           </Text>
         </View>
@@ -157,7 +157,8 @@ const SelectDateModal = ({modalData}) => {
               setOpenModal(false);
             }}>
             <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
+              <Text
+                style={{color: Colors.white, fontWeight: 'bold', fontSize: 18}}>
                 OK
               </Text>
             </View>
@@ -169,7 +170,7 @@ const SelectDateModal = ({modalData}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'green',
+    backgroundColor: Colors.green,
     marginHorizontal: wp(6),
     justifyContent: 'center',
     borderRadius: 10,
@@ -186,24 +187,24 @@ const styles = StyleSheet.create({
   },
   container2: {
     paddingVertical: hp(1),
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     paddingHorizontal: wp(4),
   },
   container3: {
     paddingVertical: hp(1),
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     flexDirection: 'row',
     paddingHorizontal: wp(4),
   },
   container4: {
-    backgroundColor: 'red',
+    backgroundColor: Colors.red,
     height: 10,
     width: 10,
     borderRadius: 10,
   },
   reppleView: {
     paddingVertical: hp(1),
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     flexDirection: 'row',
     paddingHorizontal: wp(4),
   },

@@ -6,32 +6,22 @@ import Modal from 'react-native-modal';
 import ProgressLoader from 'rn-progress-loader';
 const Loader = () => {
   return (
-    // <View
-    //   style={{
-    //     backgroundColor: '#06566e',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     height: 100,
-    //     width: 100,
-    //     justifyContent: 'center',
-    //   }}>
     <ProgressLoader
       barHeight={100}
       visible={true}
       isModal={true}
       isHUD={true}
-      hudColor={'#06566e'}
+      hudColor={Colors.bluishGreen}
       color={Colors.white}>
-      <Text style={{color: 'white'}}>Loading..</Text>
+      <Text style={{color: Colors.white}}>Loading..</Text>
     </ProgressLoader>
-    // </View>
   );
 
   return (
     <AnimatedLoader
       visible={visible}
       animationStyle={styles.lottie}
-      overlayColor="blue"
+      overlayColor={Colors.black}
       speed={1}>
       <Text style={{fontSize: 18, fontWeight: 'bold'}}>Loading...</Text>
     </AnimatedLoader>
@@ -41,7 +31,7 @@ const styles = StyleSheet.create({
   lottie: {
     width: 30,
     height: 30,
-    backgroundColor: 'black',
+    backgroundColor: Colors.black,
   },
 });
 export default Loader;

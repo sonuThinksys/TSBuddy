@@ -9,37 +9,16 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import BirthdayAnniV from 'modals/BirthdayAnniV';
+import {Colors} from 'colors/Colors';
 const width = Dimensions.get('screen').width;
+import {imageArr} from 'utils/DummyData';
 
 const CarouselAutoScroll = () => {
-  const imageArr = [
-    {
-      image: MonthImages.workAnniversaryy,
-      id: '1',
-      text: 'Happy workAnniversary',
-    },
-    {
-      image: MonthImages.BirthdayImage,
-      id: '2',
-      text: 'Happy Birthday',
-    },
-    {
-      image: MonthImages.BirthdayImage,
-      id: '3',
-      text: 'Happy Birthday',
-    },
-    {
-      image: MonthImages.workAnniversaryy,
-      id: '4',
-      text: 'Happy Birthday',
-    },
-  ];
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
   const imageRef = useRef();
@@ -99,7 +78,7 @@ const CarouselAutoScroll = () => {
                 resizeMode="contain"
                 style={styles.backgroundImage}>
                 <View style={styles.backgroundImageView}>
-                  <Text style={{color: 'white', textAlign: 'center'}}>
+                  <Text style={{color: Colors.white, textAlign: 'center'}}>
                     {item.text}
                   </Text>
                 </View>
@@ -136,13 +115,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: hp(1),
     marginHorizontal: wp(4),
-    borderColor: 'gray',
+    borderColor: Colors.grey,
     borderWidth: 1,
   },
   backgroundImageView: {
     paddingHorizontal: wp(3),
     paddingVertical: hp(1),
-    backgroundColor: 'rgba(51, 51, 51, 0.8)',
+    backgroundColor: Colors.brown,
     justifyContent: 'center',
     marginTop: hp(14),
     marginHorizontal: wp(20),

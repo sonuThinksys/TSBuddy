@@ -29,7 +29,7 @@ const SalarSlipModal = () => {
         <TextInput
           style={styles.textinput}
           placeholder="Password"
-          placeholderTextColor="gray"
+          placeholderTextColor={Colors.grey}
         />
         <TouchableOpacity
           style={{

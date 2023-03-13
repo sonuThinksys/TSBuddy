@@ -14,31 +14,10 @@ import {
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
+import {Colors} from 'colors/Colors';
 const UpComingHolidays = () => {
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
 
-  const data = [
-    {
-      nameOfLeaves: holidaysData.description,
-      dataOfLeave: '26 Jan 2023',
-      id: '1',
-    },
-    {
-      nameOfLeaves: 'Holi',
-      dataOfLeave: '08 Mar 2023',
-      id: '2',
-    },
-    {
-      nameOfLeaves: 'Independence Day',
-      dataOfLeave: '15 Aug 2023',
-      id: '3',
-    },
-    {
-      nameOfLeaves: 'Diwali',
-      dataOfLeave: '15 Oct 2023',
-      id: '4',
-    },
-  ];
   return (
     <View>
       <View style={styles.container}>
@@ -85,7 +64,8 @@ const renderItem = ({item}) => {
       <View style={{flex: 3}}>
         <View style={styles.textView}>
           <TouchableOpacity>
-            <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
+            <Text
+              style={{fontSize: 16, fontWeight: 'bold', color: Colors.white}}>
               {newDateFormate}
             </Text>
           </TouchableOpacity>
@@ -98,13 +78,13 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   imageView: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: hp(0.6),
     shadowOpacity: 0.1,
     paddingLeft: wp(1),
@@ -112,11 +92,11 @@ const styles = StyleSheet.create({
   textView: {
     paddingVertical: hp(1.6),
     paddingHorizontal: wp(5),
-    backgroundColor: 'pink',
+    backgroundColor: Colors.pink,
     width: wp(40),
     borderRadius: 5,
     marginVertical: hp(0.5),
-    backgroundColor: '#0E5E6F',
+    backgroundColor: Colors.darkGreen,
   },
 });
 export default UpComingHolidays;

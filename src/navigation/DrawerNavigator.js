@@ -67,7 +67,7 @@ const drawerOption = ({
           }}>
           <Text
             style={{
-              color: 'white',
+              color: Colors.white,
               textAlign: 'center',
               marginLeft:
                 Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
@@ -102,8 +102,8 @@ const HomeStackScreen = ({navigation}) => {
       // screenOptions={() => {
       //   return {
       //     headerShown: false,
-      //     // headerStyle: {backgroundColor: 'red'},
-      //     // headerTintColor: 'white',
+      //     // headerStyle: {backgroundColor: Colors.red},
+      //     // headerTintColor: Colors.white,
       //     // headerTitleStyle: {fontWeight: 'bold'},
       //   };
       // }}
@@ -271,30 +271,30 @@ function DrawerNavigator({navigation}) {
       initialRouteName="Home"
       screenOptions={{
         drawerStyle: {
-          backgroundColor: '#002147', //Set Drawer background
+          backgroundColor: Colors.royalBlue, //Set Drawer background
           width: wp(35),
           borderBottomWidth: 1,
-          borderBottomColor: '#fff',
+          borderBottomColor: Colors.white,
           // justifyContent: 'center',
           // alignItems: 'center',
           // paddingLeft: 0,
         },
         headerShown: false,
         headerStyle: {
-          backgroundColor: '#1b5583',
+          backgroundColor: Colors.darkBlue,
           height: 55,
         },
-        headerTintColor: 'white', //Set Header text color
+        headerTintColor: Colors.white, //Set Header text color
         headerTitleStyle: {
           fontWeight: 'bold', //Set Header text style
         },
 
-        activeTintColor: '#fff',
+        activeTintColor: Colors.white,
         itemStyle: {
           borderRadius: 0,
           marginVertical: 0,
           borderBottomWidth: 0.5,
-          borderBottomColor: '#D09900',
+          borderBottomColor: Colors.yellowishOrange,
         },
         drawerActiveBackgroundColor: Colors.lightBlue,
       }}>

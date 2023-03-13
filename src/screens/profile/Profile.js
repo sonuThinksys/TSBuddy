@@ -23,6 +23,7 @@ import moment from 'moment';
 import {modalStatus} from 'redux/dataSlice';
 import CommunicationModal from 'modals/CommunicationModal';
 import Loader from 'component/loader/Loader';
+import {Colors} from 'colors/Colors';
 const Profile = () => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
@@ -138,7 +139,11 @@ const Profile = () => {
             <View style={styles.managerDetailView}>
               <View style={styles.managerDetailView1}>
                 <Text
-                  style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+                  style={{
+                    color: Colors.white,
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                  }}>
                   Manager Info
                 </Text>
               </View>

@@ -133,9 +133,9 @@ const UserDetail = ({navigation, route}) => {
       <View
         style={{
           height: hp(28),
-          backgroundColor: 'white',
+          backgroundColor: Colors.white,
           borderBottomWidth: 1,
-          borderColor: 'gray',
+          borderColor: Colors.grey,
           paddingVertical: hp(2),
         }}>
         <Text
@@ -151,7 +151,7 @@ const UserDetail = ({navigation, route}) => {
           style={{
             textAlign: 'center',
             fontSize: 14,
-            color: 'gray',
+            color: Colors.grey,
           }}>
           {designation}
         </Text>
@@ -215,7 +215,7 @@ const UserDetail = ({navigation, route}) => {
       <View
         style={{
           height: hp(26),
-          backgroundColor: 'white',
+          backgroundColor: Colors.white,
           paddingVertical: hp(4),
           paddingHorizontal: wp(4),
         }}>

@@ -9,6 +9,7 @@ import {getEmployeeData} from 'redux/dataSlice';
 import {useDispatch} from 'react-redux';
 import UserProfile from 'component/useProfile/UserProfile';
 import {useNavigation} from '@react-navigation/native';
+import {Colors} from 'colors/Colors';
 const Header = () => {
   const navigation = useNavigation();
 
@@ -26,7 +27,7 @@ const Header = () => {
             height: 25,
             width: 25,
             marginRight: wp(5),
-            color: 'white',
+            color: Colors.white,
           }}
         />
       </TouchableOpacity>

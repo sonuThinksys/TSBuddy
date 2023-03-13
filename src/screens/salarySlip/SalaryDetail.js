@@ -14,6 +14,7 @@ import {
   heightPercentageToDP as hp,
 } from 'utils/Responsive';
 import moment from 'moment';
+import {deductionData, earnindData} from 'utils/DummyData';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
   const [show, setShow] = useState(false);
@@ -36,17 +37,7 @@ const SalaryDetail = ({route, navigation}) => {
     {lable: 'Total Days', value: data.total_days_in_month},
     {lable: 'Total Deduction', value: data.total_deduction},
   ];
-  const earnindData = [
-    {lable: 'House Rent Allowance', value: '4000'},
-    {lable: 'Basic', value: '5565605'},
-    {lable: 'Standard Deduction', value: '10000'},
-    {lable: 'Parking Reimbursement', value: '600.00'},
-    {lable: 'Special Allowance', value: '5675656'},
-  ];
-  const deductionData = [
-    {lable: 'Employee PF', value: '60000'},
-    {lable: 'Meal Charges', value: '600'},
-  ];
+
   return (
     <View>
       <View
@@ -101,7 +92,7 @@ const SalaryDetail = ({route, navigation}) => {
         />
         <Text
           style={{
-            color: 'white',
+            color: Colors.white,
             fontWeight: 'bold',
             fontSize: 18,
             marginRight: wp(3),
@@ -133,7 +124,9 @@ const SalaryDetail = ({route, navigation}) => {
                   paddingHorizontal: wp(4),
                 }}>
                 <Text style={{flex: 0.6}}>{element.lable}</Text>
-                <Text style={{color: 'gray', flex: 0.4}}>{element.value}</Text>
+                <Text style={{color: Colors.grey, flex: 0.4}}>
+                  {element.value}
+                </Text>
               </View>
             );
           })}
@@ -152,14 +145,15 @@ const SalaryDetail = ({route, navigation}) => {
                 justifyContent: 'space-between',
                 marginVertical: hp(1),
               }}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+              <Text
+                style={{color: Colors.white, fontWeight: 'bold', fontSize: 16}}>
                 Earnings
               </Text>
               <View
                 style={{
                   height: 25,
                   width: 25,
-                  borderColor: 'white',
+                  borderColor: Colors.white,
                   borderRadius: 20,
                   borderWidth: 1,
                   justifyContent: 'center',
@@ -185,7 +179,7 @@ const SalaryDetail = ({route, navigation}) => {
                       paddingHorizontal: wp(4),
                     }}>
                     <Text>{elemnt.lable}</Text>
-                    <Text style={{color: 'gray'}}>{elemnt.value}</Text>
+                    <Text style={{color: Colors.grey}}>{elemnt.value}</Text>
                   </View>
                 );
               })}
@@ -205,14 +199,15 @@ const SalaryDetail = ({route, navigation}) => {
                 paddingHorizontal: wp(3),
                 justifyContent: 'space-between',
               }}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+              <Text
+                style={{color: Colors.white, fontWeight: 'bold', fontSize: 16}}>
                 Deductions
               </Text>
               <View
                 style={{
                   height: 25,
                   width: 25,
-                  borderColor: 'white',
+                  borderColor: Colors.white,
                   borderRadius: 20,
                   borderWidth: 1,
                   justifyContent: 'center',
@@ -238,7 +233,7 @@ const SalaryDetail = ({route, navigation}) => {
                       paddingHorizontal: wp(4),
                     }}>
                     <Text>{elemnt.lable}</Text>
-                    <Text style={{color: 'gray'}}>{elemnt.value}</Text>
+                    <Text style={{color: Colors.grey}}>{elemnt.value}</Text>
                   </View>
                 );
               })}

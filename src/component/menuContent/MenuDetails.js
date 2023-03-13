@@ -12,6 +12,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import RequestLunch from 'screens/requestLunch/RequestLunch';
+import {Colors} from 'colors/Colors';
 // import {SharedElement} from 'react-navigation-shared-element';
 const MenuDetails = () => {
   const navigation = useNavigation();
@@ -27,7 +28,7 @@ const MenuDetails = () => {
           onPress={() => {
             navigation.navigate('RequestLunch', navigation);
           }}>
-          <Text style={{color: 'white', fontWeight: 'bold'}}>
+          <Text style={{color: Colors.white, fontWeight: 'bold'}}>
             {' '}
             + Lunch Request
           </Text>
@@ -42,13 +43,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     paddingVertical: hp(1.4),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     paddingHorizontal: wp(2),
     opacity: 1,
   },
   secondContainer: {
     flex: 1,
-    backgroundColor: '#3333FF',
+    backgroundColor: Colors.blue,
     paddingVertical: hp(1.2),
     paddingHorizontal: wp(2),
     borderRadius: 4,

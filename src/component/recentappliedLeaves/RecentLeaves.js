@@ -8,6 +8,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {getLeaveDetails} from 'redux/dataSlice';
+import {Colors} from 'colors/Colors';
 
 const RecentLeaves = () => {
   // =================================================================================
@@ -60,7 +61,7 @@ const renderItem = ({item}) => {
       </Text>
       <View style={styles.itemView}>
         {/* <TouchableOpacity> */}
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: 'white'}}>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: Colors.white}}>
           {`${new Date(item.fromDate).getDate()} ${new Date(
             item.fromDate,
           ).toLocaleString('default', {month: 'short'})} ${new Date(
@@ -77,24 +78,24 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   imageView: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: hp(0.6),
     shadowOpacity: 0.1,
   },
   itemView: {
     paddingVertical: hp(1.6),
     paddingHorizontal: wp(6),
-    backgroundColor: 'pink',
+    backgroundColor: Colors.pink,
     marginLeft: wp(40),
     borderRadius: 5,
     marginVertical: hp(0.5),
-    backgroundColor: '#0E5E6F',
+    backgroundColor: Colors.bluishGreen,
   },
 });
 export default RecentLeaves;

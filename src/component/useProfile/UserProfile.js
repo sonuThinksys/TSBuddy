@@ -128,7 +128,7 @@ const UserProfile = () => {
                 height: 25,
                 width: 25,
                 marginRight: wp(5),
-                color: 'white',
+                color: Colors.white,
               }}
             />
           </TouchableOpacity>
@@ -137,7 +137,7 @@ const UserProfile = () => {
       {showTextInput ? (
         <View
           style={{
-            backgroundColor: '#003333',
+            backgroundColor: Colors.blackishGreen,
             flexDirection: 'row',
             paddingVertical: hp(1.5),
             paddingHorizontal: wp(5),
@@ -148,12 +148,12 @@ const UserProfile = () => {
               height: 25,
               width: 25,
               marginRight: wp(5),
-              color: 'white',
+              color: Colors.white,
             }}
           />
           <TextInput
-            selectionColor={'white'}
-            color="white"
+            selectionColor={Colors.white}
+            color={Colors.white}
             // value={e}
             onChangeText={onChangeText}
             isEditble
@@ -235,7 +235,7 @@ const renderItem = (
                   // textAlign: 'center',
                   fontSize: 16,
                   fontWeight: 'bold',
-                  color: 'black',
+                  color: Colors.black,
                   opacity: 0.6,
                 }}>
                 {nameOfEmployee}
@@ -263,7 +263,7 @@ const renderItem = (
                   style={{
                     paddingTop: hp(1),
                     marginLeft: wp(2),
-                    color: 'green',
+                    color: Colors.green,
                   }}>
                   {reporting}
                 </Text>
@@ -307,7 +307,7 @@ const renderItem = (
                 style={{
                   fontSize: 10,
                   textAlign: 'center',
-                  color: 'blue',
+                  color: Colors.blue,
                   opacity: 0.6,
                 }}>
                 {designation}
@@ -318,9 +318,9 @@ const renderItem = (
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   paddingHorizontal: wp(4),
-                  // backgroundColor: '#C3F8FF',
+                  // backgroundColor: Colors.skyColor,
                   borderTopWidth: 2,
-                  borderColor: 'white',
+                  borderColor: Colors.white,
                   marginTop: hp(0.5),
                 }}>
                 <TouchableOpacity
@@ -337,7 +337,7 @@ const renderItem = (
                   <View
                     style={{
                       borderRightWidth: 4,
-                      borderColor: 'white',
+                      borderColor: Colors.white,
                       flex: 1,
                     }}>
                     <Image
