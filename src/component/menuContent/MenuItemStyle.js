@@ -14,7 +14,7 @@ export default StyleSheet.create({
     opacity: 1,
   },
   imagebackground: {
-    height: hp(15),
+    maxHeight: hp(18),
     width: wp(50),
     borderColor: Colors.black,
     borderTopWidth: 0.5,

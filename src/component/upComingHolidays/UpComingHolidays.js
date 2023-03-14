@@ -17,6 +17,7 @@ import moment from 'moment';
 import styles from './UpComingHolidaysStyles';
 const UpComingHolidays = () => {
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
+  console.log('holidaysData:', holidaysData);
 
   return (
     <View>

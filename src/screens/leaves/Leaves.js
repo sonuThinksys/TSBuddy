@@ -1,5 +1,12 @@
-import React, {useEffect} from 'react';
-import {View, Text, FlatList, Pressable, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,7 +16,9 @@ import styles from './LeaveStyles';
 import {getLeaveDetails} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const Leaves = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -17,17 +26,24 @@ const Leaves = ({navigation}) => {
   const employeeID = decoded.Id;
   const dispatch = useDispatch();
 
+  const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
+  const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
+
   useEffect(() => {
     dispatch(getLeaveDetails({token, employeeID}));
   }, []);
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
+  console.log('leavesData:', typeof leavesData[0].fromDate);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
   };
 
   const renderItem = ({item}) => {
+    // console.log('item:', new Date(item.fromDate));
+    console.log('filteredSelectedDate', filteredSelectedDate?.getTime());
+
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate(LeaveDetailsScreen, item)}>
@@ -80,7 +96,7 @@ const Leaves = ({navigation}) => {
   };
 
   return (
-    <View style={{paddingVertical: hp(2)}}>
+    <View style={{paddingVertical: hp(2), flex: 1}}>
       <Pressable
         onPress={applyForLeave}
         style={{
@@ -130,6 +146,30 @@ const Leaves = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={(_, index) => index}
       />
+
+      <DateTimePickerModal
+        isVisible={filterCalenderOpen}
+        mode="date"
+        onConfirm={date => {
+          console.log('date:', typeof date);
+          setFilteredSelectedDate(date);
+          setFilterCalenderOpen(false);
+        }}
+        onCancel={() => {
+          setFilterCalenderOpen(false);
+        }}
+      />
+
+      <Pressable
+        onPress={() => {
+          setFilterCalenderOpen(true);
+        }}
+        style={{position: 'absolute', bottom: hp(8), right: wp(8)}}>
+        <Image
+          source={MonthImages.filterIcon2x}
+          style={{height: 32, width: 32}}
+        />
+      </Pressable>
     </View>
   );
 };
