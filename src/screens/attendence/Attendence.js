@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -16,7 +16,29 @@ import {Header} from 'react-native/Libraries/NewAppScreen';
 import styles from './AttendenceStyle';
 import {CalendarList} from 'react-native-calendars';
 import {Colors} from 'colors/Colors';
+import {getAttendencaeData} from 'redux/homeSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import jwt_decode from 'jwt-decode';
 const Attendence = () => {
+  const [visisbleMonth, setVisibleMonth] = useState('');
+  const [visibleYear, setVisibleYear] = useState('');
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.userToken);
+  var decoded = jwt_decode(token);
+  const employeeID = decoded.Id;
+
+  useEffect(() => {
+    dispatch(
+      getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
+    );
+  }, []);
+
+  const attendenceData = useSelector(state => state.dataReducer.attendenceData);
+  console.log(
+    'attendenceData:----------------------------------------------------',
+    attendenceData,
+  );
+
   const DATA = [
     {
       id: '1',
@@ -91,19 +113,27 @@ const Attendence = () => {
           markingType={'custom'}
           scrollEnabled={true}
           showScrollIndicator={true}
+          onVisibleMonthsChange={months => {
+            // console.log(
+            //   'now these months are visible--------------------------------',
+            //   months,
+            // );
+            setVisibleMonth(months[0].month);
+            setVisibleYear(months[0].year);
+          }}
           markedDates={{
-            '2023-02-16': {
+            '2023-03-16': {
               selected: true,
               marked: true,
               selectedColor: Colors.blue,
             },
-            '2023-02-17': {marked: true},
+            '2023-03-17': {marked: true},
             '2023-02-18': {
               marked: true,
               dotColor: Colors.red,
               activeOpacity: 0,
             },
-            '2023-02-19': {disabled: true, disableTouchEvent: true},
+            '2023-03-19': {disabled: true, disableTouchEvent: true},
           }}
           theme={{
             'stylesheet.calendar': {

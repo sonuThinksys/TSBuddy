@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -32,6 +33,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
+  const [bioMetricEnable, setBiometricEnable] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
@@ -39,6 +41,19 @@ const Login = () => {
 
   const token = useSelector(state => state.auth.userToken);
   const formInput = useSelector(state => state.auth.formInput);
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
+        {
+          text: 'Cancel',
+          onPress: () => setBiometricEnable(false),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => setBiometricEnable(true)},
+      ]);
+      setBiometricEnable(true);
+    }
+  }, [formInput, token]);
   console.log('formadadfgdfg:------------------------------', token, formInput);
 
   const enableTouchId = () => {
@@ -193,7 +208,7 @@ const Login = () => {
           Guest Login
         </Text>
       </View>
-      {Platform.OS === 'android' ? (
+      {Platform.OS === 'android' && bioMetricEnable ? (
         <TouchableOpacity onPress={enableTouchId}>
           <View style={styles.bioMetricView}>
             <Image source={fingerPrint} style={{height: 30, width: 35}} />

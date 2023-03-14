@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -15,12 +15,16 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
 import styles from './UpComingHolidaysStyles';
+import {getHolidaysData} from 'redux/homeSlice';
 const UpComingHolidays = () => {
+  const token = useSelector(state => state.auth.userToken);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getHolidaysData(token));
+  }, []);
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
-  console.log('holidaysData:', holidaysData);
-
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View style={styles.container}>
         <Text style={styles.upcomingText}>Upcoming Holidays</Text>
       </View>
@@ -35,37 +39,47 @@ const UpComingHolidays = () => {
 };
 const renderItem = ({item}) => {
   const newDateFormate = moment(item.holidayDate).format(`DD MMM YYYY`);
+  let year = new Date().getFullYear();
+
+  const date1 = +new Date();
+  const date = +moment(item.holidayDate).format('DD');
+  const Month = +moment(item.holidayDate).format(' MM ');
+  const Years = +moment(item.holidayDate).format(`    YYYY`);
+
   return (
-    <View style={styles.imageView}>
-      {/* {item.holidayData <= '30 Mar 2023' ? <Text></Text> : null} */}
-      <Image
-        resizeMode="contain"
-        source={
-          item.description === 'Republic Day'
-            ? MonthImages.republicDay
-            : item.description === 'Holi'
-            ? MonthImages.holi
-            : item.description === 'Independence Day'
-            ? MonthImages.independenceDay
-            : item.description === 'Diwali'
-            ? MonthImages.diwali
-            : item.description === 'Dussehra'
-            ? MonthImages.diwali
-            : item.description === "Mahatma Gandhi's Birthday"
-            ? MonthImages.gandhiJayantiS
-            : MonthImages.gandhiJayantiS
-        }
-        style={styles.image}
-      />
-      <Text style={styles.text1}>{item.description}</Text>
-      <View style={{flex: 3}}>
-        <View style={styles.textView}>
-          <TouchableOpacity>
-            <Text style={styles.text2}>{newDateFormate}</Text>
-          </TouchableOpacity>
+    <>
+      {date < date1 && Month >= 4 && Years <= 2021 ? (
+        <View style={styles.imageView}>
+          <Image
+            resizeMode="contain"
+            source={
+              item.description === 'Republic Day'
+                ? MonthImages.republicDay
+                : item.description === 'Holi'
+                ? MonthImages.holi
+                : item.description === 'Independence Day'
+                ? MonthImages.independenceDay
+                : item.description === 'Diwali'
+                ? MonthImages.diwali
+                : item.description === 'Dussehra'
+                ? MonthImages.diwali
+                : item.description === "Mahatma Gandhi's Birthday"
+                ? MonthImages.gandhiJayantiS
+                : MonthImages.gandhiJayantiS
+            }
+            style={styles.image}
+          />
+          <Text style={styles.text1}>{item.description}</Text>
+          <View style={{flex: 3}}>
+            <View style={styles.textView}>
+              <TouchableOpacity>
+                <Text style={styles.text2}>{newDateFormate}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
+      ) : null}
+    </>
   );
 };
 export default UpComingHolidays;
