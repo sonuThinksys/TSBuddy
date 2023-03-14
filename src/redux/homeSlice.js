@@ -31,6 +31,9 @@ const initialState = {
   calendereventDataLoading: false,
   calendereventData: {},
   calendereventDataError: false,
+  attendenceDataPending: false,
+  attendenceData: {},
+  attendenceDataError: false,
 };
 
 // ============================================================================================
@@ -145,6 +148,7 @@ export const getEmployeeProfileData = createAsyncThunk(
       });
   },
 );
+
 export const getCalendereventData = createAsyncThunk(
   'dataReducer/getCalendereventData',
   async token => {
@@ -163,6 +167,47 @@ export const getCalendereventData = createAsyncThunk(
           return Promise.resolve(data);
         } else {
           return Promise.reject(new Error('Something Went Wrong1!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+export const getAttendencaeData = createAsyncThunk(
+  'dataReducer/getAttendencaeData',
+  async ({token, employeeID, visisbleMonth, visibleYear}) => {
+    console.log(
+      'token,employeeID,visisbleMonth,visibleYear:---------------',
+      token,
+      employeeID,
+      visisbleMonth,
+      visibleYear,
+    );
+    var config = {
+      method: 'get',
+      url: `${endPoints.attendenceAPI}${employeeID}&month=${5}&year=${2018}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong3!'));
         }
       })
       .catch(err => {
@@ -321,6 +366,19 @@ const homeSlice = createSlice({
       state.calendereventDataLoading = false;
       state.calendereventData = [];
       state.calendereventDataError = action.payload;
+    });
+    builder.addCase(getAttendencaeData.pending, state => {
+      state.attendenceDataPending = true;
+    });
+    builder.addCase(getAttendencaeData.fulfilled, (state, action) => {
+      state.attendenceDataPending = false;
+      state.attendenceData = action.payload;
+      state.attendenceDataError = undefined;
+    });
+    builder.addCase(getAttendencaeData.rejected, (state, action) => {
+      state.attendenceDataPending = false;
+      state.attendenceData = [];
+      state.attendenceDataError = action.payload;
     });
   },
 });

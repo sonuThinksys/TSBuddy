@@ -49,19 +49,20 @@ export default ({navigation}) => {
       icon: MonthImages.AttendanceDrawer,
     },
     {
-      screen: 'Holidays',
-      label: 'Holidays',
-      navigation,
-      key: 4,
-      icon: MonthImages.HolidaysIcon,
-    },
-    {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 5,
+      key: 4,
       icon: MonthImages.leavesImage,
     },
+    {
+      screen: 'Holidays',
+      label: 'Holidays',
+      navigation,
+      key: 5,
+      icon: MonthImages.HolidaysIcon,
+    },
+
     {
       screen: 'SalarySlip',
       label: 'SalarySlip',

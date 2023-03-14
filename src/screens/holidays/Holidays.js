@@ -16,14 +16,10 @@ const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getHolidaysData(token));
-  }, []);
-  const token = useSelector(state => state.auth.userToken);
+
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
   const isLoading = useSelector(state => state.dataReducer.holidayDataLoading);
   console.log('isLoading:---------------', isLoading);
-  var decoded = jwt_decode(token);
   const data1 = [
     {
       name: 'Past Holidays',
@@ -81,6 +77,11 @@ const renderItem = (
 ) => {
   const newDateFormate = moment(holidayDate).format(`DD-MMM-YYYY`);
 
+  const date1 = +new Date();
+  const date = +moment(holidayDate).format('DD');
+  const Month = +moment(holidayDate).format(' MM ');
+  const Years = +moment(holidayDate).format(`    YYYY`);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -100,15 +101,48 @@ const renderItem = (
           holidaysShowModal={holidaysShowModal}
         />
       ) : null}
-      <View style={styles.flatelistView}>
-        <View style={styles.flatelistView1}>
+      <View
+        // style={styles.flatelistView}
+        style={{
+          flexDirection: 'row',
+          borderRadius: 5,
+          marginVertical: hp(0.5),
+          marginHorizontal: wp(1),
+          backgroundColor: Colors.skyColor,
+          shadowOpacity: 0.1,
+        }}>
+        <View
+          //style={styles.flatelistView1}
+
+          style={{
+            flex: 1,
+            backgroundColor:
+              date < date1 && Month >= 4 && Years <= 2021
+                ? Colors.royalBlue
+                : Colors.grey,
+            paddingHorizontal: wp(2),
+            paddingVertical: hp(1),
+            justifyContent: 'center',
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+            shadowOpacity: 0.1,
+          }}>
           <Text
             style={{textAlign: 'center', color: Colors.white, fontSize: 18}}>
             {newDateFormate}
           </Text>
         </View>
         <View style={styles.flatelistView2}>
-          <Text style={{fontWeight: 'bold'}}>{description}</Text>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color:
+                date < date1 && Month >= 4 && Years <= 2021
+                  ? Colors.black
+                  : Colors.grey,
+            }}>
+            {description}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

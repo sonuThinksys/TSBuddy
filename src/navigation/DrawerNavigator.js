@@ -323,8 +323,9 @@ function DrawerNavigator({navigation}) {
 
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
-      <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
+      <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
+
       <Drawer.Screen name="SalarySlip" component={SalarySlipScreen} />
 
       <Drawer.Screen name="logout" component={Logout} />
