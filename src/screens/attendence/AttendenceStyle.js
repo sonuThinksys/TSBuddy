@@ -16,6 +16,7 @@ export default StyleSheet.create({
     marginVertical: hp(7),
     marginHorizontal: wp(6),
     borderRadius: 10,
+    backgroundColor: Colors.darkTransparentColor,
   },
   monthText: {
     color: Colors.whitishPink,
@@ -40,6 +41,7 @@ export default StyleSheet.create({
   weekliyTextView: {
     borderRightWidth: 1,
     borderColor: Colors.white,
+    borderTopWidth: 0,
     borderWidth: 1,
     flex: 1,
     paddingHorizontal: wp(2),

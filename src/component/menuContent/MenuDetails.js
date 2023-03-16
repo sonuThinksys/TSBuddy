@@ -25,7 +25,10 @@ const MenuDetails = () => {
       <Text style={styles.text1}>Today's Menu</Text>
       {/* <SharedElement id="enter" style={{flex: 1}}> */}
       <LinearGradient
-        colors={['white', 'white', 'white']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        colors={['red', 'red', 'red']}
+        // colors={['white', 'white', 'white']}
         style={styles.linearGradient}>
         <View style={styles.secondContainer}>
           <Pressable

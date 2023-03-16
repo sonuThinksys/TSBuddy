@@ -19,25 +19,85 @@ import {Colors} from 'colors/Colors';
 import {getAttendencaeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+import {attendenceMonthImages} from 'defaultData';
 const Attendence = () => {
-  const [visisbleMonth, setVisibleMonth] = useState('');
-  const [visibleYear, setVisibleYear] = useState('');
+  const [visisbleMonth, setVisibleMonth] = useState(0);
+  const [visibleYear, setVisibleYear] = useState(0);
+  const [spendhours, sendSpendhours] = useState(0);
+  const [remainingHours, setRemainingHours] = useState(48);
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
+  console.log(
+    'attendenceMonthImages:------------------',
+    attendenceMonthImages,
+  );
+  console.log(
+    ' month and year:-------------------------------------',
+    visisbleMonth,
+    visibleYear,
+  );
 
   useEffect(() => {
     dispatch(
       getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
     );
-  }, []);
+  }, [visisbleMonth, visibleYear]);
 
-  const attendenceData = useSelector(state => state.dataReducer.attendenceData);
-  console.log(
-    'attendenceData:----------------------------------------------------',
-    attendenceData,
+  const employeeAttendance = useSelector(
+    state => state.dataReducer.attendenceData.employeeAttendance,
   );
+  console.log(
+    'employeeAttendance:------------------------------------',
+    employeeAttendance,
+  );
+  const dailyAttendance = useSelector(
+    state => state.dataReducer.attendenceData.dailyAttendance,
+  );
+  useEffect(() => {
+    let totalEffectiveHours = 0;
+    let totalHours = 10;
+    dailyAttendance?.map(data => {
+      totalEffectiveHours = totalEffectiveHours + data.totalEffectiveHours;
+      totalHours = totalHours + data.totalHours;
+    });
+    sendSpendhours(totalHours - totalEffectiveHours);
+  }, [dailyAttendance]);
+
+  console.log(
+    'dailyAttendance:------------------------------',
+    dailyAttendance,
+  );
+
+  let mark = {};
+  employeeAttendance?.forEach(day => {
+    if (day.status === 'Present') {
+      mark[day.attDate] = {
+        marked: true,
+        dotColor: Colors.blue,
+      };
+    } else if (day.status === 'Absent') {
+      mark[day.attDate] = {
+        // marked: true,
+        // dotColor: Colors.red,
+        selected: true,
+        //  dotColor: Colors.red,
+        // activeOpacity: 0,
+        selectedColor: Colors.red,
+      };
+    } else if (day.status === 'Holiday') {
+      mark[day.attDate] = {
+        // marked: true,
+        // dotColor: Colors.red,
+        selected: true,
+        //  dotColor: Colors.red,
+        // activeOpacity: 0,
+        selectedColor: Colors.red,
+      };
+    }
+  });
 
   const DATA = [
     {
@@ -80,7 +140,7 @@ const Attendence = () => {
     <View style={styles.container}>
       <ImageBackground
         resizeMode="cover"
-        source={TSBuddyBackImage}
+        source={attendenceMonthImages[visisbleMonth]}
         style={{height: '100%', width: '100%'}}>
         <View style={styles.secondContainer}>
           <View>
@@ -96,7 +156,10 @@ const Attendence = () => {
             <View style={styles.timeSpendView}>
               <Text style={styles.timeSpendText}>
                 Total Hour Spend 38:51{' '}
-                <Text style={{color: Colors.red}}> ( -06:09)</Text>
+                <Text
+                  style={{color: spendhours < 0 ? Colors.red : Colors.green}}>
+                  ({spendhours})
+                </Text>
               </Text>
             </View>
           </View>
@@ -108,6 +171,7 @@ const Attendence = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
+
         <CalendarList
           horizontal={true}
           markingType={'custom'}
@@ -121,20 +185,30 @@ const Attendence = () => {
             setVisibleMonth(months[0].month);
             setVisibleYear(months[0].year);
           }}
-          markedDates={{
-            '2023-03-16': {
-              selected: true,
-              marked: true,
-              selectedColor: Colors.blue,
-            },
-            '2023-03-17': {marked: true},
-            '2023-02-18': {
-              marked: true,
-              dotColor: Colors.red,
-              activeOpacity: 0,
-            },
-            '2023-03-19': {disabled: true, disableTouchEvent: true},
-          }}
+          pastScrollRange={100}
+          //initialDate={'2018-05-01'}
+          // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+          // minDate={'2018-05-05'}
+          // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+          //  maxDate={'2020-05-30'}
+
+          // markedDates={{
+          //   '2023-03-16': {
+          //     selected: true,
+          //     marked: true,
+          //     selectedColor: Colors.blue,
+          //   },
+          //   '2023-03-17': {marked: true},
+          //   '2023-03-18': {
+          //     // marked: true,
+          //     selected: true,
+          //     //  dotColor: Colors.red,
+          //     // activeOpacity: 0,
+          //     selectedColor: Colors.red,
+          //   },
+          //   '2023-03-19': {disabled: true, disableTouchEvent: true},
+          // }}
+          markedDates={mark}
           theme={{
             'stylesheet.calendar': {
               padding: 0,
@@ -219,3 +293,7 @@ const renderItem = ({item}) => {
 };
 
 export default Attendence;
+
+//http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
+
+// http://10.101.23.48:81/apiAttendance/GetDailyAttendanceByEmpId?empId=10352&month=5&year=2018

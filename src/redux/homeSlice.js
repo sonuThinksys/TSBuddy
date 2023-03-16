@@ -191,21 +191,23 @@ export const getAttendencaeData = createAsyncThunk(
       employeeID,
       visisbleMonth,
       visibleYear,
+      'gggh',
     );
     var config = {
       method: 'get',
-      url: `${endPoints.attendenceAPI}${employeeID}&month=${5}&year=${2018}`,
+      url: `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     };
-
+    console.log('url:------------------------------------------', config.url);
     return axios(config)
       .then(async response => {
         const {data, status} = response;
         if (status === 200) {
-          return Promise.resolve(data);
+          console.log('data:---------------------------------------', data[0]);
+          return Promise.resolve(data[0]);
         } else {
           return Promise.reject(new Error('Something Went Wrong3!'));
         }
@@ -216,7 +218,7 @@ export const getAttendencaeData = createAsyncThunk(
           statusCode = err?.response.status;
         }
         if (statusCode == 401) {
-          return Promise.reject(err?.response?.data?.message);
+          return Promise.reject(err?.response?.data[0]?.message);
         } else {
           return Promise.reject(new Error(err));
         }

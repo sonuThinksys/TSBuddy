@@ -16,4 +16,20 @@ const monthImages = {
   november: {monthImage: MonthImages.novImage, monthIcon: MonthImages.novIcon},
   december: {monthImage: MonthImages.decImage, monthIcon: MonthImages.decIcon},
 };
-export {monthImages};
+
+const attendenceMonthImages = {
+  1: MonthImages.janImage,
+  2: MonthImages.febImage,
+  3: MonthImages.marchImage,
+  4: MonthImages.aprilImage,
+  5: MonthImages.mayImage,
+  6: MonthImages.junImage,
+  7: MonthImages.julyImage,
+  8: MonthImages.augImage,
+  9: MonthImages.sepImage,
+  10: MonthImages.octImage,
+  11: MonthImages.novImage,
+  12: MonthImages.decImage,
+};
+
+export {monthImages, attendenceMonthImages};
