@@ -54,7 +54,15 @@ export const getMenuFeedback = createAsyncThunk(
     };
 
     try {
-    } catch (err) {}
+      const feedback = await axios.get(
+        endPoints.getMenuFeedbackTotalCount,
+        config,
+      );
+
+      return Promise.resolve(feedback.data);
+    } catch (err) {
+      console.log('err:', err);
+    }
   },
 );
 // =============================================
@@ -319,12 +327,7 @@ export const getEmployeeData = createAsyncThunk(
     };
 
     try {
-      console.log('Yes! Inside.  1111');
-
       const allEmployees = await axios.get(endPoints.getAllEmployees, config);
-
-      console.log('Yes! Inside.   2222');
-      console.log('allEmployeesData:', allEmployees.data.length);
 
       return Promise.resolve(allEmployees.data);
     } catch (err) {

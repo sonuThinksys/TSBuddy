@@ -38,7 +38,6 @@ const MenuItem = () => {
   const foodMenuDatails = useSelector(
     state => state.dataReducer.foodMenuDatails,
   );
-  console.log('foodMenuDatails111111:', foodMenuDatails.data);
 
   // WILL IMPLEMENT LATER
 
