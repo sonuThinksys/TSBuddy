@@ -3,8 +3,6 @@ import {API_URL} from '@env';
 let year = 2021;
 let month = new Date().getMonth();
 
-console.log('month:------------------', month);
-
 export default {
   authTokenAPI: `${API_URL}/Account/login`,
   holidaysAPI: `${API_URL}/Holiday?year=${year}`,
@@ -12,4 +10,9 @@ export default {
   employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
   calenderEventAPI: `${API_URL}/Event/GetCalenderEvents?month=${month + 1}`,
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
+  attendenceAPI: `${API_URL}Attendance/GetDailyAttendanceByEmpId?empId=`,
+  getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
+  getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
+  giveFeedbackPost: `${API_URL}/FoodRequest/AddFeedback`,
+  getAllEmployees: `${API_URL}/EmployeeProfile/GetAllEmployeeDetails`,
 };

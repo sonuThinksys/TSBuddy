@@ -9,7 +9,7 @@ export default StyleSheet.create({
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   imageView: {
@@ -26,7 +26,7 @@ export default StyleSheet.create({
     width: wp(40),
     borderRadius: 5,
     marginVertical: hp(0.5),
-    backgroundColor: Colors.darkBlue,
+    backgroundColor: Colors.darkCyan,
   },
   image: {height: 40, width: 40, marginTop: hp(1.8), flex: 1},
   text1: {marginTop: hp(2.4), flex: 5, marginLeft: wp(1)},

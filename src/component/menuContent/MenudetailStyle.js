@@ -19,6 +19,8 @@ export default StyleSheet.create({
     // flex: 1,
     // backgroundColor: '#192f6a',
     backgroundColor: Colors.blue,
+    backgroundColor: Colors.reddishTint,
+
     paddingVertical: hp(1.2),
     paddingHorizontal: wp(2),
     borderRadius: 5,
