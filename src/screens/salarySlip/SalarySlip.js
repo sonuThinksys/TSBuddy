@@ -3,14 +3,9 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Modal,
   Image,
-  TextInput,
   ImageBackground,
-  FlatList,
-  Button,
   ScrollView,
-  StyleSheet,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {

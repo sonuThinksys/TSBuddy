@@ -1,5 +1,13 @@
 import * as React from 'react';
-import {Image, Platform, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -40,6 +48,7 @@ import {
   employeeDetailsScreen,
   LeaveDetailsScreen,
 } from './Route';
+import {FontFamily, FontSize} from 'constants/fonts';
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -55,6 +64,7 @@ const drawerOption = ({
   navigation,
   showDrawer = true,
   showHeaderRight = true,
+  fromLeave = false,
 }) => {
   return {
     label: () => <Text>{label}</Text>,
@@ -94,6 +104,15 @@ const drawerOption = ({
             }}>
             {label}
           </Text>
+          {fromLeave && (
+            <Pressable
+              onPress={() => {
+                navigation.navigate('LeaveApplyScreen');
+                console.log('Navigation:', navigation);
+              }}>
+              <Text style={styles.newLeaveText}>+ New</Text>
+            </Pressable>
+          )}
           {/* {headerIconName ? (
             <Image source={headerIconName} style={{height: 20, width: 20}} />
           ) : null} */}
@@ -219,6 +238,7 @@ const LeavesStackScreen = ({navigation}) => {
           label: 'Leaves',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
+          fromLeave: true,
         })}
         name={LeavesScreen}
         component={Leaves}
@@ -334,3 +354,16 @@ function DrawerNavigator({navigation}) {
 }
 
 export default DrawerNavigator;
+
+const styles = StyleSheet.create({
+  newLeaveText: {
+    color: Colors.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.white,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h18,
+    paddingHorizontal: 4,
+    marginLeft: 16,
+  },
+});

@@ -100,6 +100,9 @@ import download from 'assets/allImage/download.imageset/download.png';
 import plus from 'assets/allImage/plus.imageset/plus.png';
 import minus from 'assets/allImage/minus.imageset/minus.png';
 import TSBudLogo from 'assets/allImage/TSBud.imageset/TSBudLogo.png';
+import FilterIcon from 'assets/allImage/Filter.imageset/filter.png';
+import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
+
 export const MonthImages = {
   plus: plus,
   minus: minus,
@@ -189,4 +192,6 @@ export const MonthImages = {
   DrwaerMenu: DrwaerMenu,
   download: download,
   TSBudLogo: TSBudLogo,
+  filterIcon: FilterIcon,
+  filterIcon2x: FilterIcon2x,
 };

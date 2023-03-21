@@ -4,7 +4,6 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {ScrollView} from 'react-native-virtualized-view';
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import MenuItem from 'component/menuContent/MenuItem';

@@ -20,8 +20,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import styles from './ApplyLeaveStyle';
-import DropDownPickerComponent from 'component/DropDownPicker';
-import {FontSize} from 'constants/fonts';
+
 import {
   leaveTypes,
   newDropDownOptions,
