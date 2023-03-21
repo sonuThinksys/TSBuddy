@@ -40,6 +40,8 @@ const initialState = {
   menuDetailsLoading: false,
   foodMenuDatailsError: null,
   menuFeedback: {},
+  menuFeedbackLoading: false,
+  menuFeedbackError: null,
 };
 
 // =============================================
@@ -404,6 +406,20 @@ const homeSlice = createSlice({
       state.holidayDataLoading = false;
       state.holidayData = [];
       state.holidayDataError = action.payload;
+    });
+
+    builder.addCase(getMenuFeedback.pending, state => {
+      state.menuFeedbackLoading = true;
+    });
+    builder.addCase(getMenuFeedback.rejected, (state, action) => {
+      state.menuFeedbackLoading = false;
+      state.menuFeedbackError = action.payload;
+      state.menuFeedback = {};
+    });
+    builder.addCase(getMenuFeedback.fulfilled, (state, action) => {
+      state.menuFeedbackLoading = false;
+      state.menuFeedbackError = null;
+      state.menuFeedback = action.payload;
     });
 
     // builder.addCase(getTodayMenuDetails.pending, state => {
