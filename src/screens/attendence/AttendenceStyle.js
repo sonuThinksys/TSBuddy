@@ -6,16 +6,17 @@ import {
 } from 'utils/Responsive';
 export default StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    // backgroundColor: 'red',
+    // justifyContent: 'space-between',
   },
   secondContainer: {
-    borderColor: Colors.white,
     borderColor: Colors.white,
     borderWidth: 1,
     marginVertical: hp(7),
     marginHorizontal: wp(6),
     borderRadius: 10,
+    backgroundColor: Colors.darkTransparentColor,
   },
   monthText: {
     color: Colors.whitishPink,
@@ -40,6 +41,7 @@ export default StyleSheet.create({
   weekliyTextView: {
     borderRightWidth: 1,
     borderColor: Colors.white,
+    borderTopWidth: 0,
     borderWidth: 1,
     flex: 1,
     paddingHorizontal: wp(2),

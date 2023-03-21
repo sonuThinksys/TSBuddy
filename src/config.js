@@ -15,4 +15,5 @@ export default {
   giveFeedbackPost: `${API_URL}/FoodRequest/AddFeedback`,
   getAllEmployees: `${API_URL}/EmployeeProfile/GetAllEmployeeDetails`,
   getMenuFeedbackTotalCount: `${API_URL}/FoodRequest/TotalFoodResponseCount`,
+  attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
 };

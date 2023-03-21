@@ -17,12 +17,13 @@ export default StyleSheet.create({
   },
   secondContainer: {
     // flex: 1,
+    // backgroundColor: '#192f6a',
     backgroundColor: Colors.blue,
     backgroundColor: Colors.reddishTint,
 
     paddingVertical: hp(1.2),
     paddingHorizontal: wp(2),
-    borderRadius: 4,
+    borderRadius: 5,
     opacity: 1,
   },
   text1: {
