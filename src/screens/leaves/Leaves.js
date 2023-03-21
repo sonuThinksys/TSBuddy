@@ -10,7 +10,7 @@ import {getLeaveDetails} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
-
+import Loader from 'component/loader/Loader';
 const Leaves = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = jwt_decode(token);
@@ -22,6 +22,7 @@ const Leaves = ({navigation}) => {
   }, []);
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
+  const isLoading = useSelector(state => state.dataReducer.isLeaveDataLoading);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
@@ -80,57 +81,60 @@ const Leaves = ({navigation}) => {
   };
 
   return (
-    <View style={{paddingVertical: hp(2)}}>
-      <Pressable
-        onPress={applyForLeave}
-        style={{
-          paddingHorizontal: wp(5),
-          paddingVertical: hp(1),
-          borderWidth: 1,
-          borderColor: Colors.black,
-          marginHorizontal: wp(3),
-          display: 'flex',
-          flexDirection: 'row',
-          borderRadius: 5,
-          backgroundColor: Colors.lightGray,
-          marginBottom: hp(1),
-        }}>
-        <View
+    <>
+      {isLoading ? <Loader /> : null}
+      <View style={{paddingVertical: hp(2)}}>
+        <Pressable
+          onPress={applyForLeave}
           style={{
-            paddingHorizontal: wp(2.5),
-            borderColor: Colors.orangeColor,
-            borderRadius: 50,
+            paddingHorizontal: wp(5),
+            paddingVertical: hp(1),
             borderWidth: 1,
-            justifyContent: 'center',
-            paddingBottom: 2.5,
+            borderColor: Colors.black,
+            marginHorizontal: wp(3),
+            display: 'flex',
+            flexDirection: 'row',
+            borderRadius: 5,
+            backgroundColor: Colors.lightGray,
+            marginBottom: hp(1),
           }}>
+          <View
+            style={{
+              paddingHorizontal: wp(2.5),
+              borderColor: Colors.orangeColor,
+              borderRadius: 50,
+              borderWidth: 1,
+              justifyContent: 'center',
+              paddingBottom: 2.5,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 22,
+                // fontWeight: 'bold',
+                color: Colors.orangeColor,
+              }}>
+              +
+            </Text>
+          </View>
           <Text
             style={{
-              textAlign: 'center',
-              fontSize: 22,
-              // fontWeight: 'bold',
-              color: Colors.orangeColor,
+              marginTop: hp(0.5),
+              marginLeft: wp(10),
+              fontSize: 16,
+              fontWeight: 'bold',
+              color: Colors.purple,
             }}>
-            +
+            Make a new Leave Application
           </Text>
-        </View>
-        <Text
-          style={{
-            marginTop: hp(0.5),
-            marginLeft: wp(10),
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: Colors.purple,
-          }}>
-          Make a new Leave Application
-        </Text>
-      </Pressable>
-      <FlatList
-        data={leavesData}
-        renderItem={renderItem}
-        keyExtractor={(_, index) => index}
-      />
-    </View>
+        </Pressable>
+        <FlatList
+          data={leavesData}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index}
+        />
+      </View>
+    </>
   );
 };
 

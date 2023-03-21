@@ -6,11 +6,11 @@ import {
 } from 'utils/Responsive';
 export default StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    // backgroundColor: 'red',
+    // justifyContent: 'space-between',
   },
   secondContainer: {
-    borderColor: Colors.white,
     borderColor: Colors.white,
     borderWidth: 1,
     marginVertical: hp(7),

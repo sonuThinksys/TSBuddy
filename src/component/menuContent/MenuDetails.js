@@ -25,19 +25,18 @@ const MenuDetails = () => {
       <Text style={styles.text1}>Today's Menu</Text>
       {/* <SharedElement id="enter" style={{flex: 1}}> */}
       <LinearGradient
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        colors={['red', 'red', 'red']}
+        // start={{x: 0.1, y: 0.1}}
+        //  end={{x: 0.1, y: 1.0}}
+        locations={[0.1, 1, 0.01]}
+        colors={['#BABABA', 'blue', '#BABABA']}
         // colors={['white', 'white', 'white']}
-        style={styles.linearGradient}>
-        <View style={styles.secondContainer}>
-          <Pressable
-            onPress={() => {
-              navigation.navigate(RequestLunchScreen, navigation);
-            }}>
-            <Text style={styles.text2}> + Lunch Request</Text>
-          </Pressable>
-        </View>
+        style={styles.secondContainer}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate(RequestLunchScreen, navigation);
+          }}>
+          <Text style={styles.text2}> + Lunch Request</Text>
+        </Pressable>
       </LinearGradient>
     </View>
   );

@@ -139,9 +139,9 @@ const Attendence = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        resizeMode="cover"
+        resizeMode="stretch"
         source={attendenceMonthImages[visisbleMonth]}
-        style={{height: '100%', width: '100%'}}>
+        style={{flex: 0.8, backgroundColor: 'blue'}}>
         <View style={styles.secondContainer}>
           <View>
             <Text style={styles.monthText}>{finalTodayDate}</Text>
@@ -171,99 +171,104 @@ const Attendence = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
-
-        <CalendarList
-          horizontal={true}
-          markingType={'custom'}
-          scrollEnabled={true}
-          showScrollIndicator={true}
-          onVisibleMonthsChange={months => {
-            // console.log(
-            //   'now these months are visible--------------------------------',
-            //   months,
-            // );
-            setVisibleMonth(months[0].month);
-            setVisibleYear(months[0].year);
-          }}
-          pastScrollRange={100}
-          //initialDate={'2018-05-01'}
-          // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-          // minDate={'2018-05-05'}
-          // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-          //  maxDate={'2020-05-30'}
-
-          // markedDates={{
-          //   '2023-03-16': {
-          //     selected: true,
-          //     marked: true,
-          //     selectedColor: Colors.blue,
-          //   },
-          //   '2023-03-17': {marked: true},
-          //   '2023-03-18': {
-          //     // marked: true,
-          //     selected: true,
-          //     //  dotColor: Colors.red,
-          //     // activeOpacity: 0,
-          //     selectedColor: Colors.red,
-          //   },
-          //   '2023-03-19': {disabled: true, disableTouchEvent: true},
-          // }}
-          markedDates={mark}
-          theme={{
-            'stylesheet.calendar': {
-              padding: 0,
-              margin: 0,
-            },
-            // arrowColor: Colors.green,
-            'stylesheet.calendar.header': {
-              partialHeader: {
-                paddingHorizontal: 1,
-              },
-              headerContainer: {
-                flexDirection: 'row',
-                width: '90%',
-              },
-
-              week: {
-                // marginTop: 5,
-                // flex: 1,
-                width: '120%',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                backgroundColor: Colors.green,
-                fontWeight: 'bold',
-                fontSize: 16,
-              },
-              header: {
-                width: '120%',
-                backgroundColor: Colors.green,
-                color: Colors.white,
-                // paddingHorizontal: 10,
-                // paddingLeft: 10,
-                // paddingRight: 10,
-                // marginTop: 6,
-                alignItems: 'center',
-              },
-
-              partialHeader: {
-                // paddingHorizontal: 15,
-              },
-
-              monthText: {
-                color: Colors.white,
-                fontWeight: 'bold',
-                fontSize: 18,
-                marginVertical: 10,
-                marginHorizontal: 100,
-                textAlign: 'center',
-              },
-              monthHeader: {
-                width: '120%',
-              },
-            },
-          }}
-        />
       </ImageBackground>
+      {/* <View style={{flex: 0.8, backgroundColor: 'red'}}> */}
+      <CalendarList
+        horizontal={true}
+        markingType={'custom'}
+        scrollEnabled={true}
+        showScrollIndicator={true}
+        onVisibleMonthsChange={months => {
+          // console.log(
+          //   'now these months are visible--------------------------------',
+          //   months,
+          // );
+          setVisibleMonth(months[0].month);
+          setVisibleYear(months[0].year);
+        }}
+        pastScrollRange={100}
+        //initialDate={'2018-05-01'}
+        // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+        // minDate={'2018-05-05'}
+        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+        //  maxDate={'2020-05-30'}
+
+        // markedDates={{
+        //   '2023-03-16': {
+        //     selected: true,
+        //     marked: true,
+        //     selectedColor: Colors.blue,
+        //   },
+        //   '2023-03-17': {marked: true},
+        //   '2023-03-18': {
+        //     // marked: true,
+        //     selected: true,
+        //     //  dotColor: Colors.red,
+        //     // activeOpacity: 0,
+        //     selectedColor: Colors.red,
+        //   },
+        //   '2023-03-19': {disabled: true, disableTouchEvent: true},
+        // }}
+        markedDates={mark}
+        theme={{
+          'stylesheet.calendar': {
+            padding: 0,
+            margin: 0,
+            backgroundColor: 'red',
+            // flex: 1,
+          },
+          // arrowColor: Colors.green,
+          'stylesheet.calendar.header': {
+            partialHeader: {
+              paddingHorizontal: 1,
+              backgroundColor: 'blue',
+            },
+            headerContainer: {
+              flexDirection: 'row',
+              width: '100%',
+              backgroundColor: 'yellow',
+            },
+
+            week: {
+              // marginTop: 5,
+              // flex: 1,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              backgroundColor: Colors.green,
+              fontWeight: 'bold',
+              fontSize: 16,
+            },
+            header: {
+              width: '100%',
+              backgroundColor: Colors.green,
+              color: Colors.white,
+              // paddingHorizontal: 10,
+              // paddingLeft: 10,
+              // paddingRight: 10,
+              // marginTop: 6,
+              alignItems: 'center',
+            },
+
+            partialHeader: {
+              // paddingHorizontal: 15,
+            },
+
+            monthText: {
+              color: Colors.white,
+              fontWeight: 'bold',
+              fontSize: 18,
+              marginVertical: 10,
+              marginHorizontal: 100,
+              textAlign: 'center',
+            },
+            monthHeader: {
+              width: '120%',
+            },
+          },
+        }}
+      />
+      {/* </View> */}
     </View>
   );
 };
