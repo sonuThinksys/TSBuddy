@@ -6,6 +6,7 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -18,10 +19,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
-import Loader from 'component/loader/Loader';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
+import Loader from 'component/loader/Loader';
 const Leaves = ({navigation}) => {
+  const [refreshing, setRefreshing] = useState(false);
   const token = useSelector(state => state.auth.userToken);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
@@ -105,22 +106,10 @@ const Leaves = ({navigation}) => {
   };
 
   return (
-    <View style={{paddingVertical: hp(2), flex: 1}}>
-      <Pressable
-        onPress={applyForLeave}
-        style={{
-          paddingHorizontal: wp(5),
-          paddingVertical: hp(1),
-          borderWidth: 1,
-          borderColor: Colors.black,
-          marginHorizontal: wp(3),
-          display: 'flex',
-          flexDirection: 'row',
-          borderRadius: 5,
-          backgroundColor: Colors.lightGray,
-          marginBottom: hp(1),
-        }}>
-        <View
+    <>
+      <View style={{paddingVertical: hp(2), flex: 1}}>
+        <Pressable
+          onPress={applyForLeave}
           style={{
             paddingHorizontal: wp(5),
             paddingVertical: hp(1),
@@ -135,21 +124,45 @@ const Leaves = ({navigation}) => {
           }}>
           <View
             style={{
-              paddingHorizontal: wp(2.5),
-              borderColor: Colors.orangeColor,
-              borderRadius: 50,
+              paddingHorizontal: wp(5),
+              paddingVertical: hp(1),
               borderWidth: 1,
-              justifyContent: 'center',
-              paddingBottom: 2.5,
+              borderColor: Colors.black,
+              marginHorizontal: wp(3),
+              display: 'flex',
+              flexDirection: 'row',
+              borderRadius: 5,
+              backgroundColor: Colors.lightGray,
+              marginBottom: hp(1),
             }}>
+            <View
+              style={{
+                paddingHorizontal: wp(2.5),
+                borderColor: Colors.orangeColor,
+                borderRadius: 50,
+                borderWidth: 1,
+                justifyContent: 'center',
+                paddingBottom: 2.5,
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 22,
+                  // fontWeight: 'bold',
+                  color: Colors.orangeColor,
+                }}>
+                +
+              </Text>
+            </View>
             <Text
               style={{
-                textAlign: 'center',
-                fontSize: 22,
-                // fontWeight: 'bold',
-                color: Colors.orangeColor,
+                marginTop: hp(0.5),
+                marginLeft: wp(10),
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: Colors.purple,
               }}>
-              +
+              Make a new Leave Application
             </Text>
           </View>
           <Text
@@ -162,47 +175,37 @@ const Leaves = ({navigation}) => {
             }}>
             Make a new Leave Application
           </Text>
-        </View>
-        <Text
-          style={{
-            marginTop: hp(0.5),
-            marginLeft: wp(10),
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: Colors.purple,
-          }}>
-          Make a new Leave Application
-        </Text>
-      </Pressable>
-      <FlatList
-        data={leavesData}
-        renderItem={renderItem}
-        keyExtractor={(_, index) => index}
-      />
-
-      <DateTimePickerModal
-        isVisible={filterCalenderOpen}
-        mode="date"
-        onConfirm={date => {
-          setFilteredSelectedDate(date);
-          setFilterCalenderOpen(false);
-        }}
-        onCancel={() => {
-          setFilterCalenderOpen(false);
-        }}
-      />
-
-      <Pressable
-        onPress={() => {
-          setFilterCalenderOpen(true);
-        }}
-        style={{position: 'absolute', bottom: hp(8), right: wp(8)}}>
-        <Image
-          source={MonthImages.filterIcon2x}
-          style={{height: 32, width: 32}}
+        </Pressable>
+        <FlatList
+          data={leavesData}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index}
         />
-      </Pressable>
-    </View>
+
+        <DateTimePickerModal
+          isVisible={filterCalenderOpen}
+          mode="date"
+          onConfirm={date => {
+            setFilteredSelectedDate(date);
+            setFilterCalenderOpen(false);
+          }}
+          onCancel={() => {
+            setFilterCalenderOpen(false);
+          }}
+        />
+
+        <Pressable
+          onPress={() => {
+            setFilterCalenderOpen(true);
+          }}
+          style={{position: 'absolute', bottom: hp(8), right: wp(8)}}>
+          <Image
+            source={MonthImages.filterIcon2x}
+            style={{height: 32, width: 32}}
+          />
+        </Pressable>
+      </View>
+    </>
   );
 };
 

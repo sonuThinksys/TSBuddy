@@ -16,14 +16,14 @@ const RemainingLeaves = () => {
   );
   console.log('remainingLeaves:', remainingLeaves);
   const earnedLeavesData = [
-    remainingLeaves[0].totalLeavesAllocated,
-    remainingLeaves[0].currentLeaveApplied,
-    remainingLeaves[0].currentLeaveBalance,
+    remainingLeaves[0]?.totalLeavesAllocated,
+    remainingLeaves[0]?.currentLeaveApplied,
+    remainingLeaves[0]?.currentLeaveBalance,
   ];
   const restrictedLeavesData = [
-    remainingLeaves[1].totalLeavesAllocated,
-    remainingLeaves[1].currentLeaveApplied,
-    remainingLeaves[1].currentLeaveBalance,
+    remainingLeaves[1]?.totalLeavesAllocated,
+    remainingLeaves[1]?.currentLeaveApplied,
+    remainingLeaves[1]?.currentLeaveBalance,
   ];
   const totalEarnedTypesAvailable = earnedLeavesData.length;
   const totalRestrictedTypesAvailable = restrictedLeavesData.length;
