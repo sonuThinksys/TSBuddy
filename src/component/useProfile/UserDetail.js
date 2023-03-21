@@ -20,11 +20,11 @@ import {useDispatch, useSelector} from 'react-redux';
 const UserDetail = ({navigation, route}) => {
   const {
     designation,
-    email,
+    companyEmail,
     id,
     imageURL,
-    mobileNumber,
-    nameOfEmployee,
+    cellNumber,
+    employeeName,
     reporting,
   } = route.params;
   const dispatch = useDispatch();
@@ -34,8 +34,8 @@ const UserDetail = ({navigation, route}) => {
   const dialCall = () => {
     setClickData({
       id: id,
-      medium: mobileNumber,
-      nameOfEmployee: nameOfEmployee,
+      medium: cellNumber,
+      nameOfEmployee: employeeName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -44,8 +44,8 @@ const UserDetail = ({navigation, route}) => {
   const whtsappEmployee = () => {
     setClickData({
       id: id,
-      medium: mobileNumber,
-      nameOfEmployee: nameOfEmployee,
+      medium: cellNumber,
+      nameOfEmployee: employeeName,
       text: 'Send WhatsApp to',
     });
     dispatch(modalStatus(true));
@@ -54,8 +54,8 @@ const UserDetail = ({navigation, route}) => {
   const sendMail = () => {
     setClickData({
       id: id,
-      medium: email,
-      nameOfEmployee: nameOfEmployee,
+      medium: companyEmail,
+      nameOfEmployee: employeeName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -64,8 +64,8 @@ const UserDetail = ({navigation, route}) => {
   const snedMessage = async () => {
     setClickData({
       id: id,
-      medium: mobileNumber,
-      nameOfEmployee: nameOfEmployee,
+      medium: cellNumber,
+      nameOfEmployee: employeeName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -145,7 +145,7 @@ const UserDetail = ({navigation, route}) => {
             fontWeight: 'bold',
             color: Colors.lightBlue,
           }}>
-          {nameOfEmployee}
+          {employeeName}
         </Text>
         <Text
           style={{
@@ -222,7 +222,7 @@ const UserDetail = ({navigation, route}) => {
         <View style={{flexDirection: 'row', paddingVertical: hp(1)}}>
           <Image source={MonthImages.callEmp} style={{height: 25, width: 25}} />
           <Text style={{marginLeft: wp(2), marginTop: hp(0.5), opacity: 0.8}}>
-            {mobileNumber}
+            {cellNumber}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
@@ -234,7 +234,7 @@ const UserDetail = ({navigation, route}) => {
               opacity: 0.6,
               fontWeight: 'bold',
             }}>
-            {email}
+            {companyEmail}
           </Text>
         </View>
       </View>

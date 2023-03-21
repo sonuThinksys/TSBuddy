@@ -18,6 +18,8 @@ export default StyleSheet.create({
   secondContainer: {
     // flex: 1,
     backgroundColor: Colors.blue,
+    backgroundColor: Colors.reddishTint,
+
     paddingVertical: hp(1.2),
     paddingHorizontal: wp(2),
     borderRadius: 4,

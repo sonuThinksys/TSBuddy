@@ -37,4 +37,8 @@ export const Colors = {
   dune: '#333333',
   lightGray1: '#666666',
   lightGray2: 'rgb(190,190,190)',
+  reddishTint: '#f03e3e',
+  darkPink: '#faa2c1',
+  parrotGreenLight: '#20c997',
+  darkCyan: '#0c8599',
 };

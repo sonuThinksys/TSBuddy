@@ -34,11 +34,85 @@ const initialState = {
   attendenceDataPending: false,
   attendenceData: {},
   attendenceDataError: false,
+  recentAppliedLeaves: [],
+  remainingLeaves: [],
+  foodMenuDatails: [],
+  menuDetailsLoading: false,
+  foodMenuDatailsError: null,
+  menuFeedback: {},
 };
+
+// =============================================
+
+export const getMenuFeedback = createAsyncThunk(
+  'dataReducer/menuFeedback',
+  async token => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+    } catch (err) {}
+  },
+);
+// =============================================
 
 // ============================================================================================
 
 // your userSlice with other reducers
+
+export const getTodayMenuDetails = createAsyncThunk(
+  'dataReducer/menuDetails',
+  async token => {
+    var config = {
+      method: 'get',
+      url: endPoints.getTodayMenuGet,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // try {
+    //   const menuDetails = await axios.get(endPoints.getTodayMenuGet, config);
+
+    //   return Promise.resolve(menuDetails);
+    // } catch (err) {
+    //   let statusCode = 500;
+    //   if (err?.response) {
+    //     statusCode = err?.response?.status;
+    //   }
+    //   if (statusCode == 401) {
+    //     return Promise.reject(err?.response?.data?.message);
+    //   } else {
+    //     return Promise.reject(new Error(err));
+    //   }
+    // }
+
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong1!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
 
 // ============================================================================================
 
@@ -185,13 +259,6 @@ export const getCalendereventData = createAsyncThunk(
 export const getAttendencaeData = createAsyncThunk(
   'dataReducer/getAttendencaeData',
   async ({token, employeeID, visisbleMonth, visibleYear}) => {
-    console.log(
-      'token,employeeID,visisbleMonth,visibleYear:---------------',
-      token,
-      employeeID,
-      visisbleMonth,
-      visibleYear,
-    );
     var config = {
       method: 'get',
       url: `${endPoints.attendenceAPI}${employeeID}&month=${5}&year=${2018}`,
@@ -244,8 +311,25 @@ export const getSalarySlipData = createAsyncThunk(
 
 export const getEmployeeData = createAsyncThunk(
   'dataReducer/employeeData',
-  async () => {
-    return Promise.resolve(employeeData);
+  async token => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      console.log('Yes! Inside.  1111');
+
+      const allEmployees = await axios.get(endPoints.getAllEmployees, config);
+
+      console.log('Yes! Inside.   2222');
+      console.log('allEmployeesData:', allEmployees.data.length);
+
+      return Promise.resolve(allEmployees.data);
+    } catch (err) {
+      console.log('err:', err);
+    }
   },
 );
 
@@ -268,6 +352,12 @@ const homeSlice = createSlice({
     },
     dateOfModal: (state, action) => {
       state.dateData = action.payload;
+    },
+    setRecentAppliedLeaves: (state, action) => {
+      state.recentAppliedLeaves = action.payload;
+    },
+    setRemainingLeaves: (state, action) => {
+      state.remainingLeaves = action.payload;
     },
   },
   extraReducers: builder => {
@@ -311,6 +401,23 @@ const homeSlice = createSlice({
       state.holidayData = [];
       state.holidayDataError = action.payload;
     });
+
+    // builder.addCase(getTodayMenuDetails.pending, state => {
+    //   state.menuDetailsLoading = true;
+    // });
+
+    // builder.addCase(getTodayMenuDetails.fulfilled, (state, action) => {
+    //   state.menuDetailsLoading = false;
+    //   state.foodMenuDatails = action.payload;
+    //   state.foodMenuDatailsError = undefined;
+    // });
+
+    // builder.addCase(getTodayMenuDetails.rejected, (state, action) => {
+    //   state.menuDetailsLoading = false;
+    //   state.foodMenuDatails = [];
+    //   state.foodMenuDatailsError = action.payload;
+    // });
+
     builder.addCase(getLeaveDetails.pending, (state, action) => {
       state.isLeaveDataLoading = true;
     });
@@ -384,4 +491,10 @@ const homeSlice = createSlice({
 });
 
 export default homeSlice.reducer;
-export const {loadingStatus, modalStatus, dateOfModal} = homeSlice.actions;
+export const {
+  loadingStatus,
+  modalStatus,
+  dateOfModal,
+  setRecentAppliedLeaves,
+  setRemainingLeaves,
+} = homeSlice.actions;

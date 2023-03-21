@@ -9,10 +9,22 @@ import {BarChart} from 'react-native-chart-kit';
 
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
-import {FontFamily, FontSize} from 'constants/fonts';
+import {useSelector} from 'react-redux';
 const RemainingLeaves = () => {
-  const earnedLeavesData = [20, 6, 14, 4];
-  const restrictedLeavesData = [20, 6, 14];
+  const remainingLeaves = useSelector(
+    state => state.dataReducer.remainingLeaves,
+  );
+  console.log('remainingLeaves:', remainingLeaves);
+  const earnedLeavesData = [
+    remainingLeaves[0].totalLeavesAllocated,
+    remainingLeaves[0].currentLeaveApplied,
+    remainingLeaves[0].currentLeaveBalance,
+  ];
+  const restrictedLeavesData = [
+    remainingLeaves[1].totalLeavesAllocated,
+    remainingLeaves[1].currentLeaveApplied,
+    remainingLeaves[1].currentLeaveBalance,
+  ];
   const totalEarnedTypesAvailable = earnedLeavesData.length;
   const totalRestrictedTypesAvailable = restrictedLeavesData.length;
 
@@ -146,11 +158,11 @@ const RemainingLeaves = () => {
         </View>
         <View style={styles.leaveType}>
           <View style={styles.leavesType3}></View>
-          <Text>-ve Balance</Text>
+          <Text>+ve Balance</Text>
         </View>
         <View style={styles.leaveType}>
           <View style={styles.leavesType4}></View>
-          <Text>+ve Balance</Text>
+          <Text>-ve Balance</Text>
         </View>
       </View>
     </View>

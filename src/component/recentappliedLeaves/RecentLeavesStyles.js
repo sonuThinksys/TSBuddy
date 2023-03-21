@@ -9,13 +9,13 @@ export default StyleSheet.create({
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: '#C3F8FF',
+    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   imageView: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     marginTop: hp(0.6),
     shadowOpacity: 0.1,
     alignItems: 'center',
@@ -26,7 +26,7 @@ export default StyleSheet.create({
     paddingHorizontal: wp(6),
     borderRadius: 5,
     marginVertical: hp(0.5),
-    backgroundColor: '#0E5E6F',
+    backgroundColor: Colors.darkCyan,
     flex: 0.3,
   },
   dateText: {

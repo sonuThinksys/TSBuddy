@@ -22,6 +22,7 @@ import {Colors} from 'colors/Colors';
 import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
 import {modalStatus} from 'redux/homeSlice';
+import {FontSize} from 'constants/fonts';
 //import {employeeData} from '../../../db';
 const UserProfile = () => {
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -39,7 +40,7 @@ const UserProfile = () => {
 
   const onChangeText = e => {
     const filterData = employeeData.filter(el => {
-      return el.nameOfEmployee.includes(e);
+      return el.employeeName.includes(e);
     });
 
     setEmpData(filterData);
@@ -165,9 +166,8 @@ const UserProfile = () => {
       {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
         data={allEmpData}
-        key={numValue}
         numColumns={numValue}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {
           return renderItem(
             item,
@@ -186,7 +186,15 @@ const UserProfile = () => {
 };
 
 const renderItem = (
-  {designation, email, id, imageURL, mobileNumber, nameOfEmployee, reporting},
+  {
+    designation,
+    companyEmail,
+    id,
+    imageURL,
+    cellNumber,
+    employeeName,
+    reporting,
+  },
   index,
   navigation,
   isShowModall,
@@ -202,11 +210,11 @@ const renderItem = (
           onPress={() => {
             navigation.navigate('UserDetail', {
               designation,
-              email,
+              companyEmail,
               id,
               imageURL,
-              mobileNumber,
-              nameOfEmployee,
+              cellNumber,
+              employeeName,
               reporting,
             });
           }}>
@@ -215,7 +223,7 @@ const renderItem = (
               <Image source={{uri: imageURL}} style={styles.image} />
             </View>
             <View style={{paddingLeft: wp(5)}}>
-              <Text style={styles.nameText}>{nameOfEmployee}</Text>
+              <Text style={styles.nameText}>{employeeName}</Text>
               <Text style={styles.desniationText}>{designation}</Text>
               <View style={styles.smallView}>
                 <Image
@@ -232,11 +240,11 @@ const renderItem = (
           onPress={() => {
             navigation.navigate('UserDetail', {
               designation,
-              email,
+              companyEmail,
               id,
               imageURL,
-              mobileNumber,
-              nameOfEmployee,
+              cellNumber,
+              employeeName,
               reporting,
             });
           }}>
@@ -246,17 +254,20 @@ const renderItem = (
               style={styles.backgroundImage}
               source={MonthImages.empbgS}>
               <Image source={{uri: imageURL}} style={styles.secondimage} />
-              <Text style={styles.nametext2}>{nameOfEmployee}</Text>
+              <Text numberOfLines={1} style={styles.nametext2}>
+                {employeeName}
+              </Text>
               <Text style={styles.desText2}>{designation}</Text>
               <View style={styles.iconView}>
                 <TouchableOpacity
                   onPress={() => {
                     setClickData({
                       id: id,
-                      medium: mobileNumber,
-                      nameOfEmployee: nameOfEmployee,
+                      medium: cellNumber,
+                      nameOfEmployee: employeeName,
                       text: 'Call ',
                     });
+
                     // setClickData('fghfgh');
                     dispatch(modalStatus(true));
                   }}>
@@ -271,8 +282,8 @@ const renderItem = (
                   onPress={() => {
                     setClickData({
                       id: id,
-                      medium: email,
-                      nameOfEmployee: nameOfEmployee,
+                      medium: companyEmail,
+                      nameOfEmployee: employeeName,
                       text: 'Send Mail to ',
                     });
                     // setClickData('fghfgh');
@@ -335,7 +346,12 @@ const styles = StyleSheet.create({
     marginLeft: wp(5),
     marginTop: hp(1),
   },
-  nametext2: {textAlign: 'center', fontWeight: 'bold', opacity: 0.8},
+  nametext2: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    opacity: 0.8,
+    fontSize: FontSize.h11,
+  },
   desText2: {fontSize: 10, textAlign: 'center', color: 'blue', opacity: 0.6},
   iconView: {
     display: 'flex',
@@ -347,7 +363,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     marginTop: hp(0.5),
   },
-  callimageView: {borderRightWidth: 4, borderColor: 'white', flex: 1},
+  callimageView: {
+    borderRightWidth: 4,
+    borderColor: Colors.white,
+    flex: 1,
+  },
   callImage: {height: 20, width: 20},
   mailView: {flex: 1, paddingLeft: wp(6)},
   mailImage: {height: 20, width: 20, marginTop: hp(0.1)},

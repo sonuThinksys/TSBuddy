@@ -34,15 +34,18 @@ const Leaves = ({navigation}) => {
   }, []);
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
-  console.log('leavesData:', typeof leavesData[0].fromDate);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
   };
 
   const renderItem = ({item}) => {
-    // console.log('item:', new Date(item.fromDate));
-    console.log('filteredSelectedDate', filteredSelectedDate?.getTime());
+    if (filteredSelectedDate) {
+      const shouldRender =
+        filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
+
+      if (!shouldRender) return null;
+    }
 
     return (
       <TouchableOpacity
@@ -53,8 +56,10 @@ const Leaves = ({navigation}) => {
               flex: 1,
               backgroundColor:
                 item.status === 'Rejected' || item.status === 'Dismissed'
-                  ? Colors.pink
-                  : Colors.lightseagreen,
+                  ? Colors.grey
+                  : item.status === 'Open'
+                  ? Colors.darkPink
+                  : Colors.parrotGreenLight,
               paddingHorizontal: wp(2),
               paddingVertical: hp(1),
               justifyContent: 'center',
@@ -151,7 +156,6 @@ const Leaves = ({navigation}) => {
         isVisible={filterCalenderOpen}
         mode="date"
         onConfirm={date => {
-          console.log('date:', typeof date);
           setFilteredSelectedDate(date);
           setFilterCalenderOpen(false);
         }}

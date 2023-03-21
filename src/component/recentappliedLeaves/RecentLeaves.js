@@ -15,7 +15,10 @@ const RecentLeaves = () => {
   const employeeID = decoded.Id;
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
-  console.log('leavesData:', leavesData);
+  const recentAppliedLeaves = useSelector(
+    state => state.dataReducer.recentAppliedLeaves,
+  );
+  console.log('recentAppliedLeaves:', recentAppliedLeaves.length);
 
   const dispatch = useDispatch();
 
@@ -31,7 +34,7 @@ const RecentLeaves = () => {
         <Text style={styles.recentText}>Recent Applied Leaves</Text>
       </View>
       <FlatList
-        data={leavesData}
+        data={recentAppliedLeaves}
         renderItem={renderItem}
         keyExtractor={(item, index) => index}
         style={{marginHorizontal: 4}}
@@ -56,7 +59,6 @@ const renderItem = ({item}) => {
         {item.totalLeaveDays} {item.totalLeaveDays === 1 ? 'Day' : 'Days'}
       </Text>
       <View style={styles.itemView}>
-        {/* <TouchableOpacity> */}
         <Text style={styles.dateText}>
           {`${new Date(item.fromDate).getDate()} ${new Date(
             item.fromDate,
@@ -64,7 +66,6 @@ const renderItem = ({item}) => {
             item.fromDate,
           ).getFullYear()}`}
         </Text>
-        {/* </TouchableOpacity> */}
       </View>
     </View>
   );
