@@ -13,7 +13,6 @@ import {
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import Header from 'component/header/Header';
 import CommunicationModal from 'modals/CommunicationModal';
 import {modalStatus} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
@@ -29,7 +28,7 @@ const UserDetail = ({navigation, route}) => {
   } = route.params;
   const dispatch = useDispatch();
   const [empDetail, setClickData] = useState({});
-  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
+  const {isShowModal} = useSelector(state => state.home);
 
   const dialCall = () => {
     setClickData({
@@ -73,7 +72,7 @@ const UserDetail = ({navigation, route}) => {
 
   return (
     <View>
-      {/* {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null} */}
+      {/* {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null} */}
 
       <View
         style={{
@@ -181,7 +180,7 @@ const UserDetail = ({navigation, route}) => {
           }}>
           + Add To Contacts
         </Text>
-        {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+        {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
         <View
           style={{
             display: 'flex',

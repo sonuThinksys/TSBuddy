@@ -19,15 +19,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import TSBuddyIcon from '../assets/Icons/TSIcon.webp';
-console.log('TSBuddyIcon:', TSBuddyIcon);
 import LoginVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
-import {loginStatus} from './LoginSlice';
 import {getUserToken} from './LoginSlice';
-import {FontFamily} from 'constants/fonts';
 import {useSelector} from 'react-redux';
 const Login = () => {
   const dispatch = useDispatch();
@@ -39,8 +35,7 @@ const Login = () => {
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
 
-  const token = useSelector(state => state.auth.userToken);
-  const formInput = useSelector(state => state.auth.formInput);
+  const {userToken: token, formInput} = useSelector(state => state.auth);
   useEffect(() => {
     if (Platform.OS === 'android') {
       Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
@@ -54,7 +49,6 @@ const Login = () => {
       setBiometricEnable(true);
     }
   }, [formInput, token]);
-  console.log('formadadfgdfg:------------------------------', token, formInput);
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -80,17 +74,9 @@ const Login = () => {
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
               if (token !== '') {
-                console.log(
-                  'success:--------------------------------',
-                  success,
-                );
                 const username = formInput.username;
                 const password = formInput.password;
-                console.log(
-                  'username and padswer:-----------',
-                  username,
-                  password,
-                );
+
                 dispatch(getUserToken({username, password}));
               }
             })

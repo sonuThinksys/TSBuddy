@@ -24,9 +24,7 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
     dispatch(getholidayDataIWithImage());
   }, []);
 
-  const holidayDataIWithImage = useSelector(
-    state => state.dataReducer.holidayDataIWithImage,
-  );
+  const {holidayDataIWithImage} = useSelector(state => state.home);
 
   let daysArray = [
     'Sunday',

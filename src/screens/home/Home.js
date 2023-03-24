@@ -26,7 +26,7 @@ const Home = () => {
   //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   // }, []);
 
-  const isLoading = useSelector(state => state.auth.isLoading);
+  const {isLoading} = useSelector(state => state.auth);
   return (
     <SafeAreaView style={{flex: 1}}>
       {isLoading ? <Loader /> : null}

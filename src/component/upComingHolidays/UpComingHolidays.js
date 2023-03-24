@@ -17,12 +17,12 @@ import moment from 'moment';
 import styles from './UpComingHolidaysStyles';
 import {getHolidaysData} from 'redux/homeSlice';
 const UpComingHolidays = () => {
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getHolidaysData(token));
   }, []);
-  const holidaysData = useSelector(state => state.dataReducer.holidayData);
+  const {holidayData: holidaysData} = useSelector(state => state.home);
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
@@ -31,7 +31,7 @@ const UpComingHolidays = () => {
       <FlatList
         data={holidaysData}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         style={{marginRight: wp(1)}}
       />
     </View>
@@ -47,7 +47,7 @@ const renderItem = ({item}) => {
   const Years = +moment(item.holidayDate).format(`    YYYY`);
 
   return (
-    <>
+    <View>
       {date < date1 && Month >= 4 && Years <= 2021 ? (
         <View style={styles.imageView}>
           <Image
@@ -79,7 +79,7 @@ const renderItem = ({item}) => {
           </View>
         </View>
       ) : null}
-    </>
+    </View>
   );
 };
 export default UpComingHolidays;

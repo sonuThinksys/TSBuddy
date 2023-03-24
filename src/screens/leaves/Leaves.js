@@ -22,7 +22,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import Loader from 'component/loader/Loader';
 const Leaves = ({navigation}) => {
-  const token = useSelector(state => state.auth.userToken);
+  const [refreshing, setRefreshing] = useState(false);
+  const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
   const dispatch = useDispatch();
@@ -34,8 +35,10 @@ const Leaves = ({navigation}) => {
     dispatch(getLeaveDetails({token, employeeID}));
   }, []);
 
-  const leavesData = useSelector(state => state.dataReducer.leavesData);
-  const isLoading = useSelector(state => state.dataReducer.isLeaveDataLoading);
+  const {
+    leavesData,
+    isLeaveDataLoading: {isLoading},
+  } = useSelector(state => state.home);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
@@ -104,8 +107,7 @@ const Leaves = ({navigation}) => {
 
   return (
     <>
-      {isLoading ? <Loader /> : null}
-      <View style={{paddingVertical: hp(2)}}>
+      <View style={{paddingVertical: hp(2), flex: 1}}>
         <Pressable
           onPress={applyForLeave}
           style={{
@@ -122,21 +124,45 @@ const Leaves = ({navigation}) => {
           }}>
           <View
             style={{
-              paddingHorizontal: wp(2.5),
-              borderColor: Colors.orangeColor,
-              borderRadius: 50,
+              paddingHorizontal: wp(5),
+              paddingVertical: hp(1),
               borderWidth: 1,
-              justifyContent: 'center',
-              paddingBottom: 2.5,
+              borderColor: Colors.black,
+              marginHorizontal: wp(3),
+              display: 'flex',
+              flexDirection: 'row',
+              borderRadius: 5,
+              backgroundColor: Colors.lightGray,
+              marginBottom: hp(1),
             }}>
+            <View
+              style={{
+                paddingHorizontal: wp(2.5),
+                borderColor: Colors.orangeColor,
+                borderRadius: 50,
+                borderWidth: 1,
+                justifyContent: 'center',
+                paddingBottom: 2.5,
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 22,
+                  // fontWeight: 'bold',
+                  color: Colors.orangeColor,
+                }}>
+                +
+              </Text>
+            </View>
             <Text
               style={{
-                textAlign: 'center',
-                fontSize: 22,
-                // fontWeight: 'bold',
-                color: Colors.orangeColor,
+                marginTop: hp(0.5),
+                marginLeft: wp(10),
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: Colors.purple,
               }}>
-              +
+              Make a new Leave Application
             </Text>
           </View>
           <Text
@@ -155,6 +181,29 @@ const Leaves = ({navigation}) => {
           renderItem={renderItem}
           keyExtractor={(_, index) => index}
         />
+
+        <DateTimePickerModal
+          isVisible={filterCalenderOpen}
+          mode="date"
+          onConfirm={date => {
+            setFilteredSelectedDate(date);
+            setFilterCalenderOpen(false);
+          }}
+          onCancel={() => {
+            setFilterCalenderOpen(false);
+          }}
+        />
+
+        <Pressable
+          onPress={() => {
+            setFilterCalenderOpen(true);
+          }}
+          style={{position: 'absolute', bottom: hp(8), right: wp(8)}}>
+          <Image
+            source={MonthImages.filterIcon2x}
+            style={{height: 32, width: 32}}
+          />
+        </Pressable>
       </View>
     </>
   );

@@ -23,8 +23,8 @@ import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();
-  const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
-  const salarySlipData = useSelector(state => state.dataReducer.salarySlipData);
+  const {isAuthLoggedIn} = useSelector(state => state.auth);
+  const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
 
   useEffect(() => {

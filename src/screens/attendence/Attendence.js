@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  ImageBackground,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, ImageBackground, FlatList, StyleSheet} from 'react-native';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {
   heightPercentageToDP as hp,
@@ -25,20 +18,10 @@ const Attendence = () => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [spendhours, sendSpendhours] = useState(0);
-  const [remainingHours, setRemainingHours] = useState(48);
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
-  console.log(
-    'attendenceMonthImages:------------------',
-    attendenceMonthImages,
-  );
-  console.log(
-    ' month and year:-------------------------------------',
-    visisbleMonth,
-    visibleYear,
-  );
 
   useEffect(() => {
     dispatch(
@@ -46,16 +29,10 @@ const Attendence = () => {
     );
   }, [visisbleMonth, visibleYear]);
 
-  const employeeAttendance = useSelector(
-    state => state.dataReducer.attendenceData.employeeAttendance,
-  );
-  console.log(
-    'employeeAttendance:------------------------------------',
-    employeeAttendance,
-  );
-  const dailyAttendance = useSelector(
-    state => state.dataReducer.attendenceData.dailyAttendance,
-  );
+  const {
+    attendenceData: {employeeAttendance, dailyAttendance},
+  } = useSelector(state => state.home);
+
   useEffect(() => {
     let totalEffectiveHours = 0;
     let totalHours = 10;
@@ -65,11 +42,6 @@ const Attendence = () => {
     });
     sendSpendhours(totalHours - totalEffectiveHours);
   }, [dailyAttendance]);
-
-  console.log(
-    'dailyAttendance:------------------------------',
-    dailyAttendance,
-  );
 
   let mark = {};
   employeeAttendance?.forEach(day => {
@@ -179,10 +151,6 @@ const Attendence = () => {
         scrollEnabled={true}
         showScrollIndicator={true}
         onVisibleMonthsChange={months => {
-          // console.log(
-          //   'now these months are visible--------------------------------',
-          //   months,
-          // );
           setVisibleMonth(months[0].month);
           setVisibleYear(months[0].year);
         }}
@@ -214,19 +182,19 @@ const Attendence = () => {
           'stylesheet.calendar': {
             padding: 0,
             margin: 0,
-            backgroundColor: 'red',
+            backgroundColor: Colors.red,
             // flex: 1,
           },
           // arrowColor: Colors.green,
           'stylesheet.calendar.header': {
             partialHeader: {
               paddingHorizontal: 1,
-              backgroundColor: 'blue',
+              backgroundColor: Colors.blue,
             },
             headerContainer: {
               flexDirection: 'row',
               width: '100%',
-              backgroundColor: 'yellow',
+              backgroundColor: Colors.green,
             },
 
             week: {

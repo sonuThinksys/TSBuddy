@@ -27,7 +27,7 @@ import {Colors} from 'colors/Colors';
 const Profile = () => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
 
@@ -35,11 +35,11 @@ const Profile = () => {
     dispatch(getEmployeeProfileData({token, employeeID}));
   }, []);
 
-  const profileData = useSelector(state => state.dataReducer.employeeProfile);
-  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  const isLoading = useSelector(
-    state => state.dataReducer.employeeProfileLoading,
-  );
+  const {
+    employeeProfile: profileData,
+    isShowModal: isShowModal,
+    employeeProfileLoading: isLoading,
+  } = useSelector(state => state.home);
 
   const data = [
     {
@@ -113,7 +113,7 @@ const Profile = () => {
   return (
     <>
       {isLoading ? <Loader /> : null}
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
         <View>
           <ImageBackground

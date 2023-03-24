@@ -3,18 +3,18 @@ import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import styles from './RequestLunchStyle';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {useSelector} from 'react-redux';
 import {name, RequestLunchLabel} from 'utils/DummyData';
 
 const RequestLunch = ({navigation}) => {
-  const MonthlyDate = useSelector(state => state.dataReducer.dateData);
   const [date, setDate] = useState(new Date());
   const [startDate, setStartDate] = useState('');
   const [modalForStartDate, setModalForStartDate] = useState(false);

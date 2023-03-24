@@ -13,7 +13,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
-import CustomModal from 'components/CustomModal';
+import CustomModal from 'customComponents/CustomModal';
 import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 const SalarSlipModal = () => {

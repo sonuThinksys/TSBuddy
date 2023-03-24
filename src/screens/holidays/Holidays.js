@@ -6,20 +6,17 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {useSelector, useDispatch} from 'react-redux';
-import {getHolidaysData} from 'redux/homeSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
 import Loader from 'component/loader/Loader';
-import jwt_decode from 'jwt-decode';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
 
-  const holidaysData = useSelector(state => state.dataReducer.holidayData);
-  const isLoading = useSelector(state => state.dataReducer.holidayDataLoading);
-  console.log('isLoading:---------------', isLoading);
+  const {holidayData: holidaysData, holidayDataLoading: isLoading} =
+    useSelector(state => state.home);
   const data1 = [
     {
       name: 'Past Holidays',

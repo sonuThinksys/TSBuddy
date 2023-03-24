@@ -9,7 +9,7 @@ export default {
   leaveDetails: `${API_URL}/Leave/AppliedLeaves?empId=`,
   employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
   calenderEventAPI: `${API_URL}/Event/GetCalenderEvents?month=${month + 1}`,
-  attendenceAPI: `${API_URL}Attendance/GetDailyAttendanceByEmpId?empId=`,
+  attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
   getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
   giveFeedbackPost: `${API_URL}/FoodRequest/AddFeedback`,

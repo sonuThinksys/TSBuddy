@@ -108,7 +108,6 @@ const drawerOption = ({
             <Pressable
               onPress={() => {
                 navigation.navigate('LeaveApplyScreen');
-                console.log('Navigation:', navigation);
               }}>
               <Text style={styles.newLeaveText}>+ New</Text>
             </Pressable>

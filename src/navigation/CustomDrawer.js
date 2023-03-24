@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {FontFamily, FontSize} from 'constants/fonts';
 
 import {
@@ -86,13 +86,6 @@ export default ({navigation}) => {
       style={{
         flex: 1,
       }}>
-      {/* <TouchableOpacity
-        onPress={() => {
-          navigation.toggleDrawer();
-        }}>
-        <Text>Check</Text>
-        <CrossIcon color={Colors.white} width={wp(9)} height={hp(9)} />
-      </TouchableOpacity> */}
       {drawerList.map((value, index) => {
         return renderDrawerItem(value, index);
       })}

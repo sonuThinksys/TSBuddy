@@ -32,8 +32,7 @@ const UserProfile = () => {
   const [allEmpData, setEmpData] = useState([]);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const employeeData = useSelector(state => state.dataReducer.employeeData);
-  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
+  const {employeeData,isShowModal:isShowModall} = useSelector(state => state.home);
   useEffect(() => {
     setEmpData(employeeData);
   }, [employeeData]);
