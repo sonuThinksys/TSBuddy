@@ -42,9 +42,9 @@ const RecentLeaves = () => {
     </View>
   );
 };
-const renderItem = ({item}) => {
+const renderItem = ({item, index}) => {
   return (
-    <View style={styles.imageView}>
+    <View style={styles.imageView} key={index}>
       <Image
         resizeMode="contain"
         source={

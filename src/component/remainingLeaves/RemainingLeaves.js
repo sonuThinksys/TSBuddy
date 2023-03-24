@@ -14,7 +14,6 @@ const RemainingLeaves = () => {
   const remainingLeaves = useSelector(
     state => state.dataReducer.remainingLeaves,
   );
-  console.log('remainingLeaves:', remainingLeaves);
   const earnedLeavesData = [
     remainingLeaves[0]?.totalLeavesAllocated,
     remainingLeaves[0]?.currentLeaveApplied,
@@ -37,7 +36,7 @@ const RemainingLeaves = () => {
         style={{
           flexDirection: 'row',
         }}>
-        <View style={{}}>
+        <View>
           <BarChart
             segments={4}
             spacingInner={0}

@@ -125,7 +125,7 @@ const renderDrawerItem = (
         alignItems: 'center',
         backgroundColor: selected ? Colors.lightBlue : null,
       }}>
-      <Image source={icon} style={{height: 50, width: 50}} />
+      <Image source={icon} resizeMode="contain" style={{height: 45, width: 45}} />
       <Text
         style={{
           color: Colors.white,

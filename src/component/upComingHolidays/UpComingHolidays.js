@@ -31,13 +31,13 @@ const UpComingHolidays = () => {
       <FlatList
         data={holidaysData}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index}
         style={{marginRight: wp(1)}}
       />
     </View>
   );
 };
-const renderItem = ({item}) => {
+const renderItem = ({item, index}) => {
   const newDateFormate = moment(item.holidayDate).format(`DD MMM YYYY`);
   let year = new Date().getFullYear();
 
@@ -49,7 +49,7 @@ const renderItem = ({item}) => {
   return (
     <>
       {date < date1 && Month >= 4 && Years <= 2021 ? (
-        <View style={styles.imageView}>
+        <View style={styles.imageView} key={index}>
           <Image
             resizeMode="contain"
             source={

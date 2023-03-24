@@ -10,30 +10,48 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './LoginStyle';
 import TouchID from 'react-native-touch-id';
 import {
   heightPercentageToDP as hp,
+  screenWidth,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import TSBuddyIcon from '../assets/Icons/TSIcon.webp';
-console.log('TSBuddyIcon:', TSBuddyIcon);
 import LoginVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
+import fingerPrint1 from 'assets/allImage/fingerImage.png';
+
 import {loginStatus} from './LoginSlice';
 import {getUserToken} from './LoginSlice';
-import {FontFamily} from 'constants/fonts';
+import {FontFamily, FontSize} from 'constants/fonts';
+import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
+import {
+  BIOMETRIC_LOGIN,
+  CANCEL,
+  CONFIRM_FINGERPRINT,
+  COPY_RIGHT,
+  FORGOT_PASSWORD,
+  GUEST_LOGIN,
+  REMEMBER_ME,
+  SIGN_IN,
+  TOUCH_SENSOR,
+} from 'utils/string';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
   const [isBiometric, setIsBiometric] = useState(true);
   const [bioMetricEnable, setBiometricEnable] = useState(false);
+  const [showBiomatricModal, setshowBiomatricModal] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
@@ -43,18 +61,17 @@ const Login = () => {
   const formInput = useSelector(state => state.auth.formInput);
   useEffect(() => {
     if (Platform.OS === 'android') {
-      Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
-        {
-          text: 'Cancel',
-          onPress: () => setBiometricEnable(false),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => setBiometricEnable(true)},
-      ]);
+      // Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
+      //   {
+      //     text: 'Cancel',
+      //     onPress: () => setBiometricEnable(false),
+      //     style: 'cancel',
+      //   },
+      //   {text: 'OK', onPress: () => setBiometricEnable(true)},
+      // ]);
       setBiometricEnable(true);
     }
   }, [formInput, token]);
-  console.log('formadadfgdfg:------------------------------', token, formInput);
 
   const enableTouchId = () => {
     const optionalConfigObject = {
@@ -80,17 +97,8 @@ const Login = () => {
           TouchID.authenticate('Authentication', optionalConfigObject)
             .then(success => {
               if (token !== '') {
-                console.log(
-                  'success:--------------------------------',
-                  success,
-                );
                 const username = formInput.username;
                 const password = formInput.password;
-                console.log(
-                  'username and padswer:-----------',
-                  username,
-                  password,
-                );
                 dispatch(getUserToken({username, password}));
               }
             })
@@ -107,115 +115,154 @@ const Login = () => {
   };
 
   const onPressLogin = async () => {
-    dispatch(getUserToken({username, password}));
+    setLoading(true);
+    await dispatch(getUserToken({username, password}));
+    setLoading(false);
   };
 
   return (
     <View style={styles.container}>
-      <Video
-        source={LoginVideo}
-        style={styles.backgroundVideo}
-        muted={true}
-        repeat={true}
-        resizeMode={'cover'}
-        rate={1.0}
-        ignoreSilentSwitch={'obey'}
-      />
-      <View style={{alignItems: 'center'}}>
-        <Image
-          style={{height: hp(10), width: wp(10)}}
-          source={MonthImages.TSBudLogo}
-        />
-      </View>
-      <View style={styles.textInputContainer}>
-        <View style={styles.textinputView}>
-          <View style={styles.iconView}>
-            <Image
-              style={{height: 30, width: 25}}
-              source={MonthImages.LoginUser}
-            />
+      {showBiomatricModal ? (
+        <Modal
+          backdropColor={Colors.smokeyGrey}
+          isVisible={showBiomatricModal}
+          style={{flex: 1}}>
+          <View style={styles.modalContainer}>
+            <View style={styles.signInContainerStyle}>
+              <Text style={styles.signInTextStyle}>{SIGN_IN}</Text>
+            </View>
+            <Text style={styles.confirmTextStyle}>{CONFIRM_FINGERPRINT}</Text>
+            <View style={styles.imageSensorStyle}>
+              <View style={styles.imageContainer}>
+                <Image source={fingerPrint1} style={styles.imageStyle} />
+              </View>
+              <Text style={styles.touchSensorText}>{TOUCH_SENSOR}</Text>
+            </View>
+            <View style={styles.cancelButtonContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setBiometricEnable(false);
+                  setshowBiomatricModal(false);
+                }}>
+                <Text style={styles.cancelButton}>{CANCEL}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.textinput}>
-            <TextInput
-              style={{height: '100%', width: '100%'}}
-              maxLength={256}
-              name="username"
-              returnKeyType="next"
-              placeholder="Username"
-              placeholderTextColor={Colors.silver}
-              onChangeText={e => setUserName(e)}
-              value={username}
-            />
-          </View>
-        </View>
-        <View style={styles.textinputView}>
-          <View style={styles.iconView}>
-            <Image
-              style={{height: 24, width: 18}}
-              source={MonthImages.LoginLock}
-            />
-          </View>
-          <View style={styles.textinput}>
-            <TextInput
-              style={{height: '100%', width: '100%'}}
-              // ref={this.passwordRef}
-
-              name="password"
-              // maxLength={256}
-              returnKeyType="done"
-              secureTextEntry
-              placeholder="Password"
-              placeholderTextColor={Colors.silver}
-              // onChangeText={value => {
-              //   this.onChange({name: 'password', value});
-              // }}
-              // onChange={onChangeTextInput}
-              onChangeText={e => setPassword(e)}
-              value={password}
-            />
-          </View>
-        </View>
-        {/* )}
-        /> */}
-        <View style={styles.passwordView}>
-          <TouchableOpacity>
-            <Text
-              style={{color: Colors.white, textDecorationLine: 'underline'}}>
-              Forgot Password
-            </Text>
-          </TouchableOpacity>
-
-          <View
-            style={{
-              flexDirection: 'row-reverse',
-              paddingHorizontal: wp(2),
-              alignItems: 'center',
-            }}>
-            <Text style={styles.rememberText}>Remember Me</Text>
-            <Image style={{height: 30, width: 30}} source={LoginCheck} />
-          </View>
-        </View>
-
-        <TouchableOpacity onPress={onPressLogin}>
-          <View style={styles.loginView}>
-            <Text style={styles.loginText}>Login</Text>
-          </View>
-        </TouchableOpacity>
-        {/* //closing  */}
-        <Text style={styles.orText}>OR</Text>
-        <Text
-          style={{color: Colors.white, textAlign: 'center', marginTop: hp(1)}}>
-          Guest Login
-        </Text>
-      </View>
-      {Platform.OS === 'android' && bioMetricEnable ? (
-        <TouchableOpacity onPress={enableTouchId}>
-          <View style={styles.bioMetricView}>
-            <Image source={fingerPrint} style={{height: 30, width: 35}} />
-            <Text style={styles.bioMetricText}>Biometric login</Text>
-          </View>
-        </TouchableOpacity>
+        </Modal>
       ) : null}
+      <View style={{flex: 1}}>
+        <Video
+          source={LoginVideo}
+          style={styles.backgroundVideo}
+          muted={true}
+          repeat={true}
+          resizeMode={'cover'}
+          rate={1.0}
+          ignoreSilentSwitch={'obey'}
+        />
+        {isLoading ? <LoadingScreen /> : null}
+        <View style={{alignItems: 'center', paddingTop: hp(4)}}>
+          <Image
+            style={{height: hp(12), width: wp(25)}}
+            source={MonthImages.TSBudLogo}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.textInputContainer}>
+          <View style={styles.textinputView}>
+            <View style={styles.iconView}>
+              <Image
+                style={{height: 30, width: 25}}
+                source={MonthImages.LoginUser}
+              />
+            </View>
+            <View style={styles.textinput}>
+              <TextInput
+                style={{height: '100%', width: '100%'}}
+                maxLength={256}
+                name="username"
+                returnKeyType="next"
+                placeholder="Username"
+                placeholderTextColor={Colors.silver}
+                onChangeText={e => setUserName(e)}
+                value={username}
+              />
+            </View>
+          </View>
+
+          <View style={styles.textinputView}>
+            <View style={styles.iconView}>
+              <Image
+                style={{height: 24, width: 18}}
+                source={MonthImages.LoginLock}
+              />
+            </View>
+            <View style={styles.textinput}>
+              <TextInput
+                style={{height: '100%', width: '100%'}}
+                // ref={this.passwordRef}
+                name="password"
+                // maxLength={256}
+                returnKeyType="done"
+                secureTextEntry
+                placeholder="Password"
+                placeholderTextColor={Colors.silver}
+                // onChangeText={value => {
+                //   this.onChange({name: 'password', value});
+                // }}
+                // onChange={onChangeTextInput}
+                onChangeText={e => setPassword(e)}
+                value={password}
+              />
+            </View>
+          </View>
+          {/* )}
+        /> */}
+          <View style={styles.passwordView}>
+            <TouchableOpacity>
+              <Text
+                style={{color: Colors.white, textDecorationLine: 'underline'}}>
+                {FORGOT_PASSWORD}
+              </Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row-reverse',
+                paddingHorizontal: wp(2),
+                alignItems: 'center',
+              }}>
+              <Text style={styles.rememberText}>{REMEMBER_ME}</Text>
+              <Image style={{height: 30, width: 30}} source={LoginCheck} />
+            </View>
+          </View>
+          <TouchableOpacity onPress={onPressLogin}>
+            <View style={styles.loginView}>
+              <Text style={styles.loginText}>Login</Text>
+            </View>
+          </TouchableOpacity>
+          {/* //closing  */}
+          <Text style={styles.orText}>OR</Text>
+          <Text
+            style={{
+              color: Colors.white,
+              textAlign: 'center',
+              marginTop: hp(1),
+            }}>
+            {GUEST_LOGIN}
+          </Text>
+        </View>
+        {Platform.OS === 'android' && bioMetricEnable ? (
+          <TouchableOpacity onPress={enableTouchId}>
+            <View style={styles.bioMetricView}>
+              <Image source={fingerPrint} style={{height: 30, width: 35}} />
+              <Text style={styles.bioMetricText}>{BIOMETRIC_LOGIN}</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+      <View style={styles.copyRightContainer}>
+        <Text style={styles.copyRightStyle}>{COPY_RIGHT}</Text>
+      </View>
     </View>
   );
 };
