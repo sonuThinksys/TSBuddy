@@ -38,7 +38,10 @@ const MenuItem = () => {
   const {userToken: token} = useSelector(state => state.auth);
 
   useEffect(() => {
-    dispatch(getTodayMenuDetails(token));
+    (async () => {
+      const result = await dispatch(getTodayMenuDetails(token));
+      console.log('result:', result);
+    })();
     dispatch(getMenuFeedback(token));
     dispatch(getSingleUserFeedback({token, menuID: dailyMenuID}));
   }, []);
@@ -47,9 +50,9 @@ const MenuItem = () => {
     employee: 'EMP/10352',
     employeeName: 'Amit Kumar Pant',
     creation: new Date(),
-    breakfast: userFeedback[0].feedback,
-    lunch: userFeedback[1].feedback,
-    meal: userFeedback[2].feedback,
+    breakfast: userFeedback[0]?.feedback,
+    lunch: userFeedback[1]?.feedback,
+    meal: userFeedback[2]?.feedback,
   };
 
   return (
@@ -86,7 +89,7 @@ const MenuItem = () => {
               </View>
               <View style={styles.likeView}>
                 <TouchableOpacity
-                  disabled={userFeedback[index].feedback === 1}
+                  disabled={userFeedback[index]?.feedback === 1}
                   onPress={() => {
                     dispatch(
                       giveMenuFeedback({
@@ -102,7 +105,7 @@ const MenuItem = () => {
                     style={{
                       height: 20,
                       width: 20,
-                      opacity: userFeedback[index].feedback === 1 ? 0.5 : 1,
+                      opacity: userFeedback[index]?.feedback === 1 ? 0.5 : 1,
                     }}
                     source={MonthImages.LikeImage}
                   />
@@ -118,7 +121,7 @@ const MenuItem = () => {
                   {getMenuFeedbackTotalCount[index].likes}
                 </Text>
                 <TouchableOpacity
-                  disabled={userFeedback[index].feedback === 0}
+                  disabled={userFeedback[index]?.feedback === 0}
                   onPress={() => {
                     dispatch(
                       giveMenuFeedback({
@@ -135,7 +138,7 @@ const MenuItem = () => {
                       height: 20,
                       width: 20,
                       marginLeft: wp(20),
-                      opacity: userFeedback[index].feedback === 0 ? 0.5 : 1,
+                      opacity: userFeedback[index]?.feedback === 0 ? 0.5 : 1,
                     }}
                     source={MonthImages.dislikesm}
                   />

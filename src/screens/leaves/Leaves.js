@@ -111,7 +111,7 @@ const Leaves = ({navigation}) => {
         <Pressable
           onPress={applyForLeave}
           style={{
-            paddingHorizontal: wp(5),
+            // paddingHorizontal: wp(5),
             paddingVertical: hp(1),
             borderWidth: 1,
             borderColor: Colors.black,
