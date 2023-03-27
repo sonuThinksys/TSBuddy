@@ -77,7 +77,7 @@ export const leaves = [
   {leaveType: 'Work From Home', allocated: 13, taken: 23, remaining: -10},
 ];
 
-export const name = [
+export const monthsName = [
   'January',
   'February',
   'March',

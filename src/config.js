@@ -1,6 +1,7 @@
 import {API_URL} from '@env';
 //let year = new Date().getFullYear();
-let year = 2021;
+let year = new Date().getFullYear();
+console.log('Yes! Aaya!!!!');
 let month = new Date().getMonth();
 
 export default {

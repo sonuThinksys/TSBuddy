@@ -14,6 +14,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  pastHolidaysContainer: {flexDirection: 'row', alignItems: 'center'},
   flatelistView: {
     flexDirection: 'row',
     borderRadius: 5,

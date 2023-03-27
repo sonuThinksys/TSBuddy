@@ -1,5 +1,5 @@
 import {Colors} from 'colors/Colors';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, TouchableOpacity, FlatList, StyleSheet, Text} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -10,6 +10,8 @@ import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
 import Loader from 'component/loader/Loader';
+import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
+import {isBefore2021} from 'utils/utils';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
@@ -17,18 +19,7 @@ const Holidays = () => {
 
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
-  const data1 = [
-    {
-      name: 'Past Holidays',
-      color: Colors.grey,
-      id: '1',
-    },
-    {
-      name: 'Upcoming Holidays',
-      color: Colors.darkBlue,
-      id: '2',
-    },
-  ];
+
   return (
     <View style={{paddingTop: hp(1), flex: 1}}>
       {isLoading ? <Loader /> : null}
@@ -49,14 +40,14 @@ const Holidays = () => {
         }}
       />
       <View style={styles.container}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={styles.pastHolidaysContainer}>
           <View style={styles.buttomView}></View>
-          <Text> Past Holiday</Text>
+          <Text> {PAST_HOLIDAYS}</Text>
         </View>
 
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={styles.secondButtomView}></View>
-          <Text> Upcoming Holidays</Text>
+          <Text> {UPCOMING_HOLIDAYS}</Text>
         </View>
       </View>
     </View>
@@ -72,7 +63,7 @@ const renderItem = (
   setHolidaysData,
   HolidaysData,
 ) => {
-  const newDateFormate = moment(holidayDate).format(`DD-MMM-YYYY`);
+  const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
 
   const date1 = +new Date();
   const date = +moment(holidayDate).format('DD');
@@ -113,10 +104,9 @@ const renderItem = (
 
           style={{
             flex: 1,
-            backgroundColor:
-              date < date1 && Month >= 4 && Years <= 2021
-                ? Colors.royalBlue
-                : Colors.grey,
+            backgroundColor: isBefore2021(date, date1, Years)
+              ? Colors.royalBlue
+              : Colors.grey,
             paddingHorizontal: wp(2),
             paddingVertical: hp(1),
             justifyContent: 'center',
@@ -133,10 +123,9 @@ const renderItem = (
           <Text
             style={{
               fontWeight: 'bold',
-              color:
-                date < date1 && Month >= 4 && Years <= 2021
-                  ? Colors.black
-                  : Colors.grey,
+              color: isBefore2021(date, date1, Years)
+                ? Colors.black
+                : Colors.grey,
             }}>
             {description}
           </Text>

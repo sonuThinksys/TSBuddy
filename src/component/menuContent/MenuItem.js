@@ -40,7 +40,6 @@ const MenuItem = () => {
   useEffect(() => {
     (async () => {
       const result = await dispatch(getTodayMenuDetails(token));
-      console.log('result:', result);
     })();
     dispatch(getMenuFeedback(token));
     dispatch(getSingleUserFeedback({token, menuID: dailyMenuID}));

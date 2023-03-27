@@ -12,7 +12,7 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {name, RequestLunchLabel} from 'utils/DummyData';
+import {monthsName, RequestLunchLabel} from 'utils/DummyData';
 
 const RequestLunch = ({navigation}) => {
   const [date, setDate] = useState(new Date());
@@ -35,7 +35,7 @@ const RequestLunch = ({navigation}) => {
     let date = new Date().getDate();
 
     const d = new Date();
-    let month = name[d.getMonth()];
+    let month = monthsName[d.getMonth()];
     let year = new Date().getFullYear();
     if (item.value === 'today') {
       setStartDate(date + '/' + month + '/' + year);
@@ -53,13 +53,13 @@ const RequestLunch = ({navigation}) => {
       setPermReq(true);
       setPersssionForClick(true);
       if (date === 1) {
-        month = name[d.getMonth()];
+        month = monthsName[d.getMonth()];
         setStartDate1(date + '-' + month + '-' + year);
         setEndDate1(16 + '-' + month + '-' + year);
       } else if (date > 1 && date <= 16) {
-        month = name[d.getMonth()];
+        month = monthsName[d.getMonth()];
         setStartDate1(16 + '-' + month + '-' + year);
-        month = name[d.getMonth() + 1];
+        month = monthsName[d.getMonth() + 1];
         setEndDate1(1 + '-' + month + '-' + year);
       }
     }

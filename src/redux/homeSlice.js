@@ -563,16 +563,16 @@ const homeSlice = createSlice({
 
       const totalFeedbackArray = [
         {
-          likes: action.payload.totalBreakfastlikes,
-          dislikes: action.payload.totalBreakfastdislikes,
+          likes: action.payload?.totalBreakfastlikes,
+          dislikes: action.payload?.totalBreakfastdislikes,
         },
         {
-          likes: action.payload.totalLunchlikes,
-          dislikes: action.payload.totalLunchdislikes,
+          likes: action.payload?.totalLunchlikes,
+          dislikes: action.payload?.totalLunchdislikes,
         },
         {
-          likes: action.payload.totalMeallikes,
-          dislikes: action.payload.totalMealdislikes,
+          likes: action.payload?.totalMeallikes,
+          dislikes: action.payload?.totalMealdislikes,
         },
       ];
 
