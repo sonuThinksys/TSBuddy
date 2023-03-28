@@ -24,6 +24,7 @@ import {modalStatus} from 'redux/homeSlice';
 import CommunicationModal from 'modals/CommunicationModal';
 import Loader from 'component/loader/Loader';
 import {Colors} from 'colors/Colors';
+import {guestProfileData} from 'guestData';
 const Profile = () => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
@@ -34,8 +35,10 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getEmployeeProfileData({token, employeeID}));
   }, []);
-
+  const isGuestLogin = useSelector(state => state.auth.isGuestLogin);
+  console.log('isGuestLogin:--------------------', isGuestLogin);
   const profileData = useSelector(state => state.dataReducer.employeeProfile);
+  console.log('profileData:------------------------------------', profileData);
   const isShowModall = useSelector(state => state.dataReducer.isShowModal);
   const isLoading = useSelector(
     state => state.dataReducer.employeeProfileLoading,
@@ -45,32 +48,40 @@ const Profile = () => {
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Email ID',
-      email: profileData.companyEmail,
+      email: isGuestLogin
+        ? guestProfileData.companyEmail
+        : profileData.companyEmail,
       id: '1',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Mobile No.',
-      email: profileData.cellNumber,
+      email: isGuestLogin
+        ? guestProfileData.cellNumber
+        : profileData.cellNumber,
       id: '2',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Designation',
-      email: profileData.designation,
+      email: isGuestLogin
+        ? guestProfileData.designation
+        : profileData.designation,
       id: '3',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
-      email: `EMP/${employeeID}`,
+      email: isGuestLogin ? 'EMP/10234' : `EMP/${employeeID}`,
       id: '4',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Date of Joining',
       // email: profileData.dateOfJoining,
-      email: moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
+      email: isGuestLogin
+        ? moment(guestProfileData.dateOfJoining).format(`DD-MMM-YYYY`)
+        : moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
       id: '5',
     },
     {

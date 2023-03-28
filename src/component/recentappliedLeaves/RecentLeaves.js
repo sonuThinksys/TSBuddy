@@ -5,18 +5,25 @@ import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {Colors} from 'colors/Colors';
 import {getLeaveDetails} from 'redux/homeSlice';
+import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
 
 const RecentLeaves = () => {
   // =================================================================================
 
   const token = useSelector(state => state.auth.userToken);
+  const isGuestLogin = useSelector(state => state.auth.isGuestLogin);
+  console.log('isGuestLogin:--------------------', isGuestLogin);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
   const recentAppliedLeaves = useSelector(
     state => state.dataReducer.recentAppliedLeaves,
+  );
+  console.log(
+    'recentAppliedLeaves:-------------------------------',
+    recentAppliedLeaves,
   );
   console.log('recentAppliedLeaves:', recentAppliedLeaves.length);
 
@@ -34,7 +41,7 @@ const RecentLeaves = () => {
         <Text style={styles.recentText}>Recent Applied Leaves</Text>
       </View>
       <FlatList
-        data={recentAppliedLeaves}
+        data={isGuestLogin ? guestLeavesData : recentAppliedLeaves}
         renderItem={renderItem}
         keyExtractor={(item, index) => index}
         style={{marginHorizontal: 4}}
@@ -42,9 +49,9 @@ const RecentLeaves = () => {
     </View>
   );
 };
-const renderItem = ({item}) => {
+const renderItem = ({item, index}) => {
   return (
-    <View style={styles.imageView}>
+    <View key={index} style={styles.imageView}>
       <Image
         resizeMode="contain"
         source={

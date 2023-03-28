@@ -13,6 +13,7 @@ const initialState = {
   userTokenGettingLoading: false,
   formInput: {},
   employeeDetails: {},
+  isGuestLogin: false,
 };
 
 export const getUserToken = createAsyncThunk(
@@ -63,6 +64,11 @@ const loginSlice = createSlice({
     authLoginStatus: (state, action) => {
       state.isAuthLoggedIn = action.payload;
     },
+    guestLoginStatus: (state, action) => {
+      state.isLoggedIn = action.payload;
+      state.isGuestLogin = action.payload;
+      state.isLoading = false;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getUserToken.pending, state => {
@@ -75,6 +81,7 @@ const loginSlice = createSlice({
       state.employeeDetails = decodedData;
       state.isLoading = false;
       state.isLoggedIn = true;
+      state.isGuestLogin = false;
     });
     builder.addCase(getUserToken.rejected, (state, action) => {
       state.isLoggedIn = false;
@@ -83,4 +90,5 @@ const loginSlice = createSlice({
   },
 });
 export default loginSlice.reducer;
-export const {loginStatus, authLoginStatus} = loginSlice.actions;
+export const {loginStatus, authLoginStatus, guestLoginStatus} =
+  loginSlice.actions;

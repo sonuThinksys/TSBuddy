@@ -29,6 +29,7 @@ import {loginStatus} from './LoginSlice';
 import {getUserToken} from './LoginSlice';
 import {FontFamily} from 'constants/fonts';
 import {useSelector} from 'react-redux';
+import {guestLoginStatus} from './LoginSlice';
 const Login = () => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
@@ -175,8 +176,7 @@ const Login = () => {
             />
           </View>
         </View>
-        {/* )}
-        /> */}
+
         <View style={styles.passwordView}>
           <TouchableOpacity>
             <Text
@@ -203,10 +203,19 @@ const Login = () => {
         </TouchableOpacity>
         {/* //closing  */}
         <Text style={styles.orText}>OR</Text>
-        <Text
-          style={{color: Colors.white, textAlign: 'center', marginTop: hp(1)}}>
-          Guest Login
-        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(guestLoginStatus(true));
+          }}>
+          <Text
+            style={{
+              color: Colors.white,
+              textAlign: 'center',
+              marginTop: hp(1),
+            }}>
+            Guest Login
+          </Text>
+        </TouchableOpacity>
       </View>
       {Platform.OS === 'android' && bioMetricEnable ? (
         <TouchableOpacity onPress={enableTouchId}>

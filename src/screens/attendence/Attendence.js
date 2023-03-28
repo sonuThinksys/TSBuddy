@@ -226,7 +226,7 @@ const Attendence = () => {
             headerContainer: {
               flexDirection: 'row',
               width: '100%',
-              backgroundColor: 'yellow',
+              backgroundColor: 'green',
             },
 
             week: {

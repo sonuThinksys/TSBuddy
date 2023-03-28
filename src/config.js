@@ -15,4 +15,6 @@ export default {
   getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
   giveFeedbackPost: `${API_URL}/FoodRequest/AddFeedback`,
   getAllEmployees: `${API_URL}/EmployeeProfile/GetAllEmployeeDetails`,
+  getSalaryDataAPI: `${API_URL}/SalarySlip`,
+  requestLunchApi: `${API_URL}/FoodRequest/AddLunchRequest`,
 };

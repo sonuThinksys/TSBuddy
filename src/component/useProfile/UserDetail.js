@@ -21,11 +21,10 @@ const UserDetail = ({navigation, route}) => {
   const {
     designation,
     companyEmail,
-    id,
-    imageURL,
+    image,
     cellNumber,
     employeeName,
-    reporting,
+    managerInfoDto,
   } = route.params;
   const dispatch = useDispatch();
   const [empDetail, setClickData] = useState({});
@@ -33,7 +32,6 @@ const UserDetail = ({navigation, route}) => {
 
   const dialCall = () => {
     setClickData({
-      id: id,
       medium: cellNumber,
       nameOfEmployee: employeeName,
       text: 'Call',
@@ -43,7 +41,6 @@ const UserDetail = ({navigation, route}) => {
 
   const whtsappEmployee = () => {
     setClickData({
-      id: id,
       medium: cellNumber,
       nameOfEmployee: employeeName,
       text: 'Send WhatsApp to',
@@ -53,7 +50,6 @@ const UserDetail = ({navigation, route}) => {
 
   const sendMail = () => {
     setClickData({
-      id: id,
       medium: companyEmail,
       nameOfEmployee: employeeName,
       text: 'Send Mail to',
@@ -63,7 +59,6 @@ const UserDetail = ({navigation, route}) => {
 
   const snedMessage = async () => {
     setClickData({
-      id: id,
       medium: cellNumber,
       nameOfEmployee: employeeName,
       text: 'Send SMS to',
@@ -122,7 +117,7 @@ const UserDetail = ({navigation, route}) => {
           paddingHorizontal: wp(30),
         }}>
         <Image
-          source={{uri: imageURL}}
+          source={{ri: `${baseUrl}${image}`}}
           style={{
             height: hp(14),
             width: hp(14),
@@ -169,7 +164,7 @@ const UserDetail = ({navigation, route}) => {
               marginLeft: wp(2),
               color: Colors.lightBlue,
             }}>
-            {reporting}
+            {managerInfoDto}
           </Text>
         </View>
         <Text

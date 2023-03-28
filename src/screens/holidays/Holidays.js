@@ -19,7 +19,7 @@ const Holidays = () => {
 
   const holidaysData = useSelector(state => state.dataReducer.holidayData);
   const isLoading = useSelector(state => state.dataReducer.holidayDataLoading);
-  console.log('isLoading:---------------', isLoading);
+  console.log('holidaysData:---------------', holidaysData);
   const data1 = [
     {
       name: 'Past Holidays',

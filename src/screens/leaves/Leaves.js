@@ -36,9 +36,8 @@ const Leaves = ({navigation}) => {
   }, []);
 
   const leavesData = useSelector(state => state.dataReducer.leavesData);
-
   const isLoading = useSelector(state => state.dataReducer.isLeaveDataLoading);
-  console.log('leavesData:', typeof leavesData[0].fromDate);
+  console.log('leavesData:----------------------------', leavesData);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);

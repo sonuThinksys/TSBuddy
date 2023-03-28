@@ -254,7 +254,7 @@ const MenuItem = () => {
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return (
-            <View style={styles.container}>
+            <View key={index} style={styles.container}>
               <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
                 {item?.type}
               </Text>
