@@ -54,4 +54,69 @@ const guestHolidaysData = [
   },
 ];
 
-export {guestLeavesData, guestProfileData};
+const guestLeavesScreenData = [
+  {
+    currentLeaveBalance: 1.75,
+    description: 'testing',
+    employeeName: 'Amit Kumar Pant',
+    fiscalYear: '2022-2023',
+    fromDate: '2023-03-08T00:00:00',
+    leaveApplicationId: 'LEAPP/000003',
+    leaveType: 'Earned Leave',
+    managerInfoDto: {
+      cellNumber: null,
+      companyEmail: null,
+      employeeName: 'Mayank Sharma',
+      image: null,
+    },
+    postingDate: '2023-03-07T00:00:00',
+    status: 'Open',
+    toDate: '2023-03-08T00:00:00',
+    totalLeaveDays: 1,
+  },
+  {
+    currentLeaveBalance: 1.75,
+    description: 'test',
+    employeeName: 'Amit Kumar Pant',
+    fiscalYear: '2022-2023',
+    fromDate: '2023-03-10T00:00:00',
+    leaveApplicationId: 'LEAPP/000004',
+    leaveType: 'Earned Leave',
+    managerInfoDto: {
+      cellNumber: null,
+      companyEmail: null,
+      employeeName: 'Mayank Sharma',
+      image: null,
+    },
+    postingDate: '2023-03-07T00:00:00',
+    status: 'Open',
+    toDate: '2023-03-10T00:00:00',
+    totalLeaveDays: 0.5,
+  },
+  {
+    currentLeaveBalance: 1.75,
+    description: 'test',
+    employeeName: 'Amit Kumar Pant',
+    fiscalYear: '2022-2023',
+    fromDate: '2023-03-13T00:00:00',
+    leaveApplicationId: 'LEAPP/000005',
+    leaveType: 'Earned Leave',
+    managerInfoDto: {
+      cellNumber: null,
+      companyEmail: null,
+      employeeName: 'Mayank Sharma',
+      image: null,
+    },
+    postingDate: '2023-03-12T00:00:00',
+    status: 'Open',
+    toDate: '2023-03-13T00:00:00',
+    totalLeaveDays: 1,
+  },
+];
+
+export {
+  guestLeavesData,
+  guestProfileData,
+  guestLeavesScreenData,
+  guestHolidaysData,
+};

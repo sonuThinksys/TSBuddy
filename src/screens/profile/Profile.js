@@ -28,21 +28,21 @@ import {guestProfileData} from 'guestData';
 const Profile = () => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
 
   useEffect(() => {
     dispatch(getEmployeeProfileData({token, employeeID}));
   }, []);
-  const isGuestLogin = useSelector(state => state.auth.isGuestLogin);
-  console.log('isGuestLogin:--------------------', isGuestLogin);
-  const profileData = useSelector(state => state.dataReducer.employeeProfile);
-  console.log('profileData:------------------------------------', profileData);
-  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  const isLoading = useSelector(
-    state => state.dataReducer.employeeProfileLoading,
-  );
+
+  const {
+    employeeProfile: profileData,
+    isShowModal: isShowModal,
+    employeeProfileLoading: isLoading,
+  } = useSelector(state => state.home);
 
   const data = [
     {
@@ -93,9 +93,12 @@ const Profile = () => {
   ];
   const dialCall = () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.cellNumber,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? '9801296234'
+        : profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: isGuestLogin
+        ? 'guest'
+        : profileData.managerInfoDto.employeeName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -103,9 +106,12 @@ const Profile = () => {
 
   const sendMail = () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.companyEmail,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? 'guset@thinksys.com'
+        : profileData.managerInfoDto.companyEmail,
+      nameOfEmployee: isGuestLogin
+        ? 'guset'
+        : profileData.managerInfoDto.employeeName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -113,9 +119,12 @@ const Profile = () => {
 
   const snedMessage = async () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.cellNumber,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? '9801296234'
+        : profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: isGuestLogin
+        ? 'iguest manager'
+        : profileData.managerInfoDto.employeeName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -124,7 +133,7 @@ const Profile = () => {
   return (
     <>
       {isLoading ? <Loader /> : null}
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
         <View>
           <ImageBackground
@@ -138,7 +147,9 @@ const Profile = () => {
                   style={{height: 120, width: 120, borderRadius: 60}}
                 />
               </View>
-              <Text style={styles.text}>{profileData.employeeName}</Text>
+              <Text style={styles.text}>
+                {isGuestLogin ? 'guest user' : profileData.employeeName}
+              </Text>
             </View>
             <View style={styles.detailsView}>
               <FlatList
@@ -170,10 +181,14 @@ const Profile = () => {
                 </View>
                 <View>
                   <Text style={styles.managerNameText}>
-                    {profileData.managerInfoDto.employeeName}
+                    {isGuestLogin
+                      ? 'Guest Manager'
+                      : profileData.managerInfoDto.employeeName}
                   </Text>
                   <Text style={styles.emailText}>
-                    {profileData.managerInfoDto.companyEmail}
+                    {isGuestLogin
+                      ? 'guest@thinksys.com'
+                      : profileData.managerInfoDto.companyEmail}
                   </Text>
                   <View style={styles.socialIconView}>
                     <TouchableOpacity onPress={sendMail}>

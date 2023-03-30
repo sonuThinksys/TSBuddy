@@ -9,23 +9,15 @@ import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
 
 const RecentLeaves = () => {
-  // =================================================================================
-
-  const token = useSelector(state => state.auth.userToken);
-  const isGuestLogin = useSelector(state => state.auth.isGuestLogin);
-  console.log('isGuestLogin:--------------------', isGuestLogin);
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
 
-  const leavesData = useSelector(state => state.dataReducer.leavesData);
-  const recentAppliedLeaves = useSelector(
-    state => state.dataReducer.recentAppliedLeaves,
-  );
-  console.log(
-    'recentAppliedLeaves:-------------------------------',
-    recentAppliedLeaves,
-  );
-  console.log('recentAppliedLeaves:', recentAppliedLeaves.length);
+  const {
+    leaveMenuDetails: {recentAppliedLeaves},
+  } = useSelector(state => state.home);
 
   const dispatch = useDispatch();
 

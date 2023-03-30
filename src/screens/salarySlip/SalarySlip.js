@@ -22,8 +22,8 @@ import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();
-  const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
-  const salarySlipData = useSelector(state => state.dataReducer.salarySlipData);
+  const {isAuthLoggedIn} = useSelector(state => state.auth);
+  const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
   console.log('salarySlipData123:----------------------------', salarySlipData);
   console.log(
@@ -71,7 +71,7 @@ const SalarySlip = ({navigation}) => {
       style={{
         flex: 1,
       }}>
-      <Text style={styles.NameView}>Radhika Gupta</Text>
+      <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
       {!isAuthLoggedIn ? (
         <SalarSlipModal />

@@ -1,9 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {
   FlatList,
-  Image,
   ImageBackground,
-  StyleSheet,
   Dimensions,
   View,
   Text,
@@ -11,10 +9,7 @@ import {
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './AutoscrollStyle';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+
 import BirthdayAnniV from 'modals/BirthdayAnniV';
 import {Colors} from 'colors/Colors';
 import {getCalendereventData} from 'redux/homeSlice';
@@ -26,13 +21,11 @@ import {imageArr} from 'utils/DummyData';
 const CarouselAutoScroll = () => {
   const dispatch = useDispatch();
   const [CalaenderEventData, setCalenderEventData] = useState([]);
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   useEffect(() => {
     dispatch(getCalendereventData(token));
   }, []);
-  const calenderData = useSelector(
-    state => state.dataReducer.calendereventData,
-  );
+  const {calendereventData: calenderData} = useSelector(state => state.home);
   const keyOfObject = Object.keys(calenderData);
 
   useEffect(() => {
@@ -44,12 +37,7 @@ const CarouselAutoScroll = () => {
     });
     setCalenderEventData(arr);
   }, [calenderData]);
-  useEffect(() => {
-    console.log(
-      'CalaenderEventData:-------------------------------',
-      CalaenderEventData.length,
-    );
-  }, [calenderData]);
+  useEffect(() => {}, [calenderData]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
