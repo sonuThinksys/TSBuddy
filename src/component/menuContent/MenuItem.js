@@ -255,7 +255,7 @@ const MenuItem = () => {
         renderItem={({item, index}) => {
           return (
             <View style={styles.container}>
-              <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
+              <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4) }}>
                 {item?.type}
               </Text>
               <View>
