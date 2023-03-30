@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-
+import styles from './userProfileStyles';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -217,6 +217,7 @@ const UserProfile = () => {
         onMomentumScrollEnd={() => setScrollBegin(false)}
         data={allEmpData}
         numColumns={numValue}
+        //numColumns={1}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {
           return renderItem(
@@ -236,15 +237,7 @@ const UserProfile = () => {
 };
 
 const renderItem = (
-  {
-    designation,
-    companyEmail,
-    id,
-    imageURL,
-    cellNumber,
-    employeeName,
-    reporting,
-  },
+  {designation, companyEmail, image, cellNumber, employeeName, managerInfoDto},
   index,
   navigation,
   isShowModall,
@@ -254,176 +247,108 @@ const renderItem = (
   showHoriZontal,
 ) => {
   return (
-    <View key={index}>
+    <View key={index} style={{backgroundColor: Colors.white}}>
       {showHoriZontal ? (
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('UserDetail', {
               designation,
               companyEmail,
-              id,
-              imageURL,
+              image,
               cellNumber,
               employeeName,
-              reporting,
+              managerInfoDto,
             });
           }}>
           <View style={styles.container}>
-            <View style={{}}>
+            <View
+              style={{
+                flex: 0.2,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
               <Image
                 resizeMode="stretch"
                 source={{uri: `${baseUrl}${image}`}}
-                style={styles.secondimage}
+                style={styles.image}
               />
             </View>
-            <View style={{paddingLeft: wp(5)}}>
+            <View style={{flex: 0.7}}>
               <Text style={styles.nameText}>{employeeName}</Text>
               <Text style={styles.desniationText}>{designation}</Text>
               <View style={styles.smallView}>
                 <Image
                   source={MonthImages.userPS}
-                  style={{height: 30, width: 30}}
+                  style={{height: 25, width: 25}}
                 />
-                <Text style={styles.reportingText}>{reporting}</Text>
+                <Text style={styles.reportingText}>
+                  {managerInfoDto.employeeName}
+                </Text>
               </View>
             </View>
           </View>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
+          style={styles.container2}
           onPress={() => {
             navigation.navigate('UserDetail', {
               designation,
               companyEmail,
-              id,
-              imageURL,
+              image,
               cellNumber,
               employeeName,
-              reporting,
+              managerInfoDto,
             });
           }}>
-          <View style={styles.container2}>
-            {/* {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null} */}
-            <ImageBackground
-              style={styles.backgroundImage}
-              source={MonthImages.empbgS}>
-              <Image source={{uri: imageURL}} style={styles.secondimage} />
-              <Text numberOfLines={1} style={styles.nametext2}>
-                {employeeName}
-              </Text>
-              <Text style={styles.desText2}>{designation}</Text>
-              <View style={styles.iconView}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setClickData({
-                      id: id,
-                      medium: cellNumber,
-                      nameOfEmployee: employeeName,
-                      text: 'Call ',
-                    });
+          <ImageBackground
+            resizeMode="contain"
+            style={styles.backgroundImage}
+            source={MonthImages.empbgS}>
+            <Image
+              resizeMode="stretch"
+              source={{uri: `${baseUrl}${image}`}}
+              style={styles.secondimage}
+            />
+            <Text numberOfLines={1} style={styles.nametext2}>
+              {employeeName}
+            </Text>
+            <Text style={styles.desText2}>{designation}</Text>
+            <View style={styles.buttomView}>
+              <TouchableOpacity
+                style={styles.imagecontainer1}
+                onPress={() => {
+                  setClickData({
+                    medium: cellNumber,
+                    nameOfEmployee: employeeName,
+                    text: 'Call ',
+                  });
 
-                    // setClickData('fghfgh');
-                    dispatch(modalStatus(true));
-                  }}>
-                  <View style={styles.callimageView}>
-                    <Image
-                      style={styles.callImage}
-                      source={MonthImages.callEmp}
-                    />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setClickData({
-                      id: id,
-                      medium: companyEmail,
-                      nameOfEmployee: employeeName,
-                      text: 'Send Mail to ',
-                    });
-                    // setClickData('fghfgh');
-                    dispatch(modalStatus(true));
-                  }}>
-                  <View style={styles.mailView}>
-                    <Image
-                      style={styles.mailImage}
-                      source={MonthImages.mailEmp}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
-          </View>
+                  // setClickData('fghfgh');
+                  dispatch(modalStatus(true));
+                }}>
+                <Image style={styles.callImage} source={MonthImages.callEmp} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.imagecontainer2}
+                onPress={() => {
+                  setClickData({
+                    medium: companyEmail,
+                    nameOfEmployee: employeeName,
+                    text: 'Send Mail to ',
+                  });
+                  // setClickData('fghfgh');
+                  dispatch(modalStatus(true));
+                }}>
+                <Image style={styles.mailImage} source={MonthImages.mailEmp} />
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  image: {
-    height: hp(7),
-    width: wp(15),
-    borderRadius: 35,
-    marginLeft: wp(5),
-    marginTop: hp(1),
-  },
-  container: {
-    backgroundColor: Colors.skyColor,
-    flexDirection: 'row',
-    width: '100%',
-    marginVertical: hp(0.6),
-    shadowOpacity: 0.2,
-  },
-  nameText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-    opacity: 0.6,
-  },
-  desniationText: {
-    fontSize: 14,
-    color: Colors.lightBlue,
-  },
-  smallView: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    // paddingVertical: hp(1),
-  },
-  reportingText: {paddingTop: hp(1), marginLeft: wp(2), color: 'green'},
-  container2: {paddingVertical: hp(0.5), paddingHorizontal: wp(1)},
-  backgroundImage: {height: hp(18.5), width: wp(31)},
-  secondimage: {
-    height: hp(9),
-    width: wp(20),
-    borderRadius: 35,
-    marginLeft: wp(5),
-    marginTop: hp(1),
-  },
-  nametext2: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    opacity: 0.8,
-    fontSize: FontSize.h11,
-  },
-  desText2: {fontSize: 10, textAlign: 'center', color: 'blue', opacity: 0.6},
-  iconView: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: wp(4),
-    // backgroundColor: '#C3F8FF',
-    borderTopWidth: 2,
-    borderColor: 'white',
-    marginTop: hp(0.5),
-  },
-  callimageView: {
-    borderRightWidth: 4,
-    borderColor: Colors.white,
-    flex: 1,
-  },
-  callImage: {height: 20, width: 20},
-  mailView: {flex: 1, paddingLeft: wp(6)},
-  mailImage: {height: 20, width: 20, marginTop: hp(0.1)},
-});
 export default UserProfile;

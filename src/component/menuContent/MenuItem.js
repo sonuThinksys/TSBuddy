@@ -80,7 +80,7 @@ const MenuItem = ({navigation}) => {
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return (
-            <View style={styles.container}>
+            <View key={index} style={styles.container}>
               <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
                 {item?.type}
               </Text>
@@ -165,7 +165,14 @@ const MenuItem = ({navigation}) => {
                   />
                 </TouchableOpacity>
                 <Text style={{flex: 1}}>
-                  {getMenuFeedbackTotalCount[index].dislikes}
+                  {/* {userFeedback[index].feedback === null
+                    ? 0
+                    : userFeedback[index].feedback === 1
+                    ? 0
+                    : userFeedback[index].feedback === undefined
+                    ? 0
+                    : 1} */}
+                  {getMenuFeedbackTotalCount[index]?.dislikes}
                 </Text>
               </View>
             </View>

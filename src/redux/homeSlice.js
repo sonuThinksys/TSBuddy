@@ -9,7 +9,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 const initialState = {
   isLoading: true,
   isShowModal: false,
-  salarySlipData: [],
+  salarySlipData: {},
   salarySlipDataLoading: false,
   salarySlipDataError: false,
   employeeData: {},
@@ -432,20 +432,36 @@ export const getAttendencaeData = createAsyncThunk(
 );
 
 export const getSalarySlipData = createAsyncThunk(
-  'home/salarySlipData',
-  async () => {
-    return Promise.resolve(salaryData);
-    //  fetch('http://localhost:4000/salaryData')
-    //     .then(res => {
-    //       res.json();
-    //     })
-    //     .then(result => {
-    //       return Promise.resolve(result);
-    //     })
-    //     .catch(err => {
-    //       return Promise.reject(err);
-    //     });
-    //   return Promise.resolve(salaryData);
+  'dataReducer/salarySlipData',
+  async token => {
+    var config = {
+      method: 'get',
+      url: endPoints.getSalaryDataAPI,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong1!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 
@@ -475,6 +491,45 @@ export const getholidayDataIWithImage = createAsyncThunk(
   'home/holidayDataIWithImage',
   async () => {
     return Promise.resolve(holidayDatawithImage);
+  },
+);
+
+export const requestLunchSubmission = createAsyncThunk(
+  'dataReducer/requestLunchSubmission',
+  async formInput => {
+    try {
+      const {token, ...restData} = formInput;
+      console.log('formInput:-----------------------------', formInput);
+      const url = endPoints.requestLunchApi;
+      console.log('url:----------------------------------', url);
+      var config = {
+        method: 'post',
+        url: endPoints.requestLunchApi,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        data: {
+          requestforlunch: 1,
+          requestlunchstartdate: new Date('2023-03-26'),
+          requestlunchenddate: new Date('2023-03-30'),
+        },
+      };
+
+      return axios(config).then(result => {
+        console.log('data in request lunch:---------------------', result);
+        const {data = {}, status} = result || {};
+
+        if (status === 200) {
+          return Promise.resolve({data, formInput});
+        } else {
+          return Promise.reject('something went wrong');
+        }
+      });
+    } catch (err) {
+      console.log('error:----', err);
+      // return Promise.reject(new Error(err));
+    }
   },
 );
 
@@ -715,6 +770,20 @@ const homeSlice = createSlice({
       state.attendenceDataPending = false;
       state.attendenceData = [];
       state.attendenceDataError = action.payload;
+    });
+    // request lunch integration
+    builder.addCase(requestLunchSubmission.pending, state => {
+      state.requestLunchDataPending = true;
+    });
+    builder.addCase(requestLunchSubmission.fulfilled, (state, action) => {
+      state.requestLunchDataPending = false;
+      state.requestLunchData = action.payload;
+      state.requestLunchDataError = undefined;
+    });
+    builder.addCase(requestLunchSubmission.rejected, (state, action) => {
+      state.requestLunchDataPending = false;
+      state.requestLunchData = [];
+      state.requestLunchDataError = action.payload;
     });
   },
 });

@@ -3,18 +3,66 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 //    // january:{monthImage:MonthImages.janImage,monthIcon:MonthImages.janIcon}
 // }]
 const monthImages = {
-  january: {monthImage: MonthImages.janImage, monthIcon: MonthImages.janIcon},
-  february: {monthImage: MonthImages.febImage, monthIcon: MonthImages.febIcon},
-  march: {monthImage: MonthImages.marchImage, monthIcon: MonthImages.marchIcon},
-  april: {monthImage: MonthImages.aprilImage, monthIcon: MonthImages.aprilIcon},
-  may: {monthImage: MonthImages.mayImage, monthIcon: MonthImages.aprilIcon},
-  june: {monthImage: MonthImages.junImage, monthIcon: MonthImages.junIcon},
-  jully: {monthImage: MonthImages.julyImage, monthIcon: MonthImages.julyIcon},
-  august: {monthImage: MonthImages.augImage, monthIcon: MonthImages.augIcon},
-  september: {monthImage: MonthImages.sepImage, monthIcon: MonthImages.sepIcon},
-  ctober: {monthImage: MonthImages.octImage, monthIcon: MonthImages.octIcon},
-  november: {monthImage: MonthImages.novImage, monthIcon: MonthImages.novIcon},
-  december: {monthImage: MonthImages.decImage, monthIcon: MonthImages.decIcon},
+  1: {
+    monthImage: MonthImages.janImage,
+    monthIcon: MonthImages.janIcon,
+    monthName: 'January',
+  },
+  2: {
+    monthImage: MonthImages.febImage,
+    monthIcon: MonthImages.febIcon,
+    monthName: 'February',
+  },
+  3: {
+    monthImage: MonthImages.marchImage,
+    monthIcon: MonthImages.marchIcon,
+    monthName: 'March',
+  },
+  4: {
+    monthImage: MonthImages.aprilImage,
+    monthIcon: MonthImages.aprilIcon,
+    monthName: 'April',
+  },
+  5: {
+    monthImage: MonthImages.mayImage,
+    monthIcon: MonthImages.aprilIcon,
+    monthName: 'May',
+  },
+  6: {
+    monthImage: MonthImages.junImage,
+    monthIcon: MonthImages.junIcon,
+    monthName: 'June',
+  },
+  7: {
+    monthImage: MonthImages.julyImage,
+    monthIcon: MonthImages.julyIcon,
+    monthName: 'Jully',
+  },
+  8: {
+    monthImage: MonthImages.augImage,
+    monthIcon: MonthImages.augIcon,
+    monthName: 'August',
+  },
+  9: {
+    monthImage: MonthImages.sepImage,
+    monthIcon: MonthImages.sepIcon,
+    monthName: 'September',
+  },
+  10: {
+    monthImage: MonthImages.octImage,
+    monthIcon: MonthImages.octIcon,
+    monthName: 'October',
+  },
+  11: {
+    monthImage: MonthImages.novImage,
+    monthIcon: MonthImages.novIcon,
+    monthName: 'November',
+  },
+  12: {
+    monthImage: MonthImages.decImage,
+    monthIcon: MonthImages.decIcon,
+    monthName: 'December',
+  },
 };
 
 const attendenceMonthImages = {

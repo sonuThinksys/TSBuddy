@@ -14,10 +14,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {attendenceMonthImages} from 'defaultData';
+import moment from 'moment';
 const Attendence = () => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [spendhours, sendSpendhours] = useState(0);
+  const [totalSpendHours, setTotalSpendHours] = useState(0);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
@@ -32,15 +34,53 @@ const Attendence = () => {
   const {
     attendenceData: {employeeAttendance, dailyAttendance},
   } = useSelector(state => state.home);
+  console.log(
+    'dailyAttendance:------------------------------------------------',
+    dailyAttendance,
+  );
+  let today = new Date();
+
+  // get current day of the week (0-6)
+  let dayOfWeek = today.getDay();
+
+  // calculate date range for Monday-Sunday of current week
+  let startDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - dayOfWeek + 1,
+  );
+  let endDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - dayOfWeek + 7,
+  );
+
+  // format the dates to your desired format
+  let startDateFormat = startDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+  let endDateFormat = endDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
 
   useEffect(() => {
     let totalEffectiveHours = 0;
-    let totalHours = 10;
+    let totalHours = 0;
+    let companyHours = 0;
     dailyAttendance?.map(data => {
       totalEffectiveHours = totalEffectiveHours + data.totalEffectiveHours;
-      totalHours = totalHours + data.totalHours;
+      companyHours += 9;
     });
-    sendSpendhours(totalHours - totalEffectiveHours);
+    totalHours = totalEffectiveHours - companyHours;
+    console.log(
+      'totalEffectiveHours:-----------------------------------',
+      totalEffectiveHours,
+      companyHours,
+    );
+    sendSpendhours(totalHours);
+    setTotalSpendHours(totalEffectiveHours);
   }, [dailyAttendance]);
 
   let mark = {};
@@ -122,12 +162,12 @@ const Attendence = () => {
           <View style={styles.reportView}>
             <View style={styles.weekliyTextView}>
               <Text style={styles.reportText}>
-                Weekly Report 02 Jan - 08 Jan
+                Weekly Report {startDateFormat} - {endDateFormat}
               </Text>
             </View>
             <View style={styles.timeSpendView}>
               <Text style={styles.timeSpendText}>
-                Total Hour Spend 38:51{' '}
+                Total Hour Spend {totalSpendHours}
                 <Text
                   style={{color: spendhours < 0 ? Colors.red : Colors.green}}>
                   ({spendhours})
@@ -266,7 +306,3 @@ const renderItem = ({item}) => {
 };
 
 export default Attendence;
-
-//http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
-
-// http://10.101.23.48:81/apiAttendance/GetDailyAttendanceByEmpId?empId=10352&month=5&year=2018

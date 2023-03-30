@@ -37,7 +37,7 @@ const UpComingHolidays = () => {
     </View>
   );
 };
-const renderItem = ({item}) => {
+const renderItem = ({item, index}) => {
   const newDateFormate = moment(item.holidayDate).format(`DD MMM YYYY`);
   let year = new Date().getFullYear();
 
@@ -49,7 +49,7 @@ const renderItem = ({item}) => {
   return (
     <View>
       {date < date1 && Month >= 4 && Years <= 2021 ? (
-        <View style={styles.imageView}>
+        <View key={index} style={styles.imageView}>
           <Image
             resizeMode="contain"
             source={

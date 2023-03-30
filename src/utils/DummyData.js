@@ -93,9 +93,9 @@ export const monthsName = [
 ];
 
 export const RequestLunchLabel = [
-  {label: 'TODAY', value: 'today'},
-  {label: 'REQUEST FOR DURATION', value: 'req_duration'},
-  {label: 'MONTHLY LUNCH', value: 'monthly_lunch'},
+  {label: 'TODAY', value: 'daily'},
+  {label: 'REQUEST FOR DURATION', value: 'duration'},
+  {label: 'MONTHLY LUNCH', value: 'monthly'},
 ];
 
 export const earnindData = [

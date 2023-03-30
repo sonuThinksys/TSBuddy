@@ -12,11 +12,12 @@ import moment from 'moment';
 import Loader from 'component/loader/Loader';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
 import {isBefore2021} from 'utils/utils';
+import {guestHolidaysData} from 'guestData';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
-
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
 
@@ -24,7 +25,7 @@ const Holidays = () => {
     <View style={{paddingTop: hp(1), flex: 1}}>
       {isLoading ? <Loader /> : null}
       <FlatList
-        data={holidaysData}
+        data={isGuestLogin ? guestHolidaysData : holidaysData}
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return renderItem(
@@ -65,7 +66,7 @@ const renderItem = (
 ) => {
   const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
 
-  const date1 = +new Date();
+  const cureentDate = +new Date();
   const date = +moment(holidayDate).format('DD');
 
   const Years = +moment(holidayDate).format(`    YYYY`);
@@ -104,7 +105,7 @@ const renderItem = (
 
           style={{
             flex: 1,
-            backgroundColor: isBefore2021(date, date1, Years, holidayDate)
+            backgroundColor: isBefore2021(date, cureentDate, Years, holidayDate)
               ? Colors.royalBlue
               : Colors.grey,
             paddingHorizontal: wp(2),
@@ -123,7 +124,7 @@ const renderItem = (
           <Text
             style={{
               fontWeight: 'bold',
-              color: isBefore2021(date, date1, Years, holidayDate)
+              color: isBefore2021(date, cureentDate, Years, holidayDate)
                 ? Colors.black
                 : Colors.grey,
             }}>
