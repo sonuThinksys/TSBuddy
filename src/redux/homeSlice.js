@@ -1,5 +1,4 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {employeeData} from '../../db';
 import {holidayDatawithImage} from '../../db';
 import {salaryData} from '../../slaryData';
 import endPoints from '../config';
@@ -52,6 +51,34 @@ const lunch = 'lunch';
 const snacks = 'snacks';
 
 // =============================================
+
+export const applyForLeave = createAsyncThunk(
+  'home/applyLeave',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const {data, status} = await axios.post(
+        endPoints.applyLeave,
+        body,
+        config,
+      );
+      console.log('data:', data);
+      console.log('status:', status);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+
+    // return axios.post(endPoints.applyLeave, body, config).then(response => {
+    //   return Promise.resolve(response);
+    // });
+  },
+);
 
 export const getSingleUserFeedback = createAsyncThunk(
   'home/getSingleUserFeedback',
@@ -131,7 +158,9 @@ export const giveMenuFeedback = createAsyncThunk(
         .catch(error => {
           console.error(error);
         });
-    } catch (err) {}
+    } catch (err) {
+      console.log('err:', err);
+    }
   },
 );
 
@@ -194,7 +223,7 @@ export const getMenuFeedback = createAsyncThunk(
 export const getTodayMenuDetails = createAsyncThunk(
   'home/getTodayMenuDetails',
   async token => {
-    var config = {
+    const config = {
       method: 'get',
       url: endPoints.getTodayMenuGet,
       headers: {
@@ -209,7 +238,7 @@ export const getTodayMenuDetails = createAsyncThunk(
         if (status === 200) {
           return Promise.resolve(data);
         } else {
-          return Promise.reject(new Error('Something Went Wrong1!'));
+          return Promise.reject(new Error('Something Went Wrong!'));
         }
       })
       .catch(err => {
@@ -422,16 +451,19 @@ export const getSalarySlipData = createAsyncThunk(
 
 export const getEmployeeData = createAsyncThunk(
   'home/employeeData',
-  async token => {
+  async ({token, currentEmployees}) => {
     const config = {
+      method: 'post',
+      url: `${endPoints.getAllEmployees}`,
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
+      data: currentEmployees,
     };
 
     try {
-      const allEmployees = await axios.get(endPoints.getAllEmployees, config);
-
+      const allEmployees = await axios(config);
       return Promise.resolve(allEmployees.data);
     } catch (err) {
       console.log('err:', err);
@@ -615,21 +647,21 @@ const homeSlice = createSlice({
       state.foodMenuDatailsError = action.payload;
     });
 
-    builder.addCase(getLeaveDetails.pending, (state, action) => {
-      state.isLeaveDataLoading = true;
-    });
-    builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
-      state.isLeaveDataLoading = false;
-      // const dataWithId = action.payload.map(item => ({...item, id: uuidv4()}));
+    // builder.addCase(getLeaveDetails.pending, (state, action) => {
+    //   state.isLeaveDataLoading = true;
+    // });
+    // builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
+    //   state.isLeaveDataLoading = false;
+    //   // const dataWithId = action.payload.map(item => ({...item, id: uuidv4()}));
 
-      state.leavesData = action.payload;
-      state.leavesDataError = undefined;
-    });
-    builder.addCase(getLeaveDetails.rejected, (state, action) => {
-      state.isLeaveDataLoading = false;
-      state.leavesData = [];
-      state.leavesDataError = action.payload;
-    });
+    //   state.leavesData = action.payload;
+    //   state.leavesDataError = undefined;
+    // });
+    // builder.addCase(getLeaveDetails.rejected, (state, action) => {
+    //   state.isLeaveDataLoading = false;
+    //   state.leavesData = [];
+    //   state.leavesDataError = action.payload;
+    // });
     builder.addCase(getholidayDataIWithImage.pending, state => {
       state.holidayDataWithImageLoading = true;
     });

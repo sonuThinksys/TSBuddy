@@ -67,7 +67,7 @@ const renderItem = (
 
   const date1 = +new Date();
   const date = +moment(holidayDate).format('DD');
-  const Month = +moment(holidayDate).format(' MM ');
+
   const Years = +moment(holidayDate).format(`    YYYY`);
 
   return (
@@ -104,7 +104,7 @@ const renderItem = (
 
           style={{
             flex: 1,
-            backgroundColor: isBefore2021(date, date1, Years)
+            backgroundColor: isBefore2021(date, date1, Years, holidayDate)
               ? Colors.royalBlue
               : Colors.grey,
             paddingHorizontal: wp(2),
@@ -123,7 +123,7 @@ const renderItem = (
           <Text
             style={{
               fontWeight: 'bold',
-              color: isBefore2021(date, date1, Years)
+              color: isBefore2021(date, date1, Years, holidayDate)
                 ? Colors.black
                 : Colors.grey,
             }}>

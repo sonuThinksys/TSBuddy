@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ImageBackground,
   Image,
@@ -17,6 +17,7 @@ import {Colors} from 'colors/Colors';
 import styles from './MenuItemStyle';
 import {useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
+import {ERROR} from 'constants/strings';
 
 import {
   getMenuFeedback,
@@ -24,26 +25,43 @@ import {
   getTodayMenuDetails,
   giveMenuFeedback,
 } from 'redux/homeSlice';
+import ShowAlert from 'customComponents/CustomError';
 
-const MenuItem = () => {
+const MenuItem = ({navigation}) => {
   const dispatch = useDispatch();
 
-  const {
+  let {
     menuFeedback: getMenuFeedbackTotalCount,
     userFeedback,
     dailyMenuID,
     leaveMenuDetails: {foodMenus: foodMenuDatails},
   } = useSelector(state => state.home);
 
+  const [keyIndex, setKeyIndex] = useState('');
+
   const {userToken: token} = useSelector(state => state.auth);
 
   useEffect(() => {
     (async () => {
-      const result = await dispatch(getTodayMenuDetails(token));
+      // const token =
+      //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwOTY4OGI2Ny05N2NkLTRmYjQtYWI5YS0yZDQ3NjY5NzVkMWIiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc5NjQxNjY2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.U3fK-qSdMFPQ1KnseKzGnCA12hQ-PyU6OSRcVQ1dDhI';
+
+      const menuDetails = await dispatch(getTodayMenuDetails(token));
+      if (menuDetails?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: menuDetails?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+      const foodFeedback = dispatch(getMenuFeedback(token));
+      console.log('foodFeedback:', foodFeedback);
+      dailyMenuID &&
+        dispatch(getSingleUserFeedback({token, menuID: dailyMenuID}));
     })();
-    dispatch(getMenuFeedback(token));
-    dispatch(getSingleUserFeedback({token, menuID: dailyMenuID}));
-  }, []);
+  }, [keyIndex]);
 
   const userData = {
     employee: 'EMP/10352',
@@ -90,6 +108,8 @@ const MenuItem = () => {
                 <TouchableOpacity
                   disabled={userFeedback[index]?.feedback === 1}
                   onPress={() => {
+                    let keyIndex = `like_${index}`;
+                    setKeyIndex(keyIndex);
                     dispatch(
                       giveMenuFeedback({
                         token,
@@ -117,11 +137,13 @@ const MenuItem = () => {
                     : userFeedback[index].feedback === 0
                     ? 0
                     : 1} */}
-                  {getMenuFeedbackTotalCount[index].likes}
+                  {getMenuFeedbackTotalCount[index]?.likes}
                 </Text>
                 <TouchableOpacity
                   disabled={userFeedback[index]?.feedback === 0}
                   onPress={() => {
+                    let keyIndex = `dislike_${index}`;
+                    setKeyIndex(keyIndex);
                     dispatch(
                       giveMenuFeedback({
                         token,
@@ -143,13 +165,6 @@ const MenuItem = () => {
                   />
                 </TouchableOpacity>
                 <Text style={{flex: 1}}>
-                  {/* {userFeedback[index].feedback === null
-                    ? 0
-                    : userFeedback[index].feedback === 1
-                    ? 0
-                    : userFeedback[index].feedback === undefined
-                    ? 0
-                    : 1} */}
                   {getMenuFeedbackTotalCount[index].dislikes}
                 </Text>
               </View>

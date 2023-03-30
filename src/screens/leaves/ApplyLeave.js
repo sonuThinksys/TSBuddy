@@ -4,9 +4,7 @@ import {useState} from 'react';
 import {
   FlatList,
   Image,
-  Modal,
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -27,8 +25,10 @@ import {
   approver,
   leaves,
 } from 'utils/DummyData';
+import {applyForLeave} from 'redux/homeSlice';
 
 const ApplyLeave = () => {
+  const {userToken: token} = useSelector(state => state.auth);
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({fromDateStr: ''});
@@ -278,7 +278,22 @@ const ApplyLeave = () => {
     );
   };
 
-  const applyLeave = () => {};
+  const applyLeave = () => {
+    applyForLeave({
+      token,
+      body: {
+        employeeId: 10352,
+        fromDate: '2023-03-31T11:10:09.792Z',
+        toDate: '2023-03-31T11:10:09.792Z',
+        totalLeaveDays: 1,
+        description: 'Testing',
+        halfDay: 0,
+        postingDate: '2023-03-29T11:10:09.792Z',
+        leaveType: 'Earned Leave',
+        leaveApprover: 'Mayank Sharma',
+      },
+    });
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>

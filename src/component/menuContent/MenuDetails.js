@@ -28,12 +28,11 @@ const MenuDetails = () => {
         // start={{x: 0.1, y: 0.1}}
         //  end={{x: 0.1, y: 1.0}}
         locations={[0.1, 1, 0.01]}
-        colors={['#BABABA', 'blue', '#BABABA']}
-        // colors={['white', 'white', 'white']}
+        colors={[Colors.grey, Colors.blue, Colors.grey]}
         style={styles.secondContainer}>
         <Pressable
           onPress={() => {
-            navigation.navigate(RequestLunchScreen, navigation);
+            navigation.navigate(RequestLunchScreen);
           }}>
           <Text style={styles.text2}> + Lunch Request</Text>
         </Pressable>

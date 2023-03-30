@@ -7,7 +7,6 @@ import {
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {getEmployeeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import UserProfile from 'component/useProfile/UserProfile';
 import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
 import {employeeProfileScreen} from 'navigation/Route';
@@ -20,7 +19,7 @@ const Header = () => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          dispatch(getEmployeeData(token));
+          // dispatch(getEmployeeData(token));
           navigation.navigate(employeeProfileScreen);
         }}>
         <Image

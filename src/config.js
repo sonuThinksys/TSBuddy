@@ -1,7 +1,6 @@
 import {API_URL} from '@env';
 //let year = new Date().getFullYear();
 let year = new Date().getFullYear();
-console.log('Yes! Aaya!!!!');
 let month = new Date().getMonth();
 
 export default {
@@ -17,4 +16,6 @@ export default {
   getAllEmployees: `${API_URL}/EmployeeProfile/GetAllEmployeeDetails`,
   getMenuFeedbackTotalCount: `${API_URL}/FoodRequest/TotalFoodResponseCount`,
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
+  getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
+  applyLeave: `${API_URL}/Leave/AddLeave`,
 };

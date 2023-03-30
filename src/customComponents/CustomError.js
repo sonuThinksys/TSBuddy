@@ -11,7 +11,7 @@ const ShowAlert = props => {
     onPress,
     dispatch,
   } = props || {};
-  if (messageSubHeader.toLowerCase() == 'token expired') {
+  if (messageSubHeader.toLowerCase() == 'token-expired') {
     Alert.alert('Login expired', 'Please login again!', [
       {
         text: 'OK',

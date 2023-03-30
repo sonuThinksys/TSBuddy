@@ -22,10 +22,6 @@ let data = [
 ];
 
 const Home = () => {
-  // useEffect(() => {
-  //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  // }, []);
-
   const {isLoading} = useSelector(state => state.auth);
   return (
     <SafeAreaView style={{flex: 1}}>

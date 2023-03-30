@@ -18,31 +18,73 @@ import {
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 // import Header from 'component/header/Header';
-
+import baseUrl from 'services/Urls';
 import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
-import {modalStatus} from 'redux/homeSlice';
+import {getEmployeeData, modalStatus} from 'redux/homeSlice';
 import {FontSize} from 'constants/fonts';
-//import {employeeData} from '../../../db';
+
 const UserProfile = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const {isShowModal: isShowModall} = useSelector(state => state.home);
+
+  const {userToken: token} = useSelector(state => state.auth);
   const [showHoriZontal, setShowHorizontal] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
   const [allEmpData, setEmpData] = useState([]);
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const {employeeData,isShowModal:isShowModall} = useSelector(state => state.home);
+  const [scrollBegin, setScrollBegin] = useState(false);
+  let skipCount = allEmpData.length || 0;
+
+  const [employeesCount, setEmployeesCount] = useState(0);
+
   useEffect(() => {
-    setEmpData(employeeData);
-  }, [employeeData]);
+    (async () => {
+      await fetchEmployeesData({
+        isInitial: true,
+        currentEmployees: {
+          page: 1,
+          skip: 0,
+          take: 15,
+        },
+      });
+    })();
+  }, []);
+
+  const fetchEmployeesData = async ({isInitial, currentEmployees}) => {
+    const result = await dispatch(getEmployeeData({token, currentEmployees}));
+    if (result && result?.payload && result?.payload?.data) {
+      if (isInitial) {
+        setEmpData(result.payload.data);
+      } else {
+        setEmpData([...allEmpData, ...result.payload.data]);
+      }
+      setEmployeesCount(result.payload.count);
+    }
+  };
 
   const onChangeText = e => {
-    const filterData = employeeData.filter(el => {
+    const filterData = allEmpData.filter(el => {
       return el.employeeName.includes(e);
     });
 
     setEmpData(filterData);
+  };
+
+  const loadMoreData = () => {
+    if (scrollBegin && employeesCount > skipCount) {
+      // fetchEmployeesData({take: 15, skip: skipCount, page: 1});
+      fetchEmployeesData({
+        currentEmployees: {
+          page: 1,
+          skip: skipCount,
+          take: 15,
+        },
+      });
+    }
   };
 
   return (
@@ -164,6 +206,15 @@ const UserProfile = () => {
       ) : null}
       {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
+        //
+        legacyImplementation={false}
+        onScrollBeginDrag={() => setScrollBegin(true)}
+        onEndReachedThreshold={0.01}
+        scrollsToTop={false}
+        showsVerticalScrollIndicator={false}
+        onEndReached={loadMoreData}
+        onMomentumScrollBegin={() => setScrollBegin(true)}
+        onMomentumScrollEnd={() => setScrollBegin(false)}
         data={allEmpData}
         numColumns={numValue}
         keyExtractor={(item, index) => index.toString()}
@@ -203,7 +254,7 @@ const renderItem = (
   showHoriZontal,
 ) => {
   return (
-    <View>
+    <View key={index}>
       {showHoriZontal ? (
         <TouchableOpacity
           onPress={() => {
@@ -219,7 +270,11 @@ const renderItem = (
           }}>
           <View style={styles.container}>
             <View style={{}}>
-              <Image source={{uri: imageURL}} style={styles.image} />
+              <Image
+                resizeMode="stretch"
+                source={{uri: `${baseUrl}${image}`}}
+                style={styles.secondimage}
+              />
             </View>
             <View style={{paddingLeft: wp(5)}}>
               <Text style={styles.nameText}>{employeeName}</Text>
