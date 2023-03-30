@@ -9,6 +9,8 @@ const TOUCH_SENSOR = 'Touch sensor';
 const CONFIRM_FINGERPRINT="Confirm Fingerprint to continue"
 const SIGN_IN="Sign in"
 const BIOMETRIC_LOGIN="Biometric login"
+const ERROR="Something went wrong!"
+const INCORRECT_LOGIN="Please try agian later."
 export {
   COPY_RIGHT,
   GUEST_LOGIN,
@@ -18,5 +20,7 @@ export {
   TOUCH_SENSOR,
   CONFIRM_FINGERPRINT,
   SIGN_IN,
-  BIOMETRIC_LOGIN
+  BIOMETRIC_LOGIN,
+  ERROR,
+  INCORRECT_LOGIN
 };

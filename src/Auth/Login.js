@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import * as Keychain from 'react-native-keychain';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
@@ -25,12 +25,13 @@ import {
 import TSBuddyIcon from '../assets/Icons/TSIcon.webp';
 import LoginVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
-import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
+import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
+import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import fingerPrint1 from 'assets/allImage/fingerImage.png';
 
 import {loginStatus} from './LoginSlice';
-import {getUserToken} from './LoginSlice';
+import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import {FontFamily, FontSize} from 'constants/fonts';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
@@ -39,27 +40,56 @@ import {
   CANCEL,
   CONFIRM_FINGERPRINT,
   COPY_RIGHT,
+  ERROR,
   FORGOT_PASSWORD,
   GUEST_LOGIN,
+  INCORRECT_LOGIN,
   REMEMBER_ME,
   SIGN_IN,
   TOUCH_SENSOR,
 } from 'utils/string';
-const Login = () => {
+import ShowAlert from 'component/ShowAlert/ShowAlert';
+const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
-  const [isBiometric, setIsBiometric] = useState(true);
-  const [bioMetricEnable, setBiometricEnable] = useState(false);
+  // const [isBiometric, setIsBiometric] = useState(true);
+  // const [bioMetricEnable, setBiometricEnable] = useState(false);
   const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
-
-  const token = useSelector(state => state.auth.userToken);
+  const {
+    isRemember,
+    userToken: token,
+    bioMetricEnable,
+  } = useSelector(state => state.auth);
   const formInput = useSelector(state => state.auth.formInput);
   useEffect(() => {
+    // (async () => {
+    //   if (isRemember) {
+    //     let userDetailsRemeber = await AsyncStorage.getItem(
+    //       'userDetailsRemeber',
+    //     );
+    //     userDetailsRemeber = JSON.parse(userDetailsRemeber);
+    //     console.log(
+    //       'userDetailsRemeber',
+    //       userDetailsRemeber,
+    //       userDetailsRemeber?.username,
+    //     );
+    //     if (userDetailsRemeber && Object.keys(userDetailsRemeber).length) {
+    //       console.log(
+    //         'userDetailsRemeber',
+    //         userDetailsRemeber,
+    //         userDetailsRemeber?.username,
+    //       );
+    //       // setLoading(true);
+    //       // await dispatch(getUserToken({username, password}));
+    //       // setLoading(false);
+    //     }
+    //   }
+    // })();
     if (Platform.OS === 'android') {
       // Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
       //   {
@@ -69,7 +99,8 @@ const Login = () => {
       //   },
       //   {text: 'OK', onPress: () => setBiometricEnable(true)},
       // ]);
-      setBiometricEnable(true);
+      // setBiometricEnable(true);
+      dispatch(setBiometricEnable(true));
     }
   }, [formInput, token]);
 
@@ -110,14 +141,34 @@ const Login = () => {
       })
       .catch(error => {
         // Failure code
-        setIsBiometric(false);
+        // setIsBiometric(false);
       });
   };
 
   const onPressLogin = async () => {
-    setLoading(true);
-    await dispatch(getUserToken({username, password}));
-    setLoading(false);
+    try {
+      setLoading(true);
+      let result = await dispatch(getUserToken({username, password}));
+      if (result?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: INCORRECT_LOGIN,
+          buttonText: 'CLOSE',
+          dispatch,
+          navigation,
+        });
+      } else {
+        if (isRemember) {
+          AsyncStorage.setItem(
+            'userDetailsRemeber',
+            JSON.stringify({username, password}),
+          );
+        }
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -141,7 +192,7 @@ const Login = () => {
             <View style={styles.cancelButtonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  setBiometricEnable(false);
+                  dispatch(setBiometricEnable(false));
                   setshowBiomatricModal(false);
                 }}>
                 <Text style={styles.cancelButton}>{CANCEL}</Text>
@@ -225,15 +276,24 @@ const Login = () => {
                 {FORGOT_PASSWORD}
               </Text>
             </TouchableOpacity>
-            <View
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setIsRemeber(!isRemember));
+                if (isRemember) {
+                  AsyncStorage.removeItem('userDetailsRemeber');
+                }
+              }}
               style={{
-                flexDirection: 'row-reverse',
+                flexDirection: 'row',
                 paddingHorizontal: wp(2),
                 alignItems: 'center',
               }}>
+              <Image
+                style={{height: 25, width: 25}}
+                source={isRemember ? LoginCheck : LoginUnCheck}
+              />
               <Text style={styles.rememberText}>{REMEMBER_ME}</Text>
-              <Image style={{height: 30, width: 30}} source={LoginCheck} />
-            </View>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={onPressLogin}>
             <View style={styles.loginView}>

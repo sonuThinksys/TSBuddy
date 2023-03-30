@@ -21,7 +21,7 @@ import {
 // import {appVersion} from 'utils/appVersion';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {loginStatus} from 'Auth/LoginSlice';
+import {loginStatus,logOut} from 'Auth/LoginSlice';
 
 export default ({navigation}) => {
   const dispatch = useDispatch();
@@ -109,8 +109,7 @@ const renderDrawerItem = (
       key={index}
       onPress={() => {
         if (dispatch) {
-          dispatch(loginStatus(false));
-
+          dispatch(logOut());
           navigation.closeDrawer();
         } else {
           navigation.closeDrawer();
