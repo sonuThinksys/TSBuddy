@@ -12,7 +12,7 @@ import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
 
 const reducers = combineReducers({
   auth: loginSlice,
-  dataReducer: homeSlice,
+  home: homeSlice,
 });
 
 const persistConfig = {

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Modal,
   View,
@@ -13,13 +13,13 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {authLoginStatus} from 'Auth/LoginSlice';
-import CustomModal from 'components/CustomModal';
+import CustomModal from 'customComponents/CustomModal';
 import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 const SalarSlipModal = () => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
-
+  const token = useSelector(state => state.auth.userToken);
   return (
     <CustomModal>
       <View style={styles.container}>
@@ -39,7 +39,7 @@ const SalarSlipModal = () => {
           }}
           onPress={() => {
             dispatch(authLoginStatus(true));
-            dispatch(getSalarySlipData());
+            dispatch(getSalarySlipData(token));
           }}>
           <View style={styles.secondTextView}>
             <Text style={styles.contnueText}>Continue</Text>

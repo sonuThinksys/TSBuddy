@@ -6,20 +6,18 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {useSelector, useDispatch} from 'react-redux';
-import {getHolidaysData} from 'redux/homeSlice';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
 import Loader from 'component/loader/Loader';
-import jwt_decode from 'jwt-decode';
+import {guestHolidaysData} from 'guestData';
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
-
-  const holidaysData = useSelector(state => state.dataReducer.holidayData);
-  const isLoading = useSelector(state => state.dataReducer.holidayDataLoading);
-  console.log('isLoading:---------------', isLoading);
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
+  const {holidayData: holidaysData, holidayDataLoading: isLoading} =
+    useSelector(state => state.home);
   const data1 = [
     {
       name: 'Past Holidays',
@@ -36,7 +34,7 @@ const Holidays = () => {
     <View style={{paddingTop: hp(1), flex: 1}}>
       {isLoading ? <Loader /> : null}
       <FlatList
-        data={holidaysData}
+        data={isGuestLogin ? guestHolidaysData : holidaysData}
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return renderItem(
@@ -77,7 +75,7 @@ const renderItem = (
 ) => {
   const newDateFormate = moment(holidayDate).format(`DD-MMM-YYYY`);
 
-  const date1 = +new Date();
+  const cureentDate = +new Date();
   const date = +moment(holidayDate).format('DD');
   const Month = +moment(holidayDate).format(' MM ');
   const Years = +moment(holidayDate).format(`    YYYY`);
@@ -117,7 +115,7 @@ const renderItem = (
           style={{
             flex: 1,
             backgroundColor:
-              date < date1 && Month >= 4 && Years <= 2021
+              date < cureentDate && Month >= 4 && Years <= 2021
                 ? Colors.royalBlue
                 : Colors.grey,
             paddingHorizontal: wp(2),
@@ -137,7 +135,7 @@ const renderItem = (
             style={{
               fontWeight: 'bold',
               color:
-                date < date1 && Month >= 4 && Years <= 2021
+                date < cureentDate && Month >= 4 && Years <= 2021
                   ? Colors.black
                   : Colors.grey,
             }}>

@@ -19,41 +19,28 @@ import {deductionData, earnindData} from 'utils/DummyData';
 import {SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
+  console.log('data in salary details:-----------------------------', data);
   const [show, setShow] = useState(false);
   const [secondShow, setSecondShow] = useState(false);
   const renderData = [
-    {lable: 'Arrear Amount', value: data.arrear_amount},
-    {lable: 'Bank Account No', value: data.bank_account_no},
-    {lable: 'Bank Name', value: data.bank_name},
+    {lable: 'Arrear Amount', value: data.arrearAmount},
+    {lable: 'Bank Account No', value: data.bankAccountNo},
+    {lable: 'Bank Name', value: data.bankName},
     {lable: 'Creation', value: moment(data.creation).format(`DD-MMM-YYYY`)},
-    {lable: 'Employee ID', value: data.employee},
-    {lable: 'Employee Name', value: data.employee_name},
-    {lable: 'Fiscal Year', value: data.fiscal_year},
-    {lable: 'Gross Pay', value: data.gross_pay},
-    {lable: 'Leave Encashment Amount', value: data.leave_encashment_amount},
-    {lable: 'Month', value: data.month},
-    {lable: 'Net Pay', value: data.net_pay},
-    {lable: 'Pan Number', value: data.pan_number},
-    {lable: 'Payment Days', value: data.payment_days},
-    {lable: 'Rounded Total', value: data.rounded_total},
-    {lable: 'Total Days', value: data.total_days_in_month},
-    {lable: 'Total Deduction', value: data.total_deduction},
+    {lable: 'Employee ID', value: data.employeeId},
+    {lable: 'Employee Name', value: data.employeeName},
+    {lable: 'Fiscal Year', value: data.fiscalYear},
+    {lable: 'Gross Pay', value: data.grossPay},
+    {lable: 'Leave Encashment Amount', value: data.leaveEncashmentAmount},
+    {lable: 'Month', value: data.monthName},
+    {lable: 'Net Pay', value: data.netPay},
+    {lable: 'Pan Number', value: data.panNumber},
+    {lable: 'Payment Days', value: data.paymentDays},
+    {lable: 'Rounded Total', value: data.roundedTotal},
+    {lable: 'Total Days', value: data.totalDaysInMonth},
+    {lable: 'Total Deduction', value: data.totalDeduction},
   ];
 
-  const earnindData = [
-    {lable: 'House Rent Allowance', value: '4000'},
-    {lable: 'Basic', value: '5565605'},
-    {lable: 'Standard Deduction', value: '10000'},
-    {lable: 'Parking Reimbursement', value: '600.00'},
-    {lable: 'Special Allowance', value: '5675656'},
-  ];
-  const deductionData = [
-    {lable: 'Employee PF', value: '60000'},
-    {lable: 'Meal Charges', value: '600'},
-    {lable: 'Meal Charges', value: '600'},
-    {lable: 'Meal Charges', value: '600'},
-    {lable: 'Meal Charges', value: '800'},
-  ];
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
@@ -78,7 +65,7 @@ const SalaryDetail = ({route, navigation}) => {
           style={{height: 80, width: 120, marginRight: wp(4)}}
         />
         <Text style={styles.monthText}>
-          {data.month} {data.year}
+          {data?.monthName} {data?.fiscalYear.substring(0, 4)}
         </Text>
         <TouchableOpacity
           onPress={() => {
@@ -123,12 +110,12 @@ const SalaryDetail = ({route, navigation}) => {
           </TouchableOpacity>
           {show ? (
             <View>
-              {earnindData.map((elemnt, index) => {
+              {data.salarySlipEarningDTOs.map((elemnt, index) => {
                 return (
                   <View key={index} style={styles.earningTextView}>
-                    <Text style={{flex: 0.6}}>{elemnt.lable}</Text>
+                    <Text style={{flex: 0.6}}>{elemnt.eType}</Text>
                     <Text style={{color: 'gray', flex: 0.4}}>
-                      {elemnt.value}
+                      {elemnt.eAmount}
                     </Text>
                   </View>
                 );
@@ -153,12 +140,12 @@ const SalaryDetail = ({route, navigation}) => {
           </TouchableOpacity>
           {secondShow ? (
             <View>
-              {deductionData.map((elemnt, index) => {
+              {data.salarySlipDeductionDTOs.map((elemnt, index) => {
                 return (
                   <View key={index} style={styles.deductionTextView}>
-                    <Text style={{flex: 0.6}}>{elemnt.lable}</Text>
+                    <Text style={{flex: 0.6}}>{elemnt.dType}</Text>
                     <Text style={{color: 'gray', flex: 0.4}}>
-                      {elemnt.value}
+                      {elemnt.dAmount}
                     </Text>
                   </View>
                 );

@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
 import {employeeProfileScreen} from 'navigation/Route';
 const Header = () => {
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   const navigation = useNavigation();
 
   const dispatch = useDispatch();

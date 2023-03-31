@@ -4,12 +4,13 @@ import {holidayDatawithImage} from '../../db';
 import {salaryData} from '../../slaryData';
 import endPoints from '../config';
 import axios from 'axios';
+import {MonthImages} from 'assets/monthImage/MonthImage';
 // import {v4 as uuidv4} from 'uuid';
 
 const initialState = {
   isLoading: true,
   isShowModal: false,
-  salarySlipData: [],
+  salarySlipData: {},
   salarySlipDataLoading: false,
   salarySlipDataError: false,
   employeeData: {},
@@ -36,16 +37,135 @@ const initialState = {
   attendenceDataError: false,
   recentAppliedLeaves: [],
   remainingLeaves: [],
-  foodMenuDatails: [],
+  leaveMenuDetails: [],
   menuDetailsLoading: false,
   foodMenuDatailsError: null,
-  menuFeedback: {},
+  menuFeedback: [],
+  menuFeedbackLoading: false,
+  menuFeedbackError: null,
+  dailyMenuID: '',
+  userFeedback: [],
 };
+
+const breakfast = 'breakfast';
+const lunch = 'lunch';
+const snacks = 'snacks';
 
 // =============================================
 
+export const getSingleUserFeedback = createAsyncThunk(
+  'home/getSingleUserFeedback',
+  async ({token, menuID}) => {
+    const config = {
+      method: 'get',
+      url: `${endPoints.getUserFeedback}${menuID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        }
+        // else {
+        //   return Promise.reject(new Error('Something Went Wrong1!'));
+        // }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+export const giveMenuFeedback = createAsyncThunk(
+  'home/giveMenuFeedback',
+  async ({token, menuID, userData, feedbackType, index}) => {
+    const isLike = feedbackType === 'like';
+    let value;
+    if (isLike) value = 1;
+    else value = 0;
+
+    let type;
+    if (index === 0) type = 'breakfast';
+    if (index === 1) type = 'lunch';
+    if (index === 2) type = 'meal';
+
+    try {
+      const apiEndpoint = endPoints.giveFeedbackPost;
+
+      // const data = {
+      //   employee: 'EMP/10352',
+      //   employeeName: 'Amit Kumar Pant',
+      //   dailyMenuId: menuId,
+      //   creation: new Date(),
+      //   breakfast: foodFeedback[0].feedback,
+      //   lunch: foodFeedback[1].feedback,
+      //   meal: foodFeedback[2].feedback,
+      //   [type]: value,
+      // };
+
+      userData.dailyMenuId = menuID;
+      userData[type] = value;
+
+      return axios
+        .post(apiEndpoint, userData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(response => {
+          return Promise.resolve({data: response.data, type, isLike, index});
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } catch (err) {}
+  },
+);
+
+// export const applyLeave = createAsyncThunk('home/applyLeave', async token => {
+//   const config = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   };
+
+//   return axios(config)
+//     .then(async response => {
+//       const {data, status} = response;
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject(new Error('Something Went Wrong.'));
+//       }
+//     })
+//     .catch(err => {
+//       let statusCode = 500;
+//       if (err?.response) {
+//         statusCode = err?.response.status;
+//       }
+//       if (statusCode == 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     });
+// });
+
 export const getMenuFeedback = createAsyncThunk(
-  'dataReducer/menuFeedback',
+  'home/menuFeedback',
   async token => {
     const config = {
       headers: {
@@ -54,7 +174,15 @@ export const getMenuFeedback = createAsyncThunk(
     };
 
     try {
-    } catch (err) {}
+      const feedback = await axios.get(
+        endPoints.getMenuFeedbackTotalCount,
+        config,
+      );
+
+      return Promise.resolve(feedback.data);
+    } catch (err) {
+      console.log('err:', err);
+    }
   },
 );
 // =============================================
@@ -64,7 +192,7 @@ export const getMenuFeedback = createAsyncThunk(
 // your userSlice with other reducers
 
 export const getTodayMenuDetails = createAsyncThunk(
-  'dataReducer/menuDetails',
+  'home/getTodayMenuDetails',
   async token => {
     var config = {
       method: 'get',
@@ -75,24 +203,8 @@ export const getTodayMenuDetails = createAsyncThunk(
       },
     };
 
-    // try {
-    //   const menuDetails = await axios.get(endPoints.getTodayMenuGet, config);
-
-    //   return Promise.resolve(menuDetails);
-    // } catch (err) {
-    //   let statusCode = 500;
-    //   if (err?.response) {
-    //     statusCode = err?.response?.status;
-    //   }
-    //   if (statusCode == 401) {
-    //     return Promise.reject(err?.response?.data?.message);
-    //   } else {
-    //     return Promise.reject(new Error(err));
-    //   }
-    // }
-
     return axios(config)
-      .then(async response => {
+      .then(response => {
         const {data, status} = response;
         if (status === 200) {
           return Promise.resolve(data);
@@ -117,7 +229,7 @@ export const getTodayMenuDetails = createAsyncThunk(
 // ============================================================================================
 
 export const getHolidaysData = createAsyncThunk(
-  'dataReducer/holidayData',
+  'home/holidayData',
   async token => {
     var config = {
       method: 'get',
@@ -189,7 +301,7 @@ export const getLeaveDetails = createAsyncThunk(
 );
 
 export const getEmployeeProfileData = createAsyncThunk(
-  'dataReducer/employeeProfile',
+  'home/employeeProfile',
   async ({token, employeeID}) => {
     var config = {
       method: 'get',
@@ -224,7 +336,7 @@ export const getEmployeeProfileData = createAsyncThunk(
 );
 
 export const getCalendereventData = createAsyncThunk(
-  'dataReducer/getCalendereventData',
+  'home/getCalendereventData',
   async token => {
     var config = {
       method: 'get',
@@ -257,7 +369,7 @@ export const getCalendereventData = createAsyncThunk(
   },
 );
 export const getAttendencaeData = createAsyncThunk(
-  'dataReducer/getAttendencaeData',
+  'home/getAttendencaeData',
   async ({token, employeeID, visisbleMonth, visibleYear}) => {
     var config = {
       method: 'get',
@@ -267,12 +379,10 @@ export const getAttendencaeData = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
-    console.log('url:------------------------------------------', config.url);
     return axios(config)
       .then(async response => {
         const {data, status} = response;
         if (status === 200) {
-          console.log('data:---------------------------------------', data[0]);
           return Promise.resolve(data[0]);
         } else {
           return Promise.reject(new Error('Something Went Wrong3!'));
@@ -294,24 +404,40 @@ export const getAttendencaeData = createAsyncThunk(
 
 export const getSalarySlipData = createAsyncThunk(
   'dataReducer/salarySlipData',
-  async () => {
-    return Promise.resolve(salaryData);
-    //  fetch('http://localhost:4000/salaryData')
-    //     .then(res => {
-    //       res.json();
-    //     })
-    //     .then(result => {
-    //       return Promise.resolve(result);
-    //     })
-    //     .catch(err => {
-    //       return Promise.reject(err);
-    //     });
-    //   return Promise.resolve(salaryData);
+  async token => {
+    var config = {
+      method: 'get',
+      url: endPoints.getSalaryDataAPI,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong1!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 
 export const getEmployeeData = createAsyncThunk(
-  'dataReducer/employeeData',
+  'home/employeeData',
   async token => {
     const config = {
       headers: {
@@ -320,12 +446,7 @@ export const getEmployeeData = createAsyncThunk(
     };
 
     try {
-      console.log('Yes! Inside.  1111');
-
       const allEmployees = await axios.get(endPoints.getAllEmployees, config);
-
-      console.log('Yes! Inside.   2222');
-      console.log('allEmployeesData:', allEmployees.data.length);
 
       return Promise.resolve(allEmployees.data);
     } catch (err) {
@@ -335,9 +456,48 @@ export const getEmployeeData = createAsyncThunk(
 );
 
 export const getholidayDataIWithImage = createAsyncThunk(
-  'dataReducer/holidayDataIWithImage',
+  'home/holidayDataIWithImage',
   async () => {
     return Promise.resolve(holidayDatawithImage);
+  },
+);
+
+export const requestLunchSubmission = createAsyncThunk(
+  'dataReducer/requestLunchSubmission',
+  async formInput => {
+    try {
+      const {token, ...restData} = formInput;
+      console.log('formInput:-----------------------------', formInput);
+      const url = endPoints.requestLunchApi;
+      console.log('url:----------------------------------', url);
+      var config = {
+        method: 'post',
+        url: endPoints.requestLunchApi,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        data: {
+          requestforlunch: 1,
+          requestlunchstartdate: new Date('2023-03-26'),
+          requestlunchenddate: new Date('2023-03-30'),
+        },
+      };
+
+      return axios(config).then(result => {
+        console.log('data in request lunch:---------------------', result);
+        const {data = {}, status} = result || {};
+
+        if (status === 200) {
+          return Promise.resolve({data, formInput});
+        } else {
+          return Promise.reject('something went wrong');
+        }
+      });
+    } catch (err) {
+      console.log('error:----', err);
+      // return Promise.reject(new Error(err));
+    }
   },
 );
 
@@ -362,6 +522,47 @@ const homeSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(getSingleUserFeedback.fulfilled, (state, action) => {
+      const data = action.payload;
+
+      const breakfastRating = data?.breakfast;
+      const lunchRating = data?.lunch;
+      const snacksRating = data?.meal;
+
+      const feedbackArray = [
+        {
+          type: breakfast,
+          feedback: breakfastRating,
+          totalLikes: 0,
+          totalDislikes: 0,
+        },
+        {
+          type: lunch,
+          feedback: lunchRating,
+          totalLikes: 0,
+          totalDislikes: 0,
+        },
+        {
+          type: snacks,
+          feedback: snacksRating,
+          totalLikes: 0,
+          totalDislikes: 0,
+        },
+      ];
+
+      state.userFeedback = feedbackArray;
+    });
+
+    builder.addCase(giveMenuFeedback.fulfilled, (state, action) => {
+      // console.log('actionData:', action.payload);
+      const feedbackArray = [...state.userFeedback];
+
+      feedbackArray[action.payload.index].feedback = action.payload.isLike
+        ? 1
+        : 0;
+
+      state.userFeedback = feedbackArray;
+    });
     builder.addCase(getSalarySlipData.pending, state => {
       state.salarySlipDataLoading = true;
     });
@@ -403,21 +604,71 @@ const homeSlice = createSlice({
       state.holidayDataError = action.payload;
     });
 
-    // builder.addCase(getTodayMenuDetails.pending, state => {
-    //   state.menuDetailsLoading = true;
-    // });
+    builder.addCase(getMenuFeedback.pending, state => {
+      state.menuFeedbackLoading = true;
+    });
+    builder.addCase(getMenuFeedback.rejected, (state, action) => {
+      state.menuFeedbackLoading = false;
+      state.menuFeedbackError = action.payload;
+      state.menuFeedback = [];
+    });
+    builder.addCase(getMenuFeedback.fulfilled, (state, action) => {
+      state.menuFeedbackLoading = false;
+      state.menuFeedbackError = null;
 
-    // builder.addCase(getTodayMenuDetails.fulfilled, (state, action) => {
-    //   state.menuDetailsLoading = false;
-    //   state.foodMenuDatails = action.payload;
-    //   state.foodMenuDatailsError = undefined;
-    // });
+      const totalFeedbackArray = [
+        {
+          likes: action.payload.totalBreakfastlikes,
+          dislikes: action.payload.totalBreakfastdislikes,
+        },
+        {
+          likes: action.payload.totalLunchlikes,
+          dislikes: action.payload.totalLunchdislikes,
+        },
+        {
+          likes: action.payload.totalMeallikes,
+          dislikes: action.payload.totalMealdislikes,
+        },
+      ];
 
-    // builder.addCase(getTodayMenuDetails.rejected, (state, action) => {
-    //   state.menuDetailsLoading = false;
-    //   state.foodMenuDatails = [];
-    //   state.foodMenuDatailsError = action.payload;
-    // });
+      state.menuFeedback = totalFeedbackArray;
+    });
+
+    builder.addCase(getTodayMenuDetails.pending, state => {
+      state.menuDetailsLoading = true;
+    });
+
+    builder.addCase(getTodayMenuDetails.fulfilled, (state, action) => {
+      state.menuDetailsLoading = false;
+      state.foodMenuDatailsError = undefined;
+      const totalFoodArr = [
+        {
+          type: breakfast,
+          food: action.payload.foodMenus[0]?.breakfast,
+          img_url: MonthImages.breakfastImgS,
+        },
+        {
+          type: lunch,
+          food: action.payload.foodMenus[0]?.lunch,
+          img_url: MonthImages.Lunch,
+        },
+        {
+          type: snacks,
+          food: action.payload.foodMenus[0]?.eveningSnack,
+          img_url: MonthImages.snacksS,
+        },
+      ];
+
+      const data = {...action.payload, foodMenus: totalFoodArr};
+      state.dailyMenuID = action.payload.foodMenus[0]?.dailyMenuId || '';
+      state.leaveMenuDetails = data;
+    });
+
+    builder.addCase(getTodayMenuDetails.rejected, (state, action) => {
+      state.menuDetailsLoading = false;
+      state.leaveMenuDetails = [];
+      state.foodMenuDatailsError = action.payload;
+    });
 
     builder.addCase(getLeaveDetails.pending, (state, action) => {
       state.isLeaveDataLoading = true;
@@ -487,6 +738,20 @@ const homeSlice = createSlice({
       state.attendenceDataPending = false;
       state.attendenceData = [];
       state.attendenceDataError = action.payload;
+    });
+    // request lunch integration
+    builder.addCase(requestLunchSubmission.pending, state => {
+      state.requestLunchDataPending = true;
+    });
+    builder.addCase(requestLunchSubmission.fulfilled, (state, action) => {
+      state.requestLunchDataPending = false;
+      state.requestLunchData = action.payload;
+      state.requestLunchDataError = undefined;
+    });
+    builder.addCase(requestLunchSubmission.rejected, (state, action) => {
+      state.requestLunchDataPending = false;
+      state.requestLunchData = [];
+      state.requestLunchDataError = action.payload;
     });
   },
 });

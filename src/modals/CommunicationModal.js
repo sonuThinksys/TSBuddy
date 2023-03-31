@@ -25,7 +25,7 @@ import Modal from 'react-native-modal';
 
 const CommunicationModal = ({empDetail}) => {
   const dispatch = useDispatch();
-  const isShowModal = useSelector(state => state.dataReducer.isShowModal);
+  const {isShowModal} = useSelector(state => state.home);
 
   const connectThrouMedium = () => {
     if (empDetail.text == 'Call') {

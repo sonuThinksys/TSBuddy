@@ -29,7 +29,7 @@ import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import fingerPrint1 from 'assets/allImage/fingerImage.png';
-
+import {guestLoginStatus} from './LoginSlice';
 import {loginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import {FontFamily, FontSize} from 'constants/fonts';
@@ -61,11 +61,11 @@ const Login = ({navigation}) => {
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
   const {
-    isRemember,
     userToken: token,
+    formInput,
+    isRemember,
     bioMetricEnable,
   } = useSelector(state => state.auth);
-  const formInput = useSelector(state => state.auth.formInput);
   useEffect(() => {
     // (async () => {
     //   if (isRemember) {
@@ -302,14 +302,19 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
           {/* //closing  */}
           <Text style={styles.orText}>OR</Text>
-          <Text
-            style={{
-              color: Colors.white,
-              textAlign: 'center',
-              marginTop: hp(1),
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(guestLoginStatus(true));
             }}>
-            {GUEST_LOGIN}
-          </Text>
+            <Text
+              style={{
+                color: Colors.white,
+                textAlign: 'center',
+                marginTop: hp(1),
+              }}>
+              {GUEST_LOGIN}
+            </Text>
+          </TouchableOpacity>
         </View>
         {Platform.OS === 'android' && bioMetricEnable ? (
           <TouchableOpacity onPress={enableTouchId}>

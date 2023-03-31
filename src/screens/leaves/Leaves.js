@@ -6,7 +6,6 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
-  RefreshControl,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -20,10 +19,13 @@ import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {guestLeavesScreenData} from 'guestData';
 import Loader from 'component/loader/Loader';
 const Leaves = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
   const dispatch = useDispatch();
@@ -35,11 +37,11 @@ const Leaves = ({navigation}) => {
     dispatch(getLeaveDetails({token, employeeID}));
   }, []);
 
-  const leavesData = useSelector(state => state.dataReducer.leavesData);
-
-  const isLoading = useSelector(state => state.dataReducer.isLeaveDataLoading);
-  console.log('leavesData:', typeof leavesData[0].fromDate);
-
+  const {
+    leavesData,
+    isLeaveDataLoading: {isLoading},
+  } = useSelector(state => state.home);
+  console.log('leavesData:--------------------------', leavesData);
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
   };
@@ -124,47 +126,25 @@ const Leaves = ({navigation}) => {
           }}>
           <View
             style={{
-              paddingHorizontal: wp(5),
-              paddingVertical: hp(1),
+              paddingHorizontal: wp(2),
+              borderColor: Colors.orangeColor,
+              borderRadius: 40,
               borderWidth: 1,
-              borderColor: Colors.black,
-              marginHorizontal: wp(3),
-              display: 'flex',
-              flexDirection: 'row',
-              borderRadius: 5,
-              backgroundColor: Colors.lightGray,
-              marginBottom: hp(1),
+              justifyContent: 'center',
+              alignItems: 'center',
+              // paddingVertical: hp(0.2),
             }}>
-            <View
-              style={{
-                paddingHorizontal: wp(2.5),
-                borderColor: Colors.orangeColor,
-                borderRadius: 50,
-                borderWidth: 1,
-                justifyContent: 'center',
-                paddingBottom: 2.5,
-              }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: 22,
-                  // fontWeight: 'bold',
-                  color: Colors.orangeColor,
-                }}>
-                +
-              </Text>
-            </View>
             <Text
               style={{
-                marginTop: hp(0.5),
-                marginLeft: wp(10),
-                fontSize: 16,
+                // textAlign: 'center',
+                fontSize: 20,
                 fontWeight: 'bold',
-                color: Colors.purple,
+                color: Colors.orangeColor,
               }}>
-              Make a new Leave Application
+              +
             </Text>
           </View>
+
           <Text
             style={{
               marginTop: hp(0.5),
@@ -177,7 +157,7 @@ const Leaves = ({navigation}) => {
           </Text>
         </Pressable>
         <FlatList
-          data={leavesData}
+          data={isGuestLogin ? guestLeavesScreenData : leavesData}
           renderItem={renderItem}
           keyExtractor={(_, index) => index}
         />

@@ -3,33 +3,35 @@ import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import styles from './RequestLunchStyle';
+
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {useSelector} from 'react-redux';
 import {name, RequestLunchLabel} from 'utils/DummyData';
-
+import {requestLunchSubmission} from 'redux/homeSlice';
+import jwt_decode from 'jwt-decode';
 const RequestLunch = ({navigation}) => {
-  const MonthlyDate = useSelector(state => state.dataReducer.dateData);
   const [date, setDate] = useState(new Date());
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState('2023-03-24');
   const [modalForStartDate, setModalForStartDate] = useState(false);
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState('2023-03-28');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [permReq, setPermReq] = useState(false);
   const [permissionForClick, setPersssionForClick] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-
   const [satrtDate1, setStartDate1] = useState('');
   const [endDate1, setEndDate1] = useState('');
-
   const [items, setItems] = useState(RequestLunchLabel);
+  const [requestCancel, setRequestCancel] = useState(1);
+
+  const token = useSelector(state => state.auth.userToken);
 
   const onSelectItem = item => {
     let date = new Date().getDate();
@@ -37,12 +39,12 @@ const RequestLunch = ({navigation}) => {
     const d = new Date();
     let month = name[d.getMonth()];
     let year = new Date().getFullYear();
-    if (item.value === 'today') {
+    if (item.value === 'daily') {
       setStartDate(date + '/' + month + '/' + year);
       setEndDate(date + '/' + month + '/' + year);
       setPermReq(false);
       setPersssionForClick(false);
-    } else if (item.value === 'req_duration') {
+    } else if (item.value === 'duration') {
       setStartDate('');
       setEndDate('');
       setPermReq(false);
@@ -61,6 +63,11 @@ const RequestLunch = ({navigation}) => {
         setStartDate1(16 + '-' + month + '-' + year);
         month = name[d.getMonth() + 1];
         setEndDate1(1 + '-' + month + '-' + year);
+      } else if (date > 16 && date < 31) {
+        monthaaa = 'april';
+        console.log('month:-------------------------', month);
+        setStartDate1(1 + '-' + monthaaa + '-' + year);
+        setEndDate1(16 + '-' + monthaaa + '-' + year);
       }
     }
   };
@@ -70,6 +77,7 @@ const RequestLunch = ({navigation}) => {
     satrtDate1: satrtDate1,
     endDate1: endDate1,
   };
+  console.log('modalData:-----------------------------,', modalData);
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
@@ -82,6 +90,23 @@ const RequestLunch = ({navigation}) => {
       setEndDate(date.toString());
     }
     hideDatePicker();
+  };
+  const requestlunchstartdate = '2023-03-2';
+  const requestlunchenddate = '2023-03-28';
+  const requestforlunch = '1';
+  const onSubmit = () => {
+    dispatch(
+      requestLunchSubmission({
+        token,
+        requestlunchstartdate,
+        requestlunchenddate,
+        requestforlunch,
+      }),
+    );
+  };
+
+  const cancelRequest = () => {
+    setRequestCancel(0);
   };
 
   return (
@@ -179,7 +204,7 @@ const RequestLunch = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onSubmit}>
           <View style={styles.submitView}>
             <Text style={{color: Colors.white, textAlign: 'center'}}>
               Submit
@@ -195,7 +220,8 @@ const RequestLunch = ({navigation}) => {
         <View style={styles.monthlyRequestView}>
           <View style={styles.monthlyView}>
             <Text style={{fontSize: 15}}>Monthly Request</Text>
-            <View style={styles.cancelView}>
+
+            <TouchableOpacity onPress={cancelRequest} style={styles.cancelView}>
               <Text
                 style={{
                   color: Colors.white,
@@ -203,7 +229,7 @@ const RequestLunch = ({navigation}) => {
                 }}>
                 Cancel Request
               </Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.buttomTextView}>
             <Text style={styles.buttomText}>Start Date :</Text>

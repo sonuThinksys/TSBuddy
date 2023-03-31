@@ -24,10 +24,13 @@ import {modalStatus} from 'redux/homeSlice';
 import CommunicationModal from 'modals/CommunicationModal';
 import Loader from 'component/loader/Loader';
 import {Colors} from 'colors/Colors';
+import {guestProfileData} from 'guestData';
 const Profile = () => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
 
@@ -35,42 +38,50 @@ const Profile = () => {
     dispatch(getEmployeeProfileData({token, employeeID}));
   }, []);
 
-  const profileData = useSelector(state => state.dataReducer.employeeProfile);
-  const isShowModall = useSelector(state => state.dataReducer.isShowModal);
-  const isLoading = useSelector(
-    state => state.dataReducer.employeeProfileLoading,
-  );
+  const {
+    employeeProfile: profileData,
+    isShowModal: isShowModal,
+    employeeProfileLoading: isLoading,
+  } = useSelector(state => state.home);
 
   const data = [
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Email ID',
-      email: profileData.companyEmail,
+      email: isGuestLogin
+        ? guestProfileData.companyEmail
+        : profileData.companyEmail,
       id: '1',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Mobile No.',
-      email: profileData.cellNumber,
+      email: isGuestLogin
+        ? guestProfileData.cellNumber
+        : profileData.cellNumber,
       id: '2',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Designation',
-      email: profileData.designation,
+      email: isGuestLogin
+        ? guestProfileData.designation
+        : profileData.designation,
       id: '3',
     },
     {
       image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
-      email: `EMP/${employeeID}`,
+      email: isGuestLogin ? 'EMP/10234' : `EMP/${employeeID}`,
       id: '4',
     },
     {
       image: MonthImages.mailEmp,
       nameOfField: 'Date of Joining',
       // email: profileData.dateOfJoining,
-      email: moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
+      email: isGuestLogin
+        ? moment(guestProfileData.dateOfJoining).format(`DD-MMM-YYYY`)
+        : moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
       id: '5',
     },
     {
@@ -82,9 +93,12 @@ const Profile = () => {
   ];
   const dialCall = () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.cellNumber,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? '9801296234'
+        : profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: isGuestLogin
+        ? 'guest'
+        : profileData.managerInfoDto.employeeName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -92,9 +106,12 @@ const Profile = () => {
 
   const sendMail = () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.companyEmail,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? 'guset@thinksys.com'
+        : profileData.managerInfoDto.companyEmail,
+      nameOfEmployee: isGuestLogin
+        ? 'guset'
+        : profileData.managerInfoDto.employeeName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -102,9 +119,12 @@ const Profile = () => {
 
   const snedMessage = async () => {
     setClickData({
-      id: profileData.id,
-      medium: profileData.managerInfoDto.cellNumber,
-      nameOfEmployee: profileData.managerInfoDto.employeeName,
+      medium: isGuestLogin
+        ? '9801296234'
+        : profileData.managerInfoDto.cellNumber,
+      nameOfEmployee: isGuestLogin
+        ? 'iguest manager'
+        : profileData.managerInfoDto.employeeName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -113,7 +133,7 @@ const Profile = () => {
   return (
     <>
       {isLoading ? <Loader /> : null}
-      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+      {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
         <View>
           <ImageBackground
@@ -127,7 +147,9 @@ const Profile = () => {
                   style={{height: 120, width: 120, borderRadius: 60}}
                 />
               </View>
-              <Text style={styles.text}>{profileData.employeeName}</Text>
+              <Text style={styles.text}>
+                {isGuestLogin ? 'guest user' : profileData.employeeName}
+              </Text>
             </View>
             <View style={styles.detailsView}>
               <FlatList
@@ -159,10 +181,14 @@ const Profile = () => {
                 </View>
                 <View>
                   <Text style={styles.managerNameText}>
-                    {profileData.managerInfoDto.employeeName}
+                    {isGuestLogin
+                      ? 'Guest Manager'
+                      : profileData.managerInfoDto.employeeName}
                   </Text>
                   <Text style={styles.emailText}>
-                    {profileData.managerInfoDto.companyEmail}
+                    {isGuestLogin
+                      ? 'guest@thinksys.com'
+                      : profileData.managerInfoDto.companyEmail}
                   </Text>
                   <View style={styles.socialIconView}>
                     <TouchableOpacity onPress={sendMail}>

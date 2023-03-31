@@ -52,7 +52,7 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     padding: 2,
   },
-  backGroundImage: {height: hp(10), borderRadius: 20, backgroundColor: 'red'},
+  backGroundImage: {height: hp(10.5), borderRadius: 20, backgroundColor: 'red'},
   smalllImageView: {
     height: 40,
     width: 40,
@@ -61,6 +61,7 @@ export default StyleSheet.create({
     borderTopRightRadius: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    borderTopLeftRadius: 10,
   },
   monthText: {
     textAlign: 'center',
@@ -69,14 +70,15 @@ export default StyleSheet.create({
     fontSize: 24,
   },
   downloadView: {
-    width: '101%',
-    height: hp(6.3),
+    width: '99%',
+    height: hp(5.4),
+    marginVertical: hp(0.5),
     // marginTop: hp(1),
-    marginHorizontal: 3.0,
+    marginHorizontal: wp(1),
     backgroundColor: 'white',
-    borderRadius: 4,
-    paddingVertical: hp(1),
-    paddingHorizontal: wp(2),
+    borderRadius: 6,
+    paddingVertical: hp(0.5),
+    paddingHorizontal: wp(1),
     shadowOpacity: 0.2,
   },
   downloadTextView: {
@@ -85,7 +87,7 @@ export default StyleSheet.create({
     // height: hp(4),
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 6,
   },
   downloadtext: {color: 'white', fontWeight: 'bold', fontSize: 17},
 });

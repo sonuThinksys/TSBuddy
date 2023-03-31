@@ -19,21 +19,27 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import {monthImages} from 'defaultData';
 import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
-
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();
-  const isAuthLoggedIn = useSelector(state => state.auth.isAuthLoggedIn);
-  const salarySlipData = useSelector(state => state.dataReducer.salarySlipData);
+  const {isAuthLoggedIn} = useSelector(state => state.auth);
+  const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
-
+  console.log('salarySlipData123:----------------------------', salarySlipData);
+  console.log(
+    'salarySlipData123:----------------------------',
+    salarySlipData[2],
+  );
+  console.log('newyearWiseData:------------------------', newyearWiseData);
   useEffect(() => {
+    console.log('heelo indiss ');
     let newObjectData = [];
     newObjectData =
       salarySlipData &&
       salarySlipData.length &&
       salarySlipData.map(el => {
-        return {...el, ...monthImages[el?.month?.toLowerCase()]};
+        console.log('el:-----------------------', el);
+        return {...el, ...monthImages[Math.abs(el?.month)]};
       });
     setnewObjectData(newObjectData);
   }, [salarySlipData]);
@@ -45,8 +51,9 @@ const SalarySlip = ({navigation}) => {
     newObjectData &&
       newObjectData.length &&
       newObjectData?.map(val => {
-        newObj[val.year] = newObj[val.year] || [];
-        newObj[val.year].push(val);
+        newObj[val?.fiscalYear.substring(0, 4)] =
+          newObj[val?.fiscalYear.substring(0, 4)] || [];
+        newObj[val?.fiscalYear.substring(0, 4)].push(val);
       });
 
     setnewyearWiseData(newObj);
@@ -64,7 +71,7 @@ const SalarySlip = ({navigation}) => {
       style={{
         flex: 1,
       }}>
-      <Text style={styles.NameView}>Radhika Gupta</Text>
+      <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
       {!isAuthLoggedIn ? (
         <SalarSlipModal />
@@ -108,7 +115,7 @@ const SalarySlip = ({navigation}) => {
                                     />
                                   </View>
                                   <Text style={styles.monthText}>
-                                    {elemnt.month}
+                                    {elemnt.monthName}
                                   </Text>
                                 </ImageBackground>
                               </TouchableOpacity>

@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  ImageBackground,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, ImageBackground, FlatList, StyleSheet} from 'react-native';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {
   heightPercentageToDP as hp,
@@ -21,24 +14,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {attendenceMonthImages} from 'defaultData';
+import moment from 'moment';
 const Attendence = () => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [spendhours, sendSpendhours] = useState(0);
-  const [remainingHours, setRemainingHours] = useState(48);
+  const [totalSpendHours, setTotalSpendHours] = useState(0);
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
+  const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
   const employeeID = decoded.Id;
-  console.log(
-    'attendenceMonthImages:------------------',
-    attendenceMonthImages,
-  );
-  console.log(
-    ' month and year:-------------------------------------',
-    visisbleMonth,
-    visibleYear,
-  );
 
   useEffect(() => {
     dispatch(
@@ -46,30 +31,57 @@ const Attendence = () => {
     );
   }, [visisbleMonth, visibleYear]);
 
-  const employeeAttendance = useSelector(
-    state => state.dataReducer.attendenceData.employeeAttendance,
-  );
+  const {
+    attendenceData: {employeeAttendance, dailyAttendance},
+  } = useSelector(state => state.home);
   console.log(
-    'employeeAttendance:------------------------------------',
-    employeeAttendance,
-  );
-  const dailyAttendance = useSelector(
-    state => state.dataReducer.attendenceData.dailyAttendance,
-  );
-  useEffect(() => {
-    let totalEffectiveHours = 0;
-    let totalHours = 10;
-    dailyAttendance?.map(data => {
-      totalEffectiveHours = totalEffectiveHours + data.totalEffectiveHours;
-      totalHours = totalHours + data.totalHours;
-    });
-    sendSpendhours(totalHours - totalEffectiveHours);
-  }, [dailyAttendance]);
-
-  console.log(
-    'dailyAttendance:------------------------------',
+    'dailyAttendance:------------------------------------------------',
     dailyAttendance,
   );
+  let today = new Date();
+
+  // get current day of the week (0-6)
+  let dayOfWeek = today.getDay();
+
+  // calculate date range for Monday-Sunday of current week
+  let startDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - dayOfWeek + 1,
+  );
+  let endDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - dayOfWeek + 7,
+  );
+
+  // format the dates to your desired format
+  let startDateFormat = startDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+  let endDateFormat = endDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+
+  useEffect(() => {
+    let totalEffectiveHours = 0;
+    let totalHours = 0;
+    let companyHours = 0;
+    dailyAttendance?.map(data => {
+      totalEffectiveHours = totalEffectiveHours + data.totalEffectiveHours;
+      companyHours += 9;
+    });
+    totalHours = totalEffectiveHours - companyHours;
+    console.log(
+      'totalEffectiveHours:-----------------------------------',
+      totalEffectiveHours,
+      companyHours,
+    );
+    sendSpendhours(totalHours);
+    setTotalSpendHours(totalEffectiveHours);
+  }, [dailyAttendance]);
 
   let mark = {};
   employeeAttendance?.forEach(day => {
@@ -150,12 +162,12 @@ const Attendence = () => {
           <View style={styles.reportView}>
             <View style={styles.weekliyTextView}>
               <Text style={styles.reportText}>
-                Weekly Report 02 Jan - 08 Jan
+                Weekly Report {startDateFormat} - {endDateFormat}
               </Text>
             </View>
             <View style={styles.timeSpendView}>
               <Text style={styles.timeSpendText}>
-                Total Hour Spend 38:51{' '}
+                Total Hour Spend {totalSpendHours}
                 <Text
                   style={{color: spendhours < 0 ? Colors.red : Colors.green}}>
                   ({spendhours})
@@ -179,10 +191,6 @@ const Attendence = () => {
         scrollEnabled={true}
         showScrollIndicator={true}
         onVisibleMonthsChange={months => {
-          // console.log(
-          //   'now these months are visible--------------------------------',
-          //   months,
-          // );
           setVisibleMonth(months[0].month);
           setVisibleYear(months[0].year);
         }}
@@ -214,19 +222,19 @@ const Attendence = () => {
           'stylesheet.calendar': {
             padding: 0,
             margin: 0,
-            backgroundColor: 'red',
+            backgroundColor: Colors.red,
             // flex: 1,
           },
           // arrowColor: Colors.green,
           'stylesheet.calendar.header': {
             partialHeader: {
               paddingHorizontal: 1,
-              backgroundColor: 'blue',
+              backgroundColor: Colors.blue,
             },
             headerContainer: {
               flexDirection: 'row',
               width: '100%',
-              backgroundColor: 'yellow',
+              backgroundColor: Colors.green,
             },
 
             week: {
@@ -298,7 +306,3 @@ const renderItem = ({item}) => {
 };
 
 export default Attendence;
-
-//http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
-
-// http://10.101.23.48:81/apiAttendance/GetDailyAttendanceByEmpId?empId=10352&month=5&year=2018
