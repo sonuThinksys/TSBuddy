@@ -12,7 +12,7 @@ import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 const RemainingLeaves = () => {
   const {
-    leaveMenuDetails: {remainingLeaves = []},
+    leaveMenuDetails: {remainingLeaves = []}={},
   } = useSelector(state => state.home);
 
   const earnedLeavesData = [
@@ -38,7 +38,7 @@ const RemainingLeaves = () => {
         style={{
           flexDirection: 'row',
         }}>
-        <View style={{}}>
+        <View>
           <BarChart
             segments={4}
             spacingInner={0}
