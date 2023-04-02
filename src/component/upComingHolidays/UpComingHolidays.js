@@ -49,7 +49,7 @@ const renderItem = ({item, index}) => {
   return (
     <View>
       {date < date1 && Month >= 4 && Years <= 2021 ? (
-        <View key={index} style={styles.imageView}>
+        <View style={styles.imageView} key={index}>
           <Image
             resizeMode="contain"
             source={
