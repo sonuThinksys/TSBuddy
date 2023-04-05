@@ -78,7 +78,24 @@ export default ({navigation}) => {
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
+    {
+      screen: 'Resources',
+      label: 'Resources',
+      navigation,
+      key: 8,
+      icon: MonthImages.HomeImage,
+    },
   ];
+
+  // drawerList.splice(2, 0, {
+  //   screen: 'Resources',
+  //   label: 'Resources',
+  //   navigation,
+  //   key: 3,
+  //   dispatch,
+  //   icon: MonthImages.salarySlipIcon,
+  // });
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -103,7 +120,6 @@ const renderDrawerItem = (
       onPress={() => {
         if (dispatch) {
           dispatch(loginStatus(false));
-
           navigation.closeDrawer();
         } else {
           navigation.closeDrawer();

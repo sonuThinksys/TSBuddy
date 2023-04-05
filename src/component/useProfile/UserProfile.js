@@ -23,6 +23,7 @@ import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
 import {getEmployeeData, modalStatus} from 'redux/homeSlice';
 import {FontSize} from 'constants/fonts';
+import {RenderListItem} from './renderList';
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -206,7 +207,6 @@ const UserProfile = () => {
       ) : null}
       {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
-        //
         legacyImplementation={false}
         onScrollBeginDrag={() => setScrollBegin(true)}
         onEndReachedThreshold={0.01}
@@ -247,107 +247,23 @@ const renderItem = (
   showHoriZontal,
 ) => {
   return (
-    <View key={index} style={{backgroundColor: Colors.white}}>
-      {showHoriZontal ? (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('UserDetail', {
-              designation,
-              companyEmail,
-              image,
-              cellNumber,
-              employeeName,
-              managerInfoDto,
-            });
-          }}>
-          <View style={styles.container}>
-            <View
-              style={{
-                flex: 0.2,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
-              <Image
-                resizeMode="stretch"
-                source={{uri: `${baseUrl}${image}`}}
-                style={styles.image}
-              />
-            </View>
-            <View style={{flex: 0.7}}>
-              <Text style={styles.nameText}>{employeeName}</Text>
-              <Text style={styles.desniationText}>{designation}</Text>
-              <View style={styles.smallView}>
-                <Image
-                  source={MonthImages.userPS}
-                  style={{height: 25, width: 25}}
-                />
-                <Text style={styles.reportingText}>
-                  {managerInfoDto.employeeName}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.container2}
-          onPress={() => {
-            navigation.navigate('UserDetail', {
-              designation,
-              companyEmail,
-              image,
-              cellNumber,
-              employeeName,
-              managerInfoDto,
-            });
-          }}>
-          <ImageBackground
-            resizeMode="contain"
-            style={styles.backgroundImage}
-            source={MonthImages.empbgS}>
-            <Image
-              resizeMode="stretch"
-              source={{uri: `${baseUrl}${image}`}}
-              style={styles.secondimage}
-            />
-            <Text numberOfLines={1} style={styles.nametext2}>
-              {employeeName}
-            </Text>
-            <Text style={styles.desText2}>{designation}</Text>
-            <View style={styles.buttomView}>
-              <TouchableOpacity
-                style={styles.imagecontainer1}
-                onPress={() => {
-                  setClickData({
-                    medium: cellNumber,
-                    nameOfEmployee: employeeName,
-                    text: 'Call ',
-                  });
-
-                  // setClickData('fghfgh');
-                  dispatch(modalStatus(true));
-                }}>
-                <Image style={styles.callImage} source={MonthImages.callEmp} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.imagecontainer2}
-                onPress={() => {
-                  setClickData({
-                    medium: companyEmail,
-                    nameOfEmployee: employeeName,
-                    text: 'Send Mail to ',
-                  });
-                  // setClickData('fghfgh');
-                  dispatch(modalStatus(true));
-                }}>
-                <Image style={styles.mailImage} source={MonthImages.mailEmp} />
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-      )}
-    </View>
+    <RenderListItem
+      item={{
+        designation,
+        companyEmail,
+        image,
+        cellNumber,
+        employeeName,
+        managerInfoDto,
+      }}
+      index={index}
+      navigation={navigation}
+      isShowModall={isShowModall}
+      dispatch={dispatch}
+      setClickData={setClickData}
+      empDetail={empDetail}
+      showHoriZontal={showHoriZontal}
+    />
   );
 };
 

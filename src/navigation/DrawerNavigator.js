@@ -17,6 +17,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
+import ResourcesDetails from 'screens/resources/ResourcesDetails';
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
@@ -47,8 +48,10 @@ import {
   employeeProfileScreen,
   employeeDetailsScreen,
   LeaveDetailsScreen,
+  ResourcesDetailsScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
+
 const Drawer = createDrawerNavigator();
 
 const HomeStack = createNativeStackNavigator();
@@ -57,6 +60,7 @@ const AttendenceStack = createNativeStackNavigator();
 const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
+const ResourcesStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -211,6 +215,22 @@ const ProfileStackScreen = ({navigation}) => {
   );
 };
 
+const ResourcesStackScreen = ({navigation}) => {
+  return (
+    <ResourcesStack.Navigator screenOptions={{headerShown: false}}>
+      <ResourcesStack.Screen
+        options={drawerOption({
+          lable: 'Resources Details',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name={ResourcesDetailsScreen}
+        component={ResourcesDetails}
+      />
+    </ResourcesStack.Navigator>
+  );
+};
+
 const HolidaysStackScreen = ({navigation}) => {
   return (
     <HolidaysStack.Navigator screenOptions={{headerShown: false}}>
@@ -341,6 +361,8 @@ function DrawerNavigator({navigation}) {
       />
 
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
+      <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
+
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />

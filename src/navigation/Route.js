@@ -12,3 +12,4 @@ export const LeaveApplyScreen = 'LeaveApplyScreen';
 export const LeaveDetailsScreen = 'LeaveDetailsScreen';
 export const employeeProfileScreen = 'employeeProfileScreen';
 export const employeeDetailsScreen = 'employeeDetailsScreen';
+export const ResourcesDetailsScreen = 'ResourcesDetailsScreen';
