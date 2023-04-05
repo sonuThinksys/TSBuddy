@@ -25,7 +25,9 @@ import CommunicationModal from 'modals/CommunicationModal';
 import Loader from 'component/loader/Loader';
 import {Colors} from 'colors/Colors';
 import {guestProfileData} from 'guestData';
-const Profile = () => {
+import {ERROR} from 'constants/strings';
+import ShowAlert from 'customComponents/CustomError';
+const Profile = ({navigation}) => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -35,7 +37,22 @@ const Profile = () => {
   const employeeID = decoded.Id;
 
   useEffect(() => {
-    dispatch(getEmployeeProfileData({token, employeeID}));
+    (async () => {
+      const profileDetails = await dispatch(
+        getEmployeeProfileData({token, employeeID}),
+      );
+
+      if (profileDetails?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: profileDetails?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+      console.log('profileDetails:', profileDetails);
+    })();
   }, []);
 
   const {

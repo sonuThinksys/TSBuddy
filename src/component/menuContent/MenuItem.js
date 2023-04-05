@@ -43,10 +43,8 @@ const MenuItem = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      // const token =
-      //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwOTY4OGI2Ny05N2NkLTRmYjQtYWI5YS0yZDQ3NjY5NzVkMWIiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc5NjQxNjY2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.U3fK-qSdMFPQ1KnseKzGnCA12hQ-PyU6OSRcVQ1dDhI';
-
       const menuDetails = await dispatch(getTodayMenuDetails(token));
+
       if (menuDetails?.error) {
         ShowAlert({
           messageHeader: ERROR,
@@ -56,10 +54,41 @@ const MenuItem = ({navigation}) => {
           navigation,
         });
       }
-      const foodFeedback = dispatch(getMenuFeedback(token));
-      console.log('foodFeedback:', foodFeedback);
-      dailyMenuID &&
-        dispatch(getSingleUserFeedback({token, menuID: dailyMenuID}));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const expiredToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwOTY4OGI2Ny05N2NkLTRmYjQtYWI5YS0yZDQ3NjY5NzVkMWIiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc5NjQxNjY2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.U3fK-qSdMFPQ1KnseKzGnCA12hQ-PyU6OSRcVQ1dDhI';
+
+      try {
+        const foodFeedback = await dispatch(getMenuFeedback(token));
+
+        if (foodFeedback?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: foodFeedback?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+
+        const myFeedback =
+          dailyMenuID &&
+          (await dispatch(getSingleUserFeedback({token, menuID: dailyMenuID})));
+
+        if (myFeedback?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: myFeedback?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {}
     })();
   }, [keyIndex]);
 
@@ -107,10 +136,14 @@ const MenuItem = ({navigation}) => {
               <View style={styles.likeView}>
                 <TouchableOpacity
                   disabled={userFeedback[index]?.feedback === 1}
-                  onPress={() => {
+                  onPress={async () => {
+                    // const expiredToken =
+                    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwOTY4OGI2Ny05N2NkLTRmYjQtYWI5YS0yZDQ3NjY5NzVkMWIiLCJlbWFpbCI6InBhbnQuYW1pdEB0aGlua3N5cy5jb20iLCJJZCI6IjEwMzUyIiwiZXhwIjoxNjc5NjQxNjY2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjYxOTU1IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo0MjAwIn0.U3fK-qSdMFPQ1KnseKzGnCA12hQ-PyU6OSRcVQ1dDhI';
+
                     let keyIndex = `like_${index}`;
                     setKeyIndex(keyIndex);
-                    dispatch(
+
+                    const giveUserFeedback = await dispatch(
                       giveMenuFeedback({
                         token,
                         menuID: dailyMenuID,
@@ -119,6 +152,16 @@ const MenuItem = ({navigation}) => {
                         userData,
                       }),
                     );
+
+                    if (giveUserFeedback?.error) {
+                      ShowAlert({
+                        messageHeader: ERROR,
+                        messageSubHeader: giveUserFeedback?.error?.message,
+                        buttonText: 'Close',
+                        dispatch,
+                        navigation,
+                      });
+                    }
                   }}>
                   <Image
                     style={{
@@ -184,3 +227,4 @@ const MenuItem = ({navigation}) => {
 };
 
 export default MenuItem;
+

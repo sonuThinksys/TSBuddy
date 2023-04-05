@@ -16,13 +16,27 @@ import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
 import styles from './UpComingHolidaysStyles';
 import {getHolidaysData} from 'redux/homeSlice';
-const UpComingHolidays = () => {
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'constants/strings';
+const UpComingHolidays = ({navigation}) => {
   const {userToken: token} = useSelector(state => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getHolidaysData(token));
+    (async () => {
+      const holidays = await dispatch(getHolidaysData(token));
+      if (holidays?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: holidays?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+    })();
   }, []);
   const {holidayData: holidaysData} = useSelector(state => state.home);
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>

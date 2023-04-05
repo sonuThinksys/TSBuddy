@@ -130,17 +130,7 @@ const drawerOption = ({
 
 const HomeStackScreen = ({navigation}) => {
   return (
-    <HomeStack.Navigator
-      initialRouteName="HomeDashboard"
-      // screenOptions={() => {
-      //   return {
-      //     headerShown: false,
-      //     // headerStyle: {backgroundColor: Colors.red},
-      //     // headerTintColor: Colors.white,
-      //     // headerTitleStyle: {fontWeight: 'bold'},
-      //   };
-      // }}
-      headerMode="none">
+    <HomeStack.Navigator initialRouteName="HomeDashboard" headerMode="none">
       <HomeStack.Screen
         name={HomeScreen}
         component={Home}

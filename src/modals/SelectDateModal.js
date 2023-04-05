@@ -18,12 +18,12 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {useDispatch} from 'react-redux';
 import {modalStatus} from 'redux/homeSlice';
 import Ripple from 'react-native-material-ripple';
 import {dateOfModal} from 'redux/homeSlice';
 const SelectDateModal = ({modalData}) => {
   const {openModal, setOpenModal, satrtDate1, endDate1} = modalData;
-  console.log('satrtDate1:---------------------------', satrtDate1);
   const dispatch = useDispatch();
   const [select, setSelected] = useState(false);
   const [secondSleceted, setSecondSlected] = useState(false);

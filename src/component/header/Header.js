@@ -5,7 +5,6 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getEmployeeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
@@ -19,7 +18,6 @@ const Header = () => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          // dispatch(getEmployeeData(token));
           navigation.navigate(employeeProfileScreen);
         }}>
         <Image

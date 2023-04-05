@@ -24,8 +24,9 @@ import {
   newDropDownOptions,
   approver,
   leaves,
-} from 'utils/DummyData';
+} from 'utils/defaultData';
 import {applyForLeave} from 'redux/homeSlice';
+import {useSelector} from 'react-redux';
 
 const ApplyLeave = () => {
   const {userToken: token} = useSelector(state => state.auth);
@@ -278,8 +279,8 @@ const ApplyLeave = () => {
     );
   };
 
-  const applyLeave = () => {
-    applyForLeave({
+  const applyLeave = async () => {
+    const appliedLeave = await applyForLeave({
       token,
       body: {
         employeeId: 10352,
