@@ -19,7 +19,6 @@ import {deductionData, earnindData} from 'utils/defaultData';
 import {SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
-  console.log('data in salary details:-----------------------------', data);
   const [show, setShow] = useState(false);
   const [secondShow, setSecondShow] = useState(false);
   const renderData = [

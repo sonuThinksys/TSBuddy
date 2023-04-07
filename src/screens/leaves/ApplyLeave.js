@@ -2,6 +2,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import {useState} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -12,6 +13,8 @@ import {
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
+import jwt_decode from 'jwt-decode';
+let reason = '';
 
 import {
   heightPercentageToDP as hp,
@@ -19,17 +22,43 @@ import {
 } from 'utils/Responsive';
 import styles from './ApplyLeaveStyle';
 
-import {
-  leaveTypes,
-  newDropDownOptions,
-  approver,
-  leaves,
-} from 'utils/defaultData';
+import {leaveTypes, newDropDownOptions, approver} from 'utils/defaultData';
 import {applyForLeave} from 'redux/homeSlice';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const ApplyLeave = () => {
+  const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
+  var decoded = jwt_decode(token);
+  console.log('decoded:', decoded);
+  const employeeID = decoded.id;
+
+  const {
+    leaveMenuDetails: {
+      remainingLeaves: [earnedLeaves, restrictedLeaves],
+    },
+  } = useSelector(state => state.home);
+
+  const leaves = [
+    {
+      leaveType: 'Earned Leave',
+      allocated: earnedLeaves.totalLeavesAllocated,
+      taken: earnedLeaves.currentLeaveApplied,
+      remaining: earnedLeaves.currentLeaveBalance,
+    },
+    {
+      leaveType: 'Restricted Holiday',
+      allocated: restrictedLeaves.totalLeavesAllocated,
+      taken: restrictedLeaves.currentLeaveApplied,
+      remaining: restrictedLeaves.currentLeaveBalance,
+    },
+    {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Work From Home', allocated: 13, taken: 23, remaining: -10},
+  ];
+
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({fromDateStr: ''});
@@ -37,6 +66,7 @@ const ApplyLeave = () => {
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [selectedHolidayType, setSelectedHolidayType] = useState(null);
   const [openHolidayType, setOpenHolidayType] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [typeState, setTypeState] = useState({
     type: '',
     typeName: '',
@@ -45,12 +75,6 @@ const ApplyLeave = () => {
   });
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
-
-  const setTypeValue = data => {
-    setTypeState(prevData => {
-      return {...prevData, ...data};
-    });
-  };
 
   const showFromDatePicker = () => {
     setFromCalenderVisible(true);
@@ -78,26 +102,34 @@ const ApplyLeave = () => {
     if (toDate.toDateObj) {
       const diffInMs = toDate.toDateObj.getTime() - date.getTime();
       const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
-      setTotalNumberOfLeaveDays(diffInDays);
+      if (diffInDays < 0) {
+        alert('Differece in days cannot be negative.');
+      } else {
+        setTotalNumberOfLeaveDays(diffInDays);
+      }
+      setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
+    } else {
+      setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     }
 
     // const totalDays=+presentDate
 
-    setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     fromOnCancel();
   };
 
   const toCalenderConfirm = date => {
+    console.log('date11:', date, fromDate.fromDateObj);
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
 
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    const time = Math.floor((date - fromDate.fromDateObj) / 86400000 + 1);
+    const timeDiff = Math.abs(date.getTime() - fromDate.fromDateObj.getTime());
+    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    console.log('diffDays:', diffDays);
 
-    // const totalDays=+presentDate
-    setTotalNumberOfLeaveDays(time);
+    setTotalNumberOfLeaveDays(diffDays);
 
     setToDate({toDateObj: date, toDateStr: finalTodayDate});
     toOnCancel();
@@ -206,6 +238,7 @@ const ApplyLeave = () => {
     return (
       <View style={{flex: 1}}>
         <FlatList
+          showsHorizontalScrollIndicator={false}
           scrollEnabled={true}
           contentContainerStyle={{flexGrow: 1}}
           style={{
@@ -246,6 +279,10 @@ const ApplyLeave = () => {
     );
   };
 
+  const giveReason = value => {
+    reason = value;
+  };
+
   const renderRightComponent = () => (
     <View
       style={{
@@ -280,20 +317,32 @@ const ApplyLeave = () => {
   };
 
   const applyLeave = async () => {
-    const appliedLeave = await applyForLeave({
-      token,
-      body: {
-        employeeId: 10352,
-        fromDate: '2023-03-31T11:10:09.792Z',
-        toDate: '2023-03-31T11:10:09.792Z',
-        totalLeaveDays: 1,
-        description: 'Testing',
-        halfDay: 0,
-        postingDate: '2023-03-29T11:10:09.792Z',
-        leaveType: 'Earned Leave',
-        leaveApprover: 'Mayank Sharma',
-      },
-    });
+    if (!fromDate.fromDateObj || !toDate.toDateObj) {
+      alert(
+        'Please select dates for which you want to apply for a leave leave.',
+      );
+      return;
+    }
+
+    const appliedLeave = await dispatch(
+      applyForLeave({
+        token,
+        body: {
+          employeeId: employeeID,
+          fromDate: fromDate.fromDateObj,
+          toDate: toDate.toDateObj,
+          totalLeaveDays: totalNumberOfLeaveDays,
+          description: reason,
+          halfDay: 0,
+          postingDate: new Date(),
+          leaveType: leaveType,
+          leaveApprover: 'Mayank Sharma',
+          fiscalYear: '2023-2024',
+        },
+      }),
+    );
+
+    console.log('appliedLeave:', appliedLeave);
   };
   return (
     <View style={styles.mainContainer}>
@@ -326,12 +375,6 @@ const ApplyLeave = () => {
               <View>
                 <ModalDropdown
                   renderButtonText={renderButtonText}
-                  // renderRightComponent={
-                  //   <Image
-                  //     source={MonthImages.DropDownIcon}
-                  //     style={{height: 20, width: 20}}
-                  //   />
-                  // }
                   style={{
                     borderWidth: 1,
                     backgroundColor: Colors.white,
@@ -406,7 +449,11 @@ const ApplyLeave = () => {
           />
           <View style={styles.reasonContainer}>
             <Text style={styles.reasonText}>Reason</Text>
-            <TextInput multiline={true} style={styles.reasonTextInput} />
+            <TextInput
+              onChangeText={giveReason}
+              multiline={true}
+              style={styles.reasonTextInput}
+            />
           </View>
           <View style={styles.leaveApproverContainer}>
             <Text style={styles.leaveApproverText}>Leave Approver:</Text>
@@ -419,120 +466,15 @@ const ApplyLeave = () => {
           </Pressable>
         </View>
       </View>
+
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" />
+        </View>
+      ) : null}
     </View>
   );
 };
 
 export default ApplyLeave;
-
-// =======================================================================================
-
-// const DropDown = ({
-//   value = '',
-//   label = '',
-//   field = '',
-//   state = {},
-//   list = [],
-//   setState,
-//   typeOpen = '',
-//   disabled = false,
-//   setFirstSelected,
-//   styles = {},
-//   width,
-//   placeholder = '- Select -',
-//   containerStyle = {},
-//   multiple,
-//   customMethod,
-//   display,
-//   setsearchFocussed,
-//   fieldOpen,
-//   bottomStyle = {},
-//   ...props
-// }) => {
-//   return (
-//     <DropDownPickerComponent
-//       bottomStyle={bottomStyle}
-//       value={multiple ? value || [] : value || undefined}
-//       dropDownDirection={'AUTO'}
-//       closeAfterSelecting={true}
-//       label={label}
-//       open={state[fieldOpen] || false}
-//       onPress={() => {
-//         setState && setState({...state, [fieldOpen]: !state[fieldOpen]});
-//       }}
-//       renderListItem={({item}) => {
-//         return (
-//           <TouchableOpacity
-//             key={item?.label || 'key'}
-//             style={{
-//               paddingVertical: 5,
-//               paddingHorizontal: 10,
-//               flexDirection: 'row',
-//               justifyContent: 'space-between',
-//               alignItems: 'center',
-//             }}
-//             onPress={() => {
-//               setState &&
-//                 setState({
-//                   ...state,
-//                   id: item?.key,
-//                   [field]: item?.value,
-//                   ...item,
-//                   [fieldOpen]: false,
-//                 });
-//               setFirstSelected && setFirstSelected(true);
-//             }}>
-//             <Text
-//               style={{
-//                 // fontFamily: FontFamily.REGULAR,
-//                 fontSize: FontSize.h16,
-//                 color: Colors.grey,
-//                 paddingVertical: 5,
-//                 color: state[field] == item.value ? Colors.purple : Colors.grey,
-//                 // fontFamily:
-//                 //   state[field] == item.value
-//                 //     ? FontFamily.SEMI_BOLD
-//                 //     : FontFamily.REGULAR,
-//               }}>
-//               {item?.label}
-//             </Text>
-//           </TouchableOpacity>
-//         );
-//       }}
-//       listMode={'SCROLLVIEW'}
-//       items={list}
-//       style={{
-//         minHeight: 32,
-//         borderRadius: 3,
-//         borderWidth: 1,
-//         borderColor: '#ccc',
-//       }}
-//       textStyle={[styles.textStyle, disabled && {color: '#adb5bd'}]}
-//       placeholder={placeholder}
-//       containerStyle={{
-//         borderWidth: 0,
-//       }}
-//       showTickIcon={true}
-//       dropDownContainerStyle={[styles.dropDownContainerStyle]}
-//       itemSeparatorStyle={{backgroundColor: Colors.borderColor}}
-//       itemSeparator={true}
-//       disabled={disabled}
-//       searchable={true}
-//       searchPlaceholder={'Search...'}
-//       searchContainerStyle={[
-//         styles.searchContainerStyle,
-//         {margin: 0, padding: 0, height: 30},
-//       ]}
-//       // ListHeaderComponentStyle={{zIndex: 10}}
-//       searchTextInputStyle={{
-//         borderWidth: 0,
-//       }}
-//       multiple={multiple ? true : false}
-//       // searchTextInputProps={{
-//       //   onFocus: () => setsearchFocussed(true),
-//       //   onBlur: () => setsearchFocussed(false),
-//       // }}
-//       {...props}
-//     />
-//   );
-// };

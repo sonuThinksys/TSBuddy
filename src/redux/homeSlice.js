@@ -39,7 +39,6 @@ const initialState = {
   leaveMenuDetails: [],
   menuDetailsLoading: false,
   foodMenuDatailsError: null,
-  menuFeedback: [],
   menuFeedbackError: null,
   dailyMenuID: '',
   userFeedback: [],
@@ -75,12 +74,15 @@ export const applyForLeave = createAsyncThunk(
         return Promise.reject('Something went wrong!');
       }
     } catch (err) {
+      console.log('err11:', err, err?.response, err?.response?.data);
       let statusCode = 500;
       if (err?.response) {
         statusCode = err?.response?.status;
       }
       if (statusCode == 401) {
         return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
       } else {
         return Promise.reject(new Error(err));
       }
@@ -131,6 +133,7 @@ export const getSingleUserFeedback = createAsyncThunk(
 export const giveMenuFeedback = createAsyncThunk(
   'home/giveMenuFeedback',
   async ({token, menuID, userData, feedbackType, index}) => {
+    console.log('menuID11:', menuID);
     const isLike = feedbackType === 'like';
     let value;
     if (isLike) value = 1;
@@ -186,35 +189,6 @@ export const giveMenuFeedback = createAsyncThunk(
   },
 );
 
-// export const applyLeave = createAsyncThunk('home/applyLeave', async token => {
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   };
-
-//   return axios(config)
-//     .then(async response => {
-//       const {data, status} = response;
-//       if (status === 200) {
-//         return Promise.resolve(data);
-//       } else {
-//         return Promise.reject(new Error('Something Went Wrong.'));
-//       }
-//     })
-//     .catch(err => {
-//       let statusCode = 500;
-//       if (err?.response) {
-//         statusCode = err?.response.status;
-//       }
-//       if (statusCode == 401) {
-//         return Promise.reject(err?.response?.data?.message);
-//       } else {
-//         return Promise.reject(new Error(err));
-//       }
-//     });
-// });
-
 export const getMenuFeedback = createAsyncThunk(
   'home/menuFeedback',
   async token => {
@@ -229,6 +203,7 @@ export const getMenuFeedback = createAsyncThunk(
         endPoints.getMenuFeedbackTotalCount,
         config,
       );
+      console.log('feedback.data:', feedback.data);
       return Promise.resolve(feedback.data);
     } catch (err) {
       let statusCode = 500;
@@ -265,6 +240,7 @@ export const getTodayMenuDetails = createAsyncThunk(
     return axios(config)
       .then(response => {
         const {data, status} = response;
+        console.log('data11:', data);
         if (status === 200) {
           return Promise.resolve(data);
         } else {
@@ -623,9 +599,11 @@ const homeSlice = createSlice({
       const feedbackArray = [...state.userFeedback];
       // return;
 
-      feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
-        ? 1
-        : 0;
+      if (feedbackArray.length) {
+        feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
+          ? 1
+          : 0;
+      }
 
       state.userFeedback = feedbackArray;
     });
@@ -674,33 +652,6 @@ const homeSlice = createSlice({
     });
 
     builder.addCase(getMenuFeedback.pending, state => {});
-
-    builder.addCase(getMenuFeedback.rejected, (state, action) => {
-      state.menuFeedbackError = action.payload;
-      state.menuFeedback = [];
-    });
-
-    builder.addCase(getMenuFeedback.fulfilled, (state, action) => {
-      console.log('action.payload:', action.payload);
-      state.menuFeedbackError = null;
-
-      const totalFeedbackArray = [
-        {
-          likes: action.payload?.totalBreakfastlikes,
-          dislikes: action.payload?.totalBreakfastdislikes,
-        },
-        {
-          likes: action.payload?.totalLunchlikes,
-          dislikes: action.payload?.totalLunchdislikes,
-        },
-        {
-          likes: action.payload?.totalMeallikes,
-          dislikes: action.payload?.totalMealdislikes,
-        },
-      ];
-
-      state.menuFeedback = totalFeedbackArray;
-    });
 
     builder.addCase(getTodayMenuDetails.pending, state => {
       state.menuDetailsLoading = true;

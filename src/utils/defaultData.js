@@ -67,16 +67,6 @@ export const newDropDownOptions = ['First Half Day', 'Second Half Day', 'None'];
 
 export const approver = 'Mayank Sharma';
 
-export const leaves = [
-  {leaveType: 'Earned Leave', allocated: 12.25, taken: 3, remaining: 9.25},
-  {leaveType: 'Restricted Holiday', allocated: 4, taken: 3, remaining: 1},
-  {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
-  {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-  {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-  {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
-  {leaveType: 'Work From Home', allocated: 13, taken: 23, remaining: -10},
-];
-
 export const monthsName = [
   'January',
   'February',
