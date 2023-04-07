@@ -15,7 +15,7 @@ import {
 } from 'utils/Responsive';
 import styles from './SalaryDetailsStyles';
 import moment from 'moment';
-import {deductionData, earnindData} from 'utils/DummyData';
+import {deductionData, earnindData} from 'utils/defaultData';
 import {SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
@@ -65,7 +65,7 @@ const SalaryDetail = ({route, navigation}) => {
           style={{height: 80, width: 120, marginRight: wp(4)}}
         />
         <Text style={styles.monthText}>
-          {data?.monthName} {data?.fiscalYear.substring(0, 4)}
+          {data?.monthName} {data?.fiscalYear?.substring(0, 4)}
         </Text>
         <TouchableOpacity
           onPress={() => {

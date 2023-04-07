@@ -23,7 +23,9 @@ import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {attendenceMonthImages} from 'defaultData';
 import moment from 'moment';
-const Attendence = () => {
+import {ERROR} from 'constants/strings';
+import ShowAlert from 'customComponents/CustomError';
+const Attendence = ({navigation}) => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [spendhours, sendSpendhours] = useState(0);
@@ -39,9 +41,18 @@ const Attendence = () => {
     (async () => {
       try {
         setLoading(true);
-        await dispatch(
+        const attendence = await dispatch(
           getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
         );
+        if (attendence?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: attendence?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
         setLoading(false);
       } catch (err) {
         setLoading(false);

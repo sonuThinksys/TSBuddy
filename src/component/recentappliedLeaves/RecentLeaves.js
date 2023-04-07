@@ -3,17 +3,18 @@ import {View, Text, FlatList, Image} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {Colors} from 'colors/Colors';
 import {getLeaveDetails} from 'redux/homeSlice';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'constants/strings';
 
-const RecentLeaves = () => {
+const RecentLeaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
   var decoded = jwt_decode(token);
-  const employeeID = decoded.Id;
+  const employeeID = decoded.id;
 
   const {
     leaveMenuDetails: {recentAppliedLeaves},
@@ -22,8 +23,20 @@ const RecentLeaves = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getLeaveDetails({token, employeeID}));
-  }, []);
+    (async () => {
+      const leaves = await dispatch(getLeaveDetails({token, employeeID}));
+
+      if (leaves?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: leaves?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+    })();
+  }, [employeeID, token]);
 
   // =================================================================================
 

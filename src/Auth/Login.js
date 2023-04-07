@@ -173,6 +173,12 @@ const Login = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" />
+        </View>
+      ) : null}
       {showBiomatricModal ? (
         <Modal
           backdropColor={Colors.smokeyGrey}

@@ -163,5 +163,16 @@ export default StyleSheet.create({
   },
   copyRightContainer:{
     backgroundColor: Colors.lightBlue,
-  }
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
+  },
 });
