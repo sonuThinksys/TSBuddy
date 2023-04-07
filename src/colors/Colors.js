@@ -40,4 +40,5 @@ export const Colors = {
   darkPink: '#faa2c1',
   parrotGreenLight: '#20c997',
   darkCyan: '#0c8599',
+  transparentBackground_25:"rgba(51, 51, 51, 0.6)"
 };

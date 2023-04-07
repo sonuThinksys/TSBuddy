@@ -37,6 +37,7 @@ const ApplyLeave = () => {
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [selectedHolidayType, setSelectedHolidayType] = useState(null);
   const [openHolidayType, setOpenHolidayType] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
   const [typeState, setTypeState] = useState({
     type: '',
     typeName: '',
@@ -140,12 +141,12 @@ const ApplyLeave = () => {
                 styles.calenderContainer,
                 !leftText && {justifyContent: 'flex-end'},
               ]}>
-              {leftText && <Text>{leftText}</Text>}
-              {selectableLeft && (
+              {leftText ? <Text>{leftText}</Text> : null}
+              {selectableLeft ? (
                 <TouchableOpacity onPress={leftOnPress}>
                   <Image source={iconLeft} style={{height: 20, width: 20}} />
                 </TouchableOpacity>
-              )}
+              ) : null}
             </View>
           </View>
         )}
@@ -175,26 +176,60 @@ const ApplyLeave = () => {
     );
   };
 
-  const leaveCard = data => {
+  const leaveCard = (data, index) => {
     const {leaveType, allocated, taken, remaining} = data;
+    let checkSelected = data.leaveType == selectedCard.leaveType;
     return (
-      <View style={styles.leaveCard}>
-        <View style={styles.leaveTextContainer}>
-          <Text style={styles.leaveText}>{data.leaveType}</Text>
+      <View
+        style={{
+          ...styles.leaveCard,
+          backgroundColor: checkSelected ? 'green' : 'white',
+        }}>
+        <View
+          style={{
+            ...styles.leaveTextContainer,
+            borderBottomColor: checkSelected ? Colors.white : Colors.black,
+          }}>
+          <Text
+            style={{
+              ...styles.leaveText,
+              color: checkSelected ? Colors.white : Colors.black,
+            }}>
+            {data.leaveType}
+          </Text>
         </View>
         <View style={styles.bottomPart}>
-          <View style={styles.remainingContainer}>
+          <View
+            style={{
+              ...styles.remainingContainer,
+              backgroundColor: Colors.white,
+            }}>
             <Text style={styles.remainingText}>{data.remaining}</Text>
           </View>
-          <View style={styles.verticalLine} />
+          <View
+            style={{
+              ...styles.verticalLine,
+              borderColor: checkSelected ? Colors.white : Colors.black,
+            }}
+          />
           <View style={styles.leaveDetails}>
             <View style={styles.allocated}>
-              <Text style={styles.allocatedText}>
+              <Text
+                style={{
+                  ...styles.allocatedText,
+                  color: checkSelected ? Colors.white : Colors.black,
+                }}>
                 Allocated: {data.allocated}
               </Text>
             </View>
             <View style={styles.taken}>
-              <Text style={styles.takenText}>Taken: {data.taken}</Text>
+              <Text
+                style={{
+                  ...styles.takenText,
+                  color: checkSelected ? Colors.white : Colors.black,
+                }}>
+                Taken: {data.taken}
+              </Text>
             </View>
           </View>
         </View>
@@ -209,7 +244,7 @@ const ApplyLeave = () => {
           scrollEnabled={true}
           contentContainerStyle={{flexGrow: 1}}
           style={{
-            backgroundColor: Colors.menuTransparentColor,
+            backgroundColor: Colors.darkBlue,
             // height: hp(10),
             paddingHorizontal: wp(2.4),
             paddingVertical: hp(1.2),
@@ -217,17 +252,15 @@ const ApplyLeave = () => {
           }}
           horizontal={true}
           data={leaves}
-          renderItem={({item}) => {
-            return leaveCard(item);
+          renderItem={({item, index}) => {
+            return leaveCard(item, index);
             // <View style={styles.sliderComp}>
             //   <Text style={{color: Colors.white}}>
             //     {item}einnsifugvlfd;nfnliThe
             //   </Text>
             // </View>
           }}
-          keyExtractor={({item}, index) => {
-            return index;
-          }}
+          keyExtractor={(item, index) => index}
         />
       </View>
     );

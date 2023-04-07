@@ -21,7 +21,7 @@ import {
 // import {appVersion} from 'utils/appVersion';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {loginStatus} from 'Auth/LoginSlice';
+import {loginStatus,logOut} from 'Auth/LoginSlice';
 
 export default ({navigation}) => {
   const dispatch = useDispatch();
@@ -102,8 +102,7 @@ const renderDrawerItem = (
       key={index}
       onPress={() => {
         if (dispatch) {
-          dispatch(loginStatus(false));
-
+          dispatch(logOut());
           navigation.closeDrawer();
         } else {
           navigation.closeDrawer();
@@ -118,7 +117,7 @@ const renderDrawerItem = (
         alignItems: 'center',
         backgroundColor: selected ? Colors.lightBlue : null,
       }}>
-      <Image source={icon} style={{height: 50, width: 50}} />
+      <Image source={icon} resizeMode="contain" style={{height: 45, width: 45}} />
       <Text
         style={{
           color: Colors.white,

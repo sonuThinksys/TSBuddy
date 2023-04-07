@@ -574,7 +574,7 @@ export const requestLunchSubmission = createAsyncThunk(
 );
 
 const homeSlice = createSlice({
-  name: 'dataa',
+  name: 'home',
   initialState,
   reducers: {
     loadingStatus: (state, action) => {

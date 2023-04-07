@@ -227,4 +227,3 @@ const MenuItem = ({navigation}) => {
 };
 
 export default MenuItem;
-
