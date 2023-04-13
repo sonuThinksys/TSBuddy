@@ -23,10 +23,10 @@ const Header = () => {
         <Image
           source={MonthImages.searchIconwhite}
           style={{
-            height: 25,
-            width: 25,
-            marginRight: wp(5),
-            color: Colors.white,
+            height: 22,
+            width: 22,
+            marginRight: wp(1),
+            // color: Colors.white,
           }}
         />
       </TouchableOpacity>

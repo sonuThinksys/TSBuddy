@@ -6,37 +6,40 @@ import jwt_decode from 'jwt-decode';
 import {getLeaveDetails} from 'redux/homeSlice';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'constants/strings';
+// import ShowAlert from 'customComponents/CustomError';
+// import {ERROR} from 'constants/strings';
 
 const RecentLeaves = ({navigation}) => {
-  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+  const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
   );
-  var decoded = jwt_decode(token);
-  const employeeID = decoded.id;
+
+  const decoded = jwt_decode(token);
+  console.log('decoded:', decoded);
+  // const employeeID = decoded.id;
 
   const {
     leaveMenuDetails: {recentAppliedLeaves},
   } = useSelector(state => state.home);
+  const recent3AppliedLeaves = recentAppliedLeaves.slice(-3).reverse();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      const leaves = await dispatch(getLeaveDetails({token, employeeID}));
+  // useEffect(() => {
+  //   (async () => {
+  //     const leaves = await dispatch(getLeaveDetails({token, employeeID}));
 
-      if (leaves?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: leaves?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-    })();
-  }, [employeeID, token]);
+  //     if (leaves?.error) {
+  //       ShowAlert({
+  //         messageHeader: ERROR,
+  //         messageSubHeader: leaves?.error?.message,
+  //         buttonText: 'Close',
+  //         dispatch,
+  //         navigation,
+  //       });
+  //     }
+  //   })();
+  // }, [employeeID, token]);
 
   // =================================================================================
 
@@ -46,7 +49,7 @@ const RecentLeaves = ({navigation}) => {
         <Text style={styles.recentText}>Recent Applied Leaves</Text>
       </View>
       <FlatList
-        data={isGuestLogin ? guestLeavesData : recentAppliedLeaves}
+        data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
         renderItem={renderItem}
         keyExtractor={(item, index) => index}
         style={{marginHorizontal: 4}}

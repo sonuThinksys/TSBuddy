@@ -50,6 +50,10 @@ export const foodData = [
   },
 ];
 
+export const firstFalf = 'First Half Day';
+export const secondHalf = 'Second Half Day';
+export const none = 'None';
+
 export const whatsappInstallationAlert =
   'Make sure WhatsApp installed on your device';
 
@@ -63,7 +67,7 @@ export const leaveTypes = [
   'Work From Home',
 ];
 
-export const newDropDownOptions = ['First Half Day', 'Second Half Day', 'None'];
+export const newDropDownOptions = [firstFalf, secondHalf, none];
 
 export const approver = 'Mayank Sharma';
 

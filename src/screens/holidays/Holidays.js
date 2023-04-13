@@ -13,20 +13,35 @@ import Loader from 'component/loader/Loader';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
 import {isBefore2021} from 'utils/utils';
 import {guestHolidaysData} from 'guestData';
+import {getHolidaysData} from 'redux/homeSlice';
+
 const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
-  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
+  const {isGuestLogin: isGuestLogin,userToken:token} = useSelector(state => state.auth);
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
+  const [isRefresh, setRefresh] = useState(false);
+
+  const updateData = async () => {
+    try {
+      setRefresh(true);
+      await dispatch(getHolidaysData(token));
+      setRefresh(false);
+    } catch (err) {
+      setRefresh(false);
+    }
+  };
 
   return (
     <View style={{paddingTop: hp(1), flex: 1}}>
-      {isLoading ? <Loader /> : null}
+      {/* {isLoading  ? <Loader /> : null} */}
       <FlatList
         data={isGuestLogin ? guestHolidaysData : holidaysData}
         keyExtractor={(item, index) => index}
+        refreshing={isRefresh}
+        onRefresh={updateData}
         renderItem={({item, index}) => {
           return renderItem(
             item,

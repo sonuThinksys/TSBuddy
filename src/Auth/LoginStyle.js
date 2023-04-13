@@ -7,9 +7,10 @@ import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
   container: {
-    backgroundColor: Colors.lightBlue,
-    height: '100%',
-    width: '100%',
+    // backgroundColor: Colors.lightBlue,
+    // height: '100%',
+    // width: '100%',
+    flex: 1,
   },
   textInputContainer: {
     width: '90%',
@@ -97,6 +98,71 @@ export default StyleSheet.create({
     marginHorizontal: wp(1),
     color: Colors.white,
     fontFamily: FontFamily.RobotoBold,
+  },
+  signInContainerStyle: {
+    flexDirection: 'row',
+    paddingVertical: hp(1),
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingHorizontal: wp(4),
+    borderBottomColor: Colors.lightGray2,
+  },
+  modalContainer: {
+    backgroundColor: Colors.white,
+    alignSelf: 'center',
+    borderRadius: 8,
+    width: '80%',
+    paddingVertical: hp(1),
+  },
+  signInTextStyle: {
+    fontFamily: FontFamily.RobotoRegular,
+    fontSize: FontSize.h14,
+  },
+  confirmTextStyle: {
+    paddingHorizontal: wp(4),
+    paddingTop: hp(1),
+    fontFamily: FontFamily.RobotoRegular,
+    fontSize: FontSize.h14,
+  },
+  imageSensorStyle: {
+    paddingHorizontal: wp(4),
+    paddingTop: hp(1),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: hp(2),
+  },
+  imageContainer: {
+    height: 40,
+    width: 40,
+    backgroundColor: Colors.darkBlue,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  touchSensorText: {
+    paddingLeft: wp(3),
+    fontFamily: FontFamily.RobotoRegular,
+    fontSize: FontSize.h14,
+  },
+  cancelButton: {
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h14,
+    paddingRight: wp(4),
+    paddingBottom: wp(2),
+  },
+  imageStyle: {
+    height: 25,
+    width: 25,
+  },
+  cancelButtonContainer: {alignItems: 'flex-end'},
+  copyRightStyle:{
+    color: Colors.white,
+    textAlign: 'center',
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h11,
+  },
+  copyRightContainer:{
+    backgroundColor: Colors.lightBlue,
   },
   loaderContainer: {
     ...StyleSheet.absoluteFillObject,

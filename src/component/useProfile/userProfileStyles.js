@@ -107,4 +107,22 @@ export default StyleSheet.create({
   callImage: {height: 20, width: 20},
   mailView: {flex: 1, paddingLeft: wp(6)},
   mailImage: {height: 20, width: 20, marginTop: hp(0.1)},
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // top: 0,
+    // bottom: 0,
+    // right: 0,
+    // left: 0,
+    // position: 'absolute',
+    backgroundColor: 'rgba(51, 51, 51, 0.6)',
+    // opacity: 0.5,
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
+  },
 });

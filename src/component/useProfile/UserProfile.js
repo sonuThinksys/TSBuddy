@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
@@ -39,6 +40,9 @@ const UserProfile = () => {
   const [empDetail, setClickData] = useState({});
   const [allEmpData, setEmpData] = useState([]);
   const [scrollBegin, setScrollBegin] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchedName, setSearchedName] = useState('');
+  const [isFetchingEmployees, setIsFetchingEmployees] = useState(false);
   let skipCount = allEmpData.length || 0;
 
   const [employeesCount, setEmployeesCount] = useState(0);
@@ -56,8 +60,16 @@ const UserProfile = () => {
     })();
   }, []);
 
-  const fetchEmployeesData = async ({isInitial, currentEmployees}) => {
+  const fetchEmployeesData = async ({
+    isInitial,
+    currentEmployees,
+    isSearching,
+  }) => {
+    setIsFetchingEmployees(true);
+
     const result = await dispatch(getEmployeeData({token, currentEmployees}));
+    setIsFetchingEmployees(false);
+    if (isInitial && !isSearching) setTotalCount(result?.payload?.count);
 
     if (result?.error) {
       ShowAlert({
@@ -68,6 +80,10 @@ const UserProfile = () => {
         navigation,
       });
     }
+    // if (isSearching) {
+    //   setEmpData(result?.payload?.data);
+    //   return;
+    // }
 
     if (result && result?.payload && result?.payload?.data) {
       if (isInitial) {
@@ -75,11 +91,14 @@ const UserProfile = () => {
       } else {
         setEmpData([...allEmpData, ...result.payload.data]);
       }
+      // !isSearching && setEmployeesCount(result.payload.count);
       setEmployeesCount(result.payload.count);
     }
   };
 
-  const onChangeText = e => {
+  const onChangeText = async enteredName => {
+    setSearchedName(enteredName);
+
     // const filterData = allEmpData.filter(el => {
     //   return el.employeeName.includes(e);
     // });
@@ -100,7 +119,7 @@ const UserProfile = () => {
   };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View
         style={{
           backgroundColor: Colors.darkBlue,
@@ -197,15 +216,39 @@ const UserProfile = () => {
             paddingVertical: hp(1.5),
             paddingHorizontal: wp(5),
           }}>
-          <Image
-            source={MonthImages.searchIconwhite}
-            style={{
-              height: 25,
-              width: 25,
-              marginRight: wp(5),
-              color: Colors.white,
-            }}
-          />
+          <TouchableOpacity
+            onPress={async () => {
+              let currentEmployee = {
+                page: 1,
+                skip: 0,
+                take: 15,
+              };
+
+              if (searchedName.length) {
+                currentEmployee = {
+                  page: 1,
+                  skip: 0,
+                  take: totalCount,
+                  name: searchedName,
+                };
+              }
+              await fetchEmployeesData({
+                isInitial: true,
+                currentEmployees: currentEmployee,
+                isSearching: true,
+              });
+            }}>
+            <Image
+              source={MonthImages.searchIconwhite}
+              style={{
+                height: 25,
+                width: 25,
+                marginRight: wp(5),
+                color: Colors.white,
+              }}
+            />
+          </TouchableOpacity>
+
           <TextInput
             selectionColor={Colors.white}
             color={Colors.white}
@@ -218,10 +261,11 @@ const UserProfile = () => {
       ) : null}
       {true ? <CommunicationModal empDetail={empDetail} /> : null}
       <FlatList
-        //
+        windowSize={5}
+        removeClippedSubviews={true}
         legacyImplementation={false}
         onScrollBeginDrag={() => setScrollBegin(true)}
-        onEndReachedThreshold={0.01}
+        onEndReachedThreshold={0}
         scrollsToTop={false}
         showsVerticalScrollIndicator={false}
         onEndReached={loadMoreData}
@@ -229,7 +273,7 @@ const UserProfile = () => {
         onMomentumScrollEnd={() => setScrollBegin(false)}
         data={allEmpData}
         numColumns={numValue}
-        // key={numValue}
+        key={numValue}
         //numColumns={1}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {
@@ -245,6 +289,12 @@ const UserProfile = () => {
           );
         }}
       />
+      {isFetchingEmployees ? (
+        <View style={styles.loaderContainer}>
+          {/* <View style={styles.loaderBackground} /> */}
+          <ActivityIndicator size="large" color={'white'} />
+        </View>
+      ) : null}
     </View>
   );
 };

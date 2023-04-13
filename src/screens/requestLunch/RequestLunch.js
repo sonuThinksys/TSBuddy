@@ -65,7 +65,6 @@ const RequestLunch = ({navigation}) => {
         setEndDate1(1 + '-' + month + '-' + year);
       } else if (date > 16 && date < 31) {
         monthaaa = 'april';
-        console.log('month:-------------------------', month);
         setStartDate1(1 + '-' + monthaaa + '-' + year);
         setEndDate1(16 + '-' + monthaaa + '-' + year);
       }
@@ -77,7 +76,6 @@ const RequestLunch = ({navigation}) => {
     satrtDate1: satrtDate1,
     endDate1: endDate1,
   };
-  console.log('modalData:-----------------------------,', modalData);
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);

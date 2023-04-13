@@ -1,8 +1,9 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -14,7 +15,6 @@ import {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import jwt_decode from 'jwt-decode';
-let reason = '';
 
 import {
   heightPercentageToDP as hp,
@@ -22,15 +22,20 @@ import {
 } from 'utils/Responsive';
 import styles from './ApplyLeaveStyle';
 
-import {leaveTypes, newDropDownOptions, approver} from 'utils/defaultData';
+import {
+  leaveTypes,
+  newDropDownOptions,
+  approver,
+  none,
+} from 'utils/defaultData';
 import {applyForLeave} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
-const ApplyLeave = () => {
+const ApplyLeave = ({navigation}) => {
+  const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
   var decoded = jwt_decode(token);
-  console.log('decoded:', decoded);
   const employeeID = decoded.id;
 
   const {
@@ -64,9 +69,9 @@ const ApplyLeave = () => {
   const [fromDate, setFromDate] = useState({fromDateStr: ''});
   const [toDate, setToDate] = useState({toDateStr: ''});
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
-  const [selectedHolidayType, setSelectedHolidayType] = useState(null);
-  const [openHolidayType, setOpenHolidayType] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
+
   const [typeState, setTypeState] = useState({
     type: '',
     typeName: '',
@@ -75,6 +80,7 @@ const ApplyLeave = () => {
   });
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
+  const [reason, setReason] = useState('');
 
   const showFromDatePicker = () => {
     setFromCalenderVisible(true);
@@ -102,11 +108,7 @@ const ApplyLeave = () => {
     if (toDate.toDateObj) {
       const diffInMs = toDate.toDateObj.getTime() - date.getTime();
       const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
-      if (diffInDays < 0) {
-        alert('Differece in days cannot be negative.');
-      } else {
-        setTotalNumberOfLeaveDays(diffInDays);
-      }
+      setTotalNumberOfLeaveDays(diffInDays);
       setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     } else {
       setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
@@ -118,7 +120,6 @@ const ApplyLeave = () => {
   };
 
   const toCalenderConfirm = date => {
-    console.log('date11:', date, fromDate.fromDateObj);
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
@@ -127,7 +128,6 @@ const ApplyLeave = () => {
 
     const timeDiff = Math.abs(date.getTime() - fromDate.fromDateObj.getTime());
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-    console.log('diffDays:', diffDays);
 
     setTotalNumberOfLeaveDays(diffDays);
 
@@ -172,12 +172,12 @@ const ApplyLeave = () => {
                 styles.calenderContainer,
                 !leftText && {justifyContent: 'flex-end'},
               ]}>
-              {leftText && <Text>{leftText}</Text>}
-              {selectableLeft && (
+              {leftText ? <Text>{leftText}</Text> : null}
+              {selectableLeft ? (
                 <TouchableOpacity onPress={leftOnPress}>
                   <Image source={iconLeft} style={{height: 20, width: 20}} />
                 </TouchableOpacity>
-              )}
+              ) : null}
             </View>
           </View>
         )}
@@ -207,26 +207,60 @@ const ApplyLeave = () => {
     );
   };
 
-  const leaveCard = data => {
+  const leaveCard = (data, index) => {
     const {leaveType, allocated, taken, remaining} = data;
+    let checkSelected = data.leaveType == selectedCard.leaveType;
     return (
-      <View style={styles.leaveCard}>
-        <View style={styles.leaveTextContainer}>
-          <Text style={styles.leaveText}>{data.leaveType}</Text>
+      <View
+        style={{
+          ...styles.leaveCard,
+          backgroundColor: checkSelected ? 'green' : 'white',
+        }}>
+        <View
+          style={{
+            ...styles.leaveTextContainer,
+            borderBottomColor: checkSelected ? Colors.white : Colors.black,
+          }}>
+          <Text
+            style={{
+              ...styles.leaveText,
+              color: checkSelected ? Colors.white : Colors.black,
+            }}>
+            {data.leaveType}
+          </Text>
         </View>
         <View style={styles.bottomPart}>
-          <View style={styles.remainingContainer}>
+          <View
+            style={{
+              ...styles.remainingContainer,
+              backgroundColor: Colors.white,
+            }}>
             <Text style={styles.remainingText}>{data.remaining}</Text>
           </View>
-          <View style={styles.verticalLine} />
+          <View
+            style={{
+              ...styles.verticalLine,
+              borderColor: checkSelected ? Colors.white : Colors.black,
+            }}
+          />
           <View style={styles.leaveDetails}>
             <View style={styles.allocated}>
-              <Text style={styles.allocatedText}>
+              <Text
+                style={{
+                  ...styles.allocatedText,
+                  color: checkSelected ? Colors.white : Colors.black,
+                }}>
                 Allocated: {data.allocated}
               </Text>
             </View>
             <View style={styles.taken}>
-              <Text style={styles.takenText}>Taken: {data.taken}</Text>
+              <Text
+                style={{
+                  ...styles.takenText,
+                  color: checkSelected ? Colors.white : Colors.black,
+                }}>
+                Taken: {data.taken}
+              </Text>
             </View>
           </View>
         </View>
@@ -238,11 +272,12 @@ const ApplyLeave = () => {
     return (
       <View style={{flex: 1}}>
         <FlatList
+          ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={true}
           contentContainerStyle={{flexGrow: 1}}
           style={{
-            backgroundColor: Colors.menuTransparentColor,
+            backgroundColor: Colors.darkBlue,
             // height: hp(10),
             paddingHorizontal: wp(2.4),
             paddingVertical: hp(1.2),
@@ -250,17 +285,15 @@ const ApplyLeave = () => {
           }}
           horizontal={true}
           data={leaves}
-          renderItem={({item}) => {
-            return leaveCard(item);
+          renderItem={({item, index}) => {
+            return leaveCard(item, index);
             // <View style={styles.sliderComp}>
             //   <Text style={{color: Colors.white}}>
             //     {item}einnsifugvlfd;nfnliThe
             //   </Text>
             // </View>
           }}
-          keyExtractor={({item}, index) => {
-            return index;
-          }}
+          keyExtractor={(item, index) => index}
         />
       </View>
     );
@@ -280,7 +313,7 @@ const ApplyLeave = () => {
   };
 
   const giveReason = value => {
-    reason = value;
+    setReason(value);
   };
 
   const renderRightComponent = () => (
@@ -318,11 +351,23 @@ const ApplyLeave = () => {
 
   const applyLeave = async () => {
     if (!fromDate.fromDateObj || !toDate.toDateObj) {
-      alert(
-        'Please select dates for which you want to apply for a leave leave.',
-      );
+      alert('Please select dates for which you want to apply for a leave.');
       return;
     }
+    if (!reason) {
+      alert('Please enter a reason for applying for a leave.');
+      return;
+    }
+
+    if (!leaveType) {
+      alert('Please select a leave type.');
+      return;
+    }
+    if (totalNumberOfLeaveDays < 1) {
+      alert('Difference between the number of leave days must be positive.');
+      return;
+    }
+    setLoading(true);
 
     const appliedLeave = await dispatch(
       applyForLeave({
@@ -342,8 +387,21 @@ const ApplyLeave = () => {
       }),
     );
 
-    console.log('appliedLeave:', appliedLeave);
+    setLoading(false);
+    if (appliedLeave?.error) {
+      alert(appliedLeave.error.message);
+    } else {
+      Alert.alert('Success', 'Leave applied successfully!', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
+    }
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
@@ -392,6 +450,12 @@ const ApplyLeave = () => {
                   }}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
+                    const previousNumberOfDays = totalNumberOfLeaveDays;
+                    const isInteger = Number.isInteger(previousNumberOfDays);
+                    if (itemName !== none)
+                      setTotalNumberOfLeaveDays(prevDays =>
+                        prevDays ? prevDays - 0.5 : 0.5,
+                      );
                     setHalfDay(itemName);
                   }}
                   renderRightComponent={renderRightComponent}
@@ -405,7 +469,8 @@ const ApplyLeave = () => {
             rightLabel: 'Number of Days',
             selectableLeft: true,
             iconLeft: MonthImages.DropDownIcon,
-            rightText: totalNumberOfLeaveDays > 0 ? totalNumberOfLeaveDays : '',
+            rightText:
+              totalNumberOfLeaveDays >= 0.5 ? totalNumberOfLeaveDays : '',
             leftText: 'Earned Leave',
             leftDropdown: (
               <View style={{}}>
@@ -428,6 +493,15 @@ const ApplyLeave = () => {
                   animated={true}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
+                    const itemIndex = leaves.findIndex(
+                      item => item.leaveType === itemName,
+                    );
+                    flatListRef.current?.scrollToIndex({
+                      animated: true,
+                      index: index,
+                      viewPosition: 0.5,
+                    });
+                    setSelectedCard({leaveType: itemName});
                     setLeaveType(itemName);
                   }}
                   renderRightComponent={renderRightComponent}

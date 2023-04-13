@@ -96,7 +96,6 @@ const MenuItem = ({navigation}) => {
   const getFeedbackUpdatedData = async () => {
     try {
       const foodFeedback = await dispatch(getMenuFeedback(token));
-      console.log('foodFeedback:', foodFeedback.payload);
 
       setFeedbackCount([
         {

@@ -32,6 +32,7 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+// plus.imageset
 import {
   HomeScreen,
   LoginScreen,
@@ -49,8 +50,9 @@ import {
   LeaveDetailsScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
+import AttendenceTab from 'screens/Resources/AttendenceTab';
 const Drawer = createDrawerNavigator();
-
+const {plus: PlusIcon} = MonthImages;
 const HomeStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 const AttendenceStack = createNativeStackNavigator();
@@ -90,6 +92,8 @@ const drawerOption = ({
           style={{
             display: 'flex',
             flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <Text
             style={{
@@ -99,19 +103,20 @@ const drawerOption = ({
                 Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
               //paddingTop: hp(0.5),
               fontSize: 16,
-              fontWeight: 'bold',
+              // fontWeight: 'bold',
               marginRight: wp(2),
+              fontFamily: FontFamily.RobotoRegular,
             }}>
             {label}
           </Text>
-          {fromLeave && (
+          {/* {fromLeave && (
             <Pressable
               onPress={() => {
                 navigation.navigate('LeaveApplyScreen');
               }}>
               <Text style={styles.newLeaveText}>+ New</Text>
             </Pressable>
-          )}
+          )} */}
           {/* {headerIconName ? (
             <Image source={headerIconName} style={{height: 20, width: 20}} />
           ) : null} */}
@@ -120,9 +125,40 @@ const drawerOption = ({
     ),
     headerRight: showHeaderRight
       ? () => (
-          <TouchableOpacity>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {fromLeave && (
+              <Pressable
+                style={{
+                  ...styles.newLeaveText,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                onPress={() => {
+                  navigation.navigate('LeaveApplyScreen');
+                }}>
+                <Image
+                  source={MonthImages.plus}
+                  style={{height: 15, width: 15}}
+                />
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontFamily: FontFamily.RobotoBold,
+                    fontSize: FontSize.h15,
+                    paddingLeft: 7,
+                  }}>
+                  New
+                </Text>
+              </Pressable>
+            )}
             <Header />
-          </TouchableOpacity>
+          </View>
         )
       : null,
   };
@@ -338,6 +374,7 @@ function DrawerNavigator({navigation}) {
       <Drawer.Screen name="SalarySlip" component={SalarySlipScreen} />
 
       <Drawer.Screen name="logout" component={Logout} />
+      <Drawer.Screen name="resources" component={AttendenceTab} />
     </Drawer.Navigator>
   );
 }
@@ -347,12 +384,14 @@ export default DrawerNavigator;
 const styles = StyleSheet.create({
   newLeaveText: {
     color: Colors.white,
-    borderRadius: 8,
-    borderWidth: 1,
+    borderRadius: 6,
+    borderWidth: 0.6,
     borderColor: Colors.white,
     fontFamily: FontFamily.RobotoBold,
-    fontSize: FontSize.h18,
+    fontSize: FontSize.h15,
     paddingHorizontal: 4,
-    marginLeft: 16,
+    marginRight: wp(4),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.8),
   },
 });
