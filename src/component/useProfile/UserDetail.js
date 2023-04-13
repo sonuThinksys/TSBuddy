@@ -7,6 +7,8 @@ import {
   Image,
   Platform,
 } from 'react-native';
+
+import baseUrl from 'services/Urls';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -24,7 +26,8 @@ const UserDetail = ({navigation, route}) => {
     cellNumber,
     employeeName,
     managerInfoDto,
-  } = route.params;
+  } = route.params || {};
+
   const dispatch = useDispatch();
   const [empDetail, setClickData] = useState({});
   const {isShowModal} = useSelector(state => state.home);
@@ -115,14 +118,16 @@ const UserDetail = ({navigation, route}) => {
           justifyContent: 'center',
           paddingHorizontal: wp(30),
         }}>
-        <Image
-          source={{ri: `${baseUrl}${image}`}}
-          style={{
-            height: hp(14),
-            width: hp(14),
-            borderRadius: 55,
-          }}
-        />
+        {image ? (
+          <Image
+            source={{uri: `${baseUrl}${image}`}}
+            style={{
+              height: hp(14),
+              width: hp(14),
+              borderRadius: 55,
+            }}
+          />
+        ) : null}
       </View>
       <View
         style={{
@@ -163,7 +168,7 @@ const UserDetail = ({navigation, route}) => {
               marginLeft: wp(2),
               color: Colors.lightBlue,
             }}>
-            {managerInfoDto}
+            {managerInfoDto?.employeeName}
           </Text>
         </View>
         <Text

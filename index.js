@@ -19,6 +19,8 @@ const AppConfig = () => {
     SplashScreen.hide();
   }, []);
 
+  // return <Text>Hello world!</Text>;
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

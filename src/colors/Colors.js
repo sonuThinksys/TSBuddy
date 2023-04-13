@@ -7,7 +7,6 @@ export const Colors = {
   skyColor: '#C3F8FF',
   blue: '#3333FF',
   menuTransparentColor: 'rgba(0, 70, 150, 0.7)',
-
   orange: 'orange',
   green: 'green',
   lightGray: '#dee2e6',
@@ -22,6 +21,7 @@ export const Colors = {
   darkpurple: '#088bf3',
   grey: '#adb5bd',
   bluishGreen: '#06566e',
+  colorDodgerBlue2: '#00638f',
   brown: 'rgba(51, 51, 51, 0.8)',
   darkGreen: '#0E5E6F',
   blackishGreen: '#003333',

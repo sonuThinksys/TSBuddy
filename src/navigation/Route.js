@@ -13,3 +13,4 @@ export const LeaveDetailsScreen = 'LeaveDetailsScreen';
 export const employeeProfileScreen = 'employeeProfileScreen';
 export const employeeDetailsScreen = 'employeeDetailsScreen';
 export const ResourcesDetailsScreen = 'ResourcesDetailsScreen';
+export const ResourcesScreen = 'ResourcesScreen';

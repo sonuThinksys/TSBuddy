@@ -18,6 +18,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
 import ResourcesDetails from 'screens/resources/ResourcesDetails';
+import Resources from 'screens/resources/Resources';
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
@@ -49,6 +50,7 @@ import {
   employeeDetailsScreen,
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
+  ResourcesScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 
@@ -134,17 +136,7 @@ const drawerOption = ({
 
 const HomeStackScreen = ({navigation}) => {
   return (
-    <HomeStack.Navigator
-      initialRouteName="HomeDashboard"
-      // screenOptions={() => {
-      //   return {
-      //     headerShown: false,
-      //     // headerStyle: {backgroundColor: Colors.red},
-      //     // headerTintColor: Colors.white,
-      //     // headerTitleStyle: {fontWeight: 'bold'},
-      //   };
-      // }}
-      headerMode="none">
+    <HomeStack.Navigator initialRouteName="HomeDashboard" headerMode="none">
       <HomeStack.Screen
         name={HomeScreen}
         component={Home}
@@ -218,6 +210,16 @@ const ProfileStackScreen = ({navigation}) => {
 const ResourcesStackScreen = ({navigation}) => {
   return (
     <ResourcesStack.Navigator screenOptions={{headerShown: false}}>
+      <ResourcesStack.Screen
+        options={drawerOption({
+          lable: 'Resources',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name={ResourcesScreen}
+        component={Resources}
+      />
+
       <ResourcesStack.Screen
         options={drawerOption({
           lable: 'Resources Details',

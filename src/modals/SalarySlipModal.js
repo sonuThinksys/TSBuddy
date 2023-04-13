@@ -16,7 +16,9 @@ import {authLoginStatus} from 'Auth/LoginSlice';
 import CustomModal from 'customComponents/CustomModal';
 import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-const SalarSlipModal = () => {
+import {ERROR} from 'constants/strings';
+import ShowAlert from 'customComponents/CustomError';
+const SalarSlipModal = ({navigation}) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
   const token = useSelector(state => state.auth.userToken);
@@ -37,9 +39,20 @@ const SalarSlipModal = () => {
             alignItems: 'center',
             paddingVertical: hp(1),
           }}
-          onPress={() => {
+          onPress={async () => {
             dispatch(authLoginStatus(true));
-            dispatch(getSalarySlipData(token));
+
+            const salarySlips = await dispatch(getSalarySlipData(token));
+
+            if (salarySlips?.error) {
+              ShowAlert({
+                messageHeader: ERROR,
+                messageSubHeader: salarySlips?.error?.message,
+                buttonText: 'Close',
+                dispatch,
+                navigation,
+              });
+            }
           }}>
           <View style={styles.secondTextView}>
             <Text style={styles.contnueText}>Continue</Text>

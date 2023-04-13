@@ -15,7 +15,9 @@ import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {attendenceMonthImages} from 'defaultData';
 import moment from 'moment';
-const Attendence = () => {
+import {ERROR} from 'constants/strings';
+import ShowAlert from 'customComponents/CustomError';
+const Attendence = ({navigation}) => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [spendhours, sendSpendhours] = useState(0);
@@ -26,18 +28,32 @@ const Attendence = () => {
   const employeeID = decoded.Id;
 
   useEffect(() => {
-    dispatch(
-      getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
-    );
+    (async () => {
+      const attendence = await dispatch(
+        getAttendencaeData({
+          token,
+          employeeID,
+          visisbleMonth,
+          visibleYear,
+        }),
+      );
+
+      if (attendence?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: attendence?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+    })();
   }, [visisbleMonth, visibleYear]);
 
   const {
     attendenceData: {employeeAttendance, dailyAttendance},
   } = useSelector(state => state.home);
-  console.log(
-    'dailyAttendance:------------------------------------------------',
-    dailyAttendance,
-  );
+
   let today = new Date();
 
   // get current day of the week (0-6)

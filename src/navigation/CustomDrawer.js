@@ -26,6 +26,16 @@ import {loginStatus} from 'Auth/LoginSlice';
 export default ({navigation}) => {
   const dispatch = useDispatch();
 
+  const resorcesTab = {
+    screen: 'Resources',
+    label: 'Resources',
+    navigation,
+    key: 8,
+    icon: MonthImages.HomeImage,
+  };
+
+  const isLeaveApproover = true;
+
   const drawerList = [
     {
       screen: 'Home',
@@ -78,14 +88,11 @@ export default ({navigation}) => {
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
-    {
-      screen: 'Resources',
-      label: 'Resources',
-      navigation,
-      key: 8,
-      icon: MonthImages.HomeImage,
-    },
   ];
+
+  if (isLeaveApproover) {
+    drawerList.push(resorcesTab);
+  }
 
   // drawerList.splice(2, 0, {
   //   screen: 'Resources',

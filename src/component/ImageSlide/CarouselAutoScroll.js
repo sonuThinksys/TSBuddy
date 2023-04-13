@@ -16,14 +16,28 @@ import {getCalendereventData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 const width = Dimensions.get('screen').width;
-import {imageArr} from 'utils/DummyData';
+import {imageArr} from 'utils/defaultData';
+import {ERROR} from 'constants/strings';
+import ShowAlert from 'customComponents/CustomError';
 
-const CarouselAutoScroll = () => {
+const CarouselAutoScroll = ({navigation}) => {
   const dispatch = useDispatch();
   const [CalaenderEventData, setCalenderEventData] = useState([]);
   const {userToken: token} = useSelector(state => state.auth);
   useEffect(() => {
-    dispatch(getCalendereventData(token));
+    (async () => {
+      const events = await dispatch(getCalendereventData(token));
+
+      if (events?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: events?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+    })();
   }, []);
   const {calendereventData: calenderData} = useSelector(state => state.home);
   const keyOfObject = Object.keys(calenderData);

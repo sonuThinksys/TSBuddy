@@ -23,7 +23,7 @@ import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
 import {getEmployeeData, modalStatus} from 'redux/homeSlice';
 import {FontSize} from 'constants/fonts';
-import {RenderListItem} from './renderList';
+import RenderListItem from './RenderList';
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -57,6 +57,17 @@ const UserProfile = () => {
 
   const fetchEmployeesData = async ({isInitial, currentEmployees}) => {
     const result = await dispatch(getEmployeeData({token, currentEmployees}));
+
+    if (result?.error) {
+      ShowAlert({
+        messageHeader: ERROR,
+        messageSubHeader: result?.error?.message,
+        buttonText: 'Close',
+        dispatch,
+        navigation,
+      });
+    }
+
     if (result && result?.payload && result?.payload?.data) {
       if (isInitial) {
         setEmpData(result.payload.data);
@@ -68,11 +79,10 @@ const UserProfile = () => {
   };
 
   const onChangeText = e => {
-    const filterData = allEmpData.filter(el => {
-      return el.employeeName.includes(e);
-    });
-
-    setEmpData(filterData);
+    // const filterData = allEmpData.filter(el => {
+    //   return el.employeeName.includes(e);
+    // });
+    // setEmpData(filterData);
   };
 
   const loadMoreData = () => {
@@ -217,6 +227,7 @@ const UserProfile = () => {
         onMomentumScrollEnd={() => setScrollBegin(false)}
         data={allEmpData}
         numColumns={numValue}
+        key={numValue}
         //numColumns={1}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {

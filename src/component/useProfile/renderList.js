@@ -14,7 +14,7 @@ import {Colors} from 'colors/Colors';
 import styles from './userProfileStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 
-export const RenderListItem = ({
+const RenderListItem = ({
   item: {
     designation,
     companyEmail,
@@ -22,7 +22,7 @@ export const RenderListItem = ({
     cellNumber,
     employeeName,
     managerInfoDto,
-  },
+  } = {},
   index,
   navigation,
   isShowModall,
@@ -31,7 +31,6 @@ export const RenderListItem = ({
   empDetail,
   showHoriZontal,
 }) => {
-  console.log('designation: ', designation);
   return (
     <View key={index} style={{backgroundColor: Colors.white}}>
       {showHoriZontal ? (
@@ -54,22 +53,24 @@ export const RenderListItem = ({
                 alignItems: 'center',
               }}>
               {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
-              <Image
-                resizeMode="stretch"
-                source={{uri: `${baseUrl}${image}`}}
-                style={styles.image}
-              />
+              {image ? (
+                <Image
+                  resizeMode="stretch"
+                  source={{uri: `${baseUrl}${image}`}}
+                  style={styles.image}
+                />
+              ) : null}
             </View>
             <View style={{flex: 0.7}}>
               <Text style={styles.nameText}>{employeeName}</Text>
               <Text style={styles.desniationText}>{designation}</Text>
               <View style={styles.smallView}>
                 <Image
-                  source={MonthImages.userPS}
+                  source={MonthImages?.userPS}
                   style={{height: 25, width: 25}}
                 />
                 <Text style={styles.reportingText}>
-                  {managerInfoDto.employeeName}
+                  {managerInfoDto?.employeeName}
                 </Text>
               </View>
             </View>
@@ -92,11 +93,13 @@ export const RenderListItem = ({
             resizeMode="contain"
             style={styles.backgroundImage}
             source={MonthImages.empbgS}>
-            <Image
-              resizeMode="stretch"
-              source={{uri: `${baseUrl}${image}`}}
-              style={styles.secondimage}
-            />
+            {image ? (
+              <Image
+                resizeMode="stretch"
+                source={{uri: `${baseUrl}${image}`}}
+                style={styles.secondimage}
+              />
+            ) : null}
             <Text numberOfLines={1} style={styles.nametext2}>
               {employeeName}
             </Text>
@@ -136,3 +139,5 @@ export const RenderListItem = ({
     </View>
   );
 };
+
+export default RenderListItem;

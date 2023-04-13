@@ -20,4 +20,5 @@ export default {
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
   getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   applyLeave: `${API_URL}/Leave/AddLeave`,
+  getEmployeesByLeaveApprover: `${API_URL}/EmployeeProfile/GetEmployeesByLeaveApprover`,
 };

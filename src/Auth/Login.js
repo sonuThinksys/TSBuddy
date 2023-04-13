@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -35,6 +36,7 @@ const Login = () => {
   // const [password, setPassword] = useState('radhikathinksys@123');
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
+  const [loading, setLoading] = useState(false);
 
   const {userToken: token, formInput} = useSelector(state => state.auth);
   useEffect(() => {
@@ -94,7 +96,9 @@ const Login = () => {
   };
 
   const onPressLogin = async () => {
-    dispatch(getUserToken({username, password}));
+    setLoading(true);
+    const login = await dispatch(getUserToken({username, password}));
+    setLoading(false);
   };
 
   return (
@@ -210,6 +214,13 @@ const Login = () => {
             <Text style={styles.bioMetricText}>Biometric login</Text>
           </View>
         </TouchableOpacity>
+      ) : null}
+
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" />
+        </View>
       ) : null}
     </View>
   );

@@ -51,9 +51,9 @@ const SalarySlip = ({navigation}) => {
     newObjectData &&
       newObjectData.length &&
       newObjectData?.map(val => {
-        newObj[val?.fiscalYear.substring(0, 4)] =
-          newObj[val?.fiscalYear.substring(0, 4)] || [];
-        newObj[val?.fiscalYear.substring(0, 4)].push(val);
+        newObj[val?.fiscalYear?.substring(0, 4)] =
+          newObj[val?.fiscalYear?.substring(0, 4)] || [];
+        newObj[val?.fiscalYear?.substring(0, 4)].push(val);
       });
 
     setnewyearWiseData(newObj);

@@ -20,7 +20,7 @@ import {
 import {authLoginStatus} from 'Auth/LoginSlice';
 import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import {whatsappInstallationAlert} from 'utils/DummyData';
+import {whatsappInstallationAlert} from 'utils/defaultData';
 import Modal from 'react-native-modal';
 
 const CommunicationModal = ({empDetail}) => {

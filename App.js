@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView, Text} from 'react-native';
 import MainNavigator from './src/navigation/MainNavigator';
 import {Colors} from 'colors/Colors';
 import reactotron from 'reactotron-react-native';
