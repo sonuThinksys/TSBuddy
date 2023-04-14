@@ -25,20 +25,13 @@ const SalarySlip = ({navigation}) => {
   const {isAuthLoggedIn} = useSelector(state => state.auth);
   const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
-  console.log('salarySlipData123:----------------------------', salarySlipData);
-  console.log(
-    'salarySlipData123:----------------------------',
-    salarySlipData[2],
-  );
-  console.log('newyearWiseData:------------------------', newyearWiseData);
+
   useEffect(() => {
-    console.log('heelo indiss ');
     let newObjectData = [];
     newObjectData =
       salarySlipData &&
       salarySlipData.length &&
       salarySlipData.map(el => {
-        console.log('el:-----------------------', el);
         return {...el, ...monthImages[Math.abs(el?.month)]};
       });
     setnewObjectData(newObjectData);

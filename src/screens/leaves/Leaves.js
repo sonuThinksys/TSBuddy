@@ -20,28 +20,40 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {guestLeavesScreenData} from 'guestData';
-import Loader from 'component/loader/Loader';
+import {FontFamily, FontSize} from 'constants/fonts';
 const Leaves = ({navigation}) => {
-  const [refreshing, setRefreshing] = useState(false);
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
   var decoded = jwt_decode(token);
-  const employeeID = decoded.Id;
+  const employeeID = decoded.id;
   const dispatch = useDispatch();
 
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
+  const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
+  // const []
 
   useEffect(() => {
-    dispatch(getLeaveDetails({token, employeeID}));
-  }, []);
+    updateData();
+  }, [employeeID]);
+
+  const updateData = async () => {
+    try {
+      setRefresh(true);
+      const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
+
+      setRefresh(false);
+    } catch (err) {
+      setRefresh(false);
+    }
+  };
 
   const {
     leavesData,
     isLeaveDataLoading: {isLoading},
   } = useSelector(state => state.home);
-  console.log('leavesData:--------------------------', leavesData);
+
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen);
   };
@@ -114,7 +126,7 @@ const Leaves = ({navigation}) => {
           onPress={applyForLeave}
           style={{
             // paddingHorizontal: wp(5),
-            paddingVertical: hp(1),
+            paddingVertical: hp(1.5),
             borderWidth: 1,
             borderColor: Colors.black,
             marginHorizontal: wp(3),
@@ -123,21 +135,26 @@ const Leaves = ({navigation}) => {
             borderRadius: 5,
             backgroundColor: Colors.lightGray,
             marginBottom: hp(1),
+            alignItems: 'center',
+            paddingLeft: wp(2.5),
+            justifyContent: 'space-between',
           }}>
           <View
             style={{
-              paddingHorizontal: wp(2),
+              // paddingHorizontal: wp(2),
               borderColor: Colors.orangeColor,
-              borderRadius: 40,
+              borderRadius: 20,
               borderWidth: 1,
-              justifyContent: 'center',
+              // justifyContent: 'flex-end',
               alignItems: 'center',
+              width: 20,
+              height: 20,
               // paddingVertical: hp(0.2),
             }}>
             <Text
               style={{
-                // textAlign: 'center',
-                fontSize: 20,
+                textAlign: 'center',
+                // fontSize: 20,
                 fontWeight: 'bold',
                 color: Colors.orangeColor,
               }}>
@@ -147,16 +164,20 @@ const Leaves = ({navigation}) => {
 
           <Text
             style={{
-              marginTop: hp(0.5),
-              marginLeft: wp(10),
-              fontSize: 16,
-              fontWeight: 'bold',
+              // marginTop: hp(0.5),
+              // marginLeft: wp(10),
+              fontSize: FontSize.h12,
+              fontFamily: FontFamily.RobotoMedium,
               color: Colors.purple,
+              textAlign: 'center',
             }}>
             Make a new Leave Application
           </Text>
+          <View />
         </Pressable>
         <FlatList
+          refreshing={isRefresh}
+          onRefresh={updateData}
           data={isGuestLogin ? guestLeavesScreenData : leavesData}
           renderItem={renderItem}
           keyExtractor={(_, index) => index}
@@ -178,10 +199,10 @@ const Leaves = ({navigation}) => {
           onPress={() => {
             setFilterCalenderOpen(true);
           }}
-          style={{position: 'absolute', bottom: hp(8), right: wp(8)}}>
+          style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
           <Image
             source={MonthImages.filterIcon2x}
-            style={{height: 32, width: 32}}
+            style={{height: 55, width: 55, borderRadius: 25}}
           />
         </Pressable>
       </View>

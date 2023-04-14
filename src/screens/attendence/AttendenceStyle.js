@@ -7,8 +7,10 @@ import {
 export default StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'red',
+    // width:"100%",
     // justifyContent: 'space-between',
+    justifyContent: 'center',
+    backgroundColor:"white"
   },
   secondContainer: {
     borderColor: Colors.white,
@@ -17,6 +19,7 @@ export default StyleSheet.create({
     marginHorizontal: wp(6),
     borderRadius: 10,
     backgroundColor: Colors.darkTransparentColor,
+    // flex:1
   },
   monthText: {
     color: Colors.whitishPink,

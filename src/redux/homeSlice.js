@@ -39,7 +39,6 @@ const initialState = {
   leaveMenuDetails: [],
   menuDetailsLoading: false,
   foodMenuDatailsError: null,
-  menuFeedback: [],
   menuFeedbackError: null,
   dailyMenuID: '',
   userFeedback: [],
@@ -72,6 +71,7 @@ export const applyForLeave = createAsyncThunk(
         body,
         config,
       );
+
       if (status === 200) {
         return Promise.resolve(data);
       } else {
@@ -84,6 +84,8 @@ export const applyForLeave = createAsyncThunk(
       }
       if (statusCode == 401) {
         return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
       } else {
         return Promise.reject(new Error(err));
       }
@@ -188,35 +190,6 @@ export const giveMenuFeedback = createAsyncThunk(
       });
   },
 );
-
-// export const applyLeave = createAsyncThunk('home/applyLeave', async token => {
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   };
-
-//   return axios(config)
-//     .then(async response => {
-//       const {data, status} = response;
-//       if (status === 200) {
-//         return Promise.resolve(data);
-//       } else {
-//         return Promise.reject(new Error('Something Went Wrong.'));
-//       }
-//     })
-//     .catch(err => {
-//       let statusCode = 500;
-//       if (err?.response) {
-//         statusCode = err?.response.status;
-//       }
-//       if (statusCode == 401) {
-//         return Promise.reject(err?.response?.data?.message);
-//       } else {
-//         return Promise.reject(new Error(err));
-//       }
-//     });
-// });
 
 export const getMenuFeedback = createAsyncThunk(
   'home/menuFeedback',
@@ -331,12 +304,46 @@ export const getEmployeesByLeaveApprover = createAsyncThunk(
   },
 );
 
+export const getResourcesEmployeesLeaves = createAsyncThunk(
+  'getResourcesEmployeesLeaves',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getResourcesEmployeesLeaves,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
 // ============================================================================================
 
 export const getHolidaysData = createAsyncThunk(
   'home/holidayData',
   async token => {
-    var config = {
+    const config = {
       method: 'get',
       url: endPoints.holidaysAPI,
       headers: {
@@ -344,6 +351,7 @@ export const getHolidaysData = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
+
     return axios(config)
       .then(async response => {
         const {data, status} = response;
@@ -620,7 +628,7 @@ export const requestLunchSubmission = createAsyncThunk(
 );
 
 const homeSlice = createSlice({
-  name: 'dataa',
+  name: 'home',
   initialState,
   reducers: {
     loadingStatus: (state, action) => {
@@ -669,14 +677,15 @@ const homeSlice = createSlice({
       const feedbackArray = [...state.userFeedback];
       // return;
 
-      feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
-        ? 1
-        : 0;
+      if (feedbackArray.length) {
+        feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
+          ? 1
+          : 0;
+      }
 
       state.userFeedback = feedbackArray;
     });
     // builder.addCase(giveMenuFeedback.rejected, (state, action) => {
-    //   console.log('rejected:', action);
     // });
     builder.addCase(getSalarySlipData.pending, state => {
       state.salarySlipDataLoading = true;
@@ -721,33 +730,6 @@ const homeSlice = createSlice({
 
     builder.addCase(getMenuFeedback.pending, state => {});
 
-    builder.addCase(getMenuFeedback.rejected, (state, action) => {
-      state.menuFeedbackError = action.payload;
-      state.menuFeedback = [];
-    });
-
-    builder.addCase(getMenuFeedback.fulfilled, (state, action) => {
-      console.log('action.payload:', action.payload);
-      state.menuFeedbackError = null;
-
-      const totalFeedbackArray = [
-        {
-          likes: action.payload?.totalBreakfastlikes,
-          dislikes: action.payload?.totalBreakfastdislikes,
-        },
-        {
-          likes: action.payload?.totalLunchlikes,
-          dislikes: action.payload?.totalLunchdislikes,
-        },
-        {
-          likes: action.payload?.totalMeallikes,
-          dislikes: action.payload?.totalMealdislikes,
-        },
-      ];
-
-      state.menuFeedback = totalFeedbackArray;
-    });
-
     builder.addCase(getTodayMenuDetails.pending, state => {
       state.menuDetailsLoading = true;
     });
@@ -787,13 +769,15 @@ const homeSlice = createSlice({
     // builder.addCase(getLeaveDetails.pending, (state, action) => {
     //   state.isLeaveDataLoading = true;
     // });
-    // builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
-    //   state.isLeaveDataLoading = false;
-    //   // const dataWithId = action.payload.map(item => ({...item, id: uuidv4()}));
+    builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
+      const reversedLeaves = action.payload.slice().reverse();
 
-    //   state.leavesData = action.payload;
-    //   state.leavesDataError = undefined;
-    // });
+      state.isLeaveDataLoading = false;
+      // const dataWithId = action.payload.map(item => ({...item, id: uuidv4()}));
+
+      state.leavesData = reversedLeaves;
+      state.leavesDataError = undefined;
+    });
     // builder.addCase(getLeaveDetails.rejected, (state, action) => {
     //   state.isLeaveDataLoading = false;
     //   state.leavesData = [];
@@ -866,11 +850,6 @@ const homeSlice = createSlice({
       state.requestLunchDataPending = false;
       state.requestLunchData = [];
       state.requestLunchDataError = action.payload;
-    });
-
-    //Resources Data
-    builder.addCase(getEmployeesByLeaveApprover.pending, (state, action) => {
-      state.resourcesEmployeeDataLoading = true;
     });
   },
 });

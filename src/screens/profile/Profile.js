@@ -34,7 +34,7 @@ const Profile = ({navigation}) => {
     state => state.auth,
   );
   var decoded = jwt_decode(token);
-  const employeeID = decoded.Id;
+  const employeeID = decoded.id;
 
   useEffect(() => {
     (async () => {
@@ -51,7 +51,6 @@ const Profile = ({navigation}) => {
           navigation,
         });
       }
-      console.log('profileDetails:', profileDetails);
     })();
   }, []);
 

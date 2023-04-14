@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
+  screenWidth,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
@@ -12,7 +13,7 @@ export default StyleSheet.create({
   },
 
   swiperContainer: {
-    flex: 0.14,
+    flex: 0.22,
   },
   formContainer: {
     paddingHorizontal: 10,
@@ -95,8 +96,8 @@ export default StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: Colors.lightBlue,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: hp(4),
+    paddingVertical: 6,
+    // marginBottom: hp(4),
   },
   button: {
     backgroundColor: Colors.white,
@@ -105,7 +106,7 @@ export default StyleSheet.create({
     paddingVertical: 6,
   },
   mainPart: {
-    flex: 0.84,
+    flex: 1,
     justifyContent: 'space-between',
   },
   applyText: {
@@ -118,14 +119,15 @@ export default StyleSheet.create({
     marginRight: wp(2),
   },
   leaveCard: {
-    width: wp(47),
-    marginRight: wp(2.4),
+    width: screenWidth-wp(25),
     backgroundColor: Colors.white,
     borderRadius: 6,
+    marginHorizontal: wp(4),
+    marginVertical:5
+    // paddingVertical:hp(2)
   },
   leaveTextContainer: {
     borderBottomWidth: 0.8,
-    borderBottomColor: Colors.black,
     paddingBottom: hp(0.5),
   },
   leaveText: {
@@ -154,7 +156,7 @@ export default StyleSheet.create({
     color: Colors.parrotGreen,
   },
   verticalLine: {
-    height: '100%',
+    height: '85%',
     borderWidth: 0.4,
     borderColor: 'black',
   },
@@ -202,5 +204,16 @@ export default StyleSheet.create({
   },
   rowText: {
     fontSize: 16,
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
   },
 });

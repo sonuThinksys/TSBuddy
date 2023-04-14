@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import * as Keychain from 'react-native-keychain';
-
+import axios from 'axios';
 const jwtDecode = require('jwt-decode');
 
 import endPoints from '../config';
@@ -13,6 +13,8 @@ const initialState = {
   userTokenGettingLoading: false,
   formInput: {},
   employeeDetails: {},
+  isRemember: false,
+  bioMetricEnable: false,
   isGuestLogin: false,
 };
 
@@ -43,9 +45,7 @@ export const getUserToken = createAsyncThunk(
 
           return Promise.resolve({data, formInput});
         } else {
-          const {data} = response || {};
-
-          return Promise.reject(new Error(data?.message));
+          return Promise.reject(data);
         }
       });
     } catch (err) {
@@ -58,11 +58,18 @@ const loginSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    logOut: (state, action) => initialState,
     loginStatus: (state, action) => {
       state.isLoggedIn = action.payload;
     },
     authLoginStatus: (state, action) => {
       state.isAuthLoggedIn = action.payload;
+    },
+    setIsRemeber: (state, action) => {
+      state.isRemember = action.payload;
+    },
+    setBiometricEnable: (state, action) => {
+      state.bioMetricEnable = action.payload;
     },
     guestLoginStatus: (state, action) => {
       state.isLoggedIn = action.payload;
@@ -90,5 +97,11 @@ const loginSlice = createSlice({
   },
 });
 export default loginSlice.reducer;
-export const {loginStatus, authLoginStatus, guestLoginStatus} =
-  loginSlice.actions;
+export const {
+  loginStatus,
+  authLoginStatus,
+  setIsRemeber,
+  logOut,
+  setBiometricEnable,
+  guestLoginStatus,
+} = loginSlice.actions;

@@ -29,7 +29,7 @@ export default StyleSheet.create({
   likeView: {
     flexDirection: 'row',
     paddingLeft: wp(2),
-    paddingVertical: hp(0.5),
+    paddingVertical: hp(0.8),
     alignItems: 'center',
   },
 });

@@ -8,7 +8,7 @@ export default {
   holidaysAPI: `${API_URL}/Holiday?year=${year}`,
   leaveDetails: `${API_URL}/Leave/AppliedLeaves?empId=`,
   employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
-  calenderEventAPI: `${API_URL}/Event/GetCalenderEvents?month=${month + 1}`,
+  calenderEventAPI: `${API_URL}/Event/GetEvents?month=${month + 1}`,
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
   getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
@@ -21,4 +21,5 @@ export default {
   getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   applyLeave: `${API_URL}/Leave/AddLeave`,
   getEmployeesByLeaveApprover: `${API_URL}/EmployeeProfile/GetEmployeesByLeaveApprover`,
+  getResourcesEmployeesLeaves: `${API_URL}/EmployeeProfile/GetEmployeeLeaves?empId=10843`,
 };
