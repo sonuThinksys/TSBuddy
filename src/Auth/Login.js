@@ -73,17 +73,9 @@ const Login = ({navigation}) => {
     //       'userDetailsRemeber',
     //     );
     //     userDetailsRemeber = JSON.parse(userDetailsRemeber);
-    //     console.log(
-    //       'userDetailsRemeber',
-    //       userDetailsRemeber,
-    //       userDetailsRemeber?.username,
-    //     );
+
     //     if (userDetailsRemeber && Object.keys(userDetailsRemeber).length) {
-    //       console.log(
-    //         'userDetailsRemeber',
-    //         userDetailsRemeber,
-    //         userDetailsRemeber?.username,
-    //       );
+
     //       // setLoading(true);
     //       // await dispatch(getUserToken({username, password}));
     //       // setLoading(false);

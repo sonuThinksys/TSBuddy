@@ -18,6 +18,8 @@ import {Colors} from 'colors/Colors';
 import CommunicationModal from 'modals/CommunicationModal';
 import {modalStatus} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
+
 const UserDetail = ({navigation, route}) => {
   const {
     designation,
@@ -118,6 +120,16 @@ const UserDetail = ({navigation, route}) => {
           justifyContent: 'center',
           paddingHorizontal: wp(30),
         }}>
+        {/* {image ? (
+          <Image
+            source={{uri: `${baseUrl}${image}`}}
+            style={{
+              height: hp(14),
+              width: hp(14),
+              borderRadius: 55,
+            }}
+          />
+        ) : null} */}
         {image ? (
           <Image
             source={{uri: `${baseUrl}${image}`}}
@@ -127,7 +139,16 @@ const UserDetail = ({navigation, route}) => {
               borderRadius: 55,
             }}
           />
-        ) : null}
+        ) : (
+          <Image
+            source={defaultUserIcon}
+            style={{
+              height: hp(14),
+              width: hp(14),
+              borderRadius: 55,
+            }}
+          />
+        )}
       </View>
       <View
         style={{

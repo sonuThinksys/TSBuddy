@@ -3,7 +3,6 @@ import {View, Text, FlatList, Image} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {getLeaveDetails} from 'redux/homeSlice';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
 // import ShowAlert from 'customComponents/CustomError';
@@ -21,7 +20,7 @@ const RecentLeaves = ({navigation}) => {
   const {
     leaveMenuDetails: {recentAppliedLeaves},
   } = useSelector(state => state.home);
-  const recent3AppliedLeaves = recentAppliedLeaves.slice(-3).reverse();
+  const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
   // const dispatch = useDispatch();
 

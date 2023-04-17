@@ -26,6 +26,7 @@ import {getEmployeeData, modalStatus} from 'redux/homeSlice';
 import {FontSize} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
+import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 
 const UserProfile = () => {
   const navigation = useNavigation();
@@ -331,11 +332,15 @@ const renderItem = (
                 alignItems: 'center',
               }}>
               {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
-              <Image
-                resizeMode="stretch"
-                source={{uri: `${baseUrl}${image}`}}
-                style={styles.image}
-              />
+              {image ? (
+                <Image
+                  resizeMode="stretch"
+                  source={{uri: `${baseUrl}${image}`}}
+                  style={styles.image}
+                />
+              ) : (
+                <Image source={defaultUserIcon} style={styles.image} />
+              )}
             </View>
             <View style={{flex: 0.7}}>
               <Text style={styles.nameText}>{employeeName}</Text>
@@ -369,11 +374,15 @@ const renderItem = (
             resizeMode="contain"
             style={styles.backgroundImage}
             source={MonthImages.empbgS}>
-            <Image
-              resizeMode="stretch"
-              source={{uri: `${baseUrl}${image}`}}
-              style={styles.secondimage}
-            />
+            {image ? (
+              <Image
+                resizeMode="stretch"
+                source={{uri: `${baseUrl}${image}`}}
+                style={styles.image}
+              />
+            ) : (
+              <Image source={defaultUserIcon} style={styles.image} />
+            )}
             <Text numberOfLines={1} style={styles.nametext2}>
               {employeeName}
             </Text>

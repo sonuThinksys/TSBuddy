@@ -44,7 +44,7 @@ const AttendenceTab = () => {
   return (
     <View style={styles.mainContainer}>
       {attendenceData.map(attendenceData => (
-        <AttendenceTabLayout data={attendenceData} />
+        <AttendenceTabLayout key={attendenceData.date} data={attendenceData} />
       ))}
       {/* <AttendenceTabLayout data={attendenceData[0]} />
       <AttendenceTabLayout />

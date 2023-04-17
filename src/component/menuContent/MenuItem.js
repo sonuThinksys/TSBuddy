@@ -34,11 +34,7 @@ import ShowAlert from 'customComponents/CustomError';
 const MenuItem = ({navigation}) => {
   const dispatch = useDispatch();
 
-  let {
-    userFeedback,
-    dailyMenuID,
-    leaveMenuDetails: {foodMenus: foodMenuDatails},
-  } = useSelector(state => state.home);
+  let {userFeedback, dailyMenuID} = useSelector(state => state.home);
 
   const [feedbackCount, setFeedbackCount] = useState([
     {
@@ -66,17 +62,17 @@ const MenuItem = ({navigation}) => {
       setTodayMenu([
         {
           type: breakfast,
-          food: menuDetails.payload.foodMenus[0]?.breakfast,
+          food: menuDetails.payload?.foodMenus[0]?.breakfast,
           img_url: MonthImages.breakfastImgS,
         },
         {
           type: lunch,
-          food: menuDetails.payload.foodMenus[0]?.lunch,
+          food: menuDetails.payload?.foodMenus[0]?.lunch,
           img_url: MonthImages.Lunch,
         },
         {
           type: snacks,
-          food: menuDetails.payload.foodMenus[0]?.eveningSnack,
+          food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
           img_url: MonthImages.snacksS,
         },
       ]);

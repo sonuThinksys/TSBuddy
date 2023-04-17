@@ -660,23 +660,23 @@ const homeSlice = createSlice({
       const totalFoodArr = [
         {
           type: breakfast,
-          food: action.payload.foodMenus[0]?.breakfast,
+          food: action.payload?.foodMenus[0]?.breakfast,
           img_url: MonthImages.breakfastImgS,
         },
         {
           type: lunch,
-          food: action.payload.foodMenus[0]?.lunch,
+          food: action.payload?.foodMenus[0]?.lunch,
           img_url: MonthImages.Lunch,
         },
         {
           type: snacks,
-          food: action.payload.foodMenus[0]?.eveningSnack,
+          food: action.payload?.foodMenus[0]?.eveningSnack,
           img_url: MonthImages.snacksS,
         },
       ];
 
       const data = {...action.payload, foodMenus: totalFoodArr};
-      state.dailyMenuID = action.payload.foodMenus[0]?.dailyMenuId || '';
+      state.dailyMenuID = action.payload?.foodMenus[0]?.dailyMenuId || '';
       state.leaveMenuDetails = data;
     });
 

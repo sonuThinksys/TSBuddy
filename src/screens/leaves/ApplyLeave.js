@@ -28,6 +28,7 @@ import {
   approver,
   none,
 } from 'utils/defaultData';
+
 import {applyForLeave} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -72,12 +73,6 @@ const ApplyLeave = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
 
-  const [typeState, setTypeState] = useState({
-    type: '',
-    typeName: '',
-    typeOpen: false,
-    id: null,
-  });
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState('');
@@ -98,6 +93,28 @@ const ApplyLeave = ({navigation}) => {
     setToCalenderVisible(false);
   };
 
+  function weekdayCount(startDate, endDate) {
+    let dayCount = 0;
+
+    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
+    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    const presentDate = new Date(startDate);
+
+    for (let i = 0; i < diffDays; i++) {
+      const dayOfWeek = presentDate.getDay();
+      console.log('dayOfWeek:', dayOfWeek);
+
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        dayCount++;
+      }
+
+      presentDate.setDate(presentDate.getDate() + 1);
+    }
+
+    console.log('dayCount:', dayCount);
+    return dayCount;
+  }
+
   const fromCalenderConfirm = date => {
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
@@ -106,15 +123,17 @@ const ApplyLeave = ({navigation}) => {
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
     if (toDate.toDateObj) {
-      const diffInMs = toDate.toDateObj.getTime() - date.getTime();
-      const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
-      setTotalNumberOfLeaveDays(diffInDays);
+      // const diffInMs = toDate.toDateObj.getTime() - date.getTime();
+      // const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
+      // =================================================================
+      const totalWeekdays = Math.round(weekdayCount(date, toDate.toDateObj));
+      // =================================================================
+
+      setTotalNumberOfLeaveDays(totalWeekdays);
       setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     } else {
       setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     }
-
-    // const totalDays=+presentDate
 
     fromOnCancel();
   };
@@ -126,10 +145,8 @@ const ApplyLeave = ({navigation}) => {
 
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    const timeDiff = Math.abs(date.getTime() - fromDate.fromDateObj.getTime());
-    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-
-    setTotalNumberOfLeaveDays(diffDays);
+    const totalWeekdays = weekdayCount(fromDate.fromDateObj, date);
+    setTotalNumberOfLeaveDays(totalWeekdays);
 
     setToDate({toDateObj: date, toDateStr: finalTodayDate});
     toOnCancel();
@@ -363,7 +380,7 @@ const ApplyLeave = ({navigation}) => {
       alert('Please select a leave type.');
       return;
     }
-    if (totalNumberOfLeaveDays < 1) {
+    if (totalNumberOfLeaveDays < 0.5) {
       alert('Difference between the number of leave days must be positive.');
       return;
     }
@@ -432,6 +449,11 @@ const ApplyLeave = ({navigation}) => {
             rightDropdown: (
               <View>
                 <ModalDropdown
+                  disabled={
+                    !fromDate.fromDateObj ||
+                    !toDate.toDateObj ||
+                    totalNumberOfLeaveDays > 1
+                  }
                   renderButtonText={renderButtonText}
                   style={{
                     borderWidth: 1,
@@ -442,7 +464,7 @@ const ApplyLeave = ({navigation}) => {
                   }}
                   isFullWidth={true}
                   showsVerticalScrollIndicator={false}
-                  defaultValue=""
+                  defaultValue="Select"
                   options={newDropDownOptions}
                   dropdownStyle={{
                     width: '45%',
@@ -450,12 +472,39 @@ const ApplyLeave = ({navigation}) => {
                   }}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
-                    const previousNumberOfDays = totalNumberOfLeaveDays;
-                    const isInteger = Number.isInteger(previousNumberOfDays);
-                    if (itemName !== none)
-                      setTotalNumberOfLeaveDays(prevDays =>
-                        prevDays ? prevDays - 0.5 : 0.5,
-                      );
+                    // const previousNumberOfDays = totalNumberOfLeaveDays;
+                    // const isInteger = Number.isInteger(previousNumberOfDays);
+                    // if (itemName !== none)
+                    //   setTotalNumberOfLeaveDays(prevDays =>
+                    //     prevDays ? prevDays - 0.5 : 0.5,
+                    //   );
+
+                    // =================================================================
+                    // const presentDate = String(
+                    //   toDate?.toDateObj?.getDate(),
+                    // ).padStart(2, '0');
+                    // const presentMonth = toDate?.toDateObj?.toLocaleString(
+                    //   'default',
+                    //   {month: 'short'},
+                    // );
+                    // const presentYear = toDate?.toDateObj?.getFullYear();
+
+                    // const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
+
+                    // const timeDiff = Math.abs(
+                    //   toDate?.toDateObj?.getTime() -
+                    //     fromDate?.fromDateObj?.getTime(),
+                    // );
+                    // const diffDays =
+                    //   Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                    // console.log('diffDays1:', diffDays);
+
+                    // =================================================================
+                    if (itemName !== none) {
+                      setTotalNumberOfLeaveDays(0.5);
+                    } else {
+                      setTotalNumberOfLeaveDays(1);
+                    }
                     setHalfDay(itemName);
                   }}
                   renderRightComponent={renderRightComponent}
