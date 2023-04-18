@@ -1,5 +1,5 @@
 import {Text, View} from 'react-native';
-import styles from './AttendenceTabStyles';
+import styles from './AttendenceTabStyle';
 import AttendenceTabLayout from './AttendenceTabLayout';
 
 const AttendenceTab = () => {

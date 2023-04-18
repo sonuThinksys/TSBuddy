@@ -80,4 +80,13 @@ const attendenceMonthImages = {
   12: MonthImages.decImage,
 };
 
-export {monthImages, attendenceMonthImages};
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+export {monthImages, attendenceMonthImages, days};

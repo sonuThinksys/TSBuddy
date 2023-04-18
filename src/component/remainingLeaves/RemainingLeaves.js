@@ -11,20 +11,20 @@ import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 const RemainingLeaves = () => {
-  const {
-    leaveMenuDetails: {remainingLeaves = []}={},
-  } = useSelector(state => state.home);
+  const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(
+    state => state.home,
+  );
 
   const earnedLeavesData = [
-    remainingLeaves[0]?.totalLeavesAllocated,
-    remainingLeaves[0]?.currentLeaveApplied,
-    remainingLeaves[0]?.currentLeaveBalance,
-  ];
-
-  const restrictedLeavesData = [
     remainingLeaves[1]?.totalLeavesAllocated,
     remainingLeaves[1]?.currentLeaveApplied,
     remainingLeaves[1]?.currentLeaveBalance,
+  ];
+
+  const restrictedLeavesData = [
+    remainingLeaves[0]?.totalLeavesAllocated,
+    remainingLeaves[0]?.currentLeaveApplied,
+    remainingLeaves[0]?.currentLeaveBalance,
   ];
   const totalEarnedTypesAvailable = earnedLeavesData.length;
   const totalRestrictedTypesAvailable = restrictedLeavesData.length;

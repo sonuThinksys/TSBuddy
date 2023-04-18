@@ -32,7 +32,9 @@ import {
 import {applyForLeave} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
-const ApplyLeave = ({navigation}) => {
+const ApplyLeave = ({navigation, route}) => {
+  const fromResource = route?.params?.fromResource || false;
+  console.log('fromResource:', fromResource);
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);

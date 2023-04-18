@@ -21,6 +21,7 @@ export const Colors = {
   darkpurple: '#088bf3',
   grey: '#adb5bd',
   bluishGreen: '#06566e',
+  colorDodgerBlue2: '#00638f',
   brown: 'rgba(51, 51, 51, 0.8)',
   darkGreen: '#0E5E6F',
   blackishGreen: '#003333',

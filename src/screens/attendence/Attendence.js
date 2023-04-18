@@ -4,11 +4,9 @@ import {
   Text,
   ImageBackground,
   FlatList,
-  StyleSheet,
   SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
-import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -20,11 +18,16 @@ import {Colors} from 'colors/Colors';
 import {getAttendencaeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {MonthImages} from 'assets/monthImage/MonthImage';
-import {attendenceMonthImages} from 'defaultData';
-import moment from 'moment';
+import {attendenceMonthImages, days} from 'defaultData';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
+import {
+  attendanceDate,
+  finalCurrentDate,
+  finalTodayDate,
+  startEndDateFormat,
+  todaySelectedDate,
+} from 'utils/utils';
 const Attendence = ({navigation}) => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
@@ -60,37 +63,17 @@ const Attendence = ({navigation}) => {
     })();
   }, [visisbleMonth, visibleYear]);
 
-  const {
-    attendenceData: {employeeAttendance, dailyAttendance},
-  } = useSelector(state => state.home);
-
-  let today = new Date();
-
-  // get current day of the week (0-6)
-  let dayOfWeek = today.getDay();
-
-  // calculate date range for Monday-Sunday of current week
-  let startDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() - dayOfWeek + 1,
-  );
-  let endDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() - dayOfWeek + 7,
-  );
-
+  const {attendenceData: {employeeAttendance = [], dailyAttendance = []} = {}} =
+    useSelector(state => state.home);
+  const startEndDate = () => {
+    let startDate = attendanceDate(1);
+    let endDate = attendanceDate(7);
+    return {startDate, endDate};
+  };
+  const {startDate, endDate} = startEndDate();
   // format the dates to your desired format
-  let startDateFormat = startDate.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-  let endDateFormat = endDate.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-
+  let startDateFormat = startEndDateFormat(startDate);
+  let endDateFormat = startEndDateFormat(endDate);
   useEffect(() => {
     let totalEffectiveHours = 0;
     let totalHours = 0;
@@ -103,34 +86,53 @@ const Attendence = ({navigation}) => {
     sendSpendhours(totalHours);
     setTotalSpendHours(totalEffectiveHours);
   }, [dailyAttendance]);
+  let todayDate = todaySelectedDate();
+  let mark = {
+    [todayDate]: {selected: true, selectedColor: Colors.green},
+  };
 
-  let mark = {};
-  employeeAttendance?.forEach(day => {
-    if (day.status === 'Present') {
-      mark[day.attDate] = {
-        marked: true,
-        dotColor: Colors.blue,
-      };
-    } else if (day.status === 'Absent') {
-      mark[day.attDate] = {
-        // marked: true,
-        // dotColor: Colors.red,
-        selected: true,
-        //  dotColor: Colors.red,
-        // activeOpacity: 0,
-        selectedColor: Colors.red,
-      };
-    } else if (day.status === 'Holiday') {
-      mark[day.attDate] = {
-        // marked: true,
-        // dotColor: Colors.red,
-        selected: true,
-        //  dotColor: Colors.red,
-        // activeOpacity: 0,
-        selectedColor: Colors.red,
-      };
-    }
-  });
+  employeeAttendance &&
+    employeeAttendance.length &&
+    employeeAttendance?.forEach(day => {
+      let date = day?.attDate?.split(' ')[0];
+      var newdate = date?.split('-').reverse().join('-');
+      if (day.status === 'Half Day') {
+        mark[newdate] = {
+          selectedColor: Colors.blue,
+          // dotColor: Colors.blue,
+          selected: true,
+        };
+      } else if (day.status === 'Absent') {
+        mark[newdate] = {
+          // dotColor: Colors.red,
+          selectedColor: Colors.red,
+          selected: true,
+          //  dotColor: Colors.red,
+          // activeOpacity: 0,
+          // selectedColor: Colors.red,
+        };
+      } else if (day.status === 'Holiday') {
+        mark[newdate] = {
+          // dotColor: Colors.pink,
+          selectedColor: Colors.pink,
+          selected: true,
+          //  dotColor: Colors.red,
+          // activeOpacity: 0,
+          // selectedColor: Colors.red,
+        };
+      } else if (day.status === 'Present') {
+        mark[newdate] = {
+          dotColor: Colors.green,
+          mark: true,
+          marked: true,
+          // selectedColor: Colors.green,
+          selected: true,
+          //  dotColor: Colors.red,
+          // activeOpacity: 0,
+          // selectedColor: Colors.red,
+        };
+      }
+    });
 
   const DATA = [
     {
@@ -150,38 +152,12 @@ const Attendence = ({navigation}) => {
     },
   ];
 
-  const date = new Date();
-  const days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
-
-  const presentDate = String(date.getDate()).padStart(2, '0');
-  const presentMonth = date.toLocaleString('default', {month: 'long'});
-  const presentYear = date.getFullYear();
-  const currentDayIndex = date.getDay();
-  const currentDay = days[currentDayIndex];
-
-  const finalTodayDate = `${presentDate}, ${presentMonth}`;
-
+  const {currentDay, finalTodayDate} = finalCurrentDate();
   const renderLoading = style => {
     return (
       <View
         style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-          zIndex: 2000,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          ...styles.loaderStyle,
           ...style,
         }}>
         <ActivityIndicator size={'large'} color="white" />
@@ -191,11 +167,11 @@ const Attendence = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isLoading
+      {/* {isLoading
         ? renderLoading({
             backgroundColor: 'rgba(51, 51, 51, 0.8)',
           })
-        : null}
+        : null} */}
       <ImageBackground
         resizeMode="stretch"
         onLoadStart={() => setImageLoading(true)}
@@ -251,7 +227,7 @@ const Attendence = ({navigation}) => {
         <RenderCalender1
           setVisibleMonth={setVisibleMonth}
           setVisibleYear={setVisibleYear}
-          mark={{mark}}
+          mark={mark}
         />
       </SafeAreaView>
     </SafeAreaView>
@@ -266,7 +242,6 @@ const renderItem = ({item}) => {
           width: wp(5.5),
           height: hp(2.6),
           borderRadius: 20,
-          //   backgroundColor: Colors.red,
           backgroundColor:
             item.title === 'Absent'
               ? Colors.red
@@ -297,9 +272,6 @@ const RenderCalender = ({setVisibleMonth, setVisibleYear, mark}) => {
         setVisibleYear(months[0].year);
         // setLoading(true)
       }}
-      // renderHeader={()=>{
-      //   return <Text>kasndksd</Text>
-      // }}
       pastScrollRange={100}
       //initialDate={'2018-05-01'}
       // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined

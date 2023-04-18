@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -17,6 +18,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
+import ResourcesDetails from 'screens/Resources/ResourcesDetails';
+import Resources from 'screens/Resources/Resources';
+// import AttendenceTab from 'screens/Resources/AttendenceTab';
+
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
@@ -48,9 +53,10 @@ import {
   employeeProfileScreen,
   employeeDetailsScreen,
   LeaveDetailsScreen,
+  ResourcesDetailsScreen,
+  ResourcesScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
-import AttendenceTab from 'screens/Resources/AttendenceTab';
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
 const HomeStack = createNativeStackNavigator();
@@ -59,6 +65,7 @@ const AttendenceStack = createNativeStackNavigator();
 const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
+const ResourcesStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -320,6 +327,95 @@ const SalarySlipScreen = ({navigation}) => {
   );
 };
 
+const ResourcesStackScreen = ({navigation}) => {
+  return (
+    <ResourcesStack.Navigator
+      // screenOptions={{headerShown: false}}
+      initialRouteName={ResourcesScreen}>
+      <ResourcesStack.Screen
+        options={drawerOption({
+          lable: 'Resources',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
+        name={ResourcesScreen}
+        component={Resources}
+      />
+
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: 'Resource Detail',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              // style={{backgroundColor: 'red'}}
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={ResourcesDetailsScreen}
+        component={ResourcesDetails}
+      />
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: 'Leave Detail',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'resourceLeaveDetailsScreen'}
+        component={LeaveDetails}
+      />
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: 'Leave Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'resourceLeaveDetailsScreenOpen'}
+        component={ApplyLeave}
+      />
+    </ResourcesStack.Navigator>
+  );
+};
+
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -367,6 +463,8 @@ function DrawerNavigator({navigation}) {
       />
 
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
+      <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
+
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
@@ -374,7 +472,7 @@ function DrawerNavigator({navigation}) {
       <Drawer.Screen name="SalarySlip" component={SalarySlipScreen} />
 
       <Drawer.Screen name="logout" component={Logout} />
-      <Drawer.Screen name="resources" component={AttendenceTab} />
+      {/* <Drawer.Screen name="resources" component={AttendenceTab} /> */}
     </Drawer.Navigator>
   );
 }

@@ -1,7 +1,6 @@
 import {Colors} from 'colors/Colors';
 import {FontSize} from 'constants/fonts';
-
-const {StyleSheet} = require('react-native');
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   mainContainer: {

@@ -13,8 +13,8 @@ import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'constants/strings';
 const UpComingHolidays = ({navigation}) => {
   function sortByFiscalYear(date1, date2) {
-    const a = new Date(date1.holidayDate);
-    const b = new Date(date2.holidayDate);
+    const a = new Date(date1?.holidayDate);
+    const b = new Date(date2?.holidayDate);
     const fiscalYearA =
       a.getMonth() >= 3 ? a.getFullYear() : a.getFullYear() - 1;
     const fiscalYearB =
@@ -47,7 +47,11 @@ const UpComingHolidays = ({navigation}) => {
 
   const {holidayData: holidaysData} = useSelector(state => state.home);
 
-  const duplicateHolidays = [...holidaysData]?.sort(sortByFiscalYear);
+  const duplicateHolidays =
+    (holidaysData &&
+      holidaysData.length &&
+      [...holidaysData]?.sort(sortByFiscalYear)) ||
+    [];
 
   return (
     <View style={{flex: 1}}>

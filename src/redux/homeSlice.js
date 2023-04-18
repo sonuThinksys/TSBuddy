@@ -1,7 +1,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {holidayDatawithImage} from '../../db';
-import {salaryData} from '../../slaryData';
 import endPoints from '../config';
+
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 // import {v4 as uuidv4} from 'uuid';
@@ -42,6 +42,9 @@ const initialState = {
   menuFeedbackError: null,
   dailyMenuID: '',
   userFeedback: [],
+  resourcesEmployeeDataLoading: false,
+  resourcesEmployeeData: [],
+  resourcesEmployeeDataError: null,
 };
 
 const breakfast = 'breakfast';
@@ -235,6 +238,83 @@ export const getTodayMenuDetails = createAsyncThunk(
       },
     };
 
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+// ============================================================================================
+
+// =============================================
+
+// ============================================================================================
+
+// your userSlice with other reducers
+
+export const getEmployeesByLeaveApprover = createAsyncThunk(
+  'home/getEmployeesByLeaveApprover',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getEmployeesByLeaveApprover,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+export const getResourcesEmployeesLeaves = createAsyncThunk(
+  'getResourcesEmployeesLeaves',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getResourcesEmployeesLeaves,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
     return axios(config)
       .then(response => {
         const {data, status} = response;

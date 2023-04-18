@@ -1,6 +1,4 @@
-import {Colors} from 'colors/Colors';
-import {View, StyleSheet, Text} from 'react-native';
-import {widthPercentageToDP as wp} from 'utils/Responsive';
+import {View, Text} from 'react-native';
 import styles from './LeavesDetailsStyles';
 const LeaveDetails = ({route, navigation}) => {
   const card = (leftText, rightText, index) => {
@@ -36,15 +34,15 @@ const LeaveDetails = ({route, navigation}) => {
     ).getFullYear()}`;
 
   const details = [
-    ['Employee Name', data.employeeName],
-    ['Leave Approver', data.managerInfoDto.employeeName],
-    ['Leave Type', data.leaveType],
+    ['Employee Name', data?.employeeName || 'Utkarsh Gupta'],
+    ['Leave Approver', data?.managerInfoDto?.employeeName || 'Mayank Sharma'],
+    ['Leave Type', data?.leaveType || 'Earned Leave'],
     ['Leave Time Period', rangeOfdate(data)],
-    ['Leave Status', data.status],
-    ['Number Of Leaves', data.totalLeaveDays],
-    ['Leave Balance', data.currentLeaveBalance],
-    ['Applying Date', applyingDate],
-    ['Reason', data.description],
+    ['Leave Status', data?.status || 'Approved'],
+    ['Number Of Leaves', data?.totalLeaveDays || 1],
+    ['Leave Balance', data?.currentLeaveBalance || 5],
+    ['Applying Date', applyingDate || '04/05/2023'],
+    ['Reason', data?.description || 'Feeling not well.'],
   ];
 
   return (

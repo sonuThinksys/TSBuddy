@@ -10,7 +10,7 @@ export default StyleSheet.create({
     // width:"100%",
     // justifyContent: 'space-between',
     justifyContent: 'center',
-    backgroundColor:"white"
+    backgroundColor: 'white',
   },
   secondContainer: {
     borderColor: Colors.white,
@@ -66,5 +66,16 @@ export default StyleSheet.create({
     color: Colors.violet,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loaderStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    zIndex: 2000,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });

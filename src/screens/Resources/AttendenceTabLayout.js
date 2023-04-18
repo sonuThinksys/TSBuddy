@@ -1,5 +1,6 @@
 import {Image, Pressable, Text, View} from 'react-native';
 import styles from './AttendenceTabLayoutStyles';
+
 import OfficeIcon from 'assets/Icons/office.png';
 
 const AttendenceTabLayout = ({data}) => {
@@ -8,7 +9,6 @@ const AttendenceTabLayout = ({data}) => {
   const outTime = data?.outTime;
   const totalHours = data?.totalHours;
   const effectiveHours = data?.effectiveHours;
-
   return (
     <Pressable
       onPress={() => {

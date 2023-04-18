@@ -21,7 +21,7 @@ const App = () => {
 
   return (
     <>
-      <SafeAreaView style={{flex: 0, backgroundColor: Colors.lightBlue}} />
+      <SafeAreaView style={{flex: 0, backgroundColor: Colors.darkBlue}} />
       <MainNavigator />
     </>
   );

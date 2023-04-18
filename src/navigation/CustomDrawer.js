@@ -26,6 +26,16 @@ import {loginStatus, logOut} from 'Auth/LoginSlice';
 export default ({navigation}) => {
   const dispatch = useDispatch();
 
+  const resorcesTab = {
+    screen: 'Resources',
+    label: 'Resources',
+    navigation,
+    key: 3,
+    icon: MonthImages.HomeImage,
+  };
+
+  const isLeaveApproover = true;
+
   const drawerList = [
     {
       screen: 'Home',
@@ -41,25 +51,26 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
+    resorcesTab,
     {
       screen: 'Attendence',
       label: 'Attendence',
       navigation,
-      key: 3,
+      key: 4,
       icon: MonthImages.AttendanceDrawer,
     },
     {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 4,
+      key: 5,
       icon: MonthImages.leavesImage,
     },
     {
       screen: 'Holidays',
       label: 'Holidays',
       navigation,
-      key: 5,
+      key: 6,
       icon: MonthImages.HolidaysIcon,
     },
 
@@ -67,25 +78,39 @@ export default ({navigation}) => {
       screen: 'SalarySlip',
       label: 'SalarySlip',
       navigation,
-      key: 6,
+      key: 7,
       icon: MonthImages.salarySlipIcon,
     },
     {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 7,
+      key: 8,
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
-    {
-      screen: 'resources',
-      label: 'Resources',
-      navigation,
-      key: 8,
-      icon: MonthImages.logoutmenuS,
-    },
+    // {
+    //   screen: 'resources',
+    //   label: 'Resources',
+    //   navigation,
+    //   key: 8,
+    //   icon: MonthImages.logoutmenuS,
+    // },
   ];
+
+  // if (isLeaveApproover) {
+  //   drawerList.push(resorcesTab);
+  // }
+
+  // drawerList.splice(2, 0, {
+  //   screen: 'Resources',
+  //   label: 'Resources',
+  //   navigation,
+  //   key: 3,
+  //   dispatch,
+  //   icon: MonthImages.salarySlipIcon,
+  // });
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -104,11 +129,15 @@ const renderDrawerItem = (
   index,
 ) => {
   const selected = navigation.getState().index + 1 === key;
+  if (selected) {
+    console.log('index:', index, key, navigation.getState());
+  }
   return (
     <TouchableOpacity
       key={index}
       onPress={() => {
         if (dispatch) {
+          // dispatch(loginStatus(false));
           dispatch(logOut());
           navigation.closeDrawer();
         } else {
