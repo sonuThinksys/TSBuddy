@@ -1,4 +1,4 @@
-import RenderListItem from 'component/useProfile/renderList';
+import RenderListItem from 'component/useProfile/RenderList';
 import {useEffect, useState} from 'react';
 import {
   Text,

@@ -18,8 +18,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
-import ResourcesDetails from 'screens/Resources/ResourcesDetails';
-import Resources from 'screens/Resources/Resources';
+import ResourcesDetails from 'screens/resources/ResourcesDetails';
+import Resources from 'screens/resources/Resources';
 // import AttendenceTab from 'screens/Resources/AttendenceTab';
 
 import Attendence from 'screens/attendence/Attendence';

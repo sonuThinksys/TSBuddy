@@ -27,7 +27,7 @@ import {FontSize} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
-import RenderListItem from './renderList';
+import RenderListItem from './RenderList';
 
 const UserProfile = () => {
   const navigation = useNavigation();
