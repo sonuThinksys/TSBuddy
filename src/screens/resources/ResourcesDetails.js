@@ -40,6 +40,9 @@ const ResourcesDetails = ({route, navigation}) => {
     managerInfoDto,
     name: employeeId,
   } = route.params;
+
+  const employeeID = employeeId?.split('/')[1];
+
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -272,7 +275,7 @@ const ResourcesDetails = ({route, navigation}) => {
             keyExtractor={(_, index) => index}
           />
         ) : (
-          <AttendenceTab />
+          <AttendenceTab employeeID={employeeID} />
         )}
       </View>
     </SafeAreaView>
@@ -281,7 +284,7 @@ const ResourcesDetails = ({route, navigation}) => {
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: '#1b5560',
+    backgroundColor: Colors.colorDodgerBlue2,
     marginBottom: 5,
   },
   profile_name_cont: {

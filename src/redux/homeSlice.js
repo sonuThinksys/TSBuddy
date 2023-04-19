@@ -376,6 +376,43 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
   },
 );
 
+// Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
+
+export const GetDailyAttendanceByEmpId = createAsyncThunk(
+  'dailyAttendanceByEmpId',
+  async ({token, employeeId, year, month}) => {
+    const config = {
+      method: 'get',
+      // url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeId}&month=0${month}&year=${year}`,
+      url: 'http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
 // ============================================================================================
 
 export const getHolidaysData = createAsyncThunk(

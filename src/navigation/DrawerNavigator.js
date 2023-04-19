@@ -58,6 +58,7 @@ import {
   ResourcesScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
+import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
 const HomeStack = createNativeStackNavigator();
@@ -348,7 +349,7 @@ const ResourcesStackScreen = ({navigation}) => {
           headerStyle: {
             backgroundColor: Colors.darkBlue,
           },
-          title: 'Resource Detail',
+          title: '  Resource Detail',
           headerTintColor: Colors.white,
           headerLeft: () => (
             <TouchableOpacity
@@ -372,7 +373,7 @@ const ResourcesStackScreen = ({navigation}) => {
           headerStyle: {
             backgroundColor: Colors.darkBlue,
           },
-          title: 'Leave Detail',
+          title: '  Leave Detail',
           headerTintColor: Colors.white,
           headerLeft: () => (
             <TouchableOpacity
@@ -395,7 +396,7 @@ const ResourcesStackScreen = ({navigation}) => {
           headerStyle: {
             backgroundColor: Colors.darkBlue,
           },
-          title: 'Leave Details',
+          title: '  Leave Details',
           headerTintColor: Colors.white,
           headerLeft: () => (
             <TouchableOpacity
@@ -412,6 +413,30 @@ const ResourcesStackScreen = ({navigation}) => {
         })}
         name={'resourceLeaveDetailsScreenOpen'}
         component={ApplyLeave}
+      />
+
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Attaidance Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'attaindanceDetailsScreen'}
+        component={AttaindanceDetails}
       />
     </ResourcesStack.Navigator>
   );

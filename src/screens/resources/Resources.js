@@ -1,4 +1,4 @@
-import RenderListItem from 'component/useProfile/renderList';
+// import RenderListItem from 'component/useProfile/RenderList';
 import {useEffect, useState} from 'react';
 import {
   Text,
@@ -22,6 +22,7 @@ import {color} from 'react-native-reanimated';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {useNavigation} from '@react-navigation/native';
+import {employeeData} from '../../../db';
 
 const Resources = () => {
   const [numValue, setNumValue] = useState(1);
@@ -36,8 +37,8 @@ const Resources = () => {
   useEffect(() => {
     (async () => {
       const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
-
       setResourcesEmpiolyeeData(employeeData?.payload);
+
       if (employeeData?.error) {
         ShowAlert({
           messageHeader: ERROR,
