@@ -55,6 +55,44 @@ const snacks = 'snacks';
 
 // removeReduxVariables ='All variables are needed to remove from redux state and have to use with useState.'
 
+export const updateLeaveStatus = createAsyncThunk(
+  'home/updateLeaveStatus',
+  async ({token, body}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const {data, status} = await axios.post(
+        endPoints.updateLeaveStatus,
+        body,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {

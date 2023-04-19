@@ -72,6 +72,12 @@ export default StyleSheet.create({
     paddingVertical: 8,
     marginTop: 8,
   },
+  resourceReasonText: {
+    backgroundColor: Colors.white,
+    height: hp(8),
+    fontSize: 20,
+    textAlignVertical: 'top',
+  },
   reasonTextInput: {
     backgroundColor: Colors.white,
     height: hp(8),
@@ -97,11 +103,25 @@ export default StyleSheet.create({
     backgroundColor: Colors.lightBlue,
     paddingHorizontal: 16,
     paddingVertical: 6,
-    // marginBottom: hp(4),
+    marginBottom: hp(2),
+  },
+  resourceButtonContainer: {
+    flexDirection: 'row',
+    backgroundColor: Colors.lightBlue,
+    paddingHorizontal: 24,
+    paddingVertical: 6,
+    marginBottom: hp(2),
+    justifyContent: 'space-between',
   },
   button: {
     backgroundColor: Colors.white,
     paddingHorizontal: 32,
+    borderRadius: 5,
+    paddingVertical: 6,
+  },
+  resourceButton: {
+    backgroundColor: Colors.white,
+    paddingHorizontal: 12,
     borderRadius: 5,
     paddingVertical: 6,
   },
@@ -119,11 +139,11 @@ export default StyleSheet.create({
     marginRight: wp(2),
   },
   leaveCard: {
-    width: screenWidth-wp(25),
+    width: screenWidth - wp(25),
     backgroundColor: Colors.white,
     borderRadius: 6,
     marginHorizontal: wp(4),
-    marginVertical:5
+    marginVertical: 5,
     // paddingVertical:hp(2)
   },
   leaveTextContainer: {

@@ -81,7 +81,7 @@ const Resources = () => {
 };
 
 const renderItem = (
-  {designation, image, employeeName, managerInfoDto},
+  {designation, image, employeeName, managerInfoDto, name},
   index,
   navigation,
 ) => {
@@ -95,6 +95,7 @@ const renderItem = (
               image,
               employeeName,
               managerInfoDto,
+              name,
               // navigation,
             });
           }}>

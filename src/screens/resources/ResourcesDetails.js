@@ -26,11 +26,20 @@ import {guestLeavesScreenData} from 'guestData';
 import Attendence from 'screens/attendence/Attendence';
 import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
+import {useIsFocused} from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 
 const ResourcesDetails = ({route, navigation}) => {
-  const {designation, employeeName, image, managerInfoDto} = route.params;
+  const isFocused = useIsFocused();
+
+  const {
+    designation,
+    employeeName,
+    image,
+    managerInfoDto,
+    name: employeeId,
+  } = route.params;
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -42,29 +51,36 @@ const ResourcesDetails = ({route, navigation}) => {
   const [selectedTab, setSelectedTab] = useState('leaves');
   const [openCount, setOpenCount] = useState(0);
 
+  // ================================================================
+  // const [shouldUpdate, setShouldUpdate] = useState(false);
+
+  // ================================================================
+
   useEffect(() => {
-    (async () => {
-      const leavesData = await dispatch(getResourcesEmployeesLeaves(token));
-      let count = 0;
-      leavesData.payload.forEach(element => {
-        if (element.status == 'Open') {
-          count++;
-        }
-      });
-
-      setOpenCount(count);
-
-      setResourcesEmployeesLeaves(leavesData.payload);
-      if (leavesData?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: leavesData?.error?.message,
-          buttonText: 'Close',
-          dispatch,
+    if (isFocused) {
+      (async () => {
+        const leavesData = await dispatch(getResourcesEmployeesLeaves(token));
+        let count = 0;
+        leavesData.payload.forEach(element => {
+          if (element.status == 'Open') {
+            count++;
+          }
         });
-      }
-    })();
-  }, []);
+
+        setOpenCount(count);
+
+        setResourcesEmployeesLeaves(leavesData.payload);
+        if (leavesData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leavesData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+          });
+        }
+      })();
+    }
+  }, [isFocused]);
 
   const updateData = async () => {
     try {
@@ -81,7 +97,6 @@ const ResourcesDetails = ({route, navigation}) => {
     if (filteredSelectedDate) {
       const shouldRender =
         filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
-
       if (!shouldRender) return null;
     }
 
@@ -93,6 +108,7 @@ const ResourcesDetails = ({route, navigation}) => {
             : navigation.navigate('resourceLeaveDetailsScreenOpen', {
                 ...item,
                 fromResource: true,
+                employeeId,
               });
         }}>
         <View style={styles.flateListView}>
@@ -214,16 +230,18 @@ const ResourcesDetails = ({route, navigation}) => {
               ]}>
               <View style={{position: 'relative'}}>
                 <Text style={{color: 'white', fontSize: 17}}>Leaves</Text>
-                <View style={style.badges_number}>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: FontFamily.RobotoMedium,
-                    }}>
-                    {openCount}
-                  </Text>
-                </View>
+                {openCount > 0 ? (
+                  <View style={style.badges_number}>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: FontFamily.RobotoMedium,
+                      }}>
+                      {openCount}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
             </View>
           </Pressable>

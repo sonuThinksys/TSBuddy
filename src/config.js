@@ -22,4 +22,5 @@ export default {
   applyLeave: `${API_URL}/Leave/AddLeave`,
   getEmployeesByLeaveApprover: `${API_URL}/EmployeeProfile/GetEmployeesByLeaveApprover`,
   getResourcesEmployeesLeaves: `${API_URL}/EmployeeProfile/GetEmployeeLeaves?empId=10843`,
+  updateLeaveStatus: `${API_URL}/EmployeeProfile/UpdateLeaveStatus`,
 };

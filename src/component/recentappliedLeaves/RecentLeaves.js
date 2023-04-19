@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {View, Text, FlatList, Image} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
-import jwt_decode from 'jwt-decode';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
 // import ShowAlert from 'customComponents/CustomError';
@@ -12,10 +11,6 @@ const RecentLeaves = ({navigation}) => {
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
   );
-
-  const decoded = jwt_decode(token);
-  console.log('decoded:', decoded);
-  // const employeeID = decoded.id;
 
   const {
     leaveMenuDetails: {recentAppliedLeaves},

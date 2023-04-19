@@ -20,13 +20,14 @@ import Home from 'screens/home/Home';
 import Profile from 'screens/profile/Profile';
 import ResourcesDetails from 'screens/Resources/ResourcesDetails';
 import Resources from 'screens/Resources/Resources';
+import jwt_decode from 'jwt-decode';
 // import AttendenceTab from 'screens/Resources/AttendenceTab';
 
 import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
 import SalarySlip from 'screens/salarySlip/SalarySlip';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
 import Header from 'component/header/Header';
@@ -421,6 +422,9 @@ const Logout = () => {
 };
 
 function DrawerNavigator({navigation}) {
+  const {userToken: token} = useSelector(state => state.auth);
+  const decoded = jwt_decode(token);
+  const isLeaveApprover = decoded?.role?.includes('Leave Approver');
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}
@@ -463,7 +467,10 @@ function DrawerNavigator({navigation}) {
       />
 
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
-      <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
+
+      {isLeaveApprover ? (
+        <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
+      ) : null}
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />

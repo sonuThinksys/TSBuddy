@@ -29,12 +29,27 @@ import {
   none,
 } from 'utils/defaultData';
 
-import {applyForLeave} from 'redux/homeSlice';
+import {applyForLeave, updateLeaveStatus} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
 const ApplyLeave = ({navigation, route}) => {
+  const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
-  console.log('fromResource:', fromResource);
+  const resourceData = route?.params;
+  const resourceEmployeeID = resourceData?.employeeId;
+  const postingDateObj = new Date(resourceData?.postingDate);
+  const toDateObj = new Date(resourceData?.toDate);
+  const fromDateObj = new Date(resourceData?.fromDate);
+
+  const postingDateStr = postingDateObj?.toLocaleDateString(
+    'en-US',
+    dateOptions,
+  );
+
+  const fromDatestr = fromDateObj.toLocaleDateString('en-US', dateOptions);
+  const toDatestr = toDateObj.toLocaleDateString('en-US', dateOptions);
+  const resourceHalfDay = route?.params?.halfDay;
+
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
@@ -43,20 +58,20 @@ const ApplyLeave = ({navigation, route}) => {
 
   const {
     leaveMenuDetails: {
-      remainingLeaves: [earnedLeaves, restrictedLeaves],
+      remainingLeaves: [earnedLeaves = {}, restrictedLeaves = {}],
     },
   } = useSelector(state => state.home);
 
   const leaves = [
     {
       leaveType: 'Earned Leave',
-      allocated: earnedLeaves.totalLeavesAllocated,
-      taken: earnedLeaves.currentLeaveApplied,
-      remaining: earnedLeaves.currentLeaveBalance,
+      allocated: earnedLeaves?.totalLeavesAllocated,
+      taken: earnedLeaves?.currentLeaveApplied,
+      remaining: earnedLeaves?.currentLeaveBalance,
     },
     {
       leaveType: 'Restricted Holiday',
-      allocated: restrictedLeaves.totalLeavesAllocated,
+      allocated: restrictedLeaves?.totalLeavesAllocated,
       taken: restrictedLeaves.currentLeaveApplied,
       remaining: restrictedLeaves.currentLeaveBalance,
     },
@@ -104,7 +119,6 @@ const ApplyLeave = ({navigation, route}) => {
 
     for (let i = 0; i < diffDays; i++) {
       const dayOfWeek = presentDate.getDay();
-      console.log('dayOfWeek:', dayOfWeek);
 
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
         dayCount++;
@@ -113,7 +127,6 @@ const ApplyLeave = ({navigation, route}) => {
       presentDate.setDate(presentDate.getDate() + 1);
     }
 
-    console.log('dayCount:', dayCount);
     return dayCount;
   }
 
@@ -175,10 +188,11 @@ const ApplyLeave = ({navigation, route}) => {
     rightDropdown,
     leftDropdown,
     zIndex,
+    resourseRightText,
   }) => {
     return (
       <View style={[styles.fromToContainer, {zIndex}]}>
-        {leftDropdown ? (
+        {!fromResource && leftDropdown ? (
           <View style={styles.fromContainer}>
             <Text style={styles.fromText}>{leftLabel}</Text>
             {leftDropdown}
@@ -192,8 +206,8 @@ const ApplyLeave = ({navigation, route}) => {
                 !leftText && {justifyContent: 'flex-end'},
               ]}>
               {leftText ? <Text>{leftText}</Text> : null}
-              {selectableLeft ? (
-                <TouchableOpacity onPress={leftOnPress}>
+              {!fromResource && selectableLeft ? (
+                <TouchableOpacity disabled={fromResource} onPress={leftOnPress}>
                   <Image source={iconLeft} style={{height: 20, width: 20}} />
                 </TouchableOpacity>
               ) : null}
@@ -211,11 +225,16 @@ const ApplyLeave = ({navigation, route}) => {
             <View
               style={[
                 styles.calenderContainer,
-                !rightText && {justifyContent: 'flex-end'},
+                !rightText && !fromResource && {justifyContent: 'flex-end'},
               ]}>
-              {rightText && <Text>{rightText}</Text>}
-              {selectableRight && (
-                <TouchableOpacity onPress={rightOnPress}>
+              {rightText && !fromResource && <Text>{rightText}</Text>}
+              {fromResource && resourseRightText ? (
+                <Text>{resourseRightText}</Text>
+              ) : null}
+              {selectableRight && !fromResource && (
+                <TouchableOpacity
+                  disabled={fromResource}
+                  onPress={rightOnPress}>
                   <Image source={iconRight} style={{height: 20, width: 20}} />
                 </TouchableOpacity>
               )}
@@ -335,6 +354,8 @@ const ApplyLeave = ({navigation, route}) => {
     setReason(value);
   };
 
+  const renderRightComponentResource = () => <View></View>;
+
   const renderRightComponent = () => (
     <View
       style={{
@@ -421,6 +442,44 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
 
+  const finalizeLeave = async status => {
+    setLoading(true);
+    const empId = +resourceEmployeeID.match(/\d+/g)[0];
+    const response = await dispatch(
+      updateLeaveStatus({
+        token,
+        body: {
+          employeeId: empId,
+          leaveApplicationId: resourceData.leaveApplicationId,
+          status: status,
+          leaveType: resourceData.leaveType,
+        },
+      }),
+    );
+
+    setLoading(false);
+    if (response?.error) {
+      // alert(response?.error?.message);
+      Alert.alert('Failed', `Leave ${status} failed!`, [
+        {
+          text: 'Ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
+    } else {
+      Alert.alert('Success', `Leave ${status} successfully!`, [
+        {
+          text: 'Ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
@@ -436,16 +495,17 @@ const ApplyLeave = ({navigation, route}) => {
             iconRight: MonthImages.CalenderIcon,
             leftOnPress: showFromDatePicker,
             rightOnPress: showToDatePicker,
-            leftText: fromDate.fromDateStr,
+            leftText: !fromResource ? fromDate.fromDateStr : fromDatestr,
             rightText: toDate.toDateStr,
             zIndex: 1000,
+            resourseRightText: toDatestr,
           })}
           {card({
             zIndex: 1000,
             leftLabel: 'Created Date',
             rightLabel: 'Half Day',
             selectableRight: true,
-            leftText: finalTodayDate,
+            leftText: !fromResource ? finalTodayDate : postingDateStr,
             iconRight: MonthImages.DropDownIcon,
             rightText: 'None',
             rightDropdown: (
@@ -454,7 +514,8 @@ const ApplyLeave = ({navigation, route}) => {
                   disabled={
                     !fromDate.fromDateObj ||
                     !toDate.toDateObj ||
-                    totalNumberOfLeaveDays > 1
+                    totalNumberOfLeaveDays > 1 ||
+                    fromResource
                   }
                   renderButtonText={renderButtonText}
                   style={{
@@ -466,7 +527,15 @@ const ApplyLeave = ({navigation, route}) => {
                   }}
                   isFullWidth={true}
                   showsVerticalScrollIndicator={false}
-                  defaultValue="Select"
+                  defaultValue={
+                    !fromResource
+                      ? 'Select'
+                      : resourceHalfDay === 0
+                      ? 'None'
+                      : resourceHalfDay === 1
+                      ? 'First Half'
+                      : 'Second Half'
+                  }
                   options={newDropDownOptions}
                   dropdownStyle={{
                     width: '45%',
@@ -474,34 +543,6 @@ const ApplyLeave = ({navigation, route}) => {
                   }}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
-                    // const previousNumberOfDays = totalNumberOfLeaveDays;
-                    // const isInteger = Number.isInteger(previousNumberOfDays);
-                    // if (itemName !== none)
-                    //   setTotalNumberOfLeaveDays(prevDays =>
-                    //     prevDays ? prevDays - 0.5 : 0.5,
-                    //   );
-
-                    // =================================================================
-                    // const presentDate = String(
-                    //   toDate?.toDateObj?.getDate(),
-                    // ).padStart(2, '0');
-                    // const presentMonth = toDate?.toDateObj?.toLocaleString(
-                    //   'default',
-                    //   {month: 'short'},
-                    // );
-                    // const presentYear = toDate?.toDateObj?.getFullYear();
-
-                    // const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
-
-                    // const timeDiff = Math.abs(
-                    //   toDate?.toDateObj?.getTime() -
-                    //     fromDate?.fromDateObj?.getTime(),
-                    // );
-                    // const diffDays =
-                    //   Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-                    // console.log('diffDays1:', diffDays);
-
-                    // =================================================================
                     if (itemName !== none) {
                       setTotalNumberOfLeaveDays(0.5);
                     } else {
@@ -509,7 +550,11 @@ const ApplyLeave = ({navigation, route}) => {
                     }
                     setHalfDay(itemName);
                   }}
-                  renderRightComponent={renderRightComponent}
+                  renderRightComponent={
+                    !fromResource
+                      ? renderRightComponent
+                      : renderRightComponentResource
+                  }
                 />
               </View>
             ),
@@ -522,10 +567,12 @@ const ApplyLeave = ({navigation, route}) => {
             iconLeft: MonthImages.DropDownIcon,
             rightText:
               totalNumberOfLeaveDays >= 0.5 ? totalNumberOfLeaveDays : '',
-            leftText: 'Earned Leave',
+            leftText: !fromResource ? 'Earned Leave' : resourceData.leaveType,
+            resourseRightText: resourceData?.totalLeaveDays,
             leftDropdown: (
               <View style={{}}>
                 <ModalDropdown
+                  disabled={fromResource}
                   style={{
                     borderWidth: 1,
                     backgroundColor: Colors.white,
@@ -535,7 +582,7 @@ const ApplyLeave = ({navigation, route}) => {
                   }}
                   isFullWidth={true}
                   showsVerticalScrollIndicator={false}
-                  defaultValue=""
+                  defaultValue={fromResource ? resourceData.leaveType : ''}
                   options={leaveTypes}
                   dropdownStyle={{
                     width: '45%',
@@ -574,22 +621,48 @@ const ApplyLeave = ({navigation, route}) => {
           />
           <View style={styles.reasonContainer}>
             <Text style={styles.reasonText}>Reason</Text>
-            <TextInput
-              onChangeText={giveReason}
-              multiline={true}
-              style={styles.reasonTextInput}
-            />
+            {!fromResource ? (
+              <TextInput
+                onChangeText={giveReason}
+                multiline={true}
+                style={styles.reasonTextInput}
+              />
+            ) : (
+              <Text style={styles.resourceReasonText}>
+                {resourceData?.description}
+              </Text>
+            )}
           </View>
           <View style={styles.leaveApproverContainer}>
             <Text style={styles.leaveApproverText}>Leave Approver:</Text>
             <Text style={styles.leaveApproverName}>{approver}</Text>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={applyLeave}>
-            <Text style={styles.applyText}>Apply</Text>
-          </Pressable>
-        </View>
+        {!fromResource ? (
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.button} onPress={applyLeave}>
+              <Text style={styles.applyText}>Apply</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.resourceButtonContainer}>
+            <Pressable
+              style={styles.resourceButton}
+              onPress={finalizeLeave.bind(null, 'Dismissed')}>
+              <Text style={styles.applyText}>Dismiss</Text>
+            </Pressable>
+            <Pressable
+              style={styles.resourceButton}
+              onPress={finalizeLeave.bind(null, 'Rejected')}>
+              <Text style={styles.applyText}>Reject</Text>
+            </Pressable>
+            <Pressable
+              style={styles.resourceButton}
+              onPress={finalizeLeave.bind(null, 'Approved')}>
+              <Text style={styles.applyText}>Approve</Text>
+            </Pressable>
+          </View>
+        )}
       </View>
 
       {loading ? (

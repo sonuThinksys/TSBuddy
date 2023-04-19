@@ -9,8 +9,9 @@ import {
   Image,
 } from 'react-native';
 
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {FontFamily, FontSize} from 'constants/fonts';
+import jwt_decode from 'jwt-decode';
 
 import {
   heightPercentageToDP as hp,
@@ -24,6 +25,9 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {loginStatus, logOut} from 'Auth/LoginSlice';
 
 export default ({navigation}) => {
+  const {userToken: token} = useSelector(state => state.auth);
+  const decoded = jwt_decode(token);
+  const isLeaveApprover = decoded?.role?.includes('Leave Approver');
   const dispatch = useDispatch();
 
   const resorcesTab = {
@@ -33,8 +37,6 @@ export default ({navigation}) => {
     key: 3,
     icon: MonthImages.HomeImage,
   };
-
-  const isLeaveApproover = true;
 
   const drawerList = [
     {
@@ -51,26 +53,26 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
-    resorcesTab,
+    // isLeaveApprover && resorcesTab,
     {
       screen: 'Attendence',
       label: 'Attendence',
       navigation,
-      key: 4,
+      key: 3,
       icon: MonthImages.AttendanceDrawer,
     },
     {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 5,
+      key: 4,
       icon: MonthImages.leavesImage,
     },
     {
       screen: 'Holidays',
       label: 'Holidays',
       navigation,
-      key: 6,
+      key: 5,
       icon: MonthImages.HolidaysIcon,
     },
 
@@ -78,14 +80,14 @@ export default ({navigation}) => {
       screen: 'SalarySlip',
       label: 'SalarySlip',
       navigation,
-      key: 7,
+      key: 6,
       icon: MonthImages.salarySlipIcon,
     },
     {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 8,
+      key: 7,
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
@@ -97,6 +99,13 @@ export default ({navigation}) => {
     //   icon: MonthImages.logoutmenuS,
     // },
   ];
+
+  if (isLeaveApprover) {
+    drawerList.splice(2, 0, resorcesTab);
+    drawerList.forEach((el, index) => {
+      el.key = index + 1;
+    });
+  }
 
   // if (isLeaveApproover) {
   //   drawerList.push(resorcesTab);
@@ -129,9 +138,9 @@ const renderDrawerItem = (
   index,
 ) => {
   const selected = navigation.getState().index + 1 === key;
-  if (selected) {
-    console.log('index:', index, key, navigation.getState());
-  }
+  // if (selected) {
+  //   console.log('index:', index, key, navigation.getState());
+  // }
   return (
     <TouchableOpacity
       key={index}
