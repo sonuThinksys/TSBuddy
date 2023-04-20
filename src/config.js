@@ -24,4 +24,5 @@ export default {
   getResourcesEmployeesLeaves: `${API_URL}/EmployeeProfile/GetEmployeeLeaves?empId=10843`,
   updateLeaveStatus: `${API_URL}/EmployeeProfile/UpdateLeaveStatus`,
   GetDailyAttendanceByEmpId: `${API_URL}/Attendance/GetDailyAttendanceByEmpId`,
+  getLeaveApprovers: `${API_URL}/Leave/GetLeaveApprover?empId=10352`,
 };

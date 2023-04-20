@@ -55,6 +55,43 @@ const snacks = 'snacks';
 
 // removeReduxVariables ='All variables are needed to remove from redux state and have to use with useState.'
 
+export const getLeaveApprovers = createAsyncThunk(
+  'home/getLeaveApprovers',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const {data, status} = await axios.get(
+        endPoints.getLeaveApprovers,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const updateLeaveStatus = createAsyncThunk(
   'home/updateLeaveStatus',
   async ({token, body}) => {
@@ -680,9 +717,13 @@ export const requestLunchSubmission = createAsyncThunk(
           'Content-Type': 'application/json',
         },
         data: {
+          requestlunchstartdate: '2023-05-03T06:11:46.692Z',
+          requestlunchenddate: '2023-05-03T06:11:46.692Z',
           requestforlunch: 1,
-          requestlunchstartdate: new Date('2023-03-26'),
-          requestlunchenddate: new Date('2023-03-30'),
+          requestforlunchcancellation: 0,
+          montlyLunchSubscription: 0,
+          lunchRequestType: 'daily',
+          lunchcancellationrequestdate: null,
         },
       };
 

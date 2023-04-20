@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import styles from './RequestLunchStyle';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -32,6 +32,7 @@ const RequestLunch = ({navigation}) => {
   const [requestCancel, setRequestCancel] = useState(1);
 
   const token = useSelector(state => state.auth.userToken);
+  const dispatch = useDispatch();
 
   const onSelectItem = item => {
     let date = new Date().getDate();
@@ -92,8 +93,9 @@ const RequestLunch = ({navigation}) => {
   const requestlunchstartdate = '2023-03-2';
   const requestlunchenddate = '2023-03-28';
   const requestforlunch = '1';
-  const onSubmit = () => {
-    dispatch(
+
+  const onSubmit = async () => {
+    const response = await dispatch(
       requestLunchSubmission({
         token,
         requestlunchstartdate,

@@ -1,6 +1,6 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -29,7 +29,11 @@ import {
   none,
 } from 'utils/defaultData';
 
-import {applyForLeave, updateLeaveStatus} from 'redux/homeSlice';
+import {
+  applyForLeave,
+  getLeaveApprovers,
+  updateLeaveStatus,
+} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 
 const ApplyLeave = ({navigation, route}) => {
@@ -409,6 +413,14 @@ const ApplyLeave = ({navigation, route}) => {
     }
     setLoading(true);
 
+    // =========================================================================
+    const leaveApprovers = await dispatch(getLeaveApprovers({token}));
+    const leaveApproverMailID =
+      leaveApprovers?.payload?.length > 0 &&
+      leaveApprovers?.payload[0].leaveApprover;
+    console.log('leaveApproverMailID:', leaveApproverMailID);
+    // =========================================================================
+
     const appliedLeave = await dispatch(
       applyForLeave({
         token,
@@ -421,7 +433,7 @@ const ApplyLeave = ({navigation, route}) => {
           halfDay: 0,
           postingDate: new Date(),
           leaveType: leaveType,
-          leaveApprover: 'Mayank Sharma',
+          leaveApprover: leaveApproverMailID,
           fiscalYear: '2023-2024',
         },
       }),

@@ -176,6 +176,7 @@ const Leaves = ({navigation}) => {
           <View />
         </Pressable>
         <FlatList
+          showsVerticalScrollIndicator={false}
           refreshing={isRefresh}
           onRefresh={updateData}
           data={isGuestLogin ? guestLeavesScreenData : leavesData}
