@@ -39,7 +39,9 @@ const Leaves = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      const leaveApprover = await dispatch(getLeaveApprovers(token));
+      const leaveApprover = await dispatch(
+        getLeaveApprovers({token, employeeID}),
+      );
 
       setLeaveApprovers(leaveApprover.payload);
 

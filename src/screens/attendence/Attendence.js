@@ -35,8 +35,6 @@ const Attendence = ({navigation}) => {
   // const [totalSpendHours, setTotalSpendHours] = useState(0);
   const [totalHourSpend, setTotalHoursSpend] = useState(0);
   const [remainingHours, setRemainingHours] = useState(0);
-  const [checkForRemainingHoursColor, setCheckForRemainingHoursColor] =
-    useState(0);
   const [isLoading, setLoading] = useState(false);
   const [isImageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
@@ -70,7 +68,8 @@ const Attendence = ({navigation}) => {
 
   const {attendenceData: {employeeAttendance = [], dailyAttendance = []} = {}} =
     useSelector(state => state.home);
-  console.log('Daily Attendance: ', dailyAttendance);
+  const {holidayData: holidaysData = []} = useSelector(state => state.home);
+
   const startEndDate = () => {
     let startDate = attendanceDate(1);
     let endDate = attendanceDate(7);
@@ -87,61 +86,65 @@ const Attendence = ({navigation}) => {
     var now = new Date();
 
     let totalHoursSpendInWeek = 0;
-    let totalCompanyHoursPerDay = 0;
+    let totalCompanyHours = 0;
+    let index = dailyAttendance.length - 1;
 
     for (var d = privMonDAy; d < now; d.setDate(d.getDate() + 1)) {
       totalHoursSpendInWeek =
-        totalHoursSpendInWeek + dailyAttendance[d]?.totalHours;
+        totalHoursSpendInWeek + dailyAttendance[index]?.totalHours;
+      totalCompanyHours = totalCompanyHours + 9;
+      index--;
     }
+    let remainingHoursUpdate = totalCompanyHours - totalHoursSpendInWeek;
+    setRemainingHours(remainingHoursUpdate.toFixed(2));
+    setTotalHoursSpend(
+      totalHoursSpendInWeek ? totalHoursSpendInWeek.toFixed(2) : '00.00',
+    );
+  }, [dailyAttendance]);
 
-    setTotalHoursSpend(totalHoursSpendInWeek ? totalHoursSpendInWeek : '00.00');
+  function getPreviousDay(date = new Date()) {
+    const previous = new Date(date.getTime());
+    previous.setDate(date.getDate() - 1);
 
-    let currentDayTotalHours =
-      dailyAttendance &&
-      dailyAttendance.length &&
-      dailyAttendance[0]?.totalHours;
-    if (currentDayTotalHours < 9) {
-      let hoursRemains = 9 - currentDayTotalHours;
-      setRemainingHours(-hoursRemains);
-    } else if (currentDayTotalHours > 9) {
-      let hoursRemains = currentDayTotalHours - 9;
-      setRemainingHours(hoursRemains);
-    } else {
-      setRemainingHours(0.0);
-    }
-
-    let check = 9 - currentDayTotalHours;
-    setCheckForRemainingHoursColor(check);
-  }, []);
+    return previous;
+  }
 
   let todayDate = todaySelectedDate();
   let mark = {
     [todayDate]: {selected: true, selectedColor: Colors.green},
   };
 
+  let holidayDate;
+  holidaysData &&
+    holidaysData.length &&
+    holidaysData?.forEach(day => {
+      holidayDate = day.holidayDate.split('T')[0];
+      if (holidayDate) {
+        mark[holidayDate] = {
+          selectedColor: Colors.pink,
+          selected: true,
+        };
+      }
+    });
+
   dailyAttendance &&
     dailyAttendance.length &&
     dailyAttendance?.forEach(day => {
       let date = day?.attendanceDate?.split('T')[0];
-      // var newdate = date?.split('-').reverse().join('-');
-      if (day.status === 'Half Day') {
+      if (day.attendanceType === 'H') {
         mark[date] = {
-          selectedColor: Colors.blue,
+          selectedColor: Colors.lightBlue,
           selected: true,
         };
-      } else if (day.status === 'Leave') {
+      } else if (day.attendanceType === 'A') {
         mark[date] = {
           selectedColor: Colors.reddishTint,
           selected: true,
         };
-      } else if (day.status === 'Holiday') {
-        mark[date] = {
-          selectedColor: Colors.pink,
-          selected: true,
-        };
-      } else if (day.status === 'Present') {
+      } else if (day.attendanceType === 'F') {
         mark[date] = {
           selectedColor: Colors.parrotGreen,
+          dotColor: Colors.green,
           selected: true,
         };
       }
@@ -222,9 +225,7 @@ const Attendence = ({navigation}) => {
                   <Text
                     style={{
                       color:
-                        checkForRemainingHoursColor < 0
-                          ? Colors.green
-                          : Colors.reddishTint,
+                        remainingHours < 0 ? Colors.reddishTint : Colors.green,
                     }}>
                     ({remainingHours})
                   </Text>

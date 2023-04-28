@@ -650,7 +650,7 @@ const ApplyLeave = ({navigation, route}) => {
           </View>
           <View style={styles.leaveApproverContainer}>
             <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-            {approverList && approverList.length >= 1 ? (
+            {approverList && approverList.length > 1 ? (
               <View style={{width: wp(50), borderWidth: 0.1, borderRadius: 10}}>
                 <ModalDropdown
                   disabled={fromResource}

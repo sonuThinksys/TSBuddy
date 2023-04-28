@@ -55,40 +55,76 @@ const snacks = 'snacks';
 
 // removeReduxVariables ='All variables are needed to remove from redux state and have to use with useState.'
 
+// export const getLeaveApprover = createAsyncThunk(
+//   'home/getLeaveApprovers',
+//   async token => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     try {
+//       const {data, status} = await axios.get(
+//         `${endPoints.getLeaveApprovers}${employeeID}`,
+//         config,
+//       );
+
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject('Something went wrong!');
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
+//       if (err?.response) {
+//         statusCode = err?.response?.status;
+//       }
+//       if (statusCode == 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else if (statusCode === 400) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
+
 export const getLeaveApprovers = createAsyncThunk(
   'home/getLeaveApprovers',
-  async token => {
-    const config = {
+  async ({token, employeeID}) => {
+    var config = {
+      method: 'get',
+      url: `${endPoints.getLeaveApprovers}${employeeID}`,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     };
 
-    try {
-      const {data, status} = await axios.get(
-        endPoints.getLeaveApprovers,
-        config,
-      );
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
 
-      if (status === 200) {
-        return Promise.resolve(data);
-      } else {
-        return Promise.reject('Something went wrong!');
-      }
-    } catch (err) {
-      let statusCode = 500;
-      if (err?.response) {
-        statusCode = err?.response?.status;
-      }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else if (statusCode === 400) {
-        return Promise.reject(err?.response?.data);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong2!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 
