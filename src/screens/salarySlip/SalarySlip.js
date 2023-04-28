@@ -19,6 +19,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import {monthImages} from 'defaultData';
 import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
+
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();

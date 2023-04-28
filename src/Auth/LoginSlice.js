@@ -23,31 +23,32 @@ export const getUserToken = createAsyncThunk(
   async formInput => {
     try {
       const LoginUrl = endPoints.authTokenAPI;
-      return fetch(LoginUrl, {
+
+      const config = {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formInput),
-      }).then(async result => {
-        let data = await result.json();
+        url: LoginUrl,
+        data: formInput,
+      };
+      return axios(config)
+        .then(async result => {
+          let data = result.data;
 
-        const responsetoken = data.token;
-        const {response = {}, status} = result || {};
-        if (status === 200) {
-          // await AsyncStorage.setItem('accessToken', response?.token);
-          // const username = formInput.username;
-          // const password = formInput.password;
-
-          // Store the credentials
-          // await Keychain.setGenericPassword(username, password);
-
-          return Promise.resolve({data, formInput});
-        } else {
-          return Promise.reject(data);
-        }
-      });
+          const {response = {}, status} = result || {};
+          if (status === 200) {
+            return Promise.resolve({data, formInput});
+          } else {
+            return Promise.reject(data);
+          }
+        })
+        .catch(err => {
+          alert(`${err.title} ${err.status}`);
+          console.log('err1122:', err);
+          return Promise.reject(err);
+        });
     } catch (err) {
       return Promise.reject(new Error(err));
     }

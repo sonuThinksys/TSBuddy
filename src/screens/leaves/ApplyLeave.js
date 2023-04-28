@@ -35,8 +35,16 @@ import {
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import {ERROR} from 'utils/string';
 
 const ApplyLeave = ({navigation, route}) => {
+  const leaveApproverList = route?.params?.leaveApprovers;
+  console.log(leaveApproverList);
+  const approverList = [];
+  leaveApproverList.map(approver => {
+    approverList.push(approver?.leaveApproverName);
+  });
+
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
   const resourceData = route?.params;
@@ -97,6 +105,7 @@ const ApplyLeave = ({navigation, route}) => {
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState('');
+  const [selectApproverIndex, setSelectApproverIndex] = useState(0);
 
   const showFromDatePicker = () => {
     setFromCalenderVisible(true);
@@ -411,15 +420,9 @@ const ApplyLeave = ({navigation, route}) => {
       alert('Difference between the number of leave days must be positive.');
       return;
     }
-    setLoading(true);
 
-    // =========================================================================
-    const leaveApprovers = await dispatch(getLeaveApprovers({token}));
-    const leaveApproverMailID =
-      leaveApprovers?.payload?.length > 0 &&
-      leaveApprovers?.payload[0].leaveApprover;
-    console.log('leaveApproverMailID:', leaveApproverMailID);
-    // =========================================================================
+    const index = selectApproverIndex;
+    const leaveApproverMailID = leaveApproverList[index].leaveApprover;
 
     const appliedLeave = await dispatch(
       applyForLeave({
@@ -647,7 +650,36 @@ const ApplyLeave = ({navigation, route}) => {
           </View>
           <View style={styles.leaveApproverContainer}>
             <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-            <Text style={styles.leaveApproverName}>{approver}</Text>
+            {approverList && approverList.length >= 1 ? (
+              <View style={{width: wp(50), borderWidth: 0.1, borderRadius: 10}}>
+                <ModalDropdown
+                  disabled={fromResource}
+                  style={{
+                    borderWidth: 1,
+                    backgroundColor: Colors.white,
+                    borderRadius: 3,
+                    paddingVertical: 5,
+                    height: 32,
+                  }}
+                  isFullWidth={true}
+                  showsVerticalScrollIndicator={false}
+                  defaultValue={fromResource ? resourceData.leaveType : ''}
+                  options={approverList}
+                  dropdownStyle={{
+                    width: '45%',
+                    paddingLeft: 6,
+                  }}
+                  animated={true}
+                  renderRow={renderRow}
+                  onSelect={index => {
+                    setSelectApproverIndex(index);
+                  }}
+                  renderRightComponent={renderRightComponent}
+                />
+              </View>
+            ) : (
+              <Text style={styles.leaveApproverName}>{approver}</Text>
+            )}
           </View>
         </View>
         {!fromResource ? (

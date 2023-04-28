@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -31,8 +31,12 @@ import {
 const Attendence = ({navigation}) => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
-  const [spendhours, sendSpendhours] = useState(0);
-  const [totalSpendHours, setTotalSpendHours] = useState(0);
+  // const [spendhours, sendSpendhours] = useState(0);
+  // const [totalSpendHours, setTotalSpendHours] = useState(0);
+  const [totalHourSpend, setTotalHoursSpend] = useState(0);
+  const [remainingHours, setRemainingHours] = useState(0);
+  const [checkForRemainingHoursColor, setCheckForRemainingHoursColor] =
+    useState(0);
   const [isLoading, setLoading] = useState(false);
   const [isImageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
@@ -47,6 +51,7 @@ const Attendence = ({navigation}) => {
         const attendence = await dispatch(
           getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
         );
+        console.log('Attendance$$$$', attendence);
         if (attendence?.error) {
           ShowAlert({
             messageHeader: ERROR,
@@ -65,6 +70,7 @@ const Attendence = ({navigation}) => {
 
   const {attendenceData: {employeeAttendance = [], dailyAttendance = []} = {}} =
     useSelector(state => state.home);
+  console.log('Daily Attendance: ', dailyAttendance);
   const startEndDate = () => {
     let startDate = attendanceDate(1);
     let endDate = attendanceDate(7);
@@ -74,62 +80,69 @@ const Attendence = ({navigation}) => {
   // format the dates to your desired format
   let startDateFormat = startEndDateFormat(startDate);
   let endDateFormat = startEndDateFormat(endDate);
-  useEffect(() => {
-    let totalEffectiveHours = 0;
-    let totalHours = 0;
-    let companyHours = 0;
-    dailyAttendance?.map(data => {
-      totalEffectiveHours = totalEffectiveHours + data.totalEffectiveHours;
-      companyHours += 9;
-    });
-    totalHours = totalEffectiveHours - companyHours;
-    sendSpendhours(totalHours);
-    setTotalSpendHours(totalEffectiveHours);
-  }, [dailyAttendance]);
+
+  useMemo(() => {
+    let privMonDAy = new Date();
+    privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
+    var now = new Date();
+
+    let totalHoursSpendInWeek = 0;
+    let totalCompanyHoursPerDay = 0;
+
+    for (var d = privMonDAy; d < now; d.setDate(d.getDate() + 1)) {
+      totalHoursSpendInWeek =
+        totalHoursSpendInWeek + dailyAttendance[d]?.totalHours;
+    }
+
+    setTotalHoursSpend(totalHoursSpendInWeek ? totalHoursSpendInWeek : '00.00');
+
+    let currentDayTotalHours =
+      dailyAttendance &&
+      dailyAttendance.length &&
+      dailyAttendance[0]?.totalHours;
+    if (currentDayTotalHours < 9) {
+      let hoursRemains = 9 - currentDayTotalHours;
+      setRemainingHours(-hoursRemains);
+    } else if (currentDayTotalHours > 9) {
+      let hoursRemains = currentDayTotalHours - 9;
+      setRemainingHours(hoursRemains);
+    } else {
+      setRemainingHours(0.0);
+    }
+
+    let check = 9 - currentDayTotalHours;
+    setCheckForRemainingHoursColor(check);
+  }, []);
+
   let todayDate = todaySelectedDate();
   let mark = {
     [todayDate]: {selected: true, selectedColor: Colors.green},
   };
 
-  employeeAttendance &&
-    employeeAttendance.length &&
-    employeeAttendance?.forEach(day => {
-      let date = day?.attDate?.split(' ')[0];
-      var newdate = date?.split('-').reverse().join('-');
+  dailyAttendance &&
+    dailyAttendance.length &&
+    dailyAttendance?.forEach(day => {
+      let date = day?.attendanceDate?.split('T')[0];
+      // var newdate = date?.split('-').reverse().join('-');
       if (day.status === 'Half Day') {
-        mark[newdate] = {
+        mark[date] = {
           selectedColor: Colors.blue,
-          // dotColor: Colors.blue,
           selected: true,
         };
-      } else if (day.status === 'Absent') {
-        mark[newdate] = {
-          // dotColor: Colors.red,
-          selectedColor: Colors.red,
+      } else if (day.status === 'Leave') {
+        mark[date] = {
+          selectedColor: Colors.reddishTint,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       } else if (day.status === 'Holiday') {
-        mark[newdate] = {
-          // dotColor: Colors.pink,
+        mark[date] = {
           selectedColor: Colors.pink,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       } else if (day.status === 'Present') {
-        mark[newdate] = {
-          dotColor: Colors.green,
-          mark: true,
-          marked: true,
-          // selectedColor: Colors.green,
+        mark[date] = {
+          selectedColor: Colors.parrotGreen,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       }
     });
@@ -138,7 +151,7 @@ const Attendence = ({navigation}) => {
     {
       id: '1',
       title: 'Absent',
-      color: Colors.red,
+      color: Colors.reddishTint,
     },
     {
       id: '2',
@@ -149,6 +162,11 @@ const Attendence = ({navigation}) => {
       id: '3',
       title: 'Holiday',
       color: Colors.pink,
+    },
+    {
+      id: '4',
+      title: 'Present',
+      color: Colors.green,
     },
   ];
 
@@ -200,12 +218,15 @@ const Attendence = ({navigation}) => {
               </View>
               <View style={styles.timeSpendView}>
                 <Text style={styles.timeSpendText}>
-                  Total Hour Spend {totalSpendHours}
+                  Total Hour Spend {totalHourSpend}
                   <Text
                     style={{
-                      color: spendhours < 0 ? Colors.red : Colors.green,
+                      color:
+                        checkForRemainingHoursColor < 0
+                          ? Colors.green
+                          : Colors.reddishTint,
                     }}>
-                    ({spendhours})
+                    ({remainingHours})
                   </Text>
                 </Text>
               </View>
@@ -236,21 +257,34 @@ const Attendence = ({navigation}) => {
 
 const renderItem = ({item}) => {
   return (
-    <View style={{flexDirection: 'row', flex: 1}}>
+    <View
+      style={{
+        flexDirection: 'row',
+        flex: 1,
+      }}>
       <View
         style={{
-          width: wp(5.5),
-          height: hp(2.6),
+          width: wp(4),
+          height: hp(2),
           borderRadius: 20,
           backgroundColor:
             item.title === 'Absent'
-              ? Colors.red
+              ? Colors.reddishTint
               : item.title === 'Half Day'
               ? Colors.blue
+              : item.title === 'Present'
+              ? Colors.green
               : Colors.pink,
           marginHorizontal: wp(4),
         }}></View>
-      <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 18}}>
+      <Text
+        style={{
+          color: Colors.white,
+          fontWeight: 'bold',
+          fontSize: 14,
+          marginLeft: wp(-1),
+          marginTop: hp(-0.5),
+        }}>
         {item.title}
       </Text>
     </View>

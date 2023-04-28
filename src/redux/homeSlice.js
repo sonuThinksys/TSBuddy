@@ -57,7 +57,7 @@ const snacks = 'snacks';
 
 export const getLeaveApprovers = createAsyncThunk(
   'home/getLeaveApprovers',
-  async ({token}) => {
+  async token => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -606,6 +606,7 @@ export const getAttendencaeData = createAsyncThunk(
     };
     return axios(config)
       .then(async response => {
+        console.log(response);
         const {data, status} = response;
         if (status === 200) {
           return Promise.resolve(data[0]);
