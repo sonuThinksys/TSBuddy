@@ -6,7 +6,9 @@ import {
   Alert,
   FlatList,
   Image,
+  KeyboardAvoidingView,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -35,8 +37,10 @@ import {
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import {guestProfileData} from 'guestData';
 
 const ApplyLeave = ({navigation, route}) => {
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
   const resourceData = route?.params;
@@ -57,8 +61,8 @@ const ApplyLeave = ({navigation, route}) => {
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
-  var decoded = jwt_decode(token);
-  const employeeID = decoded.id;
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id || '';
 
   const {
     leaveMenuDetails: {
@@ -69,15 +73,15 @@ const ApplyLeave = ({navigation, route}) => {
   const leaves = [
     {
       leaveType: 'Earned Leave',
-      allocated: earnedLeaves?.totalLeavesAllocated,
-      taken: earnedLeaves?.currentLeaveApplied,
-      remaining: earnedLeaves?.currentLeaveBalance,
+      allocated: isGuestLogin ? 15 : earnedLeaves?.totalLeavesAllocated,
+      taken: isGuestLogin ? 7 : earnedLeaves?.currentLeaveApplied,
+      remaining: isGuestLogin ? 8 : earnedLeaves?.currentLeaveBalance,
     },
     {
       leaveType: 'Restricted Holiday',
-      allocated: restrictedLeaves?.totalLeavesAllocated,
-      taken: restrictedLeaves.currentLeaveApplied,
-      remaining: restrictedLeaves.currentLeaveBalance,
+      allocated: isGuestLogin ? 1 : restrictedLeaves?.totalLeavesAllocated,
+      taken: isGuestLogin ? 0 : restrictedLeaves?.currentLeaveApplied,
+      remaining: isGuestLogin ? 1 : restrictedLeaves.currentLeaveBalance,
     },
     {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
     {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
@@ -414,30 +418,34 @@ const ApplyLeave = ({navigation, route}) => {
     setLoading(true);
 
     // =========================================================================
-    const leaveApprovers = await dispatch(getLeaveApprovers({token}));
+
+    const leaveApprovers = token
+      ? await dispatch(getLeaveApprovers({token}))
+      : [];
     const leaveApproverMailID =
       leaveApprovers?.payload?.length > 0 &&
       leaveApprovers?.payload[0].leaveApprover;
-    console.log('leaveApproverMailID:', leaveApproverMailID);
     // =========================================================================
 
-    const appliedLeave = await dispatch(
-      applyForLeave({
-        token,
-        body: {
-          employeeId: employeeID,
-          fromDate: fromDate.fromDateObj,
-          toDate: toDate.toDateObj,
-          totalLeaveDays: totalNumberOfLeaveDays,
-          description: reason,
-          halfDay: 0,
-          postingDate: new Date(),
-          leaveType: leaveType,
-          leaveApprover: leaveApproverMailID,
-          fiscalYear: '2023-2024',
-        },
-      }),
-    );
+    const appliedLeave =
+      token &&
+      (await dispatch(
+        applyForLeave({
+          token,
+          body: {
+            employeeId: employeeID,
+            fromDate: fromDate.fromDateObj,
+            toDate: toDate.toDateObj,
+            totalLeaveDays: totalNumberOfLeaveDays,
+            description: reason,
+            halfDay: 0,
+            postingDate: new Date(),
+            leaveType: leaveType,
+            leaveApprover: leaveApproverMailID,
+            fiscalYear: '2023-2024',
+          },
+        }),
+      ));
 
     setLoading(false);
     if (appliedLeave?.error) {
@@ -457,17 +465,19 @@ const ApplyLeave = ({navigation, route}) => {
   const finalizeLeave = async status => {
     setLoading(true);
     const empId = +resourceEmployeeID.match(/\d+/g)[0];
-    const response = await dispatch(
-      updateLeaveStatus({
-        token,
-        body: {
-          employeeId: empId,
-          leaveApplicationId: resourceData.leaveApplicationId,
-          status: status,
-          leaveType: resourceData.leaveType,
-        },
-      }),
-    );
+    const response =
+      token &&
+      (await dispatch(
+        updateLeaveStatus({
+          token,
+          body: {
+            employeeId: empId,
+            leaveApplicationId: resourceData.leaveApplicationId,
+            status: status,
+            leaveType: resourceData.leaveType,
+          },
+        }),
+      ));
 
     setLoading(false);
     if (response?.error) {
@@ -493,7 +503,8 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   return (
-    <View style={styles.mainContainer}>
+    // <ScrollView>
+    <KeyboardAvoidingView style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
 
       <View style={styles.mainPart}>
@@ -552,6 +563,7 @@ const ApplyLeave = ({navigation, route}) => {
                   dropdownStyle={{
                     width: '45%',
                     paddingLeft: 10,
+                    height: 100,
                   }}
                   renderRow={renderRow}
                   onSelect={(index, itemName) => {
@@ -647,9 +659,14 @@ const ApplyLeave = ({navigation, route}) => {
           </View>
           <View style={styles.leaveApproverContainer}>
             <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-            <Text style={styles.leaveApproverName}>{approver}</Text>
+            <Text style={styles.leaveApproverName}>
+              {isGuestLogin
+                ? guestProfileData?.managerInfoDto?.employeeName
+                : approver}
+            </Text>
           </View>
         </View>
+
         {!fromResource ? (
           <View style={styles.buttonContainer}>
             <Pressable style={styles.button} onPress={applyLeave}>
@@ -683,7 +700,8 @@ const ApplyLeave = ({navigation, route}) => {
           <ActivityIndicator size="large" />
         </View>
       ) : null}
-    </View>
+    </KeyboardAvoidingView>
+    // {/* </ScrollView> */}
   );
 };
 

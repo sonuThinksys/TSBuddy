@@ -26,8 +26,8 @@ import {loginStatus, logOut} from 'Auth/LoginSlice';
 
 export default ({navigation}) => {
   const {userToken: token} = useSelector(state => state.auth);
-  const decoded = jwt_decode(token);
-  const isLeaveApprover = decoded?.role?.includes('Leave Approver');
+  const decoded = token && jwt_decode(token);
+  const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   const dispatch = useDispatch();
 
   const resorcesTab = {
@@ -56,7 +56,7 @@ export default ({navigation}) => {
     // isLeaveApprover && resorcesTab,
     {
       screen: 'Attendence',
-      label: 'Attendence',
+      label: 'Attendance',
       navigation,
       key: 3,
       icon: MonthImages.AttendanceDrawer,
@@ -75,7 +75,6 @@ export default ({navigation}) => {
       key: 5,
       icon: MonthImages.HolidaysIcon,
     },
-
     {
       screen: 'SalarySlip',
       label: 'SalarySlip',
@@ -138,16 +137,30 @@ const renderDrawerItem = (
   index,
 ) => {
   const selected = navigation.getState().index + 1 === key;
-  // if (selected) {
-  //   console.log('index:', index, key, navigation.getState());
-  // }
+
   return (
     <TouchableOpacity
       key={index}
       onPress={() => {
         if (dispatch) {
-          // dispatch(loginStatus(false));
-          dispatch(logOut());
+          // navigation.closeDrawer();
+          // dispatch(logOut());
+          Alert.alert(
+            'Log Out',
+            'Are you sure you want to Log Out from this app?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => null,
+              },
+              {
+                text: 'Log Out',
+                onPress: () => {
+                  dispatch(logOut());
+                },
+              },
+            ],
+          );
           navigation.closeDrawer();
         } else {
           navigation.closeDrawer();

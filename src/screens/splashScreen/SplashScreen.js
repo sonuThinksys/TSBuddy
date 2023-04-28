@@ -1,11 +1,7 @@
 import React, {useEffect} from 'react';
 import {View, TextView, Text, Image, StyleSheet} from 'react-native';
 import AppIcon from '../../assets/mipmap/appIcon120-1.png';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
-import {MonthImages} from 'assets/monthImage/MonthImage';
+
 import {appVersion} from '../../utils/AppVersion';
 import {Colors} from 'colors/Colors';
 const SplashScreen = ({navigation}) => {
@@ -16,29 +12,22 @@ const SplashScreen = ({navigation}) => {
   }, []);
   return (
     <View style={styles.container}>
-      <View style={styles.imageContiner}>
-        <Image
-          style={{height: '100%', width: '100%', marginBottom: hp(33)}}
-          source={AppIcon}
-        />
-        <Text style={{textAlign: 'center'}}>{appVersion}</Text>
-      </View>
+      <Image source={AppIcon} />
+      <Text style={{textAlign: 'center'}}>{appVersion}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    width: '100%',
+    flex: 1,
     backgroundColor: Colors.white,
     justifyContent: 'center',
-    paddingHorizontal: wp(40),
+    alignItems: 'center',
   },
   imageContiner: {
-    height: hp(20),
-    width: wp(20),
-    display: 'flex',
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });
 

@@ -16,7 +16,6 @@ const AttaindanceDetails = (route, navigation) => {
   };
 
   const {params: data} = route.route;
-  console.log('PAPAPARAPARAPARAPARA', data);
 
   const details = [
     ['Employee Name', data?.employeeName || 'Utkarsh Gupta'],

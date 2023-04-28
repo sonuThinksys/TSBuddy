@@ -413,7 +413,7 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
   },
 );
 
-// Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
+// Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
 
 export const GetDailyAttendanceByEmpId = createAsyncThunk(
   'dailyAttendanceByEmpId',
@@ -421,7 +421,7 @@ export const GetDailyAttendanceByEmpId = createAsyncThunk(
     const config = {
       method: 'get',
       // url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeId}&month=0${month}&year=${year}`,
-      url: 'http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
+      url: 'http://10.101.23.48:81/api/Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -706,28 +706,21 @@ export const getholidayDataIWithImage = createAsyncThunk(
 export const requestLunchSubmission = createAsyncThunk(
   'dataReducer/requestLunchSubmission',
   async formInput => {
-    try {
-      const {token, ...restData} = formInput;
-      const url = endPoints.requestLunchApi;
-      var config = {
-        method: 'post',
-        url: endPoints.requestLunchApi,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          requestlunchstartdate: '2023-05-03T06:11:46.692Z',
-          requestlunchenddate: '2023-05-03T06:11:46.692Z',
-          requestforlunch: 1,
-          requestforlunchcancellation: 0,
-          montlyLunchSubscription: 0,
-          lunchRequestType: 'daily',
-          lunchcancellationrequestdate: null,
-        },
-      };
+    const {token, ...extraPayload} = formInput;
+    const url = endPoints.requestLunchApi;
+    var config = {
+      method: 'post',
+      url: endPoints.requestLunchApi,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
 
-      return axios(config).then(result => {
+      data: extraPayload,
+    };
+
+    return axios(config)
+      .then(result => {
         const {data = {}, status} = result || {};
 
         if (status === 200) {
@@ -735,11 +728,20 @@ export const requestLunchSubmission = createAsyncThunk(
         } else {
           return Promise.reject('something went wrong');
         }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response?.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else if (statusCode === 400) {
+          return Promise.reject(err?.response?.data?.errors);
+        } else {
+          return Promise.reject(new Error(err));
+        }
       });
-    } catch (err) {
-      console.log('error:', err);
-      // return Promise.reject(new Error(err));
-    }
   },
 );
 

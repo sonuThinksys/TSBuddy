@@ -6,19 +6,19 @@ const guestLeavesData = [
 
 const guestProfileData = {
   cellNumber: '9710000242',
-  companyEmail: 'pant.amit@thinksys.com',
+  companyEmail: 'richa@thinksys.com',
   dateOfJoining: '2018-01-30T00:00:00',
-  designation: 'Associate Project Lead',
+  designation: 'IT Executive',
   employeeName: 'Amit Kumar Pant',
-  image: '/files/Amit Kumar Pant (10352) ) O+.jpg',
+  image: '',
   managerInfoDto: {
     cellNumber: '9970000837',
-    companyEmail: 'sharma.mayank@thinksys.com',
-    employeeName: 'Mayank Sharma',
+    companyEmail: 'manager@thinksys.com',
+    employeeName: 'Guest Manager',
     image: '',
   },
   montlyLunchSubscription: null,
-  name: 'EMP/10352',
+  empID: 'EMP/12345',
 };
 
 const guestHolidaysData = [
@@ -33,8 +33,8 @@ const guestHolidaysData = [
     isRestricted: false,
   },
   {
-    description: 'Diwali',
-    holidayDate: '2021-11-04T00:00:00',
+    description: 'Independence Day',
+    holidayDate: '2021-08-15T00:00:00',
     isRestricted: false,
   },
   {
@@ -48,8 +48,8 @@ const guestHolidaysData = [
     isRestricted: false,
   },
   {
-    description: 'Independence Day',
-    holidayDate: '2021-08-15T00:00:00',
+    description: 'Diwali',
+    holidayDate: '2021-11-04T00:00:00',
     isRestricted: false,
   },
 ];

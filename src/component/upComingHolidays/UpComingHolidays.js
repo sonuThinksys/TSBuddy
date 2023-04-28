@@ -102,9 +102,7 @@ const renderItem = ({item, index}) => {
         <Text style={styles.text1}>{item.description}</Text>
         <View style={{flex: 3}}>
           <View style={styles.textView}>
-            <TouchableOpacity>
-              <Text style={styles.text2}>{newDateFormate}</Text>
-            </TouchableOpacity>
+            <Text style={styles.text2}>{newDateFormate}</Text>
           </View>
         </View>
       </View>

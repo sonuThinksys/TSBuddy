@@ -37,28 +37,30 @@ const Attendence = ({navigation}) => {
   const [isImageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
-  var decoded = jwt_decode(token);
-  const employeeID = decoded.id;
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id || '';
 
   useEffect(() => {
     (async () => {
-      try {
-        setLoading(true);
-        const attendence = await dispatch(
-          getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
-        );
-        if (attendence?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: attendence?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
+      if (employeeID && token) {
+        try {
+          setLoading(true);
+          const attendence = await dispatch(
+            getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
+          );
+          if (attendence?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: attendence?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
         }
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
       }
     })();
   }, [visisbleMonth, visibleYear]);
@@ -102,34 +104,21 @@ const Attendence = ({navigation}) => {
           // dotColor: Colors.blue,
           selected: true,
         };
-      } else if (day.status === 'Absent') {
+      } else if (day.status === 'Leave') {
         mark[newdate] = {
-          // dotColor: Colors.red,
-          selectedColor: Colors.red,
+          selectedColor: Colors.reddishTint,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       } else if (day.status === 'Holiday') {
         mark[newdate] = {
-          // dotColor: Colors.pink,
           selectedColor: Colors.pink,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       } else if (day.status === 'Present') {
         mark[newdate] = {
-          dotColor: Colors.green,
+          selectedColor: Colors.parrotGreen,
           mark: true,
-          marked: true,
-          // selectedColor: Colors.green,
           selected: true,
-          //  dotColor: Colors.red,
-          // activeOpacity: 0,
-          // selectedColor: Colors.red,
         };
       }
     });
@@ -167,11 +156,6 @@ const Attendence = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* {isLoading
-        ? renderLoading({
-            backgroundColor: 'rgba(51, 51, 51, 0.8)',
-          })
-        : null} */}
       <ImageBackground
         resizeMode="stretch"
         onLoadStart={() => setImageLoading(true)}
@@ -200,19 +184,21 @@ const Attendence = ({navigation}) => {
               </View>
               <View style={styles.timeSpendView}>
                 <Text style={styles.timeSpendText}>
-                  Total Hour Spend {totalSpendHours}
+                  Total Hour Spend 35:47:10{' '}
+                  {/* Total Hour Spend {totalSpendHours} */}
                   <Text
                     style={{
                       color: spendhours < 0 ? Colors.red : Colors.green,
                     }}>
-                    ({spendhours})
+                    {/* ({spendhours}) */}
+                    (00:12:49)
                   </Text>
                 </Text>
               </View>
             </View>
           </View>
 
-          <View style={{marginTop: hp(4), flex: 1}}>
+          <View style={{marginTop: hp(1), flex: 1}}>
             <FlatList
               data={DATA}
               horizontal={true}
@@ -273,28 +259,6 @@ const RenderCalender = ({setVisibleMonth, setVisibleYear, mark}) => {
         // setLoading(true)
       }}
       pastScrollRange={100}
-      //initialDate={'2018-05-01'}
-      // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-      // minDate={'2018-05-05'}
-      // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-      //  maxDate={'2020-05-30'}
-
-      // markedDates={{
-      //   '2023-03-16': {
-      //     selected: true,
-      //     marked: true,
-      //     selectedColor: Colors.blue,
-      //   },
-      //   '2023-03-17': {marked: true},
-      //   '2023-03-18': {
-      //     // marked: true,
-      //     selected: true,
-      //     //  dotColor: Colors.red,
-      //     // activeOpacity: 0,
-      //     selectedColor: Colors.red,
-      //   },
-      //   '2023-03-19': {disabled: true, disableTouchEvent: true},
-      // }}
       markedDates={mark}
       calendarStyle={{
         flex: 1,

@@ -56,81 +56,97 @@ const MenuItem = ({navigation}) => {
   const {userToken: token} = useSelector(state => state.auth);
 
   useEffect(() => {
-    (async () => {
-      const menuDetails = await dispatch(getTodayMenuDetails(token));
+    if (token) {
+      (async () => {
+        const menuDetails = await dispatch(getTodayMenuDetails(token));
 
+        setTodayMenu([
+          {
+            type: breakfast,
+            food: menuDetails.payload?.foodMenus[0]?.breakfast,
+            img_url: MonthImages.breakfastImgS,
+          },
+          {
+            type: lunch,
+            food: menuDetails.payload?.foodMenus[0]?.lunch,
+            img_url: MonthImages.Lunch,
+          },
+          {
+            type: snacks,
+            food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
+            img_url: MonthImages.snacksS,
+          },
+        ]);
+
+        if (menuDetails?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: menuDetails?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      })();
+    } else {
       setTodayMenu([
         {
           type: breakfast,
-          food: menuDetails.payload?.foodMenus[0]?.breakfast,
+          food: 'N/A',
           img_url: MonthImages.breakfastImgS,
         },
         {
           type: lunch,
-          food: menuDetails.payload?.foodMenus[0]?.lunch,
+          food: 'N/A',
           img_url: MonthImages.Lunch,
         },
         {
           type: snacks,
-          food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
+          food: 'N/A',
           img_url: MonthImages.snacksS,
         },
       ]);
-
-      if (menuDetails?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: menuDetails?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-    })();
+    }
   }, []);
 
   const getFeedbackUpdatedData = async () => {
     try {
-      const foodFeedback = await dispatch(getMenuFeedback(token));
-
-      setFeedbackCount([
-        {
-          likes: foodFeedback?.payload?.totalBreakfastlikes,
-          dislikes: foodFeedback?.payload?.totalBreakfastdislikes,
-        },
-        {
-          likes: foodFeedback?.payload?.totalLunchlikes,
-          dislikes: foodFeedback?.payload?.totalLunchdislikes,
-        },
-        {
-          likes: foodFeedback?.payload?.totalMeallikes,
-          dislikes: foodFeedback?.payload?.totalMealdislikes,
-        },
-      ]);
-
-      if (foodFeedback?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: foodFeedback?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-
-      const myFeedback =
-        dailyMenuID &&
-        (await dispatch(getSingleUserFeedback({token, menuID: dailyMenuID})));
-
-      if (myFeedback?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: myFeedback?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
+      // const foodFeedback = await dispatch(getMenuFeedback(token));
+      // setFeedbackCount([
+      //   {
+      //     likes: foodFeedback?.payload?.totalBreakfastlikes,
+      //     dislikes: foodFeedback?.payload?.totalBreakfastdislikes,
+      //   },
+      //   {
+      //     likes: foodFeedback?.payload?.totalLunchlikes,
+      //     dislikes: foodFeedback?.payload?.totalLunchdislikes,
+      //   },
+      //   {
+      //     likes: foodFeedback?.payload?.totalMeallikes,
+      //     dislikes: foodFeedback?.payload?.totalMealdislikes,
+      //   },
+      // ]);
+      // if (foodFeedback?.error) {
+      //   ShowAlert({
+      //     messageHeader: ERROR,
+      //     messageSubHeader: foodFeedback?.error?.message,
+      //     buttonText: 'Close',
+      //     dispatch,
+      //     navigation,
+      //   });
+      // }
+      // const myFeedback =
+      //   dailyMenuID &&
+      //   (await dispatch(getSingleUserFeedback({token, menuID: dailyMenuID})));
+      // if (myFeedback?.error) {
+      //   ShowAlert({
+      //     messageHeader: ERROR,
+      //     messageSubHeader: myFeedback?.error?.message,
+      //     buttonText: 'Close',
+      //     dispatch,
+      //     navigation,
+      //   });
+      // }
     } catch (err) {}
   };
 

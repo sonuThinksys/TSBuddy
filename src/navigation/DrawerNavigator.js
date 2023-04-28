@@ -76,6 +76,7 @@ const drawerOption = ({
   showDrawer = true,
   showHeaderRight = true,
   fromLeave = false,
+  headerIcon,
 }) => {
   return {
     label: () => <Text>{label}</Text>,
@@ -118,17 +119,9 @@ const drawerOption = ({
             }}>
             {label}
           </Text>
-          {/* {fromLeave && (
-            <Pressable
-              onPress={() => {
-                navigation.navigate('LeaveApplyScreen');
-              }}>
-              <Text style={styles.newLeaveText}>+ New</Text>
-            </Pressable>
-          )} */}
-          {/* {headerIconName ? (
-            <Image source={headerIconName} style={{height: 20, width: 20}} />
-          ) : null} */}
+          {headerIcon && (
+            <Image source={headerIcon} style={{height: 22, width: 22}} />
+          )}
         </View>
       </TouchableOpacity>
     ),
@@ -183,13 +176,8 @@ const HomeStackScreen = ({navigation}) => {
           label: 'Home',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
+          headerIcon: MonthImages.info_scopy,
         })}
-        // options={{
-        //   headerShown: true,
-        //   headerLeft: () => {
-        //     return <Text>fgfgdfgfdg</Text>;
-        //   },
-        // }}
       />
       <HomeStack.Screen
         name={RequestLunchScreen}
@@ -219,9 +207,10 @@ const AttendenceStackScreen = ({navigation}) => {
     <AttendenceStack.Navigator screenOptions={{headerShown: false}}>
       <AttendenceStack.Screen
         options={drawerOption({
-          label: 'Attendence',
+          label: 'Attendance',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
+          headerIcon: MonthImages.info_scopy,
         })}
         name={AttendenceScreen}
         component={Attendence}
@@ -448,8 +437,8 @@ const Logout = () => {
 
 function DrawerNavigator({navigation}) {
   const {userToken: token} = useSelector(state => state.auth);
-  const decoded = jwt_decode(token);
-  const isLeaveApprover = decoded?.role?.includes('Leave Approver');
+  const decoded = token && jwt_decode(token);
+  const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}

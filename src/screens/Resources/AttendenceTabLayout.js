@@ -36,7 +36,6 @@ const AttendenceTabLayout = ({data, employeeAttendance = []}) => {
           employeeName,
           fiscalYear,
         });
-        console.log('Pressed!');
       }}
       style={styles.mainContainer}>
       <View style={styles.left}>

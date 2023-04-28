@@ -52,12 +52,13 @@ import ShowAlert from 'customComponents/CustomError';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
-  // const [isBiometric, setIsBiometric] = useState(true);
-  // const [bioMetricEnable, setBiometricEnable] = useState(false);
+
   const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
+  // const [username, setUserName] = useState('gupta.utkarsh');
+  // const [password, setPassword] = useState('Nanu@789');
   const [username, setUserName] = useState('pant.amit');
   const [password, setPassword] = useState('thinksys@321');
   const {
@@ -157,20 +158,22 @@ const Login = ({navigation}) => {
           );
         }
       }
-      setLoading(false);
     } catch (error) {
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
+      {isLoading ? <LoadingScreen /> : null}
+
+      {/* {isLoading ? (
         <View style={styles.loaderContainer}>
           <View style={styles.loaderBackground} />
           <ActivityIndicator size="large" />
         </View>
-      ) : null}
+      ) : null} */}
       {showBiomatricModal && Platform.OS === 'android' ? (
         <Modal
           backdropColor={Colors.smokeyGrey}
@@ -209,7 +212,6 @@ const Login = ({navigation}) => {
           rate={1.0}
           ignoreSilentSwitch={'obey'}
         />
-        {isLoading ? <LoadingScreen /> : null}
         <View style={{alignItems: 'center', paddingTop: hp(4)}}>
           <Image
             style={{height: hp(12), width: wp(25)}}

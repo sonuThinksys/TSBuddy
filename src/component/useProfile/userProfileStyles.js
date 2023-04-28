@@ -87,8 +87,15 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     opacity: 0.8,
     fontSize: FontSize.h11,
+    marginHorizontal: 6,
   },
-  desText2: {fontSize: 10, textAlign: 'center', color: 'blue', opacity: 0.6},
+  desText2: {
+    fontSize: 10,
+    textAlign: 'center',
+    color: 'blue',
+    opacity: 0.6,
+    marginHorizontal: 6,
+  },
   iconView: {
     display: 'flex',
     flexDirection: 'row',

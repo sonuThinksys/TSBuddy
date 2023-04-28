@@ -11,21 +11,23 @@ import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 const RemainingLeaves = () => {
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(
     state => state.home,
   );
 
-  const earnedLeavesData = [
-    remainingLeaves[1]?.totalLeavesAllocated,
-    remainingLeaves[1]?.currentLeaveApplied,
-    remainingLeaves[1]?.currentLeaveBalance,
+  const restrictedLeavesData = [
+    isGuestLogin ? 1 : remainingLeaves[1]?.totalLeavesAllocated,
+    isGuestLogin ? 0 : remainingLeaves[1]?.currentLeaveApplied,
+    isGuestLogin ? 1 : remainingLeaves[1]?.currentLeaveBalance,
   ];
 
-  const restrictedLeavesData = [
-    remainingLeaves[0]?.totalLeavesAllocated,
-    remainingLeaves[0]?.currentLeaveApplied,
-    remainingLeaves[0]?.currentLeaveBalance,
+  const earnedLeavesData = [
+    isGuestLogin ? 15 : remainingLeaves[0]?.totalLeavesAllocated,
+    isGuestLogin ? 7 : remainingLeaves[0]?.currentLeaveApplied,
+    isGuestLogin ? 8 : remainingLeaves[0]?.currentLeaveBalance,
   ];
+
   const totalEarnedTypesAvailable = earnedLeavesData.length;
   const totalRestrictedTypesAvailable = restrictedLeavesData.length;
 
@@ -62,14 +64,14 @@ const RemainingLeaves = () => {
                 },
               ],
             }}
-            width={Dimensions.get('window').width * 0.48}
+            width={Dimensions.get('window').width * 0.46}
             height={220}
             chartConfig={{
               backgroundGradientFrom: '#f1f3f5',
               backgroundGradientTo: '#f1f3f5',
               decimalPlaces: 0,
               fillShadowGradientOpacity: '0.5',
-              barPercentage: totalEarnedTypesAvailable === 3 ? 0.8 : 0.64,
+              barPercentage: totalEarnedTypesAvailable === 3 ? 0.72 : 0.56,
               color: (opacity = 1) =>
                 Colors.customColor({opacity, r: 0, g: 0, b: 0}),
               style: {
@@ -93,7 +95,7 @@ const RemainingLeaves = () => {
         </View>
         <View>
           <BarChart
-            segments={4}
+            segments={1}
             spacingInner={0}
             flatColor={true}
             showValuesOnTopOfBars={true}
@@ -115,14 +117,14 @@ const RemainingLeaves = () => {
                 },
               ],
             }}
-            width={Dimensions.get('window').width * 0.48}
+            width={Dimensions.get('window').width * 0.46}
             height={220}
             chartConfig={{
               backgroundGradientFrom: '#f1f3f5',
               backgroundGradientTo: '#f1f3f5',
               decimalPlaces: 0,
               fillShadowGradientOpacity: '0.5',
-              barPercentage: totalRestrictedTypesAvailable === 3 ? 0.8 : 0.64,
+              barPercentage: totalRestrictedTypesAvailable === 3 ? 0.72 : 0.56,
 
               color: (opacity = 1) =>
                 Colors.customColor({opacity, r: 0, g: 0, b: 0}),

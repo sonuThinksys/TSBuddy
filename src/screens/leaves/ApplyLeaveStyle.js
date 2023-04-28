@@ -9,11 +9,11 @@ export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.white,
     flex: 1,
-    // position: 'absolute',
   },
 
   swiperContainer: {
-    flex: 0.22,
+    // flex: 0.22,
+    height: hp(16),
   },
   formContainer: {
     paddingHorizontal: 10,
@@ -104,6 +104,8 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     marginBottom: hp(2),
+    // position: 'absolute',
+    // bottom: 0,
   },
   resourceButtonContainer: {
     flexDirection: 'row',

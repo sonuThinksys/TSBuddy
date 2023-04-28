@@ -8,7 +8,7 @@ const initialState = {
   isLoggedIn: false,
   isAuthLoggedIn: false,
   isLoading: false,
-  userToken: {},
+  userToken: '',
   userTokenGettingError: false,
   userTokenGettingLoading: false,
   formInput: {},
@@ -23,31 +23,30 @@ export const getUserToken = createAsyncThunk(
   async formInput => {
     try {
       const LoginUrl = endPoints.authTokenAPI;
-      return fetch(LoginUrl, {
+
+      const config = {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formInput),
-      }).then(async result => {
-        let data = await result.json();
+        url: LoginUrl,
+        data: formInput,
+      };
+      return axios(config)
+        .then(async result => {
+          let data = result.data;
 
-        const responsetoken = data.token;
-        const {response = {}, status} = result || {};
-        if (status === 200) {
-          // await AsyncStorage.setItem('accessToken', response?.token);
-          // const username = formInput.username;
-          // const password = formInput.password;
-
-          // Store the credentials
-          // await Keychain.setGenericPassword(username, password);
-
-          return Promise.resolve({data, formInput});
-        } else {
-          return Promise.reject(data);
-        }
-      });
+          const {response = {}, status} = result || {};
+          if (status === 200) {
+            return Promise.resolve({data, formInput});
+          } else {
+            return Promise.reject(data);
+          }
+        })
+        .catch(err => {
+          return Promise.reject(err);
+        });
     } catch (err) {
       return Promise.reject(new Error(err));
     }
@@ -72,7 +71,7 @@ const loginSlice = createSlice({
       state.bioMetricEnable = action.payload;
     },
     guestLoginStatus: (state, action) => {
-      state.isLoggedIn = action.payload;
+      state.isLoggedIn = true;
       state.isGuestLogin = action.payload;
       state.isLoading = false;
     },
@@ -81,15 +80,17 @@ const loginSlice = createSlice({
     builder.addCase(getUserToken.pending, state => {
       state.isLoading = true;
     });
+
     builder.addCase(getUserToken.fulfilled, (state, action) => {
-      state.userToken = action.payload.data.token;
-      state.formInput = action.payload.formInput;
-      const decodedData = jwtDecode(state.userToken);
+      state.userToken = action?.payload?.data?.token;
+      state.formInput = action?.payload?.formInput;
+      const decodedData = jwtDecode(state?.userToken);
       state.employeeDetails = decodedData;
       state.isLoading = false;
       state.isLoggedIn = true;
       state.isGuestLogin = false;
     });
+
     builder.addCase(getUserToken.rejected, (state, action) => {
       state.isLoggedIn = false;
       state.error = action.error.message;

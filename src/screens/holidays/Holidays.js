@@ -9,9 +9,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
-import Loader from 'component/loader/Loader';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
-import {isBefore2021} from 'utils/utils';
+import {isBeforeDate} from 'utils/utils';
 import {guestHolidaysData} from 'guestData';
 import {getHolidaysData} from 'redux/homeSlice';
 
@@ -19,7 +18,9 @@ const Holidays = () => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
-  const {isGuestLogin: isGuestLogin,userToken:token} = useSelector(state => state.auth);
+  const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
+    state => state.auth,
+  );
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
   const [isRefresh, setRefresh] = useState(false);
@@ -71,7 +72,7 @@ const Holidays = () => {
 };
 
 const renderItem = (
-  {description, holidayDate},
+  item,
   index,
   holidaysShowModal,
   holidaysSetShowModal,
@@ -79,6 +80,7 @@ const renderItem = (
   setHolidaysData,
   HolidaysData,
 ) => {
+  const {description, holidayDate} = item;
   const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
 
   const cureentDate = +new Date();
@@ -120,7 +122,7 @@ const renderItem = (
 
           style={{
             flex: 1,
-            backgroundColor: isBefore2021(date, cureentDate, Years, holidayDate)
+            backgroundColor: isBeforeDate(date, cureentDate, Years, holidayDate)
               ? Colors.royalBlue
               : Colors.grey,
             paddingHorizontal: wp(2),
@@ -139,7 +141,7 @@ const renderItem = (
           <Text
             style={{
               fontWeight: 'bold',
-              color: isBefore2021(date, cureentDate, Years, holidayDate)
+              color: isBeforeDate(date, cureentDate, Years, holidayDate)
                 ? Colors.black
                 : Colors.grey,
             }}>

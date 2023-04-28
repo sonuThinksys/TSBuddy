@@ -22,9 +22,10 @@ import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
   const dispatch = useDispatch();
-  const {isAuthLoggedIn} = useSelector(state => state.auth);
+  // const {isAuthLoggedIn} = useSelector(state => state.auth);
   const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
+  const [isAuthenticated, setisAuthenticated] = useState(false);
 
   useEffect(() => {
     let newObjectData = [];
@@ -59,6 +60,10 @@ const SalarySlip = ({navigation}) => {
     return unsubscribe;
   }, [navigation]);
 
+  const submitPassword = () => {
+    setisAuthenticated(true);
+  };
+
   return (
     <View
       style={{
@@ -66,75 +71,79 @@ const SalarySlip = ({navigation}) => {
       }}>
       <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
-      {!isAuthLoggedIn ? (
-        <SalarSlipModal />
+      {!isAuthenticated ? (
+        <SalarSlipModal submitPassword={submitPassword} />
       ) : (
-        <ScrollView>
-          {keyOfObject &&
-            keyOfObject.length > 0 &&
-            keyOfObject.map(el => {
-              return (
-                <View key={el} style={{paddingHorizontal: wp(1)}}>
-                  <View style={styles.yearMainView}>
-                    <View style={styles.line}></View>
-                    <View style={styles.yearTextView}>
-                      <Text style={styles.yearText}>{el}</Text>
+        <ScrollView style={{flex: 1}}>
+          {keyOfObject ? (
+            keyOfObject?.length > 0 ? (
+              keyOfObject?.map(el => {
+                return (
+                  <View key={el} style={{paddingHorizontal: wp(1)}}>
+                    <View style={styles.yearMainView}>
+                      <View style={styles.line}></View>
+                      <View style={styles.yearTextView}>
+                        <Text style={styles.yearText}>{el}</Text>
+                      </View>
                     </View>
-                  </View>
-                  <View style={styles.MapView}>
-                    {newyearWiseData &&
-                      Object.keys(newyearWiseData).length !== 0 &&
-                      newyearWiseData[el].map((elemnt, index) => {
-                        return (
-                          <View key={index} style={styles.ViewForMOnth}>
-                            <View style={styles.backgroundImageView}>
+                    <View style={styles.MapView}>
+                      {newyearWiseData &&
+                        Object.keys(newyearWiseData).length !== 0 &&
+                        newyearWiseData[el].map((elemnt, index) => {
+                          return (
+                            <View key={index} style={styles.ViewForMOnth}>
+                              <View style={styles.backgroundImageView}>
+                                <TouchableOpacity
+                                  style={{borderRadius: 5}}
+                                  onPress={() => {
+                                    navigation.navigate(
+                                      SalaryDetailsScreen,
+                                      elemnt,
+                                    );
+                                  }}>
+                                  <ImageBackground
+                                    resizeMode="cover"
+                                    imageStyle={{borderRadius: 8}}
+                                    source={elemnt.monthImage}
+                                    style={styles.backGroundImage}>
+                                    <View style={styles.smalllImageView}>
+                                      <Image
+                                        source={elemnt.monthIcon}
+                                        style={{height: 20, width: 20}}
+                                      />
+                                    </View>
+                                    <Text style={styles.monthText}>
+                                      {elemnt.monthName}
+                                    </Text>
+                                  </ImageBackground>
+                                </TouchableOpacity>
+                              </View>
                               <TouchableOpacity
-                                style={{borderRadius: 5}}
                                 onPress={() => {
                                   navigation.navigate(
-                                    SalaryDetailsScreen,
+                                    SalaryPDFDownloadScreen,
                                     elemnt,
                                   );
                                 }}>
-                                <ImageBackground
-                                  resizeMode="cover"
-                                  imageStyle={{borderRadius: 8}}
-                                  source={elemnt.monthImage}
-                                  style={styles.backGroundImage}>
-                                  <View style={styles.smalllImageView}>
-                                    <Image
-                                      source={elemnt.monthIcon}
-                                      style={{height: 20, width: 20}}
-                                    />
+                                <View style={styles.downloadView}>
+                                  <View style={styles.downloadTextView}>
+                                    <Text style={styles.downloadtext}>
+                                      Download
+                                    </Text>
                                   </View>
-                                  <Text style={styles.monthText}>
-                                    {elemnt.monthName}
-                                  </Text>
-                                </ImageBackground>
+                                </View>
                               </TouchableOpacity>
                             </View>
-                            <TouchableOpacity
-                              onPress={() => {
-                                navigation.navigate(
-                                  SalaryPDFDownloadScreen,
-                                  elemnt,
-                                );
-                              }}>
-                              <View style={styles.downloadView}>
-                                <View style={styles.downloadTextView}>
-                                  <Text style={styles.downloadtext}>
-                                    Download
-                                  </Text>
-                                </View>
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      })}
+                          );
+                        })}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              })
+            ) : (
+              <Text style={styles.salaryNotFound}>Salary Slips Not found!</Text>
+            )
+          ) : null}
         </ScrollView>
       )}
     </View>

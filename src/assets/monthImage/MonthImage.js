@@ -102,6 +102,7 @@ import minus from 'assets/allImage/minus.imageset/minus.png';
 import TSBudLogo from 'assets/allImage/TSBud.imageset/TSBudLogo.png';
 import FilterIcon from 'assets/allImage/Filter.imageset/filter.png';
 import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
+import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
 
 export const MonthImages = {
   plus: plus,
@@ -194,4 +195,5 @@ export const MonthImages = {
   TSBudLogo: TSBudLogo,
   filterIcon: FilterIcon,
   filterIcon2x: FilterIcon2x,
+  OpenLeaveIcon,
 };

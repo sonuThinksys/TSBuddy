@@ -117,8 +117,9 @@ const UserDetail = ({navigation, route}) => {
         style={{
           height: hp(30),
           backgroundColor: Colors.lightBlue,
-          justifyContent: 'center',
           paddingHorizontal: wp(30),
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
         {/* {image ? (
           <Image
@@ -131,12 +132,22 @@ const UserDetail = ({navigation, route}) => {
           />
         ) : null} */}
         {image ? (
+          // <Image
+          //   source={{uri: `${baseUrl}${image}`}}
+          //   style={{
+          //     height: hp(14),
+          //     width: hp(14),
+          //     borderRadius: 55,
+          //   }}
+          // />
           <Image
-            source={{uri: `${baseUrl}${image}`}}
+            resizeMode="stretch"
+            // source={{uri: `${baseUrl}${image}`}}
+            source={{uri: `data:image/jpeg;base64,${image}`}}
             style={{
-              height: hp(14),
-              width: hp(14),
-              borderRadius: 55,
+              height: 120,
+              width: 120,
+              borderRadius: 60,
             }}
           />
         ) : (
@@ -152,7 +163,6 @@ const UserDetail = ({navigation, route}) => {
       </View>
       <View
         style={{
-          height: hp(28),
           backgroundColor: Colors.white,
           borderBottomWidth: 1,
           borderColor: Colors.grey,
@@ -234,7 +244,6 @@ const UserDetail = ({navigation, route}) => {
       </View>
       <View
         style={{
-          height: hp(26),
           backgroundColor: Colors.white,
           paddingVertical: hp(4),
           paddingHorizontal: wp(4),

@@ -28,12 +28,14 @@ const CommunicationModal = ({empDetail}) => {
   const {isShowModal} = useSelector(state => state.home);
 
   const connectThrouMedium = () => {
-    if (empDetail.text == 'Call') {
+    if (empDetail.text.trim() == 'Call') {
       const url = `tel://:+${empDetail.medium}`;
       Linking.openURL(url);
-    } else if (empDetail.text == 'Send Mail to') {
+    } else if (empDetail.text.trim() == 'Send Mail to') {
+      console.log('yahi!');
+
       Linking.openURL(`mailto:${empDetail.medium}`);
-    } else if (empDetail.text == 'Send WhatsApp to') {
+    } else if (empDetail.text.trim() == 'Send WhatsApp to') {
       let msg = 'type something';
       let phoneWithCountryCode = `91${empDetail.medium}`;
 
@@ -55,7 +57,7 @@ const CommunicationModal = ({empDetail}) => {
       } else {
         alert('Please insert mobile no');
       }
-    } else if (empDetail.text == 'Send SMS to') {
+    } else if (empDetail.text.trim() == 'Send SMS to') {
       Linking.openURL(`smsto:${empDetail.medium}`);
     }
   };
