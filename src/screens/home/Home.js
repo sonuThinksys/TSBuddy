@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, SafeAreaView, FlatList, LogBox, Text} from 'react-native';
+import {View, SafeAreaView, FlatList, LogBox, Text, Image} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -13,6 +13,7 @@ import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 import Loader from 'component/loader/Loader';
+import ResourceIcon from 'assets/allImage/user.svg';
 let data = [
   MenuDetails,
   MenuItem,
@@ -23,13 +24,17 @@ let data = [
 
 const Home = () => {
   const {isLoading} = useSelector(state => state.auth);
+  const {calendereventData: calenderData} = useSelector(state => state.home);
 
   return (
     <SafeAreaView style={{flex: 1}}>
       {isLoading ? <Loader /> : null}
-      <View style={{height: hp(23), backgroundColor: Colors.white}}>
-        <CarouselAutoScroll />
-      </View>
+      {calenderData?.calenderEvent?.length > 0 ||
+      calenderData?.anniversaryEvent?.length > 0 ? (
+        <View style={{height: hp(23), backgroundColor: Colors.white}}>
+          <CarouselAutoScroll />
+        </View>
+      ) : null}
       <FlatList
         data={data}
         style={{flex: 1}}

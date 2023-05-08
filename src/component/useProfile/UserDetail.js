@@ -6,7 +6,9 @@ import {
   Linking,
   Image,
   Platform,
+  Pressable,
 } from 'react-native';
+import Contacts from 'react-native-contacts';
 
 import baseUrl from 'services/Urls';
 import {
@@ -33,6 +35,19 @@ const UserDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
   const [empDetail, setClickData] = useState({});
   const {isShowModal} = useSelector(state => state.home);
+
+  const addToContacts = () => {
+    const [firstName, lastName] = employeeName.split(' ');
+
+    const newContact = {
+      givenName: firstName,
+      familyName: lastName,
+      phoneNumbers: [{label: 'mobile', number: cellNumber}],
+      emailAddresses: [{label: 'work', email: companyEmail}],
+    };
+
+    Contacts.openContactForm(newContact);
+  };
 
   const dialCall = () => {
     setClickData({
@@ -202,15 +217,17 @@ const UserDetail = ({navigation, route}) => {
             {managerInfoDto?.employeeName}
           </Text>
         </View>
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: 'center',
-            color: Colors.lightBlue,
-            fontWeight: 'bold',
-          }}>
-          + Add To Contacts
-        </Text>
+        <Pressable onPress={addToContacts}>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: 'center',
+              color: Colors.lightBlue,
+              fontWeight: 'bold',
+            }}>
+            + Add To Contacts
+          </Text>
+        </Pressable>
         {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
         <View
           style={{

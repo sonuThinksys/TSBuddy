@@ -45,6 +45,7 @@ const initialState = {
   resourcesEmployeeDataLoading: false,
   resourcesEmployeeData: [],
   resourcesEmployeeDataError: null,
+  fromNavigatedScreen: '',
 };
 
 const breakfast = 'breakfast';
@@ -55,40 +56,76 @@ const snacks = 'snacks';
 
 // removeReduxVariables ='All variables are needed to remove from redux state and have to use with useState.'
 
+// export const getLeaveApprover = createAsyncThunk(
+//   'home/getLeaveApprovers',
+//   async token => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     try {
+//       const {data, status} = await axios.get(
+//         `${endPoints.getLeaveApprovers}${employeeID}`,
+//         config,
+//       );
+
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject('Something went wrong!');
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
+//       if (err?.response) {
+//         statusCode = err?.response?.status;
+//       }
+//       if (statusCode == 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else if (statusCode === 400) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
+
 export const getLeaveApprovers = createAsyncThunk(
   'home/getLeaveApprovers',
-  async ({token}) => {
-    const config = {
+  async ({token, employeeID}) => {
+    var config = {
+      method: 'get',
+      url: `${endPoints.getLeaveApprovers}${employeeID}`,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     };
 
-    try {
-      const {data, status} = await axios.get(
-        endPoints.getLeaveApprovers,
-        config,
-      );
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
 
-      if (status === 200) {
-        return Promise.resolve(data);
-      } else {
-        return Promise.reject('Something went wrong!');
-      }
-    } catch (err) {
-      let statusCode = 500;
-      if (err?.response) {
-        statusCode = err?.response?.status;
-      }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else if (statusCode === 400) {
-        return Promise.reject(err?.response?.data);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong2!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 
@@ -381,10 +418,10 @@ export const getEmployeesByLeaveApprover = createAsyncThunk(
 
 export const getResourcesEmployeesLeaves = createAsyncThunk(
   'getResourcesEmployeesLeaves',
-  async token => {
+  async ({token, empID}) => {
     const config = {
       method: 'get',
-      url: endPoints.getResourcesEmployeesLeaves,
+      url: endPoints.getResourcesEmployeesLeaves + empID,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -417,16 +454,17 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
 
 export const GetDailyAttendanceByEmpId = createAsyncThunk(
   'dailyAttendanceByEmpId',
-  async ({token, employeeId, year, month}) => {
+  async ({token, employeeID, year, month}) => {
     const config = {
       method: 'get',
-      // url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeId}&month=0${month}&year=${year}`,
-      url: 'http://10.101.23.48:81/api/Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
+      url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeID}&month=0${month}&year=${year}`,
+      // url: 'http://10.101.23.48:81/api/Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     };
+
     return axios(config)
       .then(response => {
         const {data, status} = response;
@@ -596,8 +634,11 @@ export const getCalendereventData = createAsyncThunk(
 export const getAttendencaeData = createAsyncThunk(
   'home/getAttendencaeData',
   async ({token, employeeID, visisbleMonth, visibleYear}) => {
-    var config = {
+    const uri = `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`;
+
+    const config = {
       method: 'get',
+
       url: `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -607,6 +648,7 @@ export const getAttendencaeData = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
+        console.log('data11:', data);
         if (status === 200) {
           return Promise.resolve(data[0]);
         } else {
@@ -761,8 +803,13 @@ const homeSlice = createSlice({
     setRecentAppliedLeaves: (state, action) => {
       state.recentAppliedLeaves = action.payload;
     },
+
     setRemainingLeaves: (state, action) => {
       state.remainingLeaves = action.payload;
+    },
+
+    setFromNavigatedScreen: (state, action) => {
+      state.fromNavigatedScreen = action?.payload?.screenName;
     },
   },
   extraReducers: builder => {
@@ -979,4 +1026,5 @@ export const {
   dateOfModal,
   setRecentAppliedLeaves,
   setRemainingLeaves,
+  setFromNavigatedScreen,
 } = homeSlice.actions;

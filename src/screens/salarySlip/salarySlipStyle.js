@@ -93,5 +93,10 @@ export default StyleSheet.create({
   salaryNotFound: {
     justifyContent: 'center',
     alignItems: 'center',
+
+    flex: 1,
+  },
+  salaryNotFoundText: {
+    // fontSize: 16,
   },
 });

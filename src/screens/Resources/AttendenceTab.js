@@ -10,9 +10,7 @@ import {Colors} from 'colors/Colors';
 
 const AttendenceTab = ({employeeID}) => {
   const dispatch = useDispatch();
-  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
-    state => state.auth,
-  );
+  const {userToken: token} = useSelector(state => state.auth);
 
   const [dailyAttiandance, setDailyAttiandance] = useState([]);
   const [employeeAttendance, setEmployeeAttendance] = useState();
@@ -31,7 +29,7 @@ const AttendenceTab = ({employeeID}) => {
 
       const {dailyAttendance, employeeAttendance} =
         (getDailyAttaindance?.payload &&
-          getDailyAttaindance?.payload.length &&
+          getDailyAttaindance?.payload?.length &&
           getDailyAttaindance?.payload[0]) ||
         {};
 
@@ -51,7 +49,7 @@ const AttendenceTab = ({employeeID}) => {
 
   return (
     <ScrollView style={styles.mainContainer}>
-      {dailyAttiandance.length > 0
+      {dailyAttiandance?.length > 0
         ? dailyAttiandance?.map(attendenceData => {
             return (
               <AttendenceTabLayout

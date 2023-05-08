@@ -23,11 +23,12 @@ export const startEndDateFormat = date => {
 };
 export const todaySelectedDate = () => {
   let today = new Date();
+  const date = today.getDate() > 9 ? today.getDate() : '0' + today.getDate();
   let monthValue =
     today.getMonth() + 1 > 9
       ? today.getMonth() + 1
       : `0${today.getMonth() + 1}`;
-  return `${today.getFullYear()}-${monthValue}-${today.getDate()}`;
+  return `${today.getFullYear()}-${monthValue}-${date}`;
 };
 export const finalCurrentDate = () => {
   const date = new Date();

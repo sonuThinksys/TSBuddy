@@ -54,17 +54,17 @@ const SalarSlipModal = ({navigation, submitPassword}) => {
               alert('Incorrect password! Please try again.');
             }
 
-            // const salarySlips = await dispatch(getSalarySlipData(token));
+            const salarySlips = await dispatch(getSalarySlipData(token));
 
-            // if (salarySlips?.error) {
-            //   ShowAlert({
-            //     messageHeader: ERROR,
-            //     messageSubHeader: salarySlips?.error?.message,
-            //     buttonText: 'Close',
-            //     dispatch,
-            //     navigation,
-            //   });
-            // }
+            if (salarySlips?.error) {
+              ShowAlert({
+                messageHeader: ERROR,
+                messageSubHeader: salarySlips?.error?.message,
+                buttonText: 'Close',
+                dispatch,
+                navigation,
+              });
+            }
           }}>
           <View style={styles.secondTextView}>
             <Text style={styles.contnueText}>Continue</Text>

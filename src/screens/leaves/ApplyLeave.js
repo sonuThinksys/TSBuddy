@@ -4,14 +4,18 @@ import {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Button,
   FlatList,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -402,6 +406,7 @@ const ApplyLeave = ({navigation, route}) => {
       alert('Please select dates for which you want to apply for a leave.');
       return;
     }
+
     if (!reason) {
       alert('Please enter a reason for applying for a leave.');
       return;
@@ -411,20 +416,22 @@ const ApplyLeave = ({navigation, route}) => {
       alert('Please select a leave type.');
       return;
     }
+
     if (totalNumberOfLeaveDays < 0.5) {
       alert('Difference between the number of leave days must be positive.');
       return;
     }
+
     setLoading(true);
 
     // =========================================================================
 
     const leaveApprovers = token
-      ? await dispatch(getLeaveApprovers({token}))
+      ? await dispatch(getLeaveApprovers({token, employeeID}))
       : [];
     const leaveApproverMailID =
       leaveApprovers?.payload?.length > 0 &&
-      leaveApprovers?.payload[0].leaveApprover;
+      leaveApprovers?.payload[0]?.leaveApprover;
     // =========================================================================
 
     const appliedLeave =
@@ -504,97 +511,104 @@ const ApplyLeave = ({navigation, route}) => {
 
   return (
     // <ScrollView>
-    <KeyboardAvoidingView style={styles.mainContainer}>
+    <KeyboardAvoidingView behavior="height" style={styles.mainContainer}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1}}
+        contentContainerStyle={{
+          justifyContent: 'space-between',
 
-      <View style={styles.mainPart}>
-        <View style={[styles.formContainer]}>
-          {card({
-            leftLabel: 'From',
-            rightLabel: 'To',
-            selectableLeft: true,
-            selectableRight: true,
-            iconLeft: MonthImages.CalenderIcon,
-            iconRight: MonthImages.CalenderIcon,
-            leftOnPress: showFromDatePicker,
-            rightOnPress: showToDatePicker,
-            leftText: !fromResource ? fromDate.fromDateStr : fromDatestr,
-            rightText: toDate.toDateStr,
-            zIndex: 1000,
-            resourseRightText: toDatestr,
-          })}
-          {card({
-            zIndex: 1000,
-            leftLabel: 'Created Date',
-            rightLabel: 'Half Day',
-            selectableRight: true,
-            leftText: !fromResource ? finalTodayDate : postingDateStr,
-            iconRight: MonthImages.DropDownIcon,
-            rightText: 'None',
-            rightDropdown: (
-              <View>
-                <ModalDropdown
-                  disabled={
-                    !fromDate.fromDateObj ||
-                    !toDate.toDateObj ||
-                    totalNumberOfLeaveDays > 1 ||
-                    fromResource
-                  }
-                  renderButtonText={renderButtonText}
-                  style={{
-                    borderWidth: 1,
-                    backgroundColor: Colors.white,
-                    borderRadius: 3,
-                    paddingVertical: 5,
-                    height: 32,
-                  }}
-                  isFullWidth={true}
-                  showsVerticalScrollIndicator={false}
-                  defaultValue={
-                    !fromResource
-                      ? 'Select'
-                      : resourceHalfDay === 0
-                      ? 'None'
-                      : resourceHalfDay === 1
-                      ? 'First Half'
-                      : 'Second Half'
-                  }
-                  options={newDropDownOptions}
-                  dropdownStyle={{
-                    width: '45%',
-                    paddingLeft: 10,
-                    height: 100,
-                  }}
-                  renderRow={renderRow}
-                  onSelect={(index, itemName) => {
-                    if (itemName !== none) {
-                      setTotalNumberOfLeaveDays(0.5);
-                    } else {
-                      setTotalNumberOfLeaveDays(1);
+          flexGrow: 1,
+        }}>
+        <View style={styles.mainPart}>
+          <View style={[styles.formContainer]}>
+            {card({
+              leftLabel: 'From',
+              rightLabel: 'To',
+              selectableLeft: true,
+              selectableRight: true,
+              iconLeft: MonthImages.CalenderIcon,
+              iconRight: MonthImages.CalenderIcon,
+              leftOnPress: showFromDatePicker,
+              rightOnPress: showToDatePicker,
+              leftText: !fromResource ? fromDate.fromDateStr : fromDatestr,
+              rightText: toDate.toDateStr,
+              zIndex: 1000,
+              resourseRightText: toDatestr,
+            })}
+            {card({
+              zIndex: 1000,
+              leftLabel: 'Created Date',
+              rightLabel: 'Half Day',
+              selectableRight: true,
+              leftText: !fromResource ? finalTodayDate : postingDateStr,
+              iconRight: MonthImages.DropDownIcon,
+              rightText: 'None',
+              rightDropdown: (
+                <View>
+                  <ModalDropdown
+                    disabled={
+                      !fromDate.fromDateObj ||
+                      !toDate.toDateObj ||
+                      totalNumberOfLeaveDays > 1 ||
+                      fromResource
                     }
-                    setHalfDay(itemName);
-                  }}
-                  renderRightComponent={
-                    !fromResource
-                      ? renderRightComponent
-                      : renderRightComponentResource
-                  }
-                />
-              </View>
-            ),
-          })}
-          {card({
-            zIndex: 1000,
-            leftLabel: 'Leave Type',
-            rightLabel: 'Number of Days',
-            selectableLeft: true,
-            iconLeft: MonthImages.DropDownIcon,
-            rightText:
-              totalNumberOfLeaveDays >= 0.5 ? totalNumberOfLeaveDays : '',
-            leftText: !fromResource ? 'Earned Leave' : resourceData.leaveType,
-            resourseRightText: resourceData?.totalLeaveDays,
-            leftDropdown: (
-              <View style={{}}>
+                    renderButtonText={renderButtonText}
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: Colors.white,
+                      borderRadius: 3,
+                      paddingVertical: 5,
+                      height: 32,
+                    }}
+                    isFullWidth={true}
+                    showsVerticalScrollIndicator={false}
+                    defaultValue={
+                      !fromResource
+                        ? 'Select'
+                        : resourceHalfDay === 0
+                        ? 'None'
+                        : resourceHalfDay === 1
+                        ? 'First Half'
+                        : 'Second Half'
+                    }
+                    options={newDropDownOptions}
+                    dropdownStyle={{
+                      width: '45%',
+                      paddingLeft: 10,
+                      height: 100,
+                    }}
+                    renderRow={renderRow}
+                    onSelect={(index, itemName) => {
+                      if (itemName !== none) {
+                        setTotalNumberOfLeaveDays(0.5);
+                      } else {
+                        setTotalNumberOfLeaveDays(1);
+                      }
+                      setHalfDay(itemName);
+                    }}
+                    renderRightComponent={
+                      !fromResource
+                        ? renderRightComponent
+                        : renderRightComponentResource
+                    }
+                  />
+                </View>
+              ),
+            })}
+            {card({
+              zIndex: 1000,
+              leftLabel: 'Leave Type',
+              rightLabel: 'Number of Days',
+              selectableLeft: true,
+              iconLeft: MonthImages.DropDownIcon,
+              rightText:
+                totalNumberOfLeaveDays >= 0.5 ? totalNumberOfLeaveDays : '',
+              leftText: !fromResource ? 'Earned Leave' : resourceData.leaveType,
+              resourseRightText: resourceData?.totalLeaveDays,
+              leftDropdown: (
+                // <View>
                 <ModalDropdown
                   disabled={fromResource}
                   style={{
@@ -628,78 +642,79 @@ const ApplyLeave = ({navigation, route}) => {
                   }}
                   renderRightComponent={renderRightComponent}
                 />
-              </View>
-            ),
-          })}
-          <DateTimePickerModal
-            isVisible={fromCalenderVisible}
-            mode="date"
-            onConfirm={fromCalenderConfirm}
-            onCancel={fromOnCancel}
-          />
-          <DateTimePickerModal
-            isVisible={toCalenderVisible}
-            mode="date"
-            onConfirm={toCalenderConfirm}
-            onCancel={toOnCancel}
-          />
-          <View style={styles.reasonContainer}>
-            <Text style={styles.reasonText}>Reason</Text>
-            {!fromResource ? (
-              <TextInput
-                onChangeText={giveReason}
-                multiline={true}
-                style={styles.reasonTextInput}
-              />
-            ) : (
-              <Text style={styles.resourceReasonText}>
-                {resourceData?.description}
+                // </View>
+              ),
+            })}
+            <DateTimePickerModal
+              isVisible={fromCalenderVisible}
+              mode="date"
+              onConfirm={fromCalenderConfirm}
+              onCancel={fromOnCancel}
+            />
+            <DateTimePickerModal
+              isVisible={toCalenderVisible}
+              mode="date"
+              onConfirm={toCalenderConfirm}
+              onCancel={toOnCancel}
+            />
+            <View style={styles.reasonContainer}>
+              <Text style={styles.reasonText}>Reason</Text>
+              {!fromResource ? (
+                <TextInput
+                  onChangeText={giveReason}
+                  multiline={true}
+                  style={styles.reasonTextInput}
+                />
+              ) : (
+                <Text style={styles.resourceReasonText}>
+                  {resourceData?.description}
+                </Text>
+              )}
+            </View>
+            <View style={styles.leaveApproverContainer}>
+              <Text style={styles.leaveApproverText}>Leave Approver:</Text>
+              <Text style={styles.leaveApproverName}>
+                {isGuestLogin
+                  ? guestProfileData?.managerInfoDto?.employeeName
+                  : approver}
               </Text>
-            )}
+            </View>
           </View>
-          <View style={styles.leaveApproverContainer}>
-            <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-            <Text style={styles.leaveApproverName}>
-              {isGuestLogin
-                ? guestProfileData?.managerInfoDto?.employeeName
-                : approver}
-            </Text>
-          </View>
+
+          {!fromResource ? (
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.button} onPress={applyLeave}>
+                <Text style={styles.applyText}>Apply</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View style={styles.resourceButtonContainer}>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={finalizeLeave.bind(null, 'Dismissed')}>
+                <Text style={styles.applyText}>Dismiss</Text>
+              </Pressable>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={finalizeLeave.bind(null, 'Rejected')}>
+                <Text style={styles.applyText}>Reject</Text>
+              </Pressable>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={finalizeLeave.bind(null, 'Approved')}>
+                <Text style={styles.applyText}>Approve</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
 
-        {!fromResource ? (
-          <View style={styles.buttonContainer}>
-            <Pressable style={styles.button} onPress={applyLeave}>
-              <Text style={styles.applyText}>Apply</Text>
-            </Pressable>
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <View style={styles.loaderBackground} />
+            <ActivityIndicator size="large" />
           </View>
-        ) : (
-          <View style={styles.resourceButtonContainer}>
-            <Pressable
-              style={styles.resourceButton}
-              onPress={finalizeLeave.bind(null, 'Dismissed')}>
-              <Text style={styles.applyText}>Dismiss</Text>
-            </Pressable>
-            <Pressable
-              style={styles.resourceButton}
-              onPress={finalizeLeave.bind(null, 'Rejected')}>
-              <Text style={styles.applyText}>Reject</Text>
-            </Pressable>
-            <Pressable
-              style={styles.resourceButton}
-              onPress={finalizeLeave.bind(null, 'Approved')}>
-              <Text style={styles.applyText}>Approve</Text>
-            </Pressable>
-          </View>
-        )}
-      </View>
-
-      {loading ? (
-        <View style={styles.loaderContainer}>
-          <View style={styles.loaderBackground} />
-          <ActivityIndicator size="large" />
-        </View>
-      ) : null}
+        ) : null}
+      </ScrollView>
     </KeyboardAvoidingView>
     // {/* </ScrollView> */}
   );

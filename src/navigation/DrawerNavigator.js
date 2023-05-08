@@ -59,6 +59,7 @@ import {
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
+
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
 const HomeStack = createNativeStackNavigator();
@@ -325,7 +326,7 @@ const ResourcesStackScreen = ({navigation}) => {
       initialRouteName={ResourcesScreen}>
       <ResourcesStack.Screen
         options={drawerOption({
-          lable: 'Resources',
+          label: 'Resources',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}

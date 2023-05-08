@@ -12,6 +12,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {FontFamily, FontSize} from 'constants/fonts';
 import jwt_decode from 'jwt-decode';
+import {CommonActions} from '@react-navigation/native';
 
 import {
   heightPercentageToDP as hp,
@@ -35,7 +36,7 @@ export default ({navigation}) => {
     label: 'Resources',
     navigation,
     key: 3,
-    icon: MonthImages.HomeImage,
+    icon: MonthImages.ResourceIcon,
   };
 
   const drawerList = [
@@ -90,13 +91,6 @@ export default ({navigation}) => {
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
-    // {
-    //   screen: 'resources',
-    //   label: 'Resources',
-    //   navigation,
-    //   key: 8,
-    //   icon: MonthImages.logoutmenuS,
-    // },
   ];
 
   if (isLeaveApprover) {
@@ -156,7 +150,22 @@ const renderDrawerItem = (
               {
                 text: 'Log Out',
                 onPress: () => {
-                  dispatch(logOut());
+                  // ========================================================================
+                  if (dispatch) {
+                    navigation &&
+                      navigation.dispatch(
+                        CommonActions.reset({
+                          routes: [
+                            {
+                              name: 'Home',
+                            },
+                          ],
+                        }),
+                      );
+
+                    dispatch(logOut());
+                  }
+                  // ========================================================================
                 },
               },
             ],

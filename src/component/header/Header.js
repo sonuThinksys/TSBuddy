@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {View, TouchableOpacity, Image, Text} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,15 +10,20 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
 import {employeeProfileScreen} from 'navigation/Route';
+import {setFromNavigatedScreen} from 'redux/homeSlice';
 const Header = () => {
-  const {userToken: token} = useSelector(state => state.auth);
-  const navigation = useNavigation();
-
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const screenName = route.name;
+
   return (
     <View>
       <TouchableOpacity
         onPress={() => {
+          // console.log('screenName:', screenName);
+          dispatch(setFromNavigatedScreen({screenName}));
+
           navigation.navigate(employeeProfileScreen);
         }}>
         <Image

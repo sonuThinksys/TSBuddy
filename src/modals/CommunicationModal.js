@@ -29,7 +29,7 @@ const CommunicationModal = ({empDetail}) => {
 
   const connectThrouMedium = () => {
     if (empDetail.text.trim() == 'Call') {
-      const url = `tel://:+${empDetail.medium}`;
+      const url = `tel:+${empDetail.medium}`;
       Linking.openURL(url);
     } else if (empDetail.text.trim() == 'Send Mail to') {
       console.log('yahi!');
@@ -73,12 +73,7 @@ const CommunicationModal = ({empDetail}) => {
       }}
       onBackButtonPress={() => {
         dispatch(modalStatus(false));
-      }}
-      // onRequestClose={() => {
-      //   Alert.alert('Modal has been closed.');
-      //   setModalVisible(!modalVisible);
-      // }}
-    >
+      }}>
       <View style={styles.container}>
         <Text style={styles.text1}>
           {empDetail.text} {empDetail.nameOfEmployee}

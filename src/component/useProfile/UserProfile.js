@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
+  Animated,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
@@ -17,6 +18,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {useIsFocused} from '@react-navigation/native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import RefreshIcon from 'assets/allImage/refresh.imageset/refreshIcon.png';
 import {Colors} from 'colors/Colors';
@@ -36,8 +38,11 @@ const UserProfile = () => {
   const inputRef = useRef(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const animatedOpacity = useRef(new Animated.Value(1)).current;
 
-  const {isShowModal: isShowModall} = useSelector(state => state.home);
+  const {isShowModal: isShowModall, fromNavigatedScreen} = useSelector(
+    state => state.home,
+  );
 
   const {userToken: token} = useSelector(state => state.auth);
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -163,7 +168,26 @@ const UserProfile = () => {
         <View style={{flex: 1, justifyContent: 'center'}}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              // =================================================================
+
+              Animated.timing(animatedOpacity, {
+                toValue: 0,
+                duration: 10,
+                useNativeDriver: true,
+              }).start(() => {
+                navigation.pop();
+                navigation.navigate(fromNavigatedScreen);
+                Animated.timing(animatedOpacity, {
+                  toValue: 1,
+                  duration: 500,
+                  useNativeDriver: true,
+                }).start();
+              });
+
+              // =================================================================
+              // navigation.pop();
+              // navigation.navigate(fromNavigatedScreen);
+              // navigation.goBack();
             }}>
             <Image
               source={MonthImages.backArrowS}
@@ -209,7 +233,7 @@ const UserProfile = () => {
               }}>
               <Image
                 source={MonthImages.thumbnailS}
-                style={{marginRight: wp(8)}}
+                style={{marginRight: wp(4)}}
               />
             </TouchableOpacity>
           ) : (
@@ -218,7 +242,7 @@ const UserProfile = () => {
                 setNumValue(1);
                 setShowHorizontal(true);
               }}>
-              <Image source={MonthImages.listS} style={{marginRight: wp(8)}} />
+              <Image source={MonthImages.listS} style={{marginRight: wp(4)}} />
             </TouchableOpacity>
           )}
           <TouchableOpacity

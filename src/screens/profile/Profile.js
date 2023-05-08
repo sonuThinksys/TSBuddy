@@ -18,6 +18,7 @@ import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {getEmployeeProfileData} from 'redux/homeSlice';
+import {useIsFocused} from '@react-navigation/native';
 import baseUrl from 'services/Urls';
 import moment from 'moment';
 import {modalStatus} from 'redux/homeSlice';

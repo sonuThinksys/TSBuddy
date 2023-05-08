@@ -11,9 +11,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+
 import {Colors} from 'colors/Colors';
+
 import styles from './LeaveStyles';
-import {getLeaveDetails} from 'redux/homeSlice';
+import {getLeaveApprovers, getLeaveDetails} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -21,6 +23,8 @@ import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {guestLeavesScreenData} from 'guestData';
 import {FontFamily, FontSize} from 'constants/fonts';
+import {ERROR} from 'utils/string';
+import ShowAlert from 'customComponents/CustomError';
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -32,7 +36,34 @@ const Leaves = ({navigation}) => {
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
-  // const []
+
+  const [leaveApprovers, setLeaveApprovers] = useState([]);
+
+  useEffect(() => {
+    console.log('Rendered', 'Yes!');
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      (async () => {
+        const leaveApprover = await dispatch(
+          getLeaveApprovers({token, employeeID}),
+        );
+
+        setLeaveApprovers(leaveApprover.payload);
+
+        if (leaveApprover?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leaveApprover?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      })();
+    }
+  }, []);
 
   useEffect(() => {
     token && updateData();
@@ -55,7 +86,7 @@ const Leaves = ({navigation}) => {
   } = useSelector(state => state.home);
 
   const applyForLeave = () => {
-    navigation.navigate(LeaveApplyScreen);
+    navigation.navigate(LeaveApplyScreen, {leaveApprovers});
   };
 
   const renderItem = ({item}) => {
