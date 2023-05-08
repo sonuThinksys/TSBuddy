@@ -31,8 +31,6 @@ import {
 const Attendence = ({navigation}) => {
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
-  // const [spendhours, sendSpendhours] = useState(0);
-  // const [totalSpendHours, setTotalSpendHours] = useState(0);
   const [totalHourSpend, setTotalHoursSpend] = useState(0);
   const [remainingHours, setRemainingHours] = useState(0);
   const [isLoading, setLoading] = useState(false);
@@ -49,7 +47,7 @@ const Attendence = ({navigation}) => {
         const attendence = await dispatch(
           getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
         );
-        console.log('Attendance$$$$', attendence);
+
         if (attendence?.error) {
           ShowAlert({
             messageHeader: ERROR,
@@ -80,11 +78,10 @@ const Attendence = ({navigation}) => {
   let startDateFormat = startEndDateFormat(startDate);
   let endDateFormat = startEndDateFormat(endDate);
 
-  useMemo(() => {
+  useEffect(() => {
     let privMonDAy = new Date();
     privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
     var now = new Date();
-
     let totalHoursSpendInWeek = 0;
     let totalCompanyHours = 0;
     let index = dailyAttendance.length - 1;
@@ -95,19 +92,11 @@ const Attendence = ({navigation}) => {
       totalCompanyHours = totalCompanyHours + 9;
       index--;
     }
+    console.log('totalHoursSpendInWeek = ', totalHoursSpendInWeek);
     let remainingHoursUpdate = totalCompanyHours - totalHoursSpendInWeek;
-    setRemainingHours(remainingHoursUpdate.toFixed(2));
-    setTotalHoursSpend(
-      totalHoursSpendInWeek ? totalHoursSpendInWeek.toFixed(2) : '00.00',
-    );
-  }, [dailyAttendance]);
-
-  function getPreviousDay(date = new Date()) {
-    const previous = new Date(date.getTime());
-    previous.setDate(date.getDate() - 1);
-
-    return previous;
-  }
+    setRemainingHours(remainingHoursUpdate);
+    setTotalHoursSpend(totalHoursSpendInWeek ? totalHoursSpendInWeek : '00.00');
+  }, []);
 
   let todayDate = todaySelectedDate();
   let mark = {
@@ -145,6 +134,11 @@ const Attendence = ({navigation}) => {
         mark[date] = {
           selectedColor: Colors.parrotGreen,
           dotColor: Colors.green,
+          selected: true,
+        };
+      } else if (day.status === 'Present') {
+        mark[date] = {
+          selectedColor: Colors.green,
           selected: true,
         };
       }
@@ -188,11 +182,6 @@ const Attendence = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* {isLoading
-        ? renderLoading({
-            backgroundColor: 'rgba(51, 51, 51, 0.8)',
-          })
-        : null} */}
       <ImageBackground
         resizeMode="stretch"
         onLoadStart={() => setImageLoading(true)}
@@ -200,7 +189,6 @@ const Attendence = ({navigation}) => {
         source={attendenceMonthImages[visisbleMonth]}
         style={{
           flex: 1,
-          // justifyContent: 'space-between',
         }}>
         <View
           style={{
@@ -305,31 +293,8 @@ const RenderCalender = ({setVisibleMonth, setVisibleYear, mark}) => {
       onVisibleMonthsChange={months => {
         setVisibleMonth(months[0].month);
         setVisibleYear(months[0].year);
-        // setLoading(true)
       }}
       pastScrollRange={100}
-      //initialDate={'2018-05-01'}
-      // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-      // minDate={'2018-05-05'}
-      // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-      //  maxDate={'2020-05-30'}
-
-      // markedDates={{
-      //   '2023-03-16': {
-      //     selected: true,
-      //     marked: true,
-      //     selectedColor: Colors.blue,
-      //   },
-      //   '2023-03-17': {marked: true},
-      //   '2023-03-18': {
-      //     // marked: true,
-      //     selected: true,
-      //     //  dotColor: Colors.red,
-      //     // activeOpacity: 0,
-      //     selectedColor: Colors.red,
-      //   },
-      //   '2023-03-19': {disabled: true, disableTouchEvent: true},
-      // }}
       markedDates={mark}
       calendarStyle={{
         flex: 1,
@@ -366,10 +331,6 @@ const RenderCalender = ({setVisibleMonth, setVisibleYear, mark}) => {
             width: '100%',
             backgroundColor: Colors.green,
             color: Colors.white,
-            // paddingHorizontal: 10,
-            // paddingLeft: 10,
-            // paddingRight: 10,
-            // marginTop: 6,
             alignItems: 'center',
           },
 
@@ -382,11 +343,9 @@ const RenderCalender = ({setVisibleMonth, setVisibleYear, mark}) => {
             fontWeight: 'bold',
             fontSize: 18,
             marginVertical: 10,
-            // marginHorizontal: 100,
             textAlign: 'center',
           },
           monthHeader: {
-            // width: '120%',
             justifyContent: 'center',
             alignItems: 'center',
           },
