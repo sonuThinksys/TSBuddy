@@ -2,14 +2,17 @@
   package="com.tsbuddy">
 
     <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    
     <application
       android:name=".MainApplication"
+      android:usesCleartextTraffic="true"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:forceDarkAllowed="false">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
