@@ -6,7 +6,9 @@ import {
   Linking,
   Image,
   Platform,
+  Pressable,
 } from 'react-native';
+import Contacts from 'react-native-contacts';
 
 import baseUrl from 'services/Urls';
 import {
@@ -33,6 +35,19 @@ const UserDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
   const [empDetail, setClickData] = useState({});
   const {isShowModal} = useSelector(state => state.home);
+
+  const addToContacts = () => {
+    const [firstName, lastName] = employeeName.split(' ');
+
+    const newContact = {
+      givenName: firstName,
+      familyName: lastName,
+      phoneNumbers: [{label: 'mobile', number: cellNumber}],
+      emailAddresses: [{label: 'work', email: companyEmail}],
+    };
+
+    Contacts.openContactForm(newContact);
+  };
 
   const dialCall = () => {
     setClickData({
@@ -117,8 +132,9 @@ const UserDetail = ({navigation, route}) => {
         style={{
           height: hp(30),
           backgroundColor: Colors.lightBlue,
-          justifyContent: 'center',
           paddingHorizontal: wp(30),
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
         {/* {image ? (
           <Image
@@ -131,12 +147,22 @@ const UserDetail = ({navigation, route}) => {
           />
         ) : null} */}
         {image ? (
+          // <Image
+          //   source={{uri: `${baseUrl}${image}`}}
+          //   style={{
+          //     height: hp(14),
+          //     width: hp(14),
+          //     borderRadius: 55,
+          //   }}
+          // />
           <Image
-            source={{uri: `${baseUrl}${image}`}}
+            resizeMode="stretch"
+            // source={{uri: `${baseUrl}${image}`}}
+            source={{uri: `data:image/jpeg;base64,${image}`}}
             style={{
-              height: hp(14),
-              width: hp(14),
-              borderRadius: 55,
+              height: 120,
+              width: 120,
+              borderRadius: 60,
             }}
           />
         ) : (
@@ -152,7 +178,6 @@ const UserDetail = ({navigation, route}) => {
       </View>
       <View
         style={{
-          height: hp(28),
           backgroundColor: Colors.white,
           borderBottomWidth: 1,
           borderColor: Colors.grey,
@@ -192,15 +217,17 @@ const UserDetail = ({navigation, route}) => {
             {managerInfoDto?.employeeName}
           </Text>
         </View>
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: 'center',
-            color: Colors.lightBlue,
-            fontWeight: 'bold',
-          }}>
-          + Add To Contacts
-        </Text>
+        <Pressable onPress={addToContacts}>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: 'center',
+              color: Colors.lightBlue,
+              fontWeight: 'bold',
+            }}>
+            + Add To Contacts
+          </Text>
+        </Pressable>
         {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
         <View
           style={{
@@ -234,7 +261,6 @@ const UserDetail = ({navigation, route}) => {
       </View>
       <View
         style={{
-          height: hp(26),
           backgroundColor: Colors.white,
           paddingVertical: hp(4),
           paddingHorizontal: wp(4),

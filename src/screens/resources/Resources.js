@@ -23,6 +23,7 @@ import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {useNavigation} from '@react-navigation/native';
 import {employeeData} from '../../../db';
+import ResourceIcon from 'assets/allImage/user.svg';
 
 const Resources = () => {
   const [numValue, setNumValue] = useState(1);
@@ -110,21 +111,38 @@ const renderItem = (
               {image ? (
                 <Image
                   resizeMode="stretch"
-                  source={{uri: `${baseUrl}${image}`}}
+                  source={{uri: `data:image/jpeg;base64,${image}`}}
                   style={style.image}
+                  onLoad={() => console.log('Image loaded successfully!')}
                 />
               ) : (
-                <Image
-                  resizeMode="stretch"
-                  source={{
-                    uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-                  }}
-                  style={style.image}
-                />
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.black,
+                    borderRadius: 100,
+                    padding: 4,
+                  }}>
+                  <ResourceIcon
+                    borderWidth={1}
+                    borderColor={'black'}
+                    height={50}
+                    width={50}
+                    color={Colors.darkBlue}
+                  />
+                </View>
+                // <Image
+                //   source={{
+                //     uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
+                //   }}
+                //   style={{width: 60, height: 60}}
+                // />
               )}
             </View>
             <View style={{flex: 0.7, marginLeft: 15}}>
-              <Text style={style.nameText}>{employeeName} </Text>
+              <Text numberOfLines={1} style={style.nameText}>
+                {employeeName}
+              </Text>
               <Text style={style.desniationText}>{designation}</Text>
             </View>
           </View>

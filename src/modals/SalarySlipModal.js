@@ -12,16 +12,19 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {authLoginStatus} from 'Auth/LoginSlice';
+import {authLoginStatus, getUserToken} from 'Auth/LoginSlice';
 import CustomModal from 'customComponents/CustomModal';
 import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
-const SalarSlipModal = ({navigation}) => {
+const SalarSlipModal = ({navigation, submitPassword}) => {
+  const {username, password} = useSelector(state => state.auth.formInput);
+
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
   const token = useSelector(state => state.auth.userToken);
+  const [enteredPassword, setEnteredPassword] = useState('');
   return (
     <CustomModal>
       <View style={styles.container}>
@@ -29,18 +32,27 @@ const SalarSlipModal = ({navigation}) => {
           Please authenticate with your password
         </Text>
         <TextInput
+          secureTextEntry={true}
           style={styles.textinput}
           placeholder="Password"
           placeholderTextColor={Colors.grey}
+          onChangeText={enteredText => {
+            setEnteredPassword(enteredText);
+          }}
         />
         <TouchableOpacity
+          disabled={!enteredPassword}
           style={{
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: hp(1),
           }}
           onPress={async () => {
-            dispatch(authLoginStatus(true));
+            if (password === enteredPassword) {
+              submitPassword();
+            } else {
+              alert('Incorrect password! Please try again.');
+            }
 
             const salarySlips = await dispatch(getSalarySlipData(token));
 
@@ -89,9 +101,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     borderRadius: 5,
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.8,
+    elevation: 20,
     backgroundColor: Colors.darkpurple,
+
     width: '25%',
+    // opacity: 0.5,
   },
   contnueText: {
     paddingHorizontal: wp(2),

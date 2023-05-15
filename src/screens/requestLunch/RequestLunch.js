@@ -1,5 +1,13 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import styles from './RequestLunchStyle';
@@ -8,61 +16,74 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import jwt_decode from 'jwt-decode';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {monthsName, RequestLunchLabel} from 'utils/defaultData';
-import {requestLunchSubmission} from 'redux/homeSlice';
+import {getEmployeeProfileData, requestLunchSubmission} from 'redux/homeSlice';
 
 const RequestLunch = ({navigation}) => {
-  const [date, setDate] = useState(new Date());
-  const [startDate, setStartDate] = useState('2023-03-24');
-  const [modalForStartDate, setModalForStartDate] = useState(false);
-  const [endDate, setEndDate] = useState('2023-03-28');
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const token = useSelector(state => state.auth.userToken);
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
+  const {employeeProfile} = useSelector(state => state.home);
+
+  const [startDate, setStartDate] = useState({
+    startDateStr: 'Select Start Date',
+  });
+  const [endDate, setEndDate] = useState({endDateStr: 'Select End Date'});
+  const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
+  const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
+
   const [openModal, setOpenModal] = useState(false);
   const [permReq, setPermReq] = useState(false);
-  const [permissionForClick, setPersssionForClick] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [satrtDate1, setStartDate1] = useState('');
   const [endDate1, setEndDate1] = useState('');
   const [items, setItems] = useState(RequestLunchLabel);
-  const [requestCancel, setRequestCancel] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const token = useSelector(state => state.auth.userToken);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    token && dispatch(getEmployeeProfileData({token, employeeID}));
+  }, []);
 
   const onSelectItem = item => {
     let date = new Date().getDate();
 
-    const d = new Date();
-    let month = monthsName[d.getMonth()];
+    const todayDate = new Date();
+    let month = monthsName[todayDate.getMonth()];
     let year = new Date().getFullYear();
     if (item.value === 'daily') {
-      setStartDate(date + '/' + month + '/' + year);
-      setEndDate(date + '/' + month + '/' + year);
+      setStartDate({
+        startDateStr: date + '/' + month + '/' + year,
+        startDateObj: todayDate,
+      });
+      setEndDate({
+        endDateStr: date + '/' + month + '/' + year,
+        endDateObj: todayDate,
+      });
       setPermReq(false);
-      setPersssionForClick(false);
     } else if (item.value === 'duration') {
-      setStartDate('');
-      setEndDate('');
+      setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
+      setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
       setPermReq(false);
-      setPersssionForClick(true);
     } else {
-      setStartDate('');
-      setEndDate('');
+      setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
+      setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
       setPermReq(true);
-      setPersssionForClick(true);
       if (date === 1) {
-        month = monthsName[d.getMonth()];
+        month = monthsName[todayDate.getMonth()];
         setStartDate1(date + '-' + month + '-' + year);
         setEndDate1(16 + '-' + month + '-' + year);
       } else if (date > 1 && date <= 16) {
-        month = monthsName[d.getMonth()];
+        month = monthsName[todayDate.getMonth()];
         setStartDate1(16 + '-' + month + '-' + year);
-        month = monthsName[d.getMonth() + 1];
+        month = monthsName[todayDate.getMonth() + 1];
         setEndDate1(1 + '-' + month + '-' + year);
       } else if (date > 16 && date < 31) {
         monthaaa = 'april';
@@ -78,36 +99,72 @@ const RequestLunch = ({navigation}) => {
     endDate1: endDate1,
   };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
+  const hideDatePicker = pickerToClose => {
+    pickerToClose();
   };
 
-  const handleConfirm = date => {
-    if (modalForStartDate) {
-      setStartDate(date.toString());
-    } else {
-      setEndDate(date.toString());
-    }
-    hideDatePicker();
+  const handleStartConfirm = date => {
+    let selectedDate = date.getDate();
+
+    let selectedMonth = monthsName[date.getMonth()];
+    let selectedYear = date.getFullYear();
+    setStartDate({
+      startDateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      startDateObj: date,
+    });
+    hideDatePicker(setStartDatePickerVisible);
   };
-  const requestlunchstartdate = '2023-03-2';
-  const requestlunchenddate = '2023-03-28';
-  const requestforlunch = '1';
+
+  const handleEndConfirm = date => {
+    let selectedDate = date.getDate();
+
+    let selectedMonth = monthsName[date.getMonth()];
+    let selectedYear = date.getFullYear();
+    setEndDate({
+      endDateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      endDateObj: date,
+    });
+    hideDatePicker(setEndDatePickerVisible);
+  };
 
   const onSubmit = async () => {
+    const isMonthly = value === 'monthly';
+    setIsLoading(true);
+
     const response = await dispatch(
       requestLunchSubmission({
         token,
-        requestlunchstartdate,
-        requestlunchenddate,
-        requestforlunch,
+        employeeName: employeeProfile?.employeeName,
+        employee: employeeProfile?.name,
+        requestlunchstartdate: startDate?.startDateObj.toISOString(),
+        requestlunchenddate: endDate?.endDateObj.toISOString(),
+        requestforlunch: 1,
+        requestforlunchcancellation: 0,
+        lunchRequestType: value,
+        montlyLunchSubscription: isMonthly ? 1 : 0,
+        lunchcancellationrequestdate: null,
       }),
     );
+
+    // monthly , duration
+
+    setIsLoading(false);
+
+    if (response?.error) {
+      alert(response?.error?.message || 'Something went wrong.');
+    } else {
+      Alert.alert('Success', 'Lunch requested successfully!', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            // navigation.goBack();
+          },
+        },
+      ]);
+    }
   };
 
-  const cancelRequest = () => {
-    setRequestCancel(0);
-  };
+  const cancelRequest = () => {};
 
   return (
     // <SharedElement id="enter">
@@ -152,37 +209,39 @@ const RequestLunch = ({navigation}) => {
               borderBottomWidth: 1,
             }}
             labelStyle={{
-              fontSize: wp('3.5%'),
+              fontSize: 13,
               textAlign: 'left',
               color: Colors.black,
               alignSelf: 'center',
             }}
           />
         </View>
-        {isDatePickerVisible ? (
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="date"
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-          />
-        ) : null}
+
+        <DateTimePickerModal
+          isVisible={startDatePickerVisible}
+          mode="date"
+          onConfirm={handleStartConfirm}
+          onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
+        />
+        <DateTimePickerModal
+          isVisible={endDatePickerVisible}
+          mode="date"
+          onConfirm={handleEndConfirm}
+          onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
+        />
         <View style={styles.thirdView}>
           {openModal ? <SelectDateModal modalData={modalData} /> : null}
           <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
           <TouchableOpacity
             onPress={() => {
-              if (permissionForClick) {
-                if (permReq) {
-                  setOpenModal(true);
-                } else {
-                  setModalForStartDate(true);
-                  setDatePickerVisibility(true);
-                }
+              if (permReq) {
+                setOpenModal(true);
+              } else {
+                setStartDatePickerVisible(true);
               }
             }}>
             <View style={styles.fourthView}>
-              <TextInput editable={false} value={startDate} />
+              <Text style={styles.selectedDated}>{startDate.startDateStr}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -190,21 +249,28 @@ const RequestLunch = ({navigation}) => {
           <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
           <TouchableOpacity
             onPress={() => {
-              if (permissionForClick) {
-                if (permReq) {
-                  setOpenModal(false);
-                } else {
-                  setModalForStartDate(false);
-                  setDatePickerVisibility(true);
-                }
+              if (permReq) {
+                setOpenModal(false);
+              } else {
+                setEndDatePickerVisible(true);
               }
             }}>
             <View style={styles.sixthView}>
-              <TextInput editable={false} value={endDate} />
+              <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={onSubmit}>
+
+        <TouchableOpacity
+          style={{
+            opacity:
+              !startDate.startDateStr || !endDate.endDateStr || !value
+                ? 0.5
+                : 1,
+            marginTop: 20,
+          }}
+          disabled={!startDate.startDateStr || !endDate.endDateStr || !value}
+          onPress={onSubmit}>
           <View style={styles.submitView}>
             <Text style={{color: Colors.white, textAlign: 'center'}}>
               Submit
@@ -237,6 +303,12 @@ const RequestLunch = ({navigation}) => {
           </View>
         </View>
       </View>
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" />
+        </View>
+      ) : null}
     </View>
     // </SharedElement>
   );

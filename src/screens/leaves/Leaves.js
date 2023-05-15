@@ -11,7 +11,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+
 import {Colors} from 'colors/Colors';
+
 import styles from './LeaveStyles';
 import {getLeaveApprovers, getLeaveDetails} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
@@ -27,8 +29,8 @@ const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-  var decoded = jwt_decode(token);
-  const employeeID = decoded.id;
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
   const dispatch = useDispatch();
 
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
@@ -38,28 +40,34 @@ const Leaves = ({navigation}) => {
   const [leaveApprovers, setLeaveApprovers] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      const leaveApprover = await dispatch(
-        getLeaveApprovers({token, employeeID}),
-      );
-
-      setLeaveApprovers(leaveApprover.payload);
-
-      if (leaveApprover?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: leaveApprover?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-    })();
+    console.log('Rendered', 'Yes!');
   }, []);
 
   useEffect(() => {
-    updateData();
-  }, [employeeID]);
+    if (token) {
+      (async () => {
+        const leaveApprover = await dispatch(
+          getLeaveApprovers({token, employeeID}),
+        );
+
+        setLeaveApprovers(leaveApprover.payload);
+
+        if (leaveApprover?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leaveApprover?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      })();
+    }
+  }, []);
+
+  useEffect(() => {
+    token && updateData();
+  }, [employeeID, token]);
 
   const updateData = async () => {
     try {
@@ -142,6 +150,26 @@ const Leaves = ({navigation}) => {
     );
   };
 
+  const renderNoLeaves = () => {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+        }}>
+        <Text
+          style={{
+            fontFamily: FontFamily.RobotoMedium,
+            fontSize: 17,
+            color: Colors.dune,
+          }}>
+          No Leaves Applied.
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <>
       <View style={{paddingVertical: hp(2), flex: 1}}>
@@ -198,15 +226,29 @@ const Leaves = ({navigation}) => {
           </Text>
           <View />
         </Pressable>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          refreshing={isRefresh}
-          onRefresh={updateData}
-          data={isGuestLogin ? guestLeavesScreenData : leavesData}
-          renderItem={renderItem}
-          keyExtractor={(_, index) => index}
-        />
-
+        {isGuestLogin ? (
+          renderNoLeaves()
+        ) : // <FlatList
+        //   showsVerticalScrollIndicator={false}
+        //   refreshing={isRefresh}
+        //   onRefresh={updateData}
+        //   data={isGuestLogin}
+        //   // data={isGuestLogin ? guestLeavesScreenData : leavesData}
+        //   renderItem={renderItem}
+        //   keyExtractor={(_, index) => index}
+        // />
+        leavesData?.length > 0 ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            refreshing={isRefresh}
+            onRefresh={updateData}
+            data={leavesData}
+            renderItem={renderItem}
+            keyExtractor={(_, index) => index}
+          />
+        ) : (
+          renderNoLeaves()
+        )}
         <DateTimePickerModal
           isVisible={filterCalenderOpen}
           mode="date"

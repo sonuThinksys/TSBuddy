@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
-import {loginStatus} from 'Auth/LoginSlice';
+import {logOut} from 'Auth/LoginSlice';
 
 const ShowAlert = props => {
   let {
@@ -16,7 +16,7 @@ const ShowAlert = props => {
       {
         text: 'OK',
         onPress: () => {
-          dispatch && dispatch(loginStatus(false));
+          dispatch && dispatch(logOut());
         },
       },
     ]);

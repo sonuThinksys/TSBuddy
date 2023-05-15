@@ -1,9 +1,8 @@
 import moment from 'moment';
 import {days} from 'defaultData';
 
-export const isBefore2021 = (date1, date2, year, holidayDate) => {
+export const isBeforeDate = (date1, date2, year, holidayDate) => {
   const Month = +moment(holidayDate).format(' MM ');
-
   return date1 < date2 && Month >= 4 && year <= 2021;
 };
 
@@ -24,11 +23,12 @@ export const startEndDateFormat = date => {
 };
 export const todaySelectedDate = () => {
   let today = new Date();
+  const date = today.getDate() > 9 ? today.getDate() : '0' + today.getDate();
   let monthValue =
     today.getMonth() + 1 > 9
       ? today.getMonth() + 1
       : `0${today.getMonth() + 1}`;
-  return `${today.getFullYear()}-${monthValue}-${today.getDate()}`;
+  return `${today.getFullYear()}-${monthValue}-${date}`;
 };
 export const finalCurrentDate = () => {
   const date = new Date();

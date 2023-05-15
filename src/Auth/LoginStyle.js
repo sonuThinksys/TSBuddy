@@ -117,12 +117,14 @@ export default StyleSheet.create({
   signInTextStyle: {
     fontFamily: FontFamily.RobotoRegular,
     fontSize: FontSize.h14,
+    color: Colors.dune,
   },
   confirmTextStyle: {
     paddingHorizontal: wp(4),
     paddingTop: hp(1),
     fontFamily: FontFamily.RobotoRegular,
     fontSize: FontSize.h14,
+    color: Colors.dune,
   },
   imageSensorStyle: {
     paddingHorizontal: wp(4),
@@ -143,25 +145,27 @@ export default StyleSheet.create({
     paddingLeft: wp(3),
     fontFamily: FontFamily.RobotoRegular,
     fontSize: FontSize.h14,
+    color: Colors.dune,
   },
   cancelButton: {
     fontFamily: FontFamily.RobotoBold,
     fontSize: FontSize.h14,
     paddingRight: wp(4),
     paddingBottom: wp(2),
+    color: Colors.dune,
   },
   imageStyle: {
     height: 25,
     width: 25,
   },
   cancelButtonContainer: {alignItems: 'flex-end'},
-  copyRightStyle:{
+  copyRightStyle: {
     color: Colors.white,
     textAlign: 'center',
     fontFamily: FontFamily.RobotoMedium,
     fontSize: FontSize.h11,
   },
-  copyRightContainer:{
+  copyRightContainer: {
     backgroundColor: Colors.lightBlue,
   },
   loaderContainer: {

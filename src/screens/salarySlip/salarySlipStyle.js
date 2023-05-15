@@ -90,4 +90,13 @@ export default StyleSheet.create({
     borderRadius: 6,
   },
   downloadtext: {color: 'white', fontWeight: 'bold', fontSize: 17},
+  salaryNotFound: {
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    flex: 1,
+  },
+  salaryNotFoundText: {
+    // fontSize: 16,
+  },
 });

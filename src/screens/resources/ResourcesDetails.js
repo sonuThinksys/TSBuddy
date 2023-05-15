@@ -32,7 +32,6 @@ const screenWidth = Dimensions.get('window').width;
 
 const ResourcesDetails = ({route, navigation}) => {
   const isFocused = useIsFocused();
-
   const {
     designation,
     employeeName,
@@ -62,7 +61,10 @@ const ResourcesDetails = ({route, navigation}) => {
   useEffect(() => {
     if (isFocused) {
       (async () => {
-        const leavesData = await dispatch(getResourcesEmployeesLeaves(token));
+        const leavesData = await dispatch(
+          getResourcesEmployeesLeaves({token, empID: employeeID}),
+        );
+        console.log('leavesData:', leavesData);
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
@@ -97,11 +99,11 @@ const ResourcesDetails = ({route, navigation}) => {
   };
 
   const renderItem = ({item}) => {
-    if (filteredSelectedDate) {
-      const shouldRender =
-        filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
-      if (!shouldRender) return null;
-    }
+    // if (filteredSelectedDate) {
+    //   const shouldRender =
+    //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
+    //   if (!shouldRender) return null;
+    // }
 
     return (
       <TouchableOpacity
@@ -172,7 +174,7 @@ const ResourcesDetails = ({route, navigation}) => {
             {image ? (
               <Image
                 resizeMode="stretch"
-                source={{uri: `${baseUrl}${image}`}}
+                source={{uri: `data:image/jpeg;base64,${image}`}}
                 style={style.image}
               />
             ) : (
@@ -260,7 +262,7 @@ const ResourcesDetails = ({route, navigation}) => {
                   borderBottomWidth: 2,
                 },
               ]}>
-              <Text style={{color: 'white', fontSize: 17}}>Attendence</Text>
+              <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
             </View>
           </Pressable>
         </View>

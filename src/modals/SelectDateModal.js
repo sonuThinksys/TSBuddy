@@ -98,7 +98,7 @@ const SelectDateModal = ({modalData}) => {
                   {select ? <View style={styles.container4}></View> : null}
                 </View>
               </Ripple>
-              <TextInput value={satrtDate1} />
+              <Text>{satrtDate1}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
@@ -142,7 +142,7 @@ const SelectDateModal = ({modalData}) => {
                 </View>
               </Ripple>
 
-              <TextInput value={endDate1} />
+              <Text>{endDate1}</Text>
             </View>
           </TouchableOpacity>
           <Text style={{color: Colors.grey, fontSize: 13}}>

@@ -3,7 +3,6 @@ import {SafeAreaView, Text} from 'react-native';
 import MainNavigator from './src/navigation/MainNavigator';
 import {Colors} from 'colors/Colors';
 import reactotron from 'reactotron-react-native';
-var jwtDecode = require('jwt-decode');
 
 const App = () => {
   if (__DEV__) {

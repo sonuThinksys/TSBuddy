@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   TextInput,
   StyleSheet,
   ActivityIndicator,
+  Pressable,
+  Animated,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
@@ -16,7 +18,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {useIsFocused} from '@react-navigation/native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import RefreshIcon from 'assets/allImage/refresh.imageset/refreshIcon.png';
 import {Colors} from 'colors/Colors';
 // import Header from 'component/header/Header';
 import baseUrl from 'services/Urls';
@@ -28,12 +32,17 @@ import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import RenderListItem from './RenderList';
+import CrossIcon from 'assets/allImage/cross.imageset/cross.png';
 
 const UserProfile = () => {
+  const inputRef = useRef(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const animatedOpacity = useRef(new Animated.Value(1)).current;
 
-  const {isShowModal: isShowModall} = useSelector(state => state.home);
+  const {isShowModal: isShowModall, fromNavigatedScreen} = useSelector(
+    state => state.home,
+  );
 
   const {userToken: token} = useSelector(state => state.auth);
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -48,6 +57,22 @@ const UserProfile = () => {
   let skipCount = allEmpData.length || 0;
 
   const [employeesCount, setEmployeesCount] = useState(0);
+  const [refreshing, SetRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (showTextInput) inputRef.current?.focus();
+  }, [showTextInput]);
+
+  const fetchInitialData = async () => {
+    await fetchEmployeesData({
+      isInitial: true,
+      currentEmployees: {
+        page: 1,
+        skip: 0,
+        take: 18,
+      },
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -56,7 +81,7 @@ const UserProfile = () => {
         currentEmployees: {
           page: 1,
           skip: 0,
-          take: 15,
+          take: 18,
         },
       });
     })();
@@ -91,10 +116,10 @@ const UserProfile = () => {
       if (isInitial) {
         setEmpData(result.payload.data);
       } else {
-        setEmpData([...allEmpData, ...result.payload.data]);
+        setEmpData([...allEmpData, ...result?.payload?.data]);
       }
       // !isSearching && setEmployeesCount(result.payload.count);
-      setEmployeesCount(result.payload.count);
+      setEmployeesCount(result?.payload?.count);
     }
   };
 
@@ -114,11 +139,19 @@ const UserProfile = () => {
         currentEmployees: {
           page: 1,
           skip: skipCount,
-          take: 15,
+          take: 18,
         },
       });
     }
   };
+
+  // if (allEmpData?.length === 0) {
+  //   return (
+  //     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+  //       <Text>No Employee Found!</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={{flex: 1}}>
@@ -127,14 +160,34 @@ const UserProfile = () => {
           backgroundColor: Colors.darkBlue,
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'space-around',
+          justifyContent: 'center',
+          alignItems: 'center',
           paddingHorizontal: wp(4),
           paddingVertical: hp(1),
         }}>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              // =================================================================
+
+              Animated.timing(animatedOpacity, {
+                toValue: 0,
+                duration: 10,
+                useNativeDriver: true,
+              }).start(() => {
+                navigation.pop();
+                navigation.navigate(fromNavigatedScreen);
+                Animated.timing(animatedOpacity, {
+                  toValue: 1,
+                  duration: 500,
+                  useNativeDriver: true,
+                }).start();
+              });
+
+              // =================================================================
+              // navigation.pop();
+              // navigation.navigate(fromNavigatedScreen);
+              // navigation.goBack();
             }}>
             <Image
               source={MonthImages.backArrowS}
@@ -147,6 +200,7 @@ const UserProfile = () => {
             flexDirection: 'row',
             flex: 2,
             justifyContent: 'center',
+            alignItems: 'center',
             paddingTop: hp(1),
           }}>
           <Text
@@ -168,6 +222,7 @@ const UserProfile = () => {
             flexDirection: 'row',
             flex: 1,
             justifyContent: 'flex-end',
+            alignItems: 'center',
             paddingTop: hp(0.6),
           }}>
           {showHoriZontal ? (
@@ -192,38 +247,60 @@ const UserProfile = () => {
           )}
           <TouchableOpacity
             onPress={() => {
-              if (!showTextInput) {
-                setShowTextInput(true);
-              } else {
-                setShowTextInput(false);
-              }
+              // if (!showTextInput) {
+              //   setShowTextInput(true);
+              // } else {
+              //   setShowTextInput(false);
+              // }
+              setShowTextInput(prevState => !prevState);
+              inputRef.current?.focus();
             }}>
             <Image
               source={MonthImages.searchIconwhite}
               style={{
-                height: 25,
-                width: 25,
-                marginRight: wp(5),
+                height: 20,
+                width: 20,
+                // marginRight: wp(5),
                 color: Colors.white,
               }}
             />
           </TouchableOpacity>
         </View>
       </View>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          zIndex: 999,
+        }}>
+        <Pressable
+          onPress={() => {
+            fetchInitialData();
+          }}
+          style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
+          <Image
+            source={RefreshIcon}
+            style={{height: 32, width: 32, borderRadius: 25, zIndex: 9999}}
+          />
+        </Pressable>
+      </View>
       {showTextInput ? (
         <View
           style={{
             backgroundColor: Colors.blackishGreen,
             flexDirection: 'row',
-            paddingVertical: hp(1.5),
+            paddingVertical: hp(1),
             paddingHorizontal: wp(5),
+            // justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <TouchableOpacity
             onPress={async () => {
               let currentEmployee = {
                 page: 1,
                 skip: 0,
-                take: 15,
+                take: 18,
               };
 
               if (searchedName.length) {
@@ -252,45 +329,69 @@ const UserProfile = () => {
           </TouchableOpacity>
 
           <TextInput
+            value={searchedName}
             selectionColor={Colors.white}
             color={Colors.white}
+            ref={inputRef}
             // value={e}
             onChangeText={onChangeText}
             isEditble
-            style={{height: '120%', width: '90%'}}
+            style={{
+              height: '120%',
+              width: '80%',
+              paddingVertical: 0,
+            }}
           />
+          <TouchableOpacity
+            onPress={() => {
+              setSearchedName('');
+            }}
+            style={styles.clearButton}>
+            {/* <Text style={{color: 'white'}}>X</Text> */}
+            <Image
+              source={CrossIcon}
+              style={{height: 20, width: 20, tintColor: Colors.white}}
+            />
+          </TouchableOpacity>
         </View>
       ) : null}
-      {true ? <CommunicationModal empDetail={empDetail} /> : null}
-      <FlatList
-        windowSize={5}
-        removeClippedSubviews={true}
-        legacyImplementation={false}
-        onScrollBeginDrag={() => setScrollBegin(true)}
-        onEndReachedThreshold={0}
-        scrollsToTop={false}
-        showsVerticalScrollIndicator={false}
-        onEndReached={loadMoreData}
-        onMomentumScrollBegin={() => setScrollBegin(true)}
-        onMomentumScrollEnd={() => setScrollBegin(false)}
-        data={allEmpData}
-        numColumns={numValue}
-        key={numValue}
-        //numColumns={1}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => {
-          return renderItem(
-            item,
-            index,
-            navigation,
-            isShowModall,
-            dispatch,
-            setClickData,
-            empDetail,
-            showHoriZontal,
-          );
-        }}
-      />
+      {isShowModall ? <CommunicationModal empDetail={empDetail} /> : null}
+
+      {allEmpData?.length === 0 ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{color: 'maroon'}}>No Employee Found!</Text>
+        </View>
+      ) : (
+        <FlatList
+          windowSize={5}
+          removeClippedSubviews={true}
+          legacyImplementation={false}
+          onScrollBeginDrag={() => setScrollBegin(true)}
+          onEndReachedThreshold={0}
+          scrollsToTop={false}
+          showsVerticalScrollIndicator={false}
+          onEndReached={loadMoreData}
+          onMomentumScrollBegin={() => setScrollBegin(true)}
+          onMomentumScrollEnd={() => setScrollBegin(false)}
+          data={allEmpData}
+          numColumns={numValue}
+          key={numValue}
+          //numColumns={1}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => {
+            return renderItem(
+              item,
+              index,
+              navigation,
+              isShowModall,
+              dispatch,
+              setClickData,
+              empDetail,
+              showHoriZontal,
+            );
+          }}
+        />
+      )}
       {isFetchingEmployees ? (
         <View style={styles.loaderContainer}>
           {/* <View style={styles.loaderBackground} /> */}
@@ -312,7 +413,11 @@ const renderItem = (
   showHoriZontal,
 ) => {
   return (
-    <View key={index} style={{backgroundColor: Colors.white}}>
+    <View
+      key={index}
+      style={{
+        backgroundColor: Colors.white,
+      }}>
       {showHoriZontal ? (
         <TouchableOpacity
           onPress={() => {
@@ -333,10 +438,12 @@ const renderItem = (
                 alignItems: 'center',
               }}>
               {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
+
               {image ? (
                 <Image
                   resizeMode="stretch"
-                  source={{uri: `${baseUrl}${image}`}}
+                  // source={{uri: `${baseUrl}${image}`}}
+                  source={{uri: `data:image/jpeg;base64,${image}`}}
                   style={styles.image}
                 />
               ) : (
@@ -378,7 +485,8 @@ const renderItem = (
             {image ? (
               <Image
                 resizeMode="stretch"
-                source={{uri: `${baseUrl}${image}`}}
+                // source={{uri: `${baseUrl}${image}`}}
+                source={{uri: `data:image/jpeg;base64,${image}`}}
                 style={styles.image}
               />
             ) : (
@@ -387,7 +495,9 @@ const renderItem = (
             <Text numberOfLines={1} style={styles.nametext2}>
               {employeeName}
             </Text>
-            <Text style={styles.desText2}>{designation}</Text>
+            <Text numberOfLines={1} style={styles.desText2}>
+              {designation}
+            </Text>
             <View style={styles.buttomView}>
               <TouchableOpacity
                 style={styles.imagecontainer1}

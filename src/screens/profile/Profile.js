@@ -18,6 +18,7 @@ import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {getEmployeeProfileData} from 'redux/homeSlice';
+import {useIsFocused} from '@react-navigation/native';
 import baseUrl from 'services/Urls';
 import moment from 'moment';
 import {modalStatus} from 'redux/homeSlice';
@@ -27,29 +28,33 @@ import {Colors} from 'colors/Colors';
 import {guestProfileData} from 'guestData';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
+import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
+
 const Profile = ({navigation}) => {
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-  var decoded = jwt_decode(token);
-  const employeeID = decoded.id;
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
 
   useEffect(() => {
     (async () => {
-      const profileDetails = await dispatch(
-        getEmployeeProfileData({token, employeeID}),
-      );
+      if (token) {
+        const profileDetails = await dispatch(
+          getEmployeeProfileData({token, employeeID}),
+        );
 
-      if (profileDetails?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: profileDetails?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
+        if (profileDetails?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: profileDetails?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
       }
     })();
   }, []);
@@ -88,7 +93,7 @@ const Profile = ({navigation}) => {
     {
       image: MonthImages.callEmp,
       nameOfField: 'Emp ID',
-      email: isGuestLogin ? 'EMP/10234' : `EMP/${employeeID}`,
+      email: isGuestLogin ? guestProfileData.empID : `EMP/${employeeID}`,
       id: '4',
     },
     {
@@ -123,10 +128,10 @@ const Profile = ({navigation}) => {
   const sendMail = () => {
     setClickData({
       medium: isGuestLogin
-        ? 'guset@thinksys.com'
+        ? 'guest@thinksys.com'
         : profileData.managerInfoDto.companyEmail,
       nameOfEmployee: isGuestLogin
-        ? 'guset'
+        ? 'guest'
         : profileData.managerInfoDto.employeeName,
       text: 'Send Mail to',
     });
@@ -139,7 +144,7 @@ const Profile = ({navigation}) => {
         ? '9801296234'
         : profileData.managerInfoDto.cellNumber,
       nameOfEmployee: isGuestLogin
-        ? 'iguest manager'
+        ? 'guest manager'
         : profileData.managerInfoDto.employeeName,
       text: 'Send SMS to',
     });
@@ -157,11 +162,27 @@ const Profile = ({navigation}) => {
             source={TSBuddyBackImage}>
             <View style={styles.container}>
               <View style={styles.profileView}>
-                <Image
+                {/* <Image
                   resizeMode="contain"
-                  source={{uri: `${baseUrl}${profileData.image}`}}
+                  source={{uri: `${baseUrl}${profileData?.image}`}}
                   style={{height: 120, width: 120, borderRadius: 60}}
-                />
+                /> */}
+
+                {profileData?.image ? (
+                  <Image
+                    resizeMode="stretch"
+                    // source={{uri: `${baseUrl}${image}`}}
+                    source={{
+                      uri: `data:image/jpeg;base64,${profileData?.image}`,
+                    }}
+                    style={{height: 120, width: 120, borderRadius: 60}}
+                  />
+                ) : (
+                  <Image
+                    source={defaultUserIcon}
+                    style={{height: 120, width: 120, borderRadius: 60}}
+                  />
+                )}
               </View>
               <Text style={styles.text}>
                 {isGuestLogin ? 'guest user' : profileData.employeeName}
@@ -187,13 +208,28 @@ const Profile = ({navigation}) => {
               </View>
               <View style={styles.managerDetailView2}>
                 <View style={styles.roundIcon}>
-                  <Image
+                  {/* <Image
                     resizeMode="cover"
                     source={{
                       uri: `${baseUrl}${profileData.managerInfoDto.image}`,
                     }}
                     style={{height: 80, width: 80, borderRadius: 20}}
-                  />
+                  /> */}
+
+                  {profileData?.managerInfoDto?.image ? (
+                    <Image
+                      resizeMode="stretch"
+                      source={{
+                        uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
+                      }}
+                      style={{height: 80, width: 80, borderRadius: 20}}
+                    />
+                  ) : (
+                    <Image
+                      source={defaultUserIcon}
+                      style={{height: 80, width: 80, borderRadius: 20}}
+                    />
+                  )}
                 </View>
                 <View>
                   <Text style={styles.managerNameText}>

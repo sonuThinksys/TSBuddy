@@ -21,8 +21,9 @@ export default {
   getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   applyLeave: `${API_URL}/Leave/AddLeave`,
   getEmployeesByLeaveApprover: `${API_URL}/EmployeeProfile/GetEmployeesByLeaveApprover`,
-  getResourcesEmployeesLeaves: `${API_URL}/EmployeeProfile/GetEmployeeLeaves?empId=10843`,
+  getResourcesEmployeesLeaves: `${API_URL}/EmployeeProfile/GetEmployeeLeaves?empId=`,
   updateLeaveStatus: `${API_URL}/EmployeeProfile/UpdateLeaveStatus`,
   GetDailyAttendanceByEmpId: `${API_URL}/Attendance/GetDailyAttendanceByEmpId`,
   getLeaveApprovers: `${API_URL}/Leave/GetLeaveApprover?empId=`,
+  addMealFeedback: `${API_URL}/FoodRequest/AddMealFeedback`,
 };

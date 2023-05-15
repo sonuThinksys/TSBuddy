@@ -99,7 +99,7 @@ const BirthdayAnniV = ({modalData, showModal}) => {
               </View>
               <Text style={{fontSize: 16}}>
                 {' '}
-                {description === null ? `Congratulation: ${name}` : description}
+                {!description ? `Congratulation: ${name}` : description}
               </Text>
             </ImageBackground>
           </Modal>

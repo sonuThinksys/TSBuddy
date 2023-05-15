@@ -128,4 +128,18 @@ export default StyleSheet.create({
     color: Colors.lightBlue,
     marginRight: wp(5),
   },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
+  },
+  selectedDated: {
+    fontSize: 14,
+  },
 });

@@ -45,6 +45,7 @@ const initialState = {
   resourcesEmployeeDataLoading: false,
   resourcesEmployeeData: [],
   resourcesEmployeeDataError: null,
+  fromNavigatedScreen: '',
 };
 
 const breakfast = 'breakfast';
@@ -331,6 +332,35 @@ export const getMenuFeedback = createAsyncThunk(
   },
 );
 
+export const addMealFeedback = createAsyncThunk(
+  'home/addMealFeedback',
+  async ({token, ...extraPayload}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const feedback = await axios.post(
+        endPoints.addMealFeedback,
+        extraPayload,
+        config,
+      );
+      return Promise.resolve(feedback.data);
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 // =============================================
 
 // ============================================================================================
@@ -417,10 +447,10 @@ export const getEmployeesByLeaveApprover = createAsyncThunk(
 
 export const getResourcesEmployeesLeaves = createAsyncThunk(
   'getResourcesEmployeesLeaves',
-  async token => {
+  async ({token, empID}) => {
     const config = {
       method: 'get',
-      url: endPoints.getResourcesEmployeesLeaves,
+      url: endPoints.getResourcesEmployeesLeaves + empID,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -449,20 +479,21 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
   },
 );
 
-// Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
+// Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
 
 export const GetDailyAttendanceByEmpId = createAsyncThunk(
   'dailyAttendanceByEmpId',
-  async ({token, employeeId, year, month}) => {
+  async ({token, employeeID, year, month}) => {
     const config = {
       method: 'get',
-      // url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeId}&month=0${month}&year=${year}`,
-      url: 'http://10.101.23.48:81/api/Attendance/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
+      url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeID}&month=0${month}&year=${year}`,
+      // url: 'http://10.101.23.48:81/api/Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     };
+
     return axios(config)
       .then(response => {
         const {data, status} = response;
@@ -632,8 +663,11 @@ export const getCalendereventData = createAsyncThunk(
 export const getAttendencaeData = createAsyncThunk(
   'home/getAttendencaeData',
   async ({token, employeeID, visisbleMonth, visibleYear}) => {
-    var config = {
+    const uri = `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`;
+
+    const config = {
       method: 'get',
+
       url: `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -642,8 +676,8 @@ export const getAttendencaeData = createAsyncThunk(
     };
     return axios(config)
       .then(async response => {
-        console.log(response);
         const {data, status} = response;
+        console.log('data11:', data);
         if (status === 200) {
           return Promise.resolve(data[0]);
         } else {
@@ -743,28 +777,21 @@ export const getholidayDataIWithImage = createAsyncThunk(
 export const requestLunchSubmission = createAsyncThunk(
   'dataReducer/requestLunchSubmission',
   async formInput => {
-    try {
-      const {token, ...restData} = formInput;
-      const url = endPoints.requestLunchApi;
-      var config = {
-        method: 'post',
-        url: endPoints.requestLunchApi,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          requestlunchstartdate: '2023-05-03T06:11:46.692Z',
-          requestlunchenddate: '2023-05-03T06:11:46.692Z',
-          requestforlunch: 1,
-          requestforlunchcancellation: 0,
-          montlyLunchSubscription: 0,
-          lunchRequestType: 'daily',
-          lunchcancellationrequestdate: null,
-        },
-      };
+    const {token, ...extraPayload} = formInput;
+    const url = endPoints.requestLunchApi;
+    var config = {
+      method: 'post',
+      url: endPoints.requestLunchApi,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
 
-      return axios(config).then(result => {
+      data: extraPayload,
+    };
+
+    return axios(config)
+      .then(result => {
         const {data = {}, status} = result || {};
 
         if (status === 200) {
@@ -772,11 +799,20 @@ export const requestLunchSubmission = createAsyncThunk(
         } else {
           return Promise.reject('something went wrong');
         }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response?.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else if (statusCode === 400) {
+          return Promise.reject(err?.response?.data?.errors);
+        } else {
+          return Promise.reject(new Error(err));
+        }
       });
-    } catch (err) {
-      console.log('error:', err);
-      // return Promise.reject(new Error(err));
-    }
   },
 );
 
@@ -796,8 +832,13 @@ const homeSlice = createSlice({
     setRecentAppliedLeaves: (state, action) => {
       state.recentAppliedLeaves = action.payload;
     },
+
     setRemainingLeaves: (state, action) => {
       state.remainingLeaves = action.payload;
+    },
+
+    setFromNavigatedScreen: (state, action) => {
+      state.fromNavigatedScreen = action?.payload?.screenName;
     },
   },
   extraReducers: builder => {
@@ -1014,4 +1055,5 @@ export const {
   dateOfModal,
   setRecentAppliedLeaves,
   setRemainingLeaves,
+  setFromNavigatedScreen,
 } = homeSlice.actions;

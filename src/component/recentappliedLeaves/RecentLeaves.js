@@ -4,6 +4,8 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
+import {FontFamily} from 'constants/fonts';
+import {Colors} from 'colors/Colors';
 // import ShowAlert from 'customComponents/CustomError';
 // import {ERROR} from 'constants/strings';
 
@@ -42,16 +44,40 @@ const RecentLeaves = ({navigation}) => {
       <View style={styles.container}>
         <Text style={styles.recentText}>Recent Applied Leaves</Text>
       </View>
-      <FlatList
-        data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index}
-        style={{marginHorizontal: 4}}
-      />
+      {isGuestLogin ? (
+        <FlatList
+          data={guestLeavesData}
+          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          style={{marginHorizontal: 4}}
+        />
+      ) : recent3AppliedLeaves?.length > 0 ? (
+        <FlatList
+          data={recent3AppliedLeaves}
+          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          style={{marginHorizontal: 4}}
+        />
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontFamily: FontFamily.RobotoMedium,
+              fontSize: 16,
+              color: Colors.lightBlue,
+              marginVertical: 4,
+            }}>
+            Recent Leaves not found.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
 const renderItem = ({item, index}) => {
+  console.log('item.status', item);
   return (
     <View key={index} style={styles.imageView}>
       <Image

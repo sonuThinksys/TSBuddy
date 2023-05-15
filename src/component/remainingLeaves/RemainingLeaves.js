@@ -5,29 +5,87 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 
-import {BarChart} from 'react-native-chart-kit';
+import {BarChart, LineChart} from 'react-native-chart-kit';
 
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 const RemainingLeaves = () => {
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(
     state => state.home,
   );
 
-  const earnedLeavesData = [
-    remainingLeaves[1]?.totalLeavesAllocated,
-    remainingLeaves[1]?.currentLeaveApplied,
-    remainingLeaves[1]?.currentLeaveBalance,
+  const restrictedLeavesData = [
+    isGuestLogin ? 1 : remainingLeaves[1]?.totalLeavesAllocated,
+    isGuestLogin ? 0 : remainingLeaves[1]?.currentLeaveApplied,
+    isGuestLogin ? 1 : remainingLeaves[1]?.currentLeaveBalance,
   ];
 
-  const restrictedLeavesData = [
-    remainingLeaves[0]?.totalLeavesAllocated,
-    remainingLeaves[0]?.currentLeaveApplied,
-    remainingLeaves[0]?.currentLeaveBalance,
+  const earnedLeavesData = [
+    isGuestLogin ? 15 : remainingLeaves[0]?.totalLeavesAllocated,
+    isGuestLogin ? 7 : remainingLeaves[0]?.currentLeaveApplied,
+    isGuestLogin ? 8 : remainingLeaves[0]?.currentLeaveBalance,
   ];
+
   const totalEarnedTypesAvailable = earnedLeavesData.length;
   const totalRestrictedTypesAvailable = restrictedLeavesData.length;
+
+  const barChartGraph = ({data, rh}) => {
+    return (
+      <BarChart
+        segments={rh ? 2 : 4}
+        spacingInner={0}
+        flatColor={true}
+        showValuesOnTopOfBars={true}
+        showBarTops={false}
+        withInnerLines={false}
+        fromZero={true}
+        withVerticalLabels={false}
+        withCustomBarColorFromData={true}
+        data={{
+          datasets: [
+            {
+              data,
+              colors: [
+                () => Colors.orange,
+                () => Colors.darkBlue,
+                () => Colors.green,
+                () => Colors.red,
+              ],
+            },
+          ],
+        }}
+        width={
+          rh
+            ? Dimensions.get('window').width * 0.44
+            : Dimensions.get('window').width * 0.48
+        }
+        height={220}
+        chartConfig={{
+          backgroundGradientFrom: '#f1f3f5',
+          backgroundGradientTo: '#f1f3f5',
+          decimalPlaces: 0,
+          fillShadowGradientOpacity: '0.5',
+          barPercentage: !rh
+            ? totalEarnedTypesAvailable === 3
+              ? 0.72
+              : 0.56
+            : totalRestrictedTypesAvailable === 3
+            ? 0.72
+            : 0.56,
+          color: (opacity = 1) =>
+            Colors.customColor({opacity, r: 0, g: 0, b: 0}),
+          style: {
+            borderRadius: 0,
+          },
+        }}
+        style={{
+          marginVertical: 10,
+        }}
+      />
+    );
+  };
 
   return (
     <View>
@@ -39,47 +97,9 @@ const RemainingLeaves = () => {
           flexDirection: 'row',
         }}>
         <View>
-          <BarChart
-            segments={4}
-            spacingInner={0}
-            flatColor={true}
-            showValuesOnTopOfBars={true}
-            showBarTops={false}
-            withInnerLines={false}
-            fromZero={true}
-            withVerticalLabels={false}
-            withCustomBarColorFromData={true}
-            data={{
-              datasets: [
-                {
-                  data: earnedLeavesData,
-                  colors: [
-                    () => Colors.orange,
-                    () => Colors.darkBlue,
-                    () => Colors.green,
-                    () => Colors.red,
-                  ],
-                },
-              ],
-            }}
-            width={Dimensions.get('window').width * 0.48}
-            height={220}
-            chartConfig={{
-              backgroundGradientFrom: '#f1f3f5',
-              backgroundGradientTo: '#f1f3f5',
-              decimalPlaces: 0,
-              fillShadowGradientOpacity: '0.5',
-              barPercentage: totalEarnedTypesAvailable === 3 ? 0.8 : 0.64,
-              color: (opacity = 1) =>
-                Colors.customColor({opacity, r: 0, g: 0, b: 0}),
-              style: {
-                borderRadius: 0,
-              },
-            }}
-            style={{
-              marginVertical: 10,
-            }}
-          />
+          {earnedLeavesData && earnedLeavesData?.length
+            ? barChartGraph({data: earnedLeavesData})
+            : null}
 
           <Text
             style={{
@@ -92,50 +112,9 @@ const RemainingLeaves = () => {
           </Text>
         </View>
         <View>
-          <BarChart
-            segments={4}
-            spacingInner={0}
-            flatColor={true}
-            showValuesOnTopOfBars={true}
-            showBarTops={false}
-            withInnerLines={false}
-            fromZero={true}
-            withVerticalLabels={false}
-            withCustomBarColorFromData={true}
-            data={{
-              datasets: [
-                {
-                  data: restrictedLeavesData,
-                  colors: [
-                    () => Colors.orange,
-                    () => Colors.darkBlue,
-                    () => Colors.green,
-                    () => Colors.red,
-                  ],
-                },
-              ],
-            }}
-            width={Dimensions.get('window').width * 0.48}
-            height={220}
-            chartConfig={{
-              backgroundGradientFrom: '#f1f3f5',
-              backgroundGradientTo: '#f1f3f5',
-              decimalPlaces: 0,
-              fillShadowGradientOpacity: '0.5',
-              barPercentage: totalRestrictedTypesAvailable === 3 ? 0.8 : 0.64,
-
-              color: (opacity = 1) =>
-                Colors.customColor({opacity, r: 0, g: 0, b: 0}),
-              style: {
-                borderRadius: 0,
-              },
-            }}
-            style={{
-              marginVertical: 10,
-              marginLeft: 0,
-              marginRight: 4,
-            }}
-          />
+          {restrictedLeavesData?.length
+            ? barChartGraph({data: restrictedLeavesData, rh: true})
+            : null}
           <Text
             style={{
               textAlign: 'center',

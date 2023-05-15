@@ -12,6 +12,16 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
+  modalContainer: {
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    // marginTop: hp(20),
+    // backgroundColor: Colors.black,
+    borderColor: 'blue',
+    borderWidth: 1,
+    width: wp(40),
+  },
   secondContainer: {
     borderColor: Colors.white,
     borderWidth: 1,

@@ -18,6 +18,13 @@ const AttendenceTabLayout = ({data, employeeAttendance = []}) => {
   const totalHrs = totalHours?.toFixed(2);
   const effectHrs = effectiveHours?.toFixed(2);
 
+  const fiscalYear2 = () => {
+    const year = new Date(attendenceDate).getFullYear();
+    return new Date(attendenceDate).getMonth() > 2
+      ? `${year}-${year + 1}`
+      : `${year - 1}-${year}`;
+  };
+
   const fiscalYear =
     employeeAttendance.length && employeeAttendance[0]?.fiscalYear;
   const employeeName =
@@ -34,9 +41,8 @@ const AttendenceTabLayout = ({data, employeeAttendance = []}) => {
           effectHrs,
           status,
           employeeName,
-          fiscalYear,
+          fiscalYear: fiscalYear2(),
         });
-        console.log('Pressed!');
       }}
       style={styles.mainContainer}>
       <View style={styles.left}>

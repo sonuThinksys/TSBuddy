@@ -102,6 +102,15 @@ import minus from 'assets/allImage/minus.imageset/minus.png';
 import TSBudLogo from 'assets/allImage/TSBud.imageset/TSBudLogo.png';
 import FilterIcon from 'assets/allImage/Filter.imageset/filter.png';
 import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
+import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
+import ResourceIcon from 'assets/allImage/Resources.imageset/resourcesIcon.png';
+
+//emoji
+import smily from 'assets/emoji/smily.png';
+import angry from 'assets/emoji/angry.png';
+import lovely from 'assets/emoji/lovely.png';
+import sad from 'assets/emoji/sad.png';
+import newtraly from 'assets/emoji/newtraly.png';
 
 export const MonthImages = {
   plus: plus,
@@ -194,4 +203,13 @@ export const MonthImages = {
   TSBudLogo: TSBudLogo,
   filterIcon: FilterIcon,
   filterIcon2x: FilterIcon2x,
+  OpenLeaveIcon,
+  ResourceIcon,
+
+  //emoji
+  smily: smily,
+  angry: angry,
+  newtraly: newtraly,
+  sad: sad,
+  lovely: lovely,
 };

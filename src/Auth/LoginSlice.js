@@ -8,7 +8,7 @@ const initialState = {
   isLoggedIn: false,
   isAuthLoggedIn: false,
   isLoading: false,
-  userToken: {},
+  userToken: '',
   userTokenGettingError: false,
   userTokenGettingLoading: false,
   formInput: {},
@@ -45,8 +45,6 @@ export const getUserToken = createAsyncThunk(
           }
         })
         .catch(err => {
-          alert(`${err.title} ${err.status}`);
-          console.log('err1122:', err);
           return Promise.reject(err);
         });
     } catch (err) {
@@ -73,7 +71,7 @@ const loginSlice = createSlice({
       state.bioMetricEnable = action.payload;
     },
     guestLoginStatus: (state, action) => {
-      state.isLoggedIn = action.payload;
+      state.isLoggedIn = true;
       state.isGuestLogin = action.payload;
       state.isLoading = false;
     },
@@ -82,15 +80,17 @@ const loginSlice = createSlice({
     builder.addCase(getUserToken.pending, state => {
       state.isLoading = true;
     });
+
     builder.addCase(getUserToken.fulfilled, (state, action) => {
-      state.userToken = action.payload.data.token;
-      state.formInput = action.payload.formInput;
-      const decodedData = jwtDecode(state.userToken);
+      state.userToken = action?.payload?.data?.token;
+      state.formInput = action?.payload?.formInput;
+      const decodedData = jwtDecode(state?.userToken);
       state.employeeDetails = decodedData;
       state.isLoading = false;
       state.isLoggedIn = true;
       state.isGuestLogin = false;
     });
+
     builder.addCase(getUserToken.rejected, (state, action) => {
       state.isLoggedIn = false;
       state.error = action.error.message;
