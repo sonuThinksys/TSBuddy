@@ -19,6 +19,8 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import {monthImages} from 'defaultData';
 import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import {employeeData} from '../../../db';
 
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
@@ -27,6 +29,7 @@ const SalarySlip = ({navigation}) => {
   const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
   const [isAuthenticated, setisAuthenticated] = useState(false);
+
 
   useEffect(() => {
     let newObjectData = [];
