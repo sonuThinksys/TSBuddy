@@ -313,7 +313,13 @@ const SalarySlipScreen = ({navigation}) => {
       <SalarySlipStack.Screen
         name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
-        options={{headerShown: true}}
+        options={drawerOption({
+          showDrawer: false,
+          showHeaderRight: false,
+          label: '      Preview',
+          // headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+        })}
       />
     </SalarySlipStack.Navigator>
   );

@@ -85,6 +85,13 @@ const Leaves = ({navigation}) => {
     isLeaveDataLoading: {isLoading},
   } = useSelector(state => state.home);
 
+  let reversLeaveesData = [];
+  for (let i = 0; i < leavesData.length; i++) {
+    reversLeaveesData.push(leavesData[i]);
+  }
+  reversLeaveesData.reverse();
+  console.log(reversLeaveesData);
+
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {leaveApprovers});
   };
@@ -242,7 +249,7 @@ const Leaves = ({navigation}) => {
             showsVerticalScrollIndicator={false}
             refreshing={isRefresh}
             onRefresh={updateData}
-            data={leavesData}
+            data={reversLeaveesData}
             renderItem={renderItem}
             keyExtractor={(_, index) => index}
           />

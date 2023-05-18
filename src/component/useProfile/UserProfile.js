@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Pressable,
   Animated,
+  Keyboard,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
@@ -55,7 +56,7 @@ const UserProfile = () => {
   const [searchedName, setSearchedName] = useState('');
   const [isFetchingEmployees, setIsFetchingEmployees] = useState(false);
   let skipCount = allEmpData.length || 0;
-
+  console.log('searchedName = ', searchedName);
   const [employeesCount, setEmployeesCount] = useState(0);
   const [refreshing, SetRefreshing] = useState(false);
 
@@ -296,6 +297,7 @@ const UserProfile = () => {
             alignItems: 'center',
           }}>
           <TouchableOpacity
+            disabled={searchedName.length === 0}
             onPress={async () => {
               let currentEmployee = {
                 page: 1,
@@ -323,13 +325,13 @@ const UserProfile = () => {
                 height: 25,
                 width: 25,
                 marginRight: wp(5),
-                color: Colors.white,
               }}
             />
           </TouchableOpacity>
 
           <TextInput
             value={searchedName}
+            autoFocus={true}
             selectionColor={Colors.white}
             color={Colors.white}
             ref={inputRef}

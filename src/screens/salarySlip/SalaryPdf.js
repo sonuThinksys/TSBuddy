@@ -5,7 +5,7 @@ import Pdf from 'react-native-pdf';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import WebView from 'react-native-webview';
-const SalaryPdf = ({route}) => {
+const SalaryPdf = ({navigation, route}) => {
   const [pdfPath, setPdfPath] = React.useState('');
   const element = route.params;
 
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: Colors.lightBlue,
+    backgroundColor: Colors.white,
   },
   pdf: {
     flex: 1,
