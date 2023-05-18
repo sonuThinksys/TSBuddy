@@ -32,7 +32,7 @@ const initialState = {
   calendereventData: {},
   calendereventDataError: false,
   attendenceDataPending: false,
-  attendenceData: {},
+  attendenceData: [],
   attendenceDataError: false,
   recentAppliedLeaves: [],
   remainingLeaves: [],
@@ -92,6 +92,72 @@ const snacks = 'snacks';
 //     }
 //   },
 // );
+export const cancelSubscribedLunchRequest = createAsyncThunk(
+  'cancelSubscribedLunchRequest',
+  async ({token, body}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const apiUrl = `${endPoints.cancelLunchRequest}`;
+
+    try {
+      const {data, status} = await axios.post(apiUrl, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      console.log('err11:', err?.response);
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getSubscribedLunchRequests = createAsyncThunk(
+  'home/getSubscribedLunchRequests',
+  async ({token, employeeID}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const apiUrl = `${endPoints.getLunchRequests}${employeeID}`;
+
+    try {
+      const requests = await axios.get(apiUrl, config);
+      const {data, status} = requests;
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something went wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
 
 export const getLeaveApprovers = createAsyncThunk(
   'home/getLeaveApprovers',
@@ -450,15 +516,12 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
   },
 );
 
-// Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018
-
 export const GetDailyAttendanceByEmpId = createAsyncThunk(
   'dailyAttendanceByEmpId',
   async ({token, employeeID, year, month}) => {
     const config = {
       method: 'get',
       url: `${endPoints.GetDailyAttendanceByEmpId}?empId=${employeeID}&month=0${month}&year=${year}`,
-      // url: 'http://10.101.23.48:81/api/Attendence/GetDailyAttendanceByEmpId?empId=10352&month=05&year=2018',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -648,9 +711,8 @@ export const getAttendencaeData = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
-        console.log('data11:', data);
         if (status === 200) {
-          return Promise.resolve(data[0]);
+          return Promise.resolve(data);
         } else {
           return Promise.reject(new Error('Something Went Wrong3!'));
         }
@@ -749,6 +811,12 @@ export const requestLunchSubmission = createAsyncThunk(
   'dataReducer/requestLunchSubmission',
   async formInput => {
     const {token, ...extraPayload} = formInput;
+    // const data = {
+    //   employeeId: 10352,
+    //   requestType: 'Today',
+    //   requestStartDate: '2023-05-10',
+    //   requestEndDate: '2023-05-10',
+    // };
     const url = endPoints.requestLunchApi;
     var config = {
       method: 'post',
@@ -757,7 +825,6 @@ export const requestLunchSubmission = createAsyncThunk(
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-
       data: extraPayload,
     };
 
@@ -779,7 +846,7 @@ export const requestLunchSubmission = createAsyncThunk(
         if (statusCode == 401) {
           return Promise.reject(err?.response?.data?.message);
         } else if (statusCode === 400) {
-          return Promise.reject(err?.response?.data?.errors);
+          return Promise.reject(err?.response?.data);
         } else {
           return Promise.reject(new Error(err));
         }

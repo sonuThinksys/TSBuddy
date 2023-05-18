@@ -101,7 +101,7 @@ const SalaryDetail = ({route, navigation}) => {
               </Text>
               <View style={styles.minusImageView}>
                 <Image
-                  source={show ? MonthImages.plus : MonthImages.minus}
+                  source={show ? MonthImages.minus : MonthImages.plus}
                   style={{height: 15, width: 15}}
                 />
               </View>
@@ -131,7 +131,7 @@ const SalaryDetail = ({route, navigation}) => {
               </Text>
               <View style={styles.deductionImageView}>
                 <Image
-                  source={secondShow ? MonthImages.plus : MonthImages.minus}
+                  source={secondShow ? MonthImages.minus : MonthImages.plus}
                   style={{height: 15, width: 15}}
                 />
               </View>

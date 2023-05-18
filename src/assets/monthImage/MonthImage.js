@@ -104,6 +104,10 @@ import FilterIcon from 'assets/allImage/Filter.imageset/filter.png';
 import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
 import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
 import ResourceIcon from 'assets/allImage/Resources.imageset/resourcesIcon.png';
+import DeleteIcon from 'assets/allImage/delete.imageset/delete.png';
+import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
+import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
+import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
 
 export const MonthImages = {
   plus: plus,
@@ -198,4 +202,9 @@ export const MonthImages = {
   filterIcon2x: FilterIcon2x,
   OpenLeaveIcon,
   ResourceIcon,
+  DeleteIcon,
+  DesignationIcon,
+  EmployeeIdIcon,
+  CalenderIcon,
+  EducationIcon,
 };

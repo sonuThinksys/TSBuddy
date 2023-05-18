@@ -34,7 +34,6 @@ const Holidays = () => {
       setRefresh(false);
     }
   };
-
   return (
     <View style={{paddingTop: hp(1), flex: 1}}>
       {/* {isLoading  ? <Loader /> : null} */}

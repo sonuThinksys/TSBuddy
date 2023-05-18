@@ -3,7 +3,7 @@ import styles from './AttendenceTabLayoutStyles';
 import {useNavigation} from '@react-navigation/native';
 import OfficeIcon from 'assets/Icons/office.png';
 
-const AttendenceTabLayout = ({data, employeeAttendance = []}) => {
+const AttendenceTabLayout = ({data, employeeName = 'Employee'}) => {
   const attendenceDate = data?.attendanceDate;
   const inTime = data?.inTime;
   const outTime = data?.outTime;
@@ -25,10 +25,8 @@ const AttendenceTabLayout = ({data, employeeAttendance = []}) => {
       : `${year - 1}-${year}`;
   };
 
-  const fiscalYear =
-    employeeAttendance.length && employeeAttendance[0]?.fiscalYear;
-  const employeeName =
-    employeeAttendance.length && employeeAttendance[0]?.employeeName;
+  // const employeeName =
+  //   employeeName.length && employeeName[0]?.employeeName;
 
   return (
     <Pressable
