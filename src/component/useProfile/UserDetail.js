@@ -22,7 +22,10 @@ import {modalStatus} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 
+import {useIsFocused} from '@react-navigation/native';
+
 const UserDetail = ({navigation, route}) => {
+  const isFocussed = useIsFocused();
   const {
     designation,
     companyEmail,
@@ -228,7 +231,9 @@ const UserDetail = ({navigation, route}) => {
             + Add To Contacts
           </Text>
         </Pressable>
-        {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
+        {isShowModal && isFocussed ? (
+          <CommunicationModal empDetail={empDetail} />
+        ) : null}
         <View
           style={{
             display: 'flex',

@@ -27,28 +27,6 @@ const SelectDateModal = ({modalData}) => {
   const dispatch = useDispatch();
   const [select, setSelected] = useState(false);
   const [secondSleceted, setSecondSlected] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  // let date = new Date().getDate();
-  // const name = [
-  //   'January',
-  //   'February',
-  //   'March',
-  //   'April',
-  //   'May',
-  //   'June',
-  //   'July',
-  //   'August',
-  //   'September',
-  //   'October',
-  //   'November',
-  //   'December',
-  // ];
-  // const d = new Date();
-  // let month = name[d.getMonth()];
-  // let year = new Date().getFullYear();
-  // setStartDate(date + '/' + month + '/' + year);
-  // setEndDate(date + '/' + month + '/' + year);
 
   return (
     <Modal
@@ -103,7 +81,8 @@ const SelectDateModal = ({modalData}) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              dispatch(dateOfModal(satrtDate1));
+              console.log('second');
+              dispatch(dateOfModal(endDate1));
               setSecondSlected(true);
               setSelected(false);
             }}>
@@ -153,7 +132,7 @@ const SelectDateModal = ({modalData}) => {
         <View style={styles.okView}>
           <TouchableWithoutFeedback
             onPress={() => {
-              dispatch(dateOfModal(satrtDate1));
+              // dispatch(dateOfModal(satrtDate1));
               setOpenModal(false);
             }}>
             <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>

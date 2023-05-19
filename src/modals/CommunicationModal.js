@@ -60,6 +60,8 @@ const CommunicationModal = ({empDetail}) => {
     } else if (empDetail.text.trim() == 'Send SMS to') {
       Linking.openURL(`smsto:${empDetail.medium}`);
     }
+
+    dispatch(modalStatus(false));
   };
 
   return (

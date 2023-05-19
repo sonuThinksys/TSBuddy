@@ -15,6 +15,7 @@ const LeaveDetails = ({route, navigation}) => {
   };
 
   const {params: data} = route;
+  console.log('data:', data);
 
   const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
     data.postingDate,
@@ -34,13 +35,13 @@ const LeaveDetails = ({route, navigation}) => {
     ).getFullYear()}`;
 
   const details = [
-    ['Employee Name', data?.employeeName || 'Utkarsh Gupta'],
-    ['Leave Approver', data?.managerInfoDto?.employeeName || 'Mayank Sharma'],
-    ['Leave Type', data?.leaveType || 'Earned Leave'],
+    ['Employee Name', data?.employeeName],
+    ['Leave Approver', data?.leaveApproverName],
+    ['Leave Type', data?.leaveType],
     ['Leave Time Period', rangeOfdate(data)],
-    ['Leave Status', data?.status || 'Approved'],
-    ['Number Of Leaves', data?.totalLeaveDays || 1],
-    ['Leave Balance', data?.currentLeaveBalance || 5],
+    ['Leave Status', data?.status],
+    ['Number Of Leaves', data?.totalLeaveDays],
+    ['Leave Balance', data?.currentLeaveBalance],
     ['Applying Date', applyingDate || '04/05/2023'],
     ['Reason', data?.description || 'Feeling not well.'],
   ];

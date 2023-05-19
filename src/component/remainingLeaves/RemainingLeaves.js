@@ -59,7 +59,7 @@ const RemainingLeaves = () => {
         width={
           rh
             ? Dimensions.get('window').width * 0.44
-            : Dimensions.get('window').width * 0.48
+            : Dimensions.get('window').width * 0.5
         }
         height={220}
         chartConfig={{

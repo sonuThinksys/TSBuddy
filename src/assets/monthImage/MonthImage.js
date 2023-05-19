@@ -104,6 +104,10 @@ import FilterIcon from 'assets/allImage/Filter.imageset/filter.png';
 import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
 import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
 import ResourceIcon from 'assets/allImage/Resources.imageset/resourcesIcon.png';
+import DeleteIcon from 'assets/allImage/delete.imageset/delete.png';
+import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
+import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
+import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
 
 //emoji
 import smily from 'assets/emoji/smily.png';
@@ -205,6 +209,7 @@ export const MonthImages = {
   filterIcon2x: FilterIcon2x,
   OpenLeaveIcon,
   ResourceIcon,
+<<<<<<< HEAD
 
   //emoji
   smily: smily,
@@ -212,4 +217,11 @@ export const MonthImages = {
   newtraly: newtraly,
   sad: sad,
   lovely: lovely,
+=======
+  DeleteIcon,
+  DesignationIcon,
+  EmployeeIdIcon,
+  CalenderIcon,
+  EducationIcon,
+>>>>>>> 9cf92d79a6232f6145c429109093c2ac4f47a445
 };

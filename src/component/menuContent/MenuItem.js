@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -141,9 +142,15 @@ const MenuItem = ({navigation}) => {
                       }}>
                       Menu
                     </Text>
-                    <Text style={{color: Colors.white, fontSize: 12}}>
-                      {item.food ? item.food : 'N/A'}
-                    </Text>
+                    <ScrollView nestedScrollEnabled={true}>
+                      <Text
+                        style={{
+                          color: Colors.white,
+                          fontSize: 12,
+                        }}>
+                        {item.food ? item.food : 'N/A'}
+                      </Text>
+                    </ScrollView>
                   </View>
                 </ImageBackground>
               </View>

@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
@@ -53,32 +54,33 @@ const Resources = () => {
   }, []);
 
   return (
-    <View
-      style={{
-        height: hp(93),
-        borderWidth: 1,
-        backgroundColor: Colors.white,
-        paddingTop: 10,
-      }}>
-      <FlatList
-        legacyImplementation={false}
-        onScrollBeginDrag={() => setScrollBegin(true)}
-        onEndReachedThreshold={0.01}
-        scrollsToTop={false}
-        showsVerticalScrollIndicator={false}
-        // onEndReached={loadMoreData}
-        onMomentumScrollBegin={() => setScrollBegin(true)}
-        onMomentumScrollEnd={() => setScrollBegin(false)}
-        data={resourcesEmpiolyeeData}
-        numColumns={numValue}
-        key={numValue}
-        // numColumns={1}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => {
-          return renderItem(item, index, navigation);
-        }}
-      />
-    </View>
+    // <ScrollView
+    //   style={{
+    //     height: hp(93),
+    //     borderWidth: 1,
+    //     backgroundColor: Colors.white,
+    //     paddingTop: 10,
+    //   }}>
+    // <View>
+    <FlatList
+      legacyImplementation={false}
+      onScrollBeginDrag={() => setScrollBegin(true)}
+      onEndReachedThreshold={0.01}
+      scrollsToTop={false}
+      showsVerticalScrollIndicator={false}
+      // onEndReached={loadMoreData}
+      onMomentumScrollBegin={() => setScrollBegin(true)}
+      onMomentumScrollEnd={() => setScrollBegin(false)}
+      data={resourcesEmpiolyeeData}
+      numColumns={numValue}
+      key={numValue}
+      // numColumns={1}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({item, index}) => {
+        return renderItem(item, index, navigation);
+      }}
+    />
+    // </View>
   );
 };
 

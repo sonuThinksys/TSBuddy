@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -25,6 +26,7 @@ import {guestLeavesScreenData} from 'guestData';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
+
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -32,16 +34,13 @@ const Leaves = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const dispatch = useDispatch();
+  const isFocussed = useIsFocused();
 
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
 
   const [leaveApprovers, setLeaveApprovers] = useState([]);
-
-  useEffect(() => {
-    // console.log('Rendered', 'Yes!');
-  }, []);
 
   useEffect(() => {
     if (token) {
@@ -66,8 +65,8 @@ const Leaves = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    token && updateData();
-  }, [employeeID, token]);
+    if (isFocussed) token && updateData();
+  }, [employeeID, token, isFocussed]);
 
   const updateData = async () => {
     try {
