@@ -35,6 +35,7 @@ const Holidays = () => {
     }
   };
 
+  // console.log('Reresnder = ', holidaysData);
   return (
     <View style={{paddingTop: hp(1), flex: 1}}>
       {/* {isLoading  ? <Loader /> : null} */}

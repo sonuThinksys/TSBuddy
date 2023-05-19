@@ -14,6 +14,7 @@ import {
 } from 'utils/Responsive';
 import {getholidayDataIWithImage} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
+
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   const {description, holidayDate, newDateFormate, holidaysSetShowModal} =
     HolidaysData;
@@ -24,7 +25,7 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
     dispatch(getholidayDataIWithImage());
   }, []);
 
-  const {holidayDataIWithImage} = useSelector(state => state.home);
+  // const {holidayDataIWithImage} = useSelector(state => state.home);
 
   let daysArray = [
     'Sunday',
@@ -38,16 +39,16 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   let day = new Date(holidayDate).getDay();
   let dayName = daysArray[day];
 
-  useEffect(() => {
-    holidayDataIWithImage &&
-      holidayDataIWithImage.length &&
-      holidayDataIWithImage.map(el => {
-        if (el.nameOfHolidays === description) {
-          setImage(el.imageOfHoliday);
-          setDefinition(el.descriptions);
-        }
-      });
-  }, [holidayDataIWithImage]);
+  // useEffect(() => {
+  //   holidayDataIWithImage &&
+  //     holidayDataIWithImage.length &&
+  //     holidayDataIWithImage.map(el => {
+  //       if (el.nameOfHolidays === description) {
+  //         setImage(el.imageOfHoliday);
+  //         setDefinition(el.descriptions);
+  //       }
+  //     });
+  // }, [holidayDataIWithImage]);
 
   return (
     <>

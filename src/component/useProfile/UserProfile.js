@@ -56,7 +56,6 @@ const UserProfile = () => {
   const [searchedName, setSearchedName] = useState('');
   const [isFetchingEmployees, setIsFetchingEmployees] = useState(false);
   let skipCount = allEmpData.length || 0;
-  console.log('searchedName = ', searchedName);
   const [employeesCount, setEmployeesCount] = useState(0);
   const [refreshing, SetRefreshing] = useState(false);
 

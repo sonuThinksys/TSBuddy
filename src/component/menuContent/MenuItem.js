@@ -41,21 +41,6 @@ const MenuItem = ({navigation}) => {
 
   let {userFeedback, dailyMenuID} = useSelector(state => state.home);
 
-  const [feedbackCount, setFeedbackCount] = useState([
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-  ]);
-
   const [todayMenu, setTodayMenu] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -117,51 +102,6 @@ const MenuItem = ({navigation}) => {
     }
   }, []);
 
-  const getFeedbackUpdatedData = async () => {
-    try {
-      // const foodFeedback = await dispatch(getMenuFeedback(token));
-      // setFeedbackCount([
-      //   {
-      //     likes: foodFeedback?.payload?.totalBreakfastlikes,
-      //     dislikes: foodFeedback?.payload?.totalBreakfastdislikes,
-      //   },
-      //   {
-      //     likes: foodFeedback?.payload?.totalLunchlikes,
-      //     dislikes: foodFeedback?.payload?.totalLunchdislikes,
-      //   },
-      //   {
-      //     likes: foodFeedback?.payload?.totalMeallikes,
-      //     dislikes: foodFeedback?.payload?.totalMealdislikes,
-      //   },
-      // ]);
-      // if (foodFeedback?.error) {
-      //   ShowAlert({
-      //     messageHeader: ERROR,
-      //     messageSubHeader: foodFeedback?.error?.message,
-      //     buttonText: 'Close',
-      //     dispatch,
-      //     navigation,
-      //   });
-      // }
-      // const myFeedback =
-      //   dailyMenuID &&
-      //   (await dispatch(getSingleUserFeedback({token, menuID: dailyMenuID})));
-      // if (myFeedback?.error) {
-      //   ShowAlert({
-      //     messageHeader: ERROR,
-      //     messageSubHeader: myFeedback?.error?.message,
-      //     buttonText: 'Close',
-      //     dispatch,
-      //     navigation,
-      //   });
-      // }
-    } catch (err) {}
-  };
-
-  useEffect(() => {
-    getFeedbackUpdatedData();
-  }, []);
-
   const userData = {
     employee: 'EMP/10352',
     employeeName: 'Amit Kumar Pant',
@@ -215,10 +155,10 @@ const MenuItem = ({navigation}) => {
                   colors={[Colors.bluishGreen, Colors.green, Colors.grey]}
                   style={[
                     styles.feedbackBtn,
-                    {opacity: dailyMenuID ? 1 : 0.6},
+                    {opacity: dailyMenuID ? 1 : 0.5},
                   ]}>
                   <TouchableOpacity
-                    disabled={!dailyMenuID}
+                    disabled={dailyMenuID ? false : true}
                     onPress={() => {
                       setShowModal(true);
                       setModalData({

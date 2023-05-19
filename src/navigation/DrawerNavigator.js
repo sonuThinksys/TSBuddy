@@ -115,7 +115,8 @@ const drawerOption = ({
               //paddingTop: hp(0.5),
               fontSize: 16,
               // fontWeight: 'bold',
-              marginRight: wp(2),
+              // marginRight: wp(2),
+              marginLeft: wp(25),
               fontFamily: FontFamily.RobotoRegular,
             }}>
             {label}
@@ -316,8 +317,7 @@ const SalarySlipScreen = ({navigation}) => {
         options={drawerOption({
           showDrawer: false,
           showHeaderRight: false,
-          label: '      Preview',
-          // headerIconName: MonthImages.info_scopy,
+          label: 'Preview',
           navigation: navigation,
         })}
       />

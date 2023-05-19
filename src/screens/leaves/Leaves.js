@@ -40,7 +40,7 @@ const Leaves = ({navigation}) => {
   const [leaveApprovers, setLeaveApprovers] = useState([]);
 
   useEffect(() => {
-    console.log('Rendered', 'Yes!');
+    // console.log('Rendered', 'Yes!');
   }, []);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const Leaves = ({navigation}) => {
     reversLeaveesData.push(leavesData[i]);
   }
   reversLeaveesData.reverse();
-  console.log(reversLeaveesData);
+  // console.log(reversLeaveesData);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {leaveApprovers});

@@ -162,7 +162,7 @@ const FoodFeedback = ({modalData, showModal}) => {
                   <TouchableOpacity
                     onPress={() => {
                       handleSubmit();
-                      console.log('Press Submit', text, submit);
+                      // console.log('Press Submit', text, submit);
                     }}>
                     <Text style={styles.textStyle}> Submit </Text>
                   </TouchableOpacity>

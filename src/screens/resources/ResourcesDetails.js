@@ -64,7 +64,7 @@ const ResourcesDetails = ({route, navigation}) => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-        console.log('leavesData:', leavesData);
+        // console.log('leavesData:', leavesData);
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
