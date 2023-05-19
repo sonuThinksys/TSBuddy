@@ -740,10 +740,7 @@ export const getAttendencaeData = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
-<<<<<<< HEAD
         // console.log('data11:', data);
-=======
->>>>>>> 9cf92d79a6232f6145c429109093c2ac4f47a445
         if (status === 200) {
           return Promise.resolve(data);
         } else {

@@ -209,7 +209,6 @@ export const MonthImages = {
   filterIcon2x: FilterIcon2x,
   OpenLeaveIcon,
   ResourceIcon,
-<<<<<<< HEAD
 
   //emoji
   smily: smily,
@@ -217,11 +216,9 @@ export const MonthImages = {
   newtraly: newtraly,
   sad: sad,
   lovely: lovely,
-=======
   DeleteIcon,
   DesignationIcon,
   EmployeeIdIcon,
   CalenderIcon,
   EducationIcon,
->>>>>>> 9cf92d79a6232f6145c429109093c2ac4f47a445
 };
