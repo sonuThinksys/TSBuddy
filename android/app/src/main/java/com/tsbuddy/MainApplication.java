@@ -8,9 +8,11 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
+import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.tsbuddy.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 public class MainApplication extends Application implements ReactApplication {
@@ -24,16 +26,17 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-          // @SuppressWarnings("UnnecessaryLocalVariable");
-          return Arrays.<ReactPackage>asList(
-           new MainReactPackage(),
-           // Include the package
-           new RNHTMLtoPDFPackage()
-    );
-          // List<ReactPackage> packages = new PackageList(this).getPackages();
-          // // Packages that cannot be autolinked yet can be added manually here, for example:
-          // // packages.add(new MyReactNativePackage());
-          // return packages;
+          @SuppressWarnings("UnnecessaryLocalVariable")
+          // return Arrays.<ReactPackage>asList(
+          //  new MainReactPackage()
+          //  // Include the package
+          // //  new RNHTMLtoPDFPackage()
+        
+    // );
+          List<ReactPackage> packages = new PackageList(this).getPackages();
+          // Packages that cannot be autolinked yet can be added manually here, for example:
+          // packages.add(new MyReactNativePackage());
+          return packages;
         }
         
         @Override
@@ -54,14 +57,14 @@ public class MainApplication extends Application implements ReactApplication {
     }
   }
 
-  @Override
-  protected List<ReactPackage> getPackages() {
-    return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-        // Include the package
-        new RNHTMLtoPDFPackage()
-    );
-  }
+//  @Override
+//  protected List<ReactPackage> getPackages() {
+//    return Arrays.<ReactPackage>asList(
+//        new MainReactPackage(),
+//        // Include the package
+//        new RNHTMLtoPDFPackage()
+//    );
+//  }
   
   @Override
   public void onCreate() {

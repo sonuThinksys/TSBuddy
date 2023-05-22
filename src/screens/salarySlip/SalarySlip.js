@@ -72,8 +72,7 @@ const SalarySlip = ({navigation}) => {
       }}>
       <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
-      {/* {!isAuthenticated ? ( */}
-      {false ? (
+      {!isAuthenticated ? (
         <SalarSlipModal submitPassword={submitPassword} />
       ) : (
         <View style={{flex: 1}}>
@@ -82,6 +81,7 @@ const SalarySlip = ({navigation}) => {
               keyOfObject?.map((el, index) => {
                 return (
                   <ScrollView
+                    key={index}
                     style={{flex: 1, borderWidth: 1, borderColor: 'blue'}}>
                     <View key={index} style={{paddingHorizontal: wp(1)}}>
                       <View style={styles.yearMainView}>
