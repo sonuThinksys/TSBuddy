@@ -52,6 +52,7 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
             holidaysSetShowModal(false);
           }}>
           <Modal
+            backdropOpacity={0.2}
             animationType="slide"
             transparent={true}
             closeOnClick={true}
