@@ -830,13 +830,6 @@ export const getEmployeeData = createAsyncThunk(
   },
 );
 
-export const getholidayDataIWithImage = createAsyncThunk(
-  'home/holidayDataIWithImage',
-  async () => {
-    return Promise.resolve(holidayDatawithImage);
-  },
-);
-
 export const requestLunchSubmission = createAsyncThunk(
   'dataReducer/requestLunchSubmission',
   async formInput => {
@@ -1045,19 +1038,6 @@ const homeSlice = createSlice({
     //   state.leavesData = [];
     //   state.leavesDataError = action.payload;
     // });
-    builder.addCase(getholidayDataIWithImage.pending, state => {
-      state.holidayDataWithImageLoading = true;
-    });
-    builder.addCase(getholidayDataIWithImage.fulfilled, (state, action) => {
-      state.holidayDataWithImageLoading = false;
-      state.holidayDataIWithImage = action.payload;
-      state.holidayDataWithImageError = undefined;
-    });
-    builder.addCase(getholidayDataIWithImage.rejected, (state, action) => {
-      state.holidayDataWithImageLoading = false;
-      state.holidayDataIWithImage = [];
-      state.holidayDataWithImageError = action.payload;
-    });
 
     //fgfgfg
     builder.addCase(getEmployeeProfileData.pending, state => {

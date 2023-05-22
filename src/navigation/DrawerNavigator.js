@@ -115,8 +115,8 @@ const drawerOption = ({
               //paddingTop: hp(0.5),
               fontSize: 16,
               // fontWeight: 'bold',
-              // marginRight: wp(2),
-              marginLeft: wp(25),
+              marginRight: wp(2),
+              // marginLeft: wp(25),
               fontFamily: FontFamily.RobotoRegular,
             }}>
             {label}

@@ -115,6 +115,8 @@ import angry from 'assets/emoji/angry.png';
 import lovely from 'assets/emoji/lovely.png';
 import sad from 'assets/emoji/sad.png';
 import newtraly from 'assets/emoji/newtraly.png';
+import newYear from 'assets/emoji/NewYearMax.png';
+import dussehra from 'assets/emoji/dussehra.png';
 
 export const MonthImages = {
   plus: plus,
@@ -221,4 +223,6 @@ export const MonthImages = {
   EmployeeIdIcon,
   CalenderIcon,
   EducationIcon,
+  newYear,
+  dussehra,
 };
