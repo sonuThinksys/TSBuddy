@@ -159,7 +159,6 @@ const SalaryPdf = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             console.log('File: ' + pdfPath);
-            requestStoragePermission();
           }}>
           <View>
             <Image style={styles.downloadBTN} source={MonthImages.download} />

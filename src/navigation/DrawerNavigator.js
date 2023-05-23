@@ -56,9 +56,11 @@ import {
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
   ResourcesScreen,
+  CheckInOutScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
+import CheckInOut from 'screens/checkInOut/CheckInOut';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -69,6 +71,7 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
+const CheckInOutStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -438,6 +441,24 @@ const ResourcesStackScreen = ({navigation}) => {
   );
 };
 
+const CheckInOutStackScreen = ({navigation}) => {
+  return (
+    <CheckInOutStack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={CheckInOutScreen}>
+      <CheckInOutStack.Screen
+        options={drawerOption({
+          label: "Today's Atendance",
+          headerIconName: MonthImages.EventImage,
+          navigation: navigation,
+        })}
+        name={CheckInOutScreen}
+        component={CheckInOut}
+      />
+    </CheckInOutStack.Navigator>
+  );
+};
+
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -492,6 +513,8 @@ function DrawerNavigator({navigation}) {
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
+
+      <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} />
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />

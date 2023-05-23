@@ -26,15 +26,10 @@ const lunch = 'lunch';
 const snacks = 'snacks';
 
 import {
-  getMenuFeedback,
-  getSingleUserFeedback,
   getTodayMenuDetails,
-  giveMenuFeedback,
 } from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import LinearGradient from 'react-native-linear-gradient';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
-import {color} from 'react-native-reanimated';
 import FoodFeedback from 'modals/FoodFeedback';
 
 const MenuItem = ({navigation}) => {
