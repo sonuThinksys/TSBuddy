@@ -10,6 +10,7 @@ import {BarChart, LineChart} from 'react-native-chart-kit';
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
+import {FontFamily} from 'constants/fonts';
 const RemainingLeaves = () => {
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(
@@ -86,65 +87,96 @@ const RemainingLeaves = () => {
       />
     );
   };
-
+  // if (remainingLeaves?.length === 0) {
+  //   return (
+  //     <View
+  //       style={{
+  //         height: hp(16),
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //       }}>
+  //       <Text>No remaining leaves found.</Text>
+  //     </View>
+  //   );
+  // }
   return (
     <View>
       <View style={styles.container}>
         <Text style={styles.remainingText}>Remaining Leaves</Text>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-        }}>
+      {remainingLeaves?.length === 0 ? (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: FontFamily.RobotoMedium,
+              fontSize: 16,
+              color: Colors.lightBlue,
+              marginVertical: 4,
+            }}>
+            No remaining leaves found.
+          </Text>
+        </View>
+      ) : (
         <View>
-          {earnedLeavesData && earnedLeavesData?.length
-            ? barChartGraph({data: earnedLeavesData})
-            : null}
+          <View
+            style={{
+              flexDirection: 'row',
+            }}>
+            <View>
+              {earnedLeavesData && earnedLeavesData?.length
+                ? barChartGraph({data: earnedLeavesData})
+                : null}
 
-          <Text
-            style={{
-              textAlign: 'center',
-              position: 'absolute',
-              top: 200,
-              left: wp(19),
-            }}>
-            Earned Leave
-          </Text>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  position: 'absolute',
+                  top: 200,
+                  left: wp(19),
+                }}>
+                Earned Leave
+              </Text>
+            </View>
+            <View>
+              {restrictedLeavesData?.length
+                ? barChartGraph({data: restrictedLeavesData, rh: true})
+                : null}
+              <Text
+                style={{
+                  textAlign: 'center',
+                  position: 'absolute',
+                  bottom: 0,
+                  top: 200,
+                  right: 10,
+                }}>
+                Restricted Leave
+              </Text>
+            </View>
+          </View>
+          <View style={styles.leavesTypeContainer}>
+            <View style={styles.leaveType}>
+              <View style={styles.leavesType1}></View>
+              <Text>Allocated</Text>
+            </View>
+            <View style={styles.leaveType}>
+              <View style={styles.leavesType2}></View>
+              <Text>Taken</Text>
+            </View>
+            <View style={styles.leaveType}>
+              <View style={styles.leavesType3}></View>
+              <Text>+ve Balance</Text>
+            </View>
+            <View style={styles.leaveType}>
+              <View style={styles.leavesType4}></View>
+              <Text>-ve Balance</Text>
+            </View>
+          </View>
         </View>
-        <View>
-          {restrictedLeavesData?.length
-            ? barChartGraph({data: restrictedLeavesData, rh: true})
-            : null}
-          <Text
-            style={{
-              textAlign: 'center',
-              position: 'absolute',
-              bottom: 0,
-              top: 200,
-              right: 10,
-            }}>
-            Restricted Leave
-          </Text>
-        </View>
-      </View>
-      <View style={styles.leavesTypeContainer}>
-        <View style={styles.leaveType}>
-          <View style={styles.leavesType1}></View>
-          <Text>Allocated</Text>
-        </View>
-        <View style={styles.leaveType}>
-          <View style={styles.leavesType2}></View>
-          <Text>Taken</Text>
-        </View>
-        <View style={styles.leaveType}>
-          <View style={styles.leavesType3}></View>
-          <Text>+ve Balance</Text>
-        </View>
-        <View style={styles.leaveType}>
-          <View style={styles.leavesType4}></View>
-          <Text>-ve Balance</Text>
-        </View>
-      </View>
+      )}
     </View>
   );
 };

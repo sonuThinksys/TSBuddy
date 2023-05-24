@@ -41,6 +41,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 
 const ApplyLeave = ({navigation, route}) => {
+  const {openLeavesCount} = route?.params || {};
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -70,6 +71,7 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {
       remainingLeaves: [earnedLeaves = {}, restrictedLeaves = {}],
     },
+    holidayData,
   } = useSelector(state => state.home);
 
   const leaves = [
@@ -96,7 +98,7 @@ const ApplyLeave = ({navigation, route}) => {
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({fromDateStr: ''});
   const [toDate, setToDate] = useState({toDateStr: ''});
-  const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
+  const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
 
@@ -151,8 +153,9 @@ const ApplyLeave = ({navigation, route}) => {
   function weekdayCount(startDate, endDate) {
     let dayCount = 0;
 
-    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
+    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime() - 375);
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
     const presentDate = new Date(startDate);
 
     for (let i = 0; i < diffDays; i++) {
@@ -169,6 +172,26 @@ const ApplyLeave = ({navigation, route}) => {
   }
 
   const fromCalenderConfirm = date => {
+    if (date.getDay() === 0 || date.getDay() === 6) {
+      // date.setDate(date.getDate() + 1);
+      alert(
+        'Please select a valid start date which should not fall on weekends.',
+      );
+      fromOnCancel();
+      return;
+    }
+    for (let i = 0; i < holidayData.length; i++) {
+      const holidayObj = new Date(holidayData[i].holidayDate);
+
+      if (
+        holidayObj.getMonth() === date.getMonth() &&
+        date.getDate() === holidayObj.getDate()
+      ) {
+        alert('You can not take a holiday on National holiday.');
+        return;
+      }
+    }
+
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
@@ -176,10 +199,30 @@ const ApplyLeave = ({navigation, route}) => {
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
     if (toDate.toDateObj) {
+      if (date > toDate.toDateObj) {
+        alert('Please select From date which is not less than To date.');
+        fromOnCancel();
+        return;
+      }
       // const diffInMs = toDate.toDateObj.getTime() - date.getTime();
       // const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
       // =================================================================
+
+      const toDateMS = toDate.toDateObj.getTime();
+      const fromDateMS = date.getTime();
+      const diffInMS = toDateMS - fromDateMS;
+
       const totalWeekdays = Math.round(weekdayCount(date, toDate.toDateObj));
+
+      if (totalWeekdays > 5) {
+        const numberOfLeaveDays =
+          Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
+        setTotalNumberOfLeaveDays(numberOfLeaveDays);
+        setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
+        fromOnCancel();
+        return;
+      }
+
       // =================================================================
 
       setTotalNumberOfLeaveDays(totalWeekdays);
@@ -192,13 +235,56 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const toCalenderConfirm = date => {
+    if (date.getDay() === 0 || date.getDay() === 6) {
+      // date.setDate(date.getDate() + 1);
+      alert(
+        'Please select a valid end date which should not fall on weekends.',
+      );
+      toOnCancel();
+      return;
+    }
+
+    for (let i = 0; i < holidayData.length; i++) {
+      const holidayObj = new Date(holidayData[i].holidayDate);
+
+      if (
+        holidayObj.getMonth() === date.getMonth() &&
+        date.getDate() === holidayObj.getDate()
+      ) {
+        alert('You can not take a holiday on National holiday.');
+        return;
+      }
+    }
+
+    if (fromDate?.fromDateObj) {
+      if (fromDate?.fromDateObj > date) {
+        toOnCancel();
+        alert('Please select To date which is same or greater than From date.');
+        toOnCancel();
+        return;
+      }
+    }
+
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
 
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
+    const toDateMS = date.getTime();
+    const fromDateMS = fromDate.fromDateObj.getTime();
+    const diffInMS = toDateMS - fromDateMS;
+
     const totalWeekdays = weekdayCount(fromDate.fromDateObj, date);
+
+    if (totalWeekdays > 5) {
+      const numberOfLeaveDays = Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
+      setTotalNumberOfLeaveDays(numberOfLeaveDays);
+      setToDate({toDateObj: date, toDateStr: finalTodayDate});
+      toOnCancel();
+      return;
+    }
+
     setTotalNumberOfLeaveDays(totalWeekdays);
 
     setToDate({toDateObj: date, toDateStr: finalTodayDate});
@@ -227,6 +313,7 @@ const ApplyLeave = ({navigation, route}) => {
     leftDropdown,
     zIndex,
     resourseRightText,
+    rightDisabled = false,
   }) => {
     return (
       <View style={[styles.fromToContainer, {zIndex}]}>
@@ -271,7 +358,7 @@ const ApplyLeave = ({navigation, route}) => {
               ) : null}
               {selectableRight && !fromResource && (
                 <TouchableOpacity
-                  disabled={fromResource}
+                  disabled={fromResource || rightDisabled}
                   onPress={rightOnPress}>
                   <Image source={iconRight} style={{height: 20, width: 20}} />
                 </TouchableOpacity>
@@ -428,6 +515,7 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const applyLeave = async () => {
+    console.log('leaveType,leaveType', leaveType);
     if (!fromDate.fromDateObj || !toDate.toDateObj) {
       alert('Please select dates for which you want to apply for a leave.');
       return;
@@ -443,9 +531,35 @@ const ApplyLeave = ({navigation, route}) => {
       return;
     }
 
+    if (totalNumberOfLeaveDays === 0) {
+      alert('You can not apply leave on Weekends.');
+      return;
+    }
     if (totalNumberOfLeaveDays < 0.5) {
       alert('Difference between the number of leave days must be positive.');
       return;
+    }
+
+    if (leaveType.toLowerCase() === 'earned leave') {
+      const positiveDays = openLeavesCount?.earnedOpen + totalNumberOfLeaveDays;
+
+      if (positiveDays > earnedLeaves?.currentLeaveBalance) {
+        alert(
+          'You either run out of leave balance or you already opened remaining leaves.',
+        );
+        return;
+      }
+    }
+
+    if (leaveType.toLowerCase() === 'restricted holiday') {
+      console.log('andar', 'gya bhai');
+      const positiveDays = openLeavesCount?.rhOpen + totalNumberOfLeaveDays;
+      if (positiveDays > restrictedLeaves?.currentLeaveBalance) {
+        alert(
+          'You either run out of leave balance or you already opened remaining leaves.',
+        );
+        return;
+      }
     }
 
     // =========================================================================
@@ -570,6 +684,7 @@ const ApplyLeave = ({navigation, route}) => {
                 rightText: toDate.toDateStr,
                 zIndex: 1000,
                 resourseRightText: toDatestr,
+                rightDisabled: !fromDate.fromDateObj,
               })}
               {card({
                 zIndex: 1000,
