@@ -1,5 +1,11 @@
 import {Colors} from 'colors/Colors';
-import {View, TouchableOpacity, Text, AppState} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  AppState,
+  PermissionsAndroid,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -9,6 +15,7 @@ import {
 import styles from '../../screens/checkInOut/checkInOutStyles';
 import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import GetLocation from 'react-native-get-location';
 
 const dayArray = [
   'Monday',
@@ -49,6 +56,42 @@ const CheckInOut = () => {
   const totalDateString = `${dayArray[todayDay - 1]}, ${
     monthArray[todayMonth]
   } ${todayDate}, ${todayYear}`;
+
+  // async function requestLocationPermission() {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'Location Permission',
+  //         message:
+  //           'This App needs access to your location ' +
+  //           'so we can know where you are.',
+  //       },
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('You can use locations ');
+  //     } else {
+  //       console.log('Location permission denied');
+  //     }
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  // }
+
+  // useEffect(() => {
+  // requestLocationPermission();
+  //   GetLocation.getCurrentPosition({
+  //     enableHighAccuracy: true,
+  //     timeout: 60000,
+  //   })
+  //     .then(location => {
+  //       console.log(location);
+  //     })
+  //     .catch(error => {
+  //       const {code, message} = error;
+  //       console.warn(code, message);
+  //     });
+  // }, []);
 
   useEffect(() => {
     const loadTimer = async () => {

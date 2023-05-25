@@ -44,12 +44,39 @@ const ApplyLeave = ({navigation, route}) => {
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
+  const fromOpenLeave = route?.params?.fromOpenLeave || false;
+  const [isEditOpenleave, setIsEditOpenleave] = useState(false);
+
   const resourceData = route?.params;
+  const openLeaveData = route?.params;
 
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
   const fromDateObj = new Date(resourceData?.fromDate);
+
+  const openLeavFromDateObj = new Date(openLeaveData?.toDate);
+  const openLeaveToDateObj = new Date(openLeaveData?.toDate);
+  const openLeaveType = openLeaveData?.leaveType;
+  const openLeaveNumberOfDays = openLeaveData?.totalLeaveDays;
+  const openLeavePostingDateObj = new Date(openLeaveData?.postingDate);
+  const openLeavehalfDay = openLeaveData?.halfDay;
+  const openLeaveReason = openLeaveData?.description;
+  const openLeaveApprover = openLeaveData?.managerInfoDto?.employeeName;
+
+  const openLeaveFromDatestr = openLeavFromDateObj.toLocaleDateString(
+    'en-US',
+    dateOptions,
+  );
+  const openLeaveTooDatestr = openLeaveToDateObj.toLocaleDateString(
+    'en-US',
+    dateOptions,
+  );
+
+  const openLeavePostingDateStr = openLeavePostingDateObj.toLocaleDateString(
+    'en-US',
+    dateOptions,
+  );
 
   const postingDateStr = postingDateObj?.toLocaleDateString(
     'en-US',
@@ -94,15 +121,17 @@ const ApplyLeave = ({navigation, route}) => {
 
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
-  const [fromDate, setFromDate] = useState({fromDateStr: ''});
-  const [toDate, setToDate] = useState({toDateStr: ''});
+  const [fromDate, setFromDate] = useState({
+    fromDateStr: openLeaveFromDatestr || '',
+  });
+  const [toDate, setToDate] = useState({toDateStr: openLeaveTooDatestr || ''});
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
 
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState(openLeaveReason || '');
   const [leaveApprovers, setLeaveApprovers] = useState('');
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
@@ -499,8 +528,7 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const finalizeLeave = async status => {
-    setLoading(true);
-    const empId = +resourceEmployeeID.match(/\d+/g)[0];
+    const empId = +employeeID.match(/\d+/g)[0];
     const response =
       token &&
       (await dispatch(
@@ -539,7 +567,7 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const onSelectLeaveApprover = selectedOption => {
-    console.log('selectedOption:', selectedOption);
+    // console.log('selectedOption:', selectedOption);
   };
 
   return (
@@ -566,8 +594,18 @@ const ApplyLeave = ({navigation, route}) => {
                 iconRight: MonthImages.CalenderIcon,
                 leftOnPress: showFromDatePicker,
                 rightOnPress: showToDatePicker,
-                leftText: !fromResource ? fromDate.fromDateStr : fromDatestr,
-                rightText: toDate.toDateStr,
+                leftText: fromResource
+                  ? fromDatestr
+                  : isEditOpenleave && isEditOpenleave
+                  ? fromDate.fromDateStr
+                  : fromOpenLeave
+                  ? openLeaveFromDatestr
+                  : fromDate.fromDateStr,
+                rightText: isEditOpenleave
+                  ? toDate.toDateStr
+                  : fromOpenLeave
+                  ? openLeaveTooDatestr
+                  : toDate.toDateStr,
                 zIndex: 1000,
                 resourseRightText: toDatestr,
               })}
@@ -576,7 +614,13 @@ const ApplyLeave = ({navigation, route}) => {
                 leftLabel: 'Created Date',
                 rightLabel: 'Half Day',
                 selectableRight: true,
-                leftText: !fromResource ? finalTodayDate : postingDateStr,
+                leftText: isEditOpenleave
+                  ? finalTodayDate
+                  : fromResource
+                  ? postingDateStr
+                  : fromOpenLeave
+                  ? openLeavePostingDateStr
+                  : finalTodayDate,
                 iconRight: MonthImages.DropDownIcon,
                 rightText: 'None',
                 rightDropdown: (
@@ -638,10 +682,16 @@ const ApplyLeave = ({navigation, route}) => {
                 selectableLeft: true,
                 iconLeft: MonthImages.DropDownIcon,
                 rightText:
-                  totalNumberOfLeaveDays >= 0.5 ? totalNumberOfLeaveDays : '',
-                leftText: !fromResource
-                  ? 'Earned Leave'
-                  : resourceData.leaveType,
+                  totalNumberOfLeaveDays >= 0.5
+                    ? totalNumberOfLeaveDays
+                    : fromOpenLeave
+                    ? openLeaveNumberOfDays
+                    : '',
+                leftText: fromResource
+                  ? resourceData.leaveType
+                  : fromOpenLeave
+                  ? openLeaveType
+                  : 'Earned Leave',
                 resourseRightText: resourceData?.totalLeaveDays,
                 leftDropdown: (
                   // <View>
@@ -656,7 +706,13 @@ const ApplyLeave = ({navigation, route}) => {
                     }}
                     isFullWidth={true}
                     showsVerticalScrollIndicator={false}
-                    defaultValue={fromResource ? resourceData.leaveType : ''}
+                    defaultValue={
+                      fromResource
+                        ? resourceData.leaveType
+                        : fromOpenLeave
+                        ? openLeaveType
+                        : ''
+                    }
                     options={leaveTypes}
                     dropdownStyle={{
                       width: '45%',
@@ -695,26 +751,33 @@ const ApplyLeave = ({navigation, route}) => {
               />
               <View style={styles.reasonContainer}>
                 <Text style={styles.reasonText}>Reason</Text>
-                {!fromResource ? (
+                {isEditOpenleave ? (
+                  <TextInput
+                    onChangeText={giveReason}
+                    multiline={true}
+                    style={styles.reasonTextInput}
+                    value={reason}
+                  />
+                ) : fromResource ? (
+                  <Text style={styles.resourceReasonText}>
+                    {resourceData?.description}
+                  </Text>
+                ) : fromOpenLeave ? (
+                  <Text style={styles.resourceReasonText}>
+                    {openLeaveReason}
+                  </Text>
+                ) : (
                   <TextInput
                     onChangeText={giveReason}
                     multiline={true}
                     style={styles.reasonTextInput}
                   />
-                ) : (
-                  <Text style={styles.resourceReasonText}>
-                    {resourceData?.description}
-                  </Text>
                 )}
               </View>
               <View style={styles.leaveApproverContainer}>
                 <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-                {!fromResource ? (
-                  isGuestLogin ? (
-                    <Text style={styles.leaveApproverName}>
-                      {guestProfileData?.managerInfoDto?.employeeName}
-                    </Text>
-                  ) : leaveApprovers.length === 1 ? (
+                {isEditOpenleave ? (
+                  leaveApprovers.length === 1 ? (
                     <Text style={styles.leaveApproverName}>
                       {leaveApprovers[0]?.leaveApproverName}
                     </Text>
@@ -736,22 +799,45 @@ const ApplyLeave = ({navigation, route}) => {
                       </View>
                     </View>
                   )
-                ) : (
+                ) : fromResource ? (
                   <Text style={styles.leaveApproverName}>
                     {resourceData.leaveApproverName}
                   </Text>
+                ) : fromOpenLeave ? (
+                  <Text style={styles.leaveApproverName}>
+                    {openLeaveApprover}
+                  </Text>
+                ) : isGuestLogin ? (
+                  <Text style={styles.leaveApproverName}>
+                    {guestProfileData?.managerInfoDto?.employeeName}
+                  </Text>
+                ) : leaveApprovers.length === 1 ? (
+                  <Text style={styles.leaveApproverName}>
+                    {leaveApprovers[0]?.leaveApproverName}
+                  </Text>
+                ) : (
+                  <View>
+                    <View>
+                      <DropDownPicker
+                        placeholder={'Select....'}
+                        open={openLeaveApprovers}
+                        value={leaveApproversValue}
+                        items={leaveApproversList}
+                        setOpen={setOpenLeaveApproovers}
+                        setValue={setLeaveApproversValue}
+                        setItems={setLeaveApproversList}
+                        onSelectItem={onSelectLeaveApprover}
+                        containerStyle={{width: wp(50)}}
+                        style={{borderRadius: 4}}
+                      />
+                    </View>
+                  </View>
                 )}
               </View>
             </View>
           </ScrollView>
 
-          {!fromResource ? (
-            <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={applyLeave}>
-                <Text style={styles.applyText}>Apply</Text>
-              </Pressable>
-            </View>
-          ) : (
+          {fromResource ? (
             <View style={styles.resourceButtonContainer}>
               <Pressable
                 style={styles.resourceButton}
@@ -767,6 +853,38 @@ const ApplyLeave = ({navigation, route}) => {
                 style={styles.resourceButton}
                 onPress={finalizeLeave.bind(null, 'Approved')}>
                 <Text style={styles.applyText}>Approve</Text>
+              </Pressable>
+            </View>
+          ) : isEditOpenleave ? (
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.button} onPress={applyLeave}>
+                <Text style={styles.applyText}>Apply</Text>
+              </Pressable>
+            </View>
+          ) : fromOpenLeave ? (
+            <View style={styles.resourceButtonContainer}>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={finalizeLeave.bind(null, 'Dismissed')}>
+                <Text style={styles.applyText}>Dismiss</Text>
+              </Pressable>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={() => {
+                  setIsEditOpenleave(true);
+                }}>
+                <Text style={styles.applyText}>Edit</Text>
+              </Pressable>
+              <Pressable
+                style={styles.resourceButton}
+                onPress={finalizeLeave.bind(null, 'Cancel')}>
+                <Text style={styles.applyText}>Cancel</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.button} onPress={applyLeave}>
+                <Text style={styles.applyText}>Apply</Text>
               </Pressable>
             </View>
           )}

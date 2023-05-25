@@ -90,7 +90,7 @@ const SalarySlip = ({navigation}) => {
                         <View style={styles.yearTextView}>
                           <Text style={styles.yearText}>{el}</Text>
                         </View>
-                      </View>
+                       </View>
                       <View style={styles.MapView}>
                         {newyearWiseData &&
                           Object.keys(newyearWiseData).length !== 0 &&
