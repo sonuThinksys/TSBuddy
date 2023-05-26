@@ -56,11 +56,9 @@ import {
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
   ResourcesScreen,
-  CheckInOutScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
-import CheckInOut from 'screens/checkInOut/CheckInOut';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -71,7 +69,6 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
-const CheckInOutStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -101,35 +98,33 @@ const drawerOption = ({
     headerStyle: {backgroundColor: Colors.darkBlue},
     headerTintColor: Colors.white,
     headerTitle: () => (
-      // <TouchableOpacity>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text
-          disabled={true}
+      <TouchableOpacity>
+        <View
           style={{
-            color: Colors.white,
-            textAlign: 'center',
-            marginLeft:
-              Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
-            //paddingTop: hp(0.5),
-            fontSize: 16,
-            // fontWeight: 'bold',
-            marginRight: wp(2),
-            // marginLeft: wp(25),
-            fontFamily: FontFamily.RobotoRegular,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          {label}
-        </Text>
-        {headerIcon && (
-          <Image source={headerIcon} style={{height: 22, width: 22}} />
-        )}
-      </View>
-      // </TouchableOpacity>
+          <Text
+            style={{
+              color: Colors.white,
+              textAlign: 'center',
+              marginLeft:
+                Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
+              //paddingTop: hp(0.5),
+              fontSize: 16,
+              // fontWeight: 'bold',
+              marginRight: wp(2),
+              fontFamily: FontFamily.RobotoRegular,
+            }}>
+            {label}
+          </Text>
+          {headerIcon && (
+            <Image source={headerIcon} style={{height: 22, width: 22}} />
+          )}
+        </View>
+      </TouchableOpacity>
     ),
     headerRight: showHeaderRight
       ? () => (
@@ -318,12 +313,7 @@ const SalarySlipScreen = ({navigation}) => {
       <SalarySlipStack.Screen
         name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
-        options={drawerOption({
-          showDrawer: false,
-          showHeaderRight: false,
-          label: 'Preview',
-          navigation: navigation,
-        })}
+        options={{headerShown: true}}
       />
     </SalarySlipStack.Navigator>
   );
@@ -442,24 +432,6 @@ const ResourcesStackScreen = ({navigation}) => {
   );
 };
 
-const CheckInOutStackScreen = ({navigation}) => {
-  return (
-    <CheckInOutStack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName={CheckInOutScreen}>
-      <CheckInOutStack.Screen
-        options={drawerOption({
-          label: "Today's Atendance",
-          headerIconName: MonthImages.EventImage,
-          navigation: navigation,
-        })}
-        name={CheckInOutScreen}
-        component={CheckInOut}
-      />
-    </CheckInOutStack.Navigator>
-  );
-};
-
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -514,8 +486,6 @@ function DrawerNavigator({navigation}) {
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
-
-      <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} />
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />

@@ -6,10 +6,9 @@ import {
   FlatList,
   SafeAreaView,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from 'react-native';
-
 import Modal from 'react-native-modal';
-
 import {
   heightPercentageToDP as hp,
   screenHeight,
@@ -32,58 +31,14 @@ import {
 } from 'utils/utils';
 import {FontFamily} from 'constants/fonts';
 const Attendence = ({navigation}) => {
-  const {attendenceData: dailyAttendance = []} = useSelector(
-    state => state.home,
-  );
-
-  const {holidayData: holidaysData = []} = useSelector(state => state.home);
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
+  const [totalHourSpend, setTotalHoursSpend] = useState(0);
   const [remainingHours, setRemainingHours] = useState(0.0);
   const [isLoading, setLoading] = useState(false);
   const [isImageLoading, setImageLoading] = useState(false);
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
   const [modalDate, setModalDate] = useState(null);
-  const [pressedDayDate, setPressedDayDate] = useState(null);
-  console.log('pressedDayDate:', pressedDayDate);
-
-  useEffect(() => {
-    // year:2023
-    // month:5
-    // day:5
-    // timestamp:1683244800000
-    // dateString:2023-05-05
-
-    const pressedDate = dailyAttendance?.find(
-      date =>
-        new Date(date?.attendanceDate)?.getDate() ===
-        new Date(modalDate?.dateString).getDate(),
-    );
-
-    const inTimeHours = new Date(pressedDate?.inTime)?.getHours();
-    const outTimeHours = new Date(pressedDate?.outTime)?.getHours();
-    const inTimeMinutes = new Date(pressedDate?.inTime)?.getMinutes();
-    const outTimeMinutes = new Date(pressedDate?.outTime)?.getMinutes();
-
-    const inTime =
-      inTimeHours +
-      ':' +
-      (inTimeMinutes < 10 ? '0' + inTimeMinutes : inTimeMinutes);
-    const outTime =
-      outTimeHours +
-      ':' +
-      (outTimeMinutes < 10 ? '0' + outTimeMinutes : outTimeMinutes);
-
-    const pressedDateObj = {
-      inTime,
-      outTime,
-      totalHours: pressedDate?.totalHours,
-    };
-
-    // console.log('pressedDate:', typeof pressedDate.inTime);
-
-    setPressedDayDate(pressedDateObj);
-  }, [showDailyStatusModal]);
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
@@ -108,35 +63,32 @@ const Attendence = ({navigation}) => {
     (async () => {
       if (employeeID && token) {
         try {
-          if (visisbleMonth > 0 || visibleYear > 0) {
-            setLoading(true);
-            const attendence = await dispatch(
-              getAttendencaeData({
-                token,
-                employeeID,
-                visisbleMonth,
-                visibleYear,
-              }),
-            );
-            // const data = attendence?.payload?.dailyAttendance;
+          setLoading(true);
+          const attendence = await dispatch(
+            getAttendencaeData({token, employeeID, visisbleMonth, visibleYear}),
+          );
+          // const data = attendence?.payload?.dailyAttendance;
 
-            if (attendence?.error) {
-              ShowAlert({
-                messageHeader: ERROR,
-                messageSubHeader: attendence?.error?.message,
-                buttonText: 'Close',
-                dispatch,
-                navigation,
-              });
-            }
+          if (attendence?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: attendence?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
           }
+          setLoading(false);
         } catch (err) {
-        } finally {
           setLoading(false);
         }
       }
     })();
   }, [visisbleMonth, visibleYear]);
+
+  const {attendenceData: {employeeAttendance = [], dailyAttendance = []} = {}} =
+    useSelector(state => state.home);
+  const {holidayData: holidaysData = []} = useSelector(state => state.home);
 
   const startEndDate = () => {
     let startDate = attendanceDate(1);
@@ -150,7 +102,6 @@ const Attendence = ({navigation}) => {
   let endDateFormat = startEndDateFormat(endDate);
 
   const [finalWeekTime, setFinalWeekTime] = useState('00:00');
-
   useEffect(() => {
     let privMonDAy = new Date();
     privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
@@ -220,32 +171,66 @@ const Attendence = ({navigation}) => {
     } else {
       const remainingTotalMinutes =
         minutesShouldHaveCompleted - minutesCompleted;
-      const hoursLeft = Math.floor(remainingTotalMinutes / 60);
-      const minutesLeft = remainingTotalMinutes % 60;
+      const remainingHours = Math.floor(remainingTotalMinutes / 60);
+      const remainingMinutes = remainingTotalMinutes % 60;
       setRemainingHours({
         isExtra: false,
-        extraTime: `-${hoursLeft}:${minutesLeft}`,
+        extraTime: `${remainingHours}:${remainingMinutes}`,
       });
     }
-  }, [dailyAttendance]);
 
+    // const hoursStatus = hoursShouldHaveCompleted>=thisWeekHours?`${thisWeekHours-thisWeekHours}`:``;
+    // setRemainingHours()
+
+    // this was done by Radhika to show the status of hours of this week
+    // let totalHoursSpendInWeek = 0;
+    // let totalCompanyHours = 0;
+    // let index = dailyAttendance.length - 1;
+
+    // for (var d = privMonDAy; d < now; d.setDate(d.getDate() + 1)) {
+    //   // if (d === dailyAttendance[index]) {
+    //   // }
+
+    //   totalHoursSpendInWeek =
+    //     totalHoursSpendInWeek + dailyAttendance[index]?.totalHours;
+    //   totalCompanyHours = totalCompanyHours + 9;
+
+    //   index--;
+    // }
+
+    // let remainingHoursUpdate = totalCompanyHours - totalHoursSpendInWeek;
+
+    // setRemainingHours(remainingHoursUpdate.toFixed(2));
+    // setTotalHoursSpend(
+    //   totalHoursSpendInWeek ? totalHoursSpendInWeek.toFixed(2) : '00.00',
+    // );
+
+    // this was done by Radhika to show the status of hours of this week
+  }, []);
+
+  // function getPreviousDay(date = new Date()) {
+  //   const previous = new Date(date.getTime());
+  //   previous.setDate(date.getDate() - 1);
+
+  //   return previous;
+  // }
+
+  // const [, setMark] = useState({});
+  // let mark;
   let monthMark = {};
 
   const daysInMonth = getDaysInMonth(visisbleMonth - 1);
-  // const daysInMonth = new Date().getDate();
 
   for (let i = 1; i <= daysInMonth; i++) {
     const date = i > 9 ? i : '0' + i;
     const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
     const dateStr = `${visibleYear}-${month}-${date}`;
-    if (new Date(dateStr) < Date.now()) {
-      const dateIndex = new Date(dateStr).getDay();
-      if (dateIndex !== 6 && dateIndex !== 0) {
-        monthMark = {
-          ...monthMark,
-          [dateStr]: {selected: true, selectedColor: 'red'},
-        };
-      }
+    const dateIndex = new Date(dateStr).getDay();
+    if (dateIndex !== 6 && dateIndex !== 0) {
+      monthMark = {
+        ...monthMark,
+        [dateStr]: {selected: true, selectedColor: 'red'},
+      };
     }
   }
 
@@ -268,7 +253,7 @@ const Attendence = ({navigation}) => {
         };
       }
     });
-
+  // =================================================================
   dailyAttendance &&
     dailyAttendance.length &&
     dailyAttendance?.forEach(day => {
@@ -296,6 +281,13 @@ const Attendence = ({navigation}) => {
         };
       }
     });
+  // =================================================================
+
+  // setMark(monthMark);
+
+  // useEffect(() => {
+
+  // }, [visisbleMonth, visibleYear, holidaysData, dailyAttendance]);
 
   let mark = monthMark;
   const DATA = [
@@ -336,12 +328,6 @@ const Attendence = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isLoading ? (
-        <View style={styles.loaderContainer}>
-          <View style={styles.loaderBackground} />
-          <ActivityIndicator size="large" />
-        </View>
-      ) : null}
       <ImageBackground
         resizeMode="stretch"
         onLoadStart={() => setImageLoading(true)}
@@ -368,14 +354,9 @@ const Attendence = ({navigation}) => {
               setShowDailyStatusModal(false);
             }}>
             <View style={styles.modalContainer}>
-              <Text style={styles.text1}>
-                In Time: {pressedDayDate?.inTime}
-              </Text>
-              <Text style={styles.text1}>
-                Out Time: {pressedDayDate?.outTime}
-              </Text>
+              <Text style={styles.text1}>{modalDate.day}</Text>
               <View style={styles.imageView}>
-                <Text>Total Hours: {pressedDayDate?.totalHours}</Text>
+                <Text style={{margin: wp(1)}}> hello Line 2</Text>
               </View>
             </View>
           </Modal>
@@ -403,11 +384,11 @@ const Attendence = ({navigation}) => {
                   Total Hour Spend {finalWeekTime}
                   <Text
                     style={{
-                      color: remainingHours?.isExtra
+                      color: remainingHours.isExtra
                         ? Colors.green
                         : Colors.reddishTint,
                     }}>
-                    ({remainingHours?.extraTime})
+                    ({remainingHours.extraTime})
                   </Text>
                 </Text>
               </View>
@@ -490,20 +471,27 @@ const RenderCalender = ({
 }) => {
   return (
     <CalendarList
+      displayLoadingIndicator={true}
       onDayPress={day => {
-        if (day.day < new Date().getDate()) {
-          setShowDailyStatusModal(true);
-          setModalDate(day);
-        }
+        setShowDailyStatusModal(true);
+        setModalDate(day);
+
+        //   {
+        //     "year": 2023,
+        //     "month": 5,
+        //     "day": 4,
+        //     "timestamp": 1683158400000,
+        //     "dateString": "2023-05-04"
+        //   }
       }}
       horizontal={true}
       markingType={'custom'}
       scrollEnabled={true}
       animateScroll={true}
       showScrollIndicator={false}
+      // Enable paging on horizontal, default = false
       pagingEnabled={true}
       onVisibleMonthsChange={months => {
-        console.log('months:', months);
         setVisibleMonth(months[0]?.month);
         setVisibleYear(months[0]?.year);
         // setLoading(true)

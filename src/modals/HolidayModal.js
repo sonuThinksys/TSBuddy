@@ -12,14 +12,19 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {getholidayDataIWithImage} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import {holidayDatawithImage} from '../../db';
-
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   const {description, holidayDate, newDateFormate, holidaysSetShowModal} =
     HolidaysData;
   const [image, setImage] = useState('');
   const [definition, setDefinition] = useState('');
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getholidayDataIWithImage());
+  }, []);
+
+  const {holidayDataIWithImage} = useSelector(state => state.home);
 
   let daysArray = [
     'Sunday',
@@ -34,15 +39,15 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   let dayName = daysArray[day];
 
   useEffect(() => {
-    holidayDatawithImage &&
-      holidayDatawithImage.length &&
-      holidayDatawithImage.map(el => {
+    holidayDataIWithImage &&
+      holidayDataIWithImage.length &&
+      holidayDataIWithImage.map(el => {
         if (el.nameOfHolidays === description) {
           setImage(el.imageOfHoliday);
           setDefinition(el.descriptions);
         }
       });
-  }, []);
+  }, [holidayDataIWithImage]);
 
   return (
     <>
@@ -52,7 +57,6 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
             holidaysSetShowModal(false);
           }}>
           <Modal
-            backdropOpacity={0.2}
             animationType="slide"
             transparent={true}
             closeOnClick={true}

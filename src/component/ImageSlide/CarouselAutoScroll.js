@@ -40,32 +40,18 @@ const CarouselAutoScroll = ({navigation}) => {
     })();
   }, []);
   const {calendereventData: calenderData} = useSelector(state => state.home);
-  const birthdays = calenderData?.calenderEvent;
-  const anniversaries = calenderData?.anniversaryEvent;
   const keyOfObject = Object.keys(calenderData);
 
   useEffect(() => {
     let arr = [];
-    const events = [];
-
-    birthdays?.forEach(birthday => {
-      const newBirthday = {...birthday};
-      newBirthday.isBirthday = true;
-      events.push(newBirthday);
-    });
-    anniversaries?.forEach(anniversary => {
-      const newAnniversary = {...anniversary};
-      newAnniversary.isBirthday = false;
-      events.push(newAnniversary);
-    });
-
     keyOfObject.map(el => {
       calenderData[el].map(element => {
         arr.push(element);
       });
     });
-    setCalenderEventData(events);
+    setCalenderEventData(arr);
   }, [calenderData]);
+  useEffect(() => {}, [calenderData]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -123,7 +109,6 @@ const CarouselAutoScroll = ({navigation}) => {
                 dateOfJoining: item.dateOfJoining,
                 name: item.employeeName,
                 description: item.description,
-                isBirthday: item.isBirthday,
 
                 setShowModal: setShowModal,
               });
@@ -131,7 +116,7 @@ const CarouselAutoScroll = ({navigation}) => {
             }}>
             <ImageBackground
               source={
-                !item.isBirthday
+                item.description === null
                   ? MonthImages.workAnniversaryy
                   : MonthImages.BirthdayImage
               }
@@ -144,7 +129,7 @@ const CarouselAutoScroll = ({navigation}) => {
                 <Text
                   numberOfLines={2}
                   style={{color: Colors.white, textAlign: 'center'}}>
-                  {!item.isBirthday
+                  {item.description === null
                     ? `Happy Work Aniversary ${item.employeeName} on ${moment(
                         item.dateOfJoining,
                       ).format('DD MMM ')}`

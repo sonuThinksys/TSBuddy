@@ -25,7 +25,4 @@ export default {
   updateLeaveStatus: `${API_URL}/EmployeeProfile/UpdateLeaveStatus`,
   GetDailyAttendanceByEmpId: `${API_URL}/Attendance/GetDailyAttendanceByEmpId`,
   getLeaveApprovers: `${API_URL}/Leave/GetLeaveApprover?empId=`,
-  addMealFeedback: `${API_URL}/FoodRequest/AddMealFeedback`,
-  getLunchRequests: `${API_URL}/FoodRequest/GetLunchRequest?empId=`,
-  cancelLunchRequest: `${API_URL}/FoodRequest/CancelLunchRequest`,
 };

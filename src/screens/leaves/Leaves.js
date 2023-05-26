@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -26,7 +25,6 @@ import {guestLeavesScreenData} from 'guestData';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
-
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -34,13 +32,16 @@ const Leaves = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const dispatch = useDispatch();
-  const isFocussed = useIsFocused();
 
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
 
   const [leaveApprovers, setLeaveApprovers] = useState([]);
+
+  useEffect(() => {
+    console.log('Rendered', 'Yes!');
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -65,8 +66,8 @@ const Leaves = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (isFocussed) token && updateData();
-  }, [employeeID, token, isFocussed]);
+    token && updateData();
+  }, [employeeID, token]);
 
   const updateData = async () => {
     try {
@@ -84,12 +85,6 @@ const Leaves = ({navigation}) => {
     isLeaveDataLoading: {isLoading},
   } = useSelector(state => state.home);
 
-  let reversLeaveesData = [];
-  for (let i = 0; i < leavesData.length; i++) {
-    reversLeaveesData.push(leavesData[i]);
-  }
-  reversLeaveesData.reverse();
-
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {leaveApprovers});
   };
@@ -102,16 +97,9 @@ const Leaves = ({navigation}) => {
       if (!shouldRender) return null;
     }
 
-    const handleNavigation = () => {
-      if (item.status == 'Open') {
-        navigation.navigate(LeaveApplyScreen, {...item, fromOpenLeave: true});
-      } else {
-        navigation.navigate(LeaveDetailsScreen, item);
-      }
-    };
-
     return (
-      <TouchableOpacity onPress={() => handleNavigation()}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate(LeaveDetailsScreen, item)}>
         <View style={styles.flateListView}>
           <View
             style={{
@@ -254,7 +242,7 @@ const Leaves = ({navigation}) => {
             showsVerticalScrollIndicator={false}
             refreshing={isRefresh}
             onRefresh={updateData}
-            data={reversLeaveesData}
+            data={leavesData}
             renderItem={renderItem}
             keyExtractor={(_, index) => index}
           />

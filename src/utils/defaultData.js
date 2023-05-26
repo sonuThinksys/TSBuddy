@@ -69,7 +69,7 @@ export const leaveTypes = [
 
 export const newDropDownOptions = [firstFalf, secondHalf, none];
 
-export const approver = 'Sandhya Sharma';
+export const approver = 'Mayank Sharma';
 
 export const monthsName = [
   'January',

@@ -31,13 +31,5 @@ export default StyleSheet.create({
     paddingLeft: wp(2),
     paddingVertical: hp(0.8),
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  feedbackBtn: {
-    width: wp(20),
-    height: hp(3.5),
-    padding: 5,
-    borderRadius: 4,
-  },
-  textStyle: {color: 'white', fontWeight: 'bold'},
 });

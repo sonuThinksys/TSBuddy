@@ -18,7 +18,7 @@ const AttaindanceDetails = (route, navigation) => {
   const {params: data} = route.route;
 
   const details = [
-    ['Employee Name', data?.employeeName || 'Employee Sharma'],
+    ['Employee Name', data?.employeeName || 'Utkarsh Gupta'],
     ['In-Time', data?.intime || '11:11:11'],
     ['Out-Time', data?.outtime || '12:12:12'],
     ['Total Hour', data?.totalHrs || '10:10:10'],

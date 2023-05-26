@@ -15,6 +15,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import baseUrl from 'services/Urls';
 import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,6 +23,7 @@ import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import styles from '../leaves/LeaveStyles';
 import {guestLeavesScreenData} from 'guestData';
+import Attendence from 'screens/attendence/Attendence';
 import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
@@ -62,7 +64,7 @@ const ResourcesDetails = ({route, navigation}) => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-
+        console.log('leavesData:', leavesData);
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
@@ -163,6 +165,7 @@ const ResourcesDetails = ({route, navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={style.container}>
@@ -266,30 +269,15 @@ const ResourcesDetails = ({route, navigation}) => {
       </View>
       <View style={style.listOfLeaves}>
         {selectedTab === 'leaves' ? (
-          resurcesEmployeeLeaves.length > 0 ? (
-            <FlatList
-              refreshing={isRefresh}
-              onRefresh={updateData}
-              data={
-                isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves
-              }
-              renderItem={renderItem}
-              keyExtractor={(_, index) => index}
-            />
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
-                Applied Leaves Not Found.
-              </Text>
-            </View>
-          )
+          <FlatList
+            refreshing={isRefresh}
+            onRefresh={updateData}
+            data={isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves}
+            renderItem={renderItem}
+            keyExtractor={(_, index) => index}
+          />
         ) : (
-          <AttendenceTab employeeName={employeeName} employeeID={employeeID} />
+          <AttendenceTab employeeID={employeeID} />
         )}
       </View>
     </SafeAreaView>

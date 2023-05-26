@@ -7,20 +7,21 @@ import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
   container: {
     backgroundColor: Colors.darkBlue,
+    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingHorizontal: wp(5),
     paddingVertical: hp(2),
-    alignItems: 'center',
   },
   lunchTextView: {
     flexDirection: 'row',
+    flex: 4,
     justifyContent: 'center',
     paddingTop: hp(0.5),
   },
   text1: {
     color: Colors.white,
-    // marginRight: wp(2),
+    marginRight: wp(2),
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -140,53 +141,5 @@ export default StyleSheet.create({
   },
   selectedDated: {
     fontSize: 14,
-  },
-  request: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: Colors.grey,
-    borderRadius: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 5,
-    justifyContent: 'space-between',
-  },
-  appliedRequestsLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
-    marginRight: 10,
-
-    marginLeft: 0,
-  },
-  requestText: {
-    fontSize: 11.5,
-    // marginRight: 14,
-  },
-  requestType: {
-    paddingHorizontal: 7,
-    paddingVertical: 4,
-    borderRadius: 40,
-    color: Colors.dune,
-  },
-  requestTypeContainer: {
-    backgroundColor: Colors.whitishPink,
-    borderRadius: 8,
-    marginRight: 16,
-  },
-  cancelButton: {
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: Colors.red,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cancelText: {
-    color: Colors.white,
-  },
-  image: {
-    width: 20,
-    aspectRatio: 1,
   },
 });

@@ -41,12 +41,11 @@ export const getUserToken = createAsyncThunk(
           if (status === 200) {
             return Promise.resolve({data, formInput});
           } else {
-            return Promise.reject(result.response);
-            // return Promise.reject(data);
+            return Promise.reject(data);
           }
         })
         .catch(err => {
-          return Promise.reject({err, status: err?.response?.status});
+          return Promise.reject(err);
         });
     } catch (err) {
       return Promise.reject(new Error(err));

@@ -13,9 +13,11 @@ export default StyleSheet.create({
     backgroundColor: 'white',
   },
   modalContainer: {
-    backgroundColor: Colors.skyColor,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    // marginTop: hp(20),
+    // backgroundColor: Colors.black,
     borderColor: 'blue',
     borderWidth: 1,
     width: wp(40),
@@ -85,16 +87,5 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-  },
-  loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 9999,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderBackground: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.black,
-    opacity: 0.5,
   },
 });

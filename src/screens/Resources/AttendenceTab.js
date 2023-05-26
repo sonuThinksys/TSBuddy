@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
 import styles from './AttendenceTabStyle';
 import AttendenceTabLayout from './AttendenceTabLayout';
 import {useEffect, useState} from 'react';
@@ -14,11 +8,11 @@ import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {Colors} from 'colors/Colors';
 
-const AttendenceTab = ({employeeID, employeeName}) => {
+const AttendenceTab = ({employeeID}) => {
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
 
-  const [attendenceArray, setAttendenceArray] = useState([]);
+  const [dailyAttiandance, setDailyAttiandance] = useState([]);
   const [employeeAttendance, setEmployeeAttendance] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -33,17 +27,14 @@ const AttendenceTab = ({employeeID, employeeName}) => {
       );
       setLoading(false);
 
-      const outputAttendance = getDailyAttaindance.payload;
-      setAttendenceArray(outputAttendance);
+      const {dailyAttendance, employeeAttendance} =
+        (getDailyAttaindance?.payload &&
+          getDailyAttaindance?.payload?.length &&
+          getDailyAttaindance?.payload[0]) ||
+        {};
 
-      // const {dailyAttendance, employeeAttendance} =
-      //   (getDailyAttaindance?.payload &&
-      //     getDailyAttaindance?.payload?.length &&
-      //     getDailyAttaindance?.payload[0]) ||
-      //   {};
-
-      // setAttendenceArray(dailyAttendance);
-      // setEmployeeAttendance(employeeAttendance);
+      setDailyAttiandance(dailyAttendance);
+      setEmployeeAttendance(employeeAttendance);
 
       if (getDailyAttaindance?.error) {
         ShowAlert({
@@ -58,13 +49,13 @@ const AttendenceTab = ({employeeID, employeeName}) => {
 
   return (
     <ScrollView style={styles.mainContainer}>
-      {attendenceArray?.length > 0
-        ? attendenceArray?.map(attendenceData => {
+      {dailyAttiandance?.length > 0
+        ? dailyAttiandance?.map(attendenceData => {
             return (
               <AttendenceTabLayout
                 key={attendenceData.attendanceDate}
                 data={attendenceData}
-                employeeName={employeeName}
+                employeeAttendance={employeeAttendance}
               />
             );
           })

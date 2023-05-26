@@ -19,7 +19,7 @@ import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 const BirthdayAnniV = ({modalData, showModal}) => {
-  const {startsOn, dateOfJoining, name, description, setShowModal, isBirthday} =
+  const {startsOn, dateOfJoining, name, description, setShowModal} =
     modalData || {};
 
   const date = moment(description === null ? dateOfJoining : startsOn).format(
@@ -81,14 +81,15 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                     color: Colors.white,
                     fontWeight: 'bold',
                   }}>
-                  {!isBirthday ? 'Work Aniversary' : 'Birthday'}: {name}
+                  {description === null ? 'Work Aniversary' : 'Birthday'}:{' '}
+                  {name}
                   {description === null ? ` on ${date}${Month}` : null}
                 </Text>
               </View>
               <View style={{paddingTop: hp(3), paddingBottom: hp(2)}}>
                 <Image
                   source={
-                    !isBirthday
+                    description === null
                       ? MonthImages.workAnniversaryy
                       : MonthImages.BirthdayImage
                   }
@@ -98,9 +99,7 @@ const BirthdayAnniV = ({modalData, showModal}) => {
               </View>
               <Text style={{fontSize: 16}}>
                 {' '}
-                {!isBirthday
-                  ? `Congratulation: ${name}`
-                  : `Happy Birthday! ${name}`}
+                {!description ? `Congratulation: ${name}` : description}
               </Text>
             </ImageBackground>
           </Modal>

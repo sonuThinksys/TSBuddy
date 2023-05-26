@@ -7,7 +7,7 @@ import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
   NameView: {
     paddingVertical: hp(1.5),
-    backgroundColor: Colors.colorDodgerBlue2,
+    backgroundColor: '#0073cf',
     color: 'white',
     paddingHorizontal: wp(5),
     fontWeight: '500',

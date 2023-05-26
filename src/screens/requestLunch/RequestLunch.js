@@ -7,8 +7,6 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
-  FlatList,
-  Pressable,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
@@ -24,20 +22,13 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {monthsName, RequestLunchLabel} from 'utils/defaultData';
-import {
-  cancelSubscribedLunchRequest,
-  getEmployeeProfileData,
-  getSubscribedLunchRequests,
-  requestLunchSubmission,
-} from 'redux/homeSlice';
-import {FontFamily} from 'constants/fonts';
+import {getEmployeeProfileData, requestLunchSubmission} from 'redux/homeSlice';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
-  const {employeeProfile, dateData} = useSelector(state => state.home);
-  console.log('dateData:', dateData);
+  const {employeeProfile} = useSelector(state => state.home);
 
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
@@ -54,23 +45,12 @@ const RequestLunch = ({navigation}) => {
   const [endDate1, setEndDate1] = useState('');
   const [items, setItems] = useState(RequestLunchLabel);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDaily, setIsDaily] = useState(false);
-  const [startSelected, setStartSelected] = useState(false);
-  const [endSelected, setEndSelected] = useState(false);
-  const [lunchRequests, setLunchRequests] = useState([]);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      token && dispatch(getEmployeeProfileData({token, employeeID}));
-      const subscribedLunchRequests =
-        token &&
-        (await dispatch(getSubscribedLunchRequests({token, employeeID})));
-
-      setLunchRequests(subscribedLunchRequests.payload);
-    })();
-  }, [lunchRequests.length]);
+    token && dispatch(getEmployeeProfileData({token, employeeID}));
+  }, []);
 
   const onSelectItem = item => {
     let date = new Date().getDate();
@@ -79,9 +59,6 @@ const RequestLunch = ({navigation}) => {
     let month = monthsName[todayDate.getMonth()];
     let year = new Date().getFullYear();
     if (item.value === 'daily') {
-      setStartSelected(true);
-      setEndSelected(true);
-
       setStartDate({
         startDateStr: date + '/' + month + '/' + year,
         startDateObj: todayDate,
@@ -90,35 +67,28 @@ const RequestLunch = ({navigation}) => {
         endDateStr: date + '/' + month + '/' + year,
         endDateObj: todayDate,
       });
-      setIsDaily(true);
       setPermReq(false);
     } else if (item.value === 'duration') {
-      setStartSelected(false);
-      setEndSelected(false);
       setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
-      setIsDaily(false);
       setPermReq(false);
     } else {
-      setStartSelected(false);
-      setEndSelected(false);
       setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
-      setIsDaily(false);
       setPermReq(true);
       if (date === 1) {
         month = monthsName[todayDate.getMonth()];
         setStartDate1(date + '-' + month + '-' + year);
         setEndDate1(16 + '-' + month + '-' + year);
-      } else if (date > 1 && date < 16) {
+      } else if (date > 1 && date <= 16) {
         month = monthsName[todayDate.getMonth()];
         setStartDate1(16 + '-' + month + '-' + year);
         month = monthsName[todayDate.getMonth() + 1];
         setEndDate1(1 + '-' + month + '-' + year);
-      } else if (date >= 16 && date < 31) {
-        month = monthsName[todayDate.getMonth() + 1];
-        setStartDate1(1 + '-' + month + '-' + year);
-        setEndDate1(16 + '-' + month + '-' + year);
+      } else if (date > 16 && date < 31) {
+        monthaaa = 'april';
+        setStartDate1(1 + '-' + monthaaa + '-' + year);
+        setEndDate1(16 + '-' + monthaaa + '-' + year);
       }
     }
   };
@@ -134,7 +104,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleStartConfirm = date => {
-    setStartSelected(true);
     let selectedDate = date.getDate();
 
     let selectedMonth = monthsName[date.getMonth()];
@@ -147,7 +116,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleEndConfirm = date => {
-    setEndSelected(true);
     let selectedDate = date.getDate();
 
     let selectedMonth = monthsName[date.getMonth()];
@@ -160,130 +128,49 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
-    let requestType;
-    if (value === 'daily') requestType = 1;
-    else if (value === 'duration') requestType = 2;
-    else requestType = 3;
-
-    let dateObj = {};
-    if (value === 'monthly') {
-      const dateArray = dateData.split('-');
-      const day = dateArray[0];
-      let startingDate = day;
-      if (day.length === 1) startingDate = 0 + startingDate;
-      const month = dateArray[1];
-      const year = dateArray[2];
-
-      let monthNumber;
-
-      for (let i = 0; i < monthsName.length; i++) {
-        if (monthsName[i].toLowerCase() === month.toLowerCase()) {
-          monthNumber = i + 1 + '';
-          if (monthNumber.length === 1) monthNumber = 0 + monthNumber;
-          break;
-        }
-      }
-
-      const dateStr = `${year}-${monthNumber}-${startingDate}`;
-      console.log('dateStr:', dateStr);
-
-      dateObj = {
-        requestStartDate: dateStr,
-      };
-    } else {
-      const requestStartDate = startDate?.startDateObj
-        ?.toISOString()
-        ?.slice(0, 10);
-      const requestEndDate = endDate?.endDateObj?.toISOString()?.slice(0, 10);
-      dateObj = {requestEndDate, requestStartDate};
-    }
-    //
-
-    const todayDateObj = new Date();
-    const todayDate = todayDateObj.getDate();
-    const currentHour = todayDateObj.getHours();
-    const currentMinutes = todayDateObj.getMinutes();
-    const appliedDate = new Date(dateObj.requestStartDate).getDate();
-    console.log(
-      'appliedDate === todayDate',
-      appliedDate === todayDate,
-      currentHour > 10,
-      currentHour === 10,
-      currentMinutes > 29,
-    );
-
-    if (
-      appliedDate === todayDate &&
-      (currentHour > 10 || (currentHour === 10 && currentMinutes > 29))
-    ) {
-      alert('You can not apply for the lunch request after 10:30.');
-      return;
-    }
-    // if (currentHour > 10 || (currentHour === 10 && currentMinutes > 30)) {
-    //   alert('You can not apply for the lunch request after 10:30.');
-    //   return;
-    // }
-    //
+    const isMonthly = value === 'monthly';
     setIsLoading(true);
 
-    try {
-      const response = await dispatch(
-        requestLunchSubmission({
-          token,
-          employeeId: employeeID,
-          requestType,
-          ...dateObj,
-        }),
-      );
-
-      const appliedSubscriptions = response?.payload?.data;
-
-      if (requestType === 2 && !response?.error) {
-        setLunchRequests(prevRequests => [
-          ...prevRequests,
-          ...appliedSubscriptions,
-        ]);
-      } else if (!response?.error) {
-        setLunchRequests(prevRequests => [
-          ...prevRequests,
-          appliedSubscriptions,
-        ]);
-      }
-
-      if (response?.error) {
-        alert(response?.error?.message || 'Something went wrong.');
-      } else {
-        Alert.alert('Success', 'Lunch requested successfully!', [
-          {
-            text: 'Ok',
-            onPress: () => {
-              // navigation.goBack();
-            },
-          },
-        ]);
-      }
-    } catch (err) {
-      alert('Something Went Wrong.');
-    } finally {
-      setIsLoading(false);
-    }
+    const response = await dispatch(
+      requestLunchSubmission({
+        token,
+        employeeName: employeeProfile?.employeeName,
+        employee: employeeProfile?.name,
+        requestlunchstartdate: startDate?.startDateObj.toISOString(),
+        requestlunchenddate: endDate?.endDateObj.toISOString(),
+        requestforlunch: 1,
+        requestforlunchcancellation: 0,
+        lunchRequestType: value,
+        montlyLunchSubscription: isMonthly ? 1 : 0,
+        lunchcancellationrequestdate: null,
+      }),
+    );
 
     // monthly , duration
+
+    setIsLoading(false);
+
+    if (response?.error) {
+      alert(response?.error?.message || 'Something went wrong.');
+    } else {
+      Alert.alert('Success', 'Lunch requested successfully!', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            // navigation.goBack();
+          },
+        },
+      ]);
+    }
   };
 
-  let opacity = 1;
-
-  if (value !== 'monthly') {
-    if (!startSelected || !endSelected || !value) opacity = 0.5;
-  } else {
-    if (!dateData) opacity = 0.5;
-  }
+  const cancelRequest = () => {};
 
   return (
     // <SharedElement id="enter">
     <View>
       <View style={styles.container}>
-        <View>
+        <View style={{flex: 1}}>
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
@@ -294,8 +181,8 @@ const RequestLunch = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.text1}>Request Lunch</Text>
         <View style={styles.lunchTextView}>
+          <Text style={styles.text1}>Request Lunch</Text>
           <Image
             source={MonthImages.info_scopy}
             style={{height: 20, width: 20}}
@@ -329,6 +216,7 @@ const RequestLunch = ({navigation}) => {
             }}
           />
         </View>
+
         <DateTimePickerModal
           isVisible={startDatePickerVisible}
           mode="date"
@@ -345,7 +233,6 @@ const RequestLunch = ({navigation}) => {
           {openModal ? <SelectDateModal modalData={modalData} /> : null}
           <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
           <TouchableOpacity
-            disabled={!value || value === 'daily'}
             onPress={() => {
               if (permReq) {
                 setOpenModal(true);
@@ -354,50 +241,35 @@ const RequestLunch = ({navigation}) => {
               }
             }}>
             <View style={styles.fourthView}>
-              <Text style={styles.selectedDated}>
-                {' '}
-                {value !== 'monthly' ? startDate.startDateStr : dateData}
-              </Text>
+              <Text style={styles.selectedDated}>{startDate.startDateStr}</Text>
             </View>
           </TouchableOpacity>
         </View>
-        {value !== 'monthly' ? (
-          <View style={styles.fifthView}>
-            <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
-            <TouchableOpacity
-              disabled={!value || value === 'daily'}
-              // disabled={isDaily}
-              onPress={() => {
-                if (permReq) {
-                  setOpenModal(true);
-                } else {
-                  setEndDatePickerVisible(true);
-                }
-              }}>
-              <View style={styles.sixthView}>
-                <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        ) : null}
+        <View style={styles.fifthView}>
+          <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (permReq) {
+                setOpenModal(false);
+              } else {
+                setEndDatePickerVisible(true);
+              }
+            }}>
+            <View style={styles.sixthView}>
+              <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={{
-            // opacity: !startSelected || !value ? 0.5 : 1,
-            // opacity: 1,
-            opacity: opacity,
-            // value !== 'monthly' ? (!startSelected || !endSelected || !value)
-            //   ? 0.5
-            //   : !dateData
-            //   ? 0.5
-            //   : 1,
+            opacity:
+              !startDate.startDateStr || !endDate.endDateStr || !value
+                ? 0.5
+                : 1,
             marginTop: 20,
           }}
-          disabled={
-            value !== 'monthly'
-              ? !startSelected || !endSelected || !value
-              : !dateData
-          }
+          disabled={!startDate.startDateStr || !endDate.endDateStr || !value}
           onPress={onSubmit}>
           <View style={styles.submitView}>
             <Text style={{color: Colors.white, textAlign: 'center'}}>
@@ -408,41 +280,10 @@ const RequestLunch = ({navigation}) => {
       </View>
       <View style={styles.buttomView}>
         <View style={styles.appliedView}>
-          <Text style={styles.appliedText}>Lunch Request History</Text>
+          <Text style={styles.appliedText}>Applied Subscriptions</Text>
         </View>
 
-        {lunchRequests.length > 0 ? (
-          <View>
-            <FlatList
-              data={lunchRequests}
-              renderItem={({item}) => {
-                return renderListOfAppliedRequests({
-                  item,
-                  dispatch,
-                  token,
-                  onCancel: cancelSubscribedLunchRequest,
-                  setIsLoading,
-                  lunchRequests,
-                  setLunchRequests,
-                });
-              }}
-              keyExtractor={item => item.id.toString()}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontSize: 16, fontFamily: FontFamily.RobotoLight}}>
-              You don't have any lunch request.
-            </Text>
-          </View>
-        )}
-
-        {/* <View style={styles.monthlyRequestView}>
+        <View style={styles.monthlyRequestView}>
           <View style={styles.monthlyView}>
             <Text style={{fontSize: 15}}>Monthly Request</Text>
 
@@ -460,7 +301,7 @@ const RequestLunch = ({navigation}) => {
             <Text style={styles.buttomText}>Start Date :</Text>
             <TextInput editable={false} value={'1/September/2022'} />
           </View>
-        </View> */}
+        </View>
       </View>
       {isLoading ? (
         <View style={styles.loaderContainer}>
@@ -470,92 +311,6 @@ const RequestLunch = ({navigation}) => {
       ) : null}
     </View>
     // </SharedElement>
-  );
-};
-
-const renderListOfAppliedRequests = ({
-  item,
-  dispatch,
-  onCancel,
-  token,
-  setIsLoading,
-  lunchRequests,
-  setLunchRequests,
-}) => {
-  // return <Text>Hello </Text>;
-  const options = {month: 'short', day: '2-digit', year: 'numeric'};
-
-  const formattedStartDate = new Date(
-    item?.requestStartDate,
-  )?.toLocaleDateString('en-US', options);
-
-  const formattedEndDate = new Date(item?.requestEndDate)?.toLocaleDateString(
-    'en-US',
-    options,
-  );
-
-  return (
-    <View style={styles.request}>
-      <View style={styles.appliedRequestsLeft}>
-        <Text style={styles.requestText}>
-          {`${formattedStartDate}${
-            item.requestType.toLowerCase() !== 'monthly'
-              ? ' - ' + formattedEndDate
-              : ''
-          }`}
-        </Text>
-        <View style={styles.requestTypeContainer}>
-          <Text style={styles.requestType}>{item?.requestType}</Text>
-        </View>
-      </View>
-
-      <Pressable
-        onPress={() => {
-          Alert.alert(
-            'Cancel Request',
-            `Are you sure you want to Cancel Lunch Request for ${formattedStartDate}`,
-            [
-              {
-                text: 'No',
-                onPress: () => null,
-              },
-              {
-                text: 'Yes',
-                onPress: async () => {
-                  setIsLoading(true);
-                  const response = await dispatch(
-                    onCancel({
-                      token,
-                      body: {id: item.id},
-                    }),
-                  );
-                  // console.log('response:', response?.error?.message);
-                  if (response?.error) {
-                    alert(response?.error.message);
-                  } else {
-                    Alert.alert('Success', 'Request canceled Successfully.', [
-                      {text: 'Ok', onPress: () => null},
-                    ]);
-                    const newLunchRequestList = lunchRequests.filter(
-                      request => request.id !== item.id,
-                    );
-                    setLunchRequests(newLunchRequestList);
-                  }
-
-                  setIsLoading(false);
-                },
-              },
-            ],
-          );
-        }}
-        style={styles.cancelButton}>
-        <Text style={styles.cancelText}>Cancel</Text>
-        <Image style={styles.image} source={MonthImages.DeleteIcon} />
-      </Pressable>
-      {/* ) : ( */}
-      {/* <View></View> */}
-      {/* )} */}
-    </View>
   );
 };
 
