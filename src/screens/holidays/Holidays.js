@@ -10,7 +10,6 @@ import HolidayModal from 'modals/HolidayModal';
 import styles from './HolidaysStyles';
 import moment from 'moment';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
-import {isBeforeDate} from 'utils/utils';
 import {guestHolidaysData} from 'guestData';
 import {getHolidaysData} from 'redux/homeSlice';
 
@@ -23,6 +22,7 @@ const Holidays = () => {
   );
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
+  console.log('holidaysData = ', holidaysData);
   const [isRefresh, setRefresh] = useState(false);
 
   const updateData = async () => {
@@ -71,6 +71,19 @@ const Holidays = () => {
   );
 };
 
+const getPastHoliday = d => {
+  let holidayDate = new Date(d).getTime();
+  let todayDate = new Date().getTime();
+
+  if (holidayDate < todayDate) {
+    return false;
+  } else if (holidayDate > todayDate) {
+    return true;
+  } else {
+    return true;
+  }
+};
+
 const renderItem = (
   item,
   index,
@@ -83,11 +96,10 @@ const renderItem = (
   const {description, holidayDate} = item;
   const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
 
-  const cureentDate = +new Date();
+  const cureentDate = new Date().getDate();
   const date = +moment(holidayDate).format('DD');
 
   const Years = +moment(holidayDate).format(`    YYYY`);
-
   return (
     <TouchableOpacity
       onPress={() => {
@@ -122,8 +134,8 @@ const renderItem = (
 
           style={{
             flex: 1,
-            backgroundColor: isBeforeDate(date, cureentDate, Years, holidayDate)
-              ? Colors.royalBlue
+            backgroundColor: getPastHoliday(holidayDate)
+              ? Colors.colorDodgerBlue2
               : Colors.grey,
             paddingHorizontal: wp(2),
             paddingVertical: hp(1),
@@ -141,9 +153,7 @@ const renderItem = (
           <Text
             style={{
               fontWeight: 'bold',
-              color: isBeforeDate(date, cureentDate, Years, holidayDate)
-                ? Colors.black
-                : Colors.grey,
+              color: getPastHoliday(holidayDate) ? Colors.black : Colors.grey,
             }}>
             {description}
           </Text>

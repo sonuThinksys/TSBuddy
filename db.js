@@ -31,7 +31,7 @@ export const holidayDatawithImage = [
     nameOfHolidays: 'New Year',
     descriptions:
       "New Year's Eve is a joyous festival celebrated all over the world. The New Year is a time for people to put all of their bad experiences behind them and take a positive step into the future. Everyone wishes for their own and their loved ones' happiness, health, and prosperity in the coming New Year.",
-    imageOfHoliday: MonthImages.whiteBlank,
+    imageOfHoliday: MonthImages.newYear,
     id: '1',
   },
   {
@@ -56,7 +56,7 @@ export const holidayDatawithImage = [
     id: '4',
   },
   {
-    nameOfHolidays: "Mahatma Gandhi's Birthday",
+    nameOfHolidays: 'Gandhi Jayanti',
     descriptions:
       'Gandhi Jayanti is being celebrated on 2nd Oct. of every year in India to commemorate the birthday of Mahatma Gandhi India’s “Father of the Nation”.It is one of the three National Holidays of India. Mahatma Gandhi’s birthday has been also observed as “International Day of Non-Violence” every year since 2007 to promote his principles of non-violence by the United Nations.',
     imageOfHoliday: MonthImages.GandhiMax,
@@ -66,7 +66,7 @@ export const holidayDatawithImage = [
     nameOfHolidays: 'Dussehra',
     descriptions:
       'Dussehra is also known as Vijayadashmi. This festival has one teaching, or we can say that this festival is all about the ‘victory of good over evil’. This festival has its importance and signifies the victory of the power of good over the power of evil. The primary outcome of this festival is every time truth wins over lies, good wins over evil, and light win over dark.',
-    imageOfHoliday: MonthImages.DiwaliMax,
+    imageOfHoliday: MonthImages.dussehra,
     id: '6',
   },
   {

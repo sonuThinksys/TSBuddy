@@ -91,6 +91,7 @@ export default StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     marginTop: 8,
+    justifyContent: 'center',
   },
   leaveApproverText: {
     fontWeight: 'bold',

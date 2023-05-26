@@ -29,12 +29,12 @@ const Home = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       {isLoading ? <Loader /> : null}
-      {calenderData?.calenderEvent?.length > 0 ||
-      calenderData?.anniversaryEvent?.length > 0 ? (
-        <View style={{height: hp(23), backgroundColor: Colors.white}}>
-          <CarouselAutoScroll />
-        </View>
-      ) : null}
+      {/* {calenderData?.calenderEvent?.length > 0 ||
+      calenderData?.anniversaryEvent?.length > 0 ? ( */}
+      <View style={{height: hp(23), backgroundColor: Colors.white}}>
+        <CarouselAutoScroll />
+      </View>
+      {/* ) : null} */}
       <FlatList
         data={data}
         style={{flex: 1}}

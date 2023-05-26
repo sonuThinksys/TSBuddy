@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Text,
-  StyleSheet,
   ImageBackground,
   FlatList,
   TouchableOpacity,
@@ -31,6 +30,7 @@ import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 
 const Profile = ({navigation}) => {
+  const isFocussed = useIsFocused();
   const [empDetail, setClickData] = useState({});
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -83,7 +83,7 @@ const Profile = ({navigation}) => {
       id: '2',
     },
     {
-      image: MonthImages.mailEmp,
+      image: MonthImages.DesignationIcon,
       nameOfField: 'Designation',
       email: isGuestLogin
         ? guestProfileData.designation
@@ -91,13 +91,13 @@ const Profile = ({navigation}) => {
       id: '3',
     },
     {
-      image: MonthImages.callEmp,
+      image: MonthImages.EmployeeIdIcon,
       nameOfField: 'Emp ID',
       email: isGuestLogin ? guestProfileData.empID : `EMP/${employeeID}`,
       id: '4',
     },
     {
-      image: MonthImages.mailEmp,
+      image: MonthImages.CalenderIcon,
       nameOfField: 'Date of Joining',
       // email: profileData.dateOfJoining,
       email: isGuestLogin
@@ -106,7 +106,7 @@ const Profile = ({navigation}) => {
       id: '5',
     },
     {
-      image: MonthImages.callEmp,
+      image: MonthImages.EducationIcon,
       nameOfField: 'Education',
       email: 'NA',
       id: '6',
@@ -154,12 +154,19 @@ const Profile = ({navigation}) => {
   return (
     <>
       {isLoading ? <Loader /> : null}
-      {isShowModal ? <CommunicationModal empDetail={empDetail} /> : null}
+      {isShowModal && isFocussed ? (
+        <CommunicationModal empDetail={empDetail} />
+      ) : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
         <View>
           <ImageBackground
             style={{height: '60%', width: '100%'}}
-            source={TSBuddyBackImage}>
+            source={
+              profileData?.image
+                ? `data:image/jpeg;base64,${profileData?.image}`
+                : TSBuddyBackImage
+            }>
+            {/* source={TSBuddyBackImage}> */}
             <View style={styles.container}>
               <View style={styles.profileView}>
                 {/* <Image
@@ -169,13 +176,20 @@ const Profile = ({navigation}) => {
                 /> */}
 
                 {profileData?.image ? (
+                  // <Image
+                  //   resizeMode="stretch"
+                  //   // source={{uri: `${baseUrl}${image}`}}
+                  //   source={{
+                  //     uri: `data:image/jpeg;base64,${profileData?.image}`,
+                  //   }}
+                  //   style={{height: 120, width: 120, borderRadius: 60}}
+                  // />
                   <Image
                     resizeMode="stretch"
-                    // source={{uri: `${baseUrl}${image}`}}
                     source={{
                       uri: `data:image/jpeg;base64,${profileData?.image}`,
                     }}
-                    style={{height: 120, width: 120, borderRadius: 60}}
+                    style={{height: 80, width: 80, borderRadius: 20}}
                   />
                 ) : (
                   <Image
