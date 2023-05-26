@@ -72,8 +72,8 @@ const SalarySlip = ({navigation}) => {
       }}>
       <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
-      {/* {!isAuthenticated ? ( */}
-      {false ? (
+      {!isAuthenticated ? (
+        // {false ? (
         <SalarSlipModal submitPassword={submitPassword} />
       ) : (
         <View style={{flex: 1}}>
@@ -90,7 +90,7 @@ const SalarySlip = ({navigation}) => {
                         <View style={styles.yearTextView}>
                           <Text style={styles.yearText}>{el}</Text>
                         </View>
-                       </View>
+                      </View>
                       <View style={styles.MapView}>
                         {newyearWiseData &&
                           Object.keys(newyearWiseData).length !== 0 &&

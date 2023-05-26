@@ -122,9 +122,13 @@ const ApplyLeave = ({navigation, route}) => {
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
-    fromDateStr: openLeaveFromDatestr || '',
+    fromDateStr:
+      openLeaveFromDatestr == 'Invalid Date' ? '' : openLeaveFromDatestr,
   });
-  const [toDate, setToDate] = useState({toDateStr: openLeaveTooDatestr || ''});
+
+  const [toDate, setToDate] = useState({
+    toDateStr: openLeaveTooDatestr == 'Invalid Date' ? '' : openLeaveTooDatestr,
+  });
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
@@ -162,11 +166,17 @@ const ApplyLeave = ({navigation, route}) => {
   }, []);
 
   const showFromDatePicker = () => {
-    setFromCalenderVisible(true);
+    if (!isEditOpenleave && fromOpenLeave) {
+    } else {
+      setFromCalenderVisible(true);
+    }
   };
 
   const showToDatePicker = () => {
-    setToCalenderVisible(true);
+    if (!isEditOpenleave && fromOpenLeave) {
+    } else {
+      setToCalenderVisible(true);
+    }
   };
 
   const fromOnCancel = () => {
@@ -583,8 +593,8 @@ const ApplyLeave = ({navigation, route}) => {
           flexGrow: 1,
         }}>
         <View style={styles.mainPart}>
-          <ScrollView>
-            <View style={[styles.formContainer]}>
+          <View style={[styles.formContainer]}>
+            <ScrollView>
               {card({
                 leftLabel: 'From',
                 rightLabel: 'To',
@@ -594,12 +604,10 @@ const ApplyLeave = ({navigation, route}) => {
                 iconRight: MonthImages.CalenderIcon,
                 leftOnPress: showFromDatePicker,
                 rightOnPress: showToDatePicker,
-                leftText: fromResource
-                  ? fromDatestr
-                  : isEditOpenleave && isEditOpenleave
+                leftText: isEditOpenleave
                   ? fromDate.fromDateStr
                   : fromOpenLeave
-                  ? openLeaveFromDatestr
+                  ? openLeaveTooDatestr
                   : fromDate.fromDateStr,
                 rightText: isEditOpenleave
                   ? toDate.toDateStr
@@ -630,7 +638,8 @@ const ApplyLeave = ({navigation, route}) => {
                         !fromDate.fromDateObj ||
                         !toDate.toDateObj ||
                         totalNumberOfLeaveDays > 1 ||
-                        fromResource
+                        fromResource ||
+                        (!isEditOpenleave && fromOpenLeave)
                       }
                       renderButtonText={renderButtonText}
                       style={{
@@ -696,7 +705,9 @@ const ApplyLeave = ({navigation, route}) => {
                 leftDropdown: (
                   // <View>
                   <ModalDropdown
-                    disabled={fromResource}
+                    disabled={
+                      fromResource || (!isEditOpenleave && fromOpenLeave)
+                    }
                     style={{
                       borderWidth: 1,
                       backgroundColor: Colors.white,
@@ -774,44 +785,11 @@ const ApplyLeave = ({navigation, route}) => {
                   />
                 )}
               </View>
-              <View style={styles.leaveApproverContainer}>
-                <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-                {isEditOpenleave ? (
-                  leaveApprovers.length === 1 ? (
-                    <Text style={styles.leaveApproverName}>
-                      {leaveApprovers[0]?.leaveApproverName}
-                    </Text>
-                  ) : (
-                    <View>
-                      <View>
-                        <DropDownPicker
-                          placeholder={'Select....'}
-                          open={openLeaveApprovers}
-                          value={leaveApproversValue}
-                          items={leaveApproversList}
-                          setOpen={setOpenLeaveApproovers}
-                          setValue={setLeaveApproversValue}
-                          setItems={setLeaveApproversList}
-                          onSelectItem={onSelectLeaveApprover}
-                          containerStyle={{width: wp(50)}}
-                          style={{borderRadius: 4}}
-                        />
-                      </View>
-                    </View>
-                  )
-                ) : fromResource ? (
-                  <Text style={styles.leaveApproverName}>
-                    {resourceData.leaveApproverName}
-                  </Text>
-                ) : fromOpenLeave ? (
-                  <Text style={styles.leaveApproverName}>
-                    {openLeaveApprover}
-                  </Text>
-                ) : isGuestLogin ? (
-                  <Text style={styles.leaveApproverName}>
-                    {guestProfileData?.managerInfoDto?.employeeName}
-                  </Text>
-                ) : leaveApprovers.length === 1 ? (
+            </ScrollView>
+            <View style={styles.leaveApproverContainer}>
+              <Text style={styles.leaveApproverText}>Leave Approver:</Text>
+              {isEditOpenleave ? (
+                leaveApprovers.length === 1 ? (
                   <Text style={styles.leaveApproverName}>
                     {leaveApprovers[0]?.leaveApproverName}
                   </Text>
@@ -832,10 +810,43 @@ const ApplyLeave = ({navigation, route}) => {
                       />
                     </View>
                   </View>
-                )}
-              </View>
+                )
+              ) : fromResource ? (
+                <Text style={styles.leaveApproverName}>
+                  {resourceData.leaveApproverName}
+                </Text>
+              ) : fromOpenLeave ? (
+                <Text style={styles.leaveApproverName}>
+                  {openLeaveApprover}
+                </Text>
+              ) : isGuestLogin ? (
+                <Text style={styles.leaveApproverName}>
+                  {guestProfileData?.managerInfoDto?.employeeName}
+                </Text>
+              ) : leaveApprovers.length === 1 ? (
+                <Text style={styles.leaveApproverName}>
+                  {leaveApprovers[0]?.leaveApproverName}
+                </Text>
+              ) : (
+                <View>
+                  <View>
+                    <DropDownPicker
+                      placeholder={'Select....'}
+                      open={openLeaveApprovers}
+                      value={leaveApproversValue}
+                      items={leaveApproversList}
+                      setOpen={setOpenLeaveApproovers}
+                      setValue={setLeaveApproversValue}
+                      setItems={setLeaveApproversList}
+                      onSelectItem={onSelectLeaveApprover}
+                      containerStyle={{width: wp(50)}}
+                      style={{borderRadius: 4}}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
-          </ScrollView>
+          </View>
 
           {fromResource ? (
             <View style={styles.resourceButtonContainer}>
@@ -877,7 +888,9 @@ const ApplyLeave = ({navigation, route}) => {
               </Pressable>
               <Pressable
                 style={styles.resourceButton}
-                onPress={finalizeLeave.bind(null, 'Cancel')}>
+                onPress={() => {
+                  navigation.goBack();
+                }}>
                 <Text style={styles.applyText}>Cancel</Text>
               </Pressable>
             </View>

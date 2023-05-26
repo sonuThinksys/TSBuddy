@@ -55,16 +55,14 @@ const ResourcesDetails = ({route, navigation}) => {
   // const [shouldUpdate, setShouldUpdate] = useState(false);
 
   // ================================================================
-  console.log('Rendered 1', 'hua 1');
+
   useEffect(() => {
     if (isFocused) {
-      console.log('Rendered!2', 'hua 2');
-
       (async () => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-        console.log('leavesData:', leavesData.payload);
+
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
