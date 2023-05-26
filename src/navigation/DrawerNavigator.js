@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Platform,
@@ -21,6 +21,9 @@ import Profile from 'screens/profile/Profile';
 import ResourcesDetails from 'screens/Resources/ResourcesDetails';
 import Resources from 'screens/Resources/Resources';
 import jwt_decode from 'jwt-decode';
+import NetInfo from '@react-native-community/netinfo';
+import {Alert} from 'react-native';
+
 // import AttendenceTab from 'screens/Resources/AttendenceTab';
 
 import Attendence from 'screens/attendence/Attendence';
@@ -38,6 +41,7 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+
 // plus.imageset
 import {
   HomeScreen,
@@ -56,9 +60,11 @@ import {
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
   ResourcesScreen,
+  CheckInOutScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
+import CheckInOut from 'screens/checkInOut/CheckInOut';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -69,6 +75,7 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
+const CheckInOutStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -116,6 +123,7 @@ const drawerOption = ({
               fontSize: 16,
               // fontWeight: 'bold',
               marginRight: wp(2),
+              // marginLeft: wp(25),
               fontFamily: FontFamily.RobotoRegular,
             }}>
             {label}
@@ -313,7 +321,12 @@ const SalarySlipScreen = ({navigation}) => {
       <SalarySlipStack.Screen
         name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
-        options={{headerShown: true}}
+        options={drawerOption({
+          showDrawer: false,
+          showHeaderRight: false,
+          label: 'Preview',
+          navigation: navigation,
+        })}
       />
     </SalarySlipStack.Navigator>
   );
@@ -432,6 +445,24 @@ const ResourcesStackScreen = ({navigation}) => {
   );
 };
 
+const CheckInOutStackScreen = ({navigation}) => {
+  return (
+    <CheckInOutStack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={CheckInOutScreen}>
+      <CheckInOutStack.Screen
+        options={drawerOption({
+          label: "Today's Atendance",
+          headerIconName: MonthImages.EventImage,
+          navigation: navigation,
+        })}
+        name={CheckInOutScreen}
+        component={CheckInOut}
+      />
+    </CheckInOutStack.Navigator>
+  );
+};
+
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -440,6 +471,7 @@ function DrawerNavigator({navigation}) {
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
+
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}
@@ -486,6 +518,8 @@ function DrawerNavigator({navigation}) {
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
+
+      {/* <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} /> */}
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />

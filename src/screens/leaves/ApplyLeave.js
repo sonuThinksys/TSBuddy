@@ -35,12 +35,14 @@ import {
 import {
   applyForLeave,
   getLeaveApprovers,
+  getResourseLeaveDetails,
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 
 const ApplyLeave = ({navigation, route}) => {
+  const {leavesData} = route.params;
   const {openLeavesCount} = route?.params || {};
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
@@ -74,26 +76,6 @@ const ApplyLeave = ({navigation, route}) => {
     holidayData,
   } = useSelector(state => state.home);
 
-  const leaves = [
-    {
-      leaveType: 'Earned Leave',
-      allocated: isGuestLogin ? 15 : earnedLeaves?.totalLeavesAllocated,
-      taken: isGuestLogin ? 7 : earnedLeaves?.currentLeaveApplied,
-      remaining: isGuestLogin ? 8 : earnedLeaves?.currentLeaveBalance,
-    },
-    {
-      leaveType: 'Restricted Holiday',
-      allocated: isGuestLogin ? 1 : restrictedLeaves?.totalLeavesAllocated,
-      taken: isGuestLogin ? 0 : restrictedLeaves?.currentLeaveApplied,
-      remaining: isGuestLogin ? 1 : restrictedLeaves.currentLeaveBalance,
-    },
-    {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Work From Home', allocated: 13, taken: 23, remaining: -10},
-  ];
-
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({fromDateStr: ''});
@@ -109,8 +91,23 @@ const ApplyLeave = ({navigation, route}) => {
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
+  const [resourceLeaves, setResourceLeaves] = useState([]);
+
+  const sameDateOrNot = (date1, date2) => {
+    return date1.toDateString() === date2.toDateString();
+  };
 
   useEffect(() => {
+    if (fromResource) {
+      (async () => {
+        const empId = +resourceEmployeeID.match(/\d+/g)[0];
+        const remainingLeaves = await dispatch(
+          getResourseLeaveDetails({token, id: empId}),
+        );
+        setResourceLeaves(remainingLeaves?.payload);
+      })();
+    }
+
     (async () => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
@@ -134,6 +131,62 @@ const ApplyLeave = ({navigation, route}) => {
     })();
   }, []);
 
+  const leaves = [
+    {
+      leaveType: 'Earned Leave',
+      allocated: isGuestLogin
+        ? 15
+        : fromResource
+        ? resourceLeaves[0]?.totalLeavesAllocated
+        : earnedLeaves?.totalLeavesAllocated,
+      taken: isGuestLogin
+        ? 7
+        : fromResource
+        ? resourceLeaves[0]?.currentLeaveApplied
+        : earnedLeaves?.currentLeaveApplied,
+      remaining: isGuestLogin
+        ? 8
+        : fromResource
+        ? resourceLeaves[0]?.currentLeaveBalance
+        : earnedLeaves?.currentLeaveBalance,
+    },
+    {
+      leaveType: 'Restricted Holiday',
+      allocated: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[1]?.totalLeavesAllocated
+        : restrictedLeaves?.totalLeavesAllocated,
+      taken: isGuestLogin
+        ? 0
+        : fromResource
+        ? resourceLeaves[1]?.currentLeaveApplied
+        : restrictedLeaves?.currentLeaveApplied,
+      remaining: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[1]?.currentLeaveBalance
+        : restrictedLeaves?.currentLeaveBalance,
+    },
+    {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
+  ];
+
+  for (let i = 2; i < resourceLeaves.length; i++) {
+    const leaveType = resourceLeaves[i]?.leaveType;
+
+    const leaveToBeUpdated = leaves.find(
+      leave => leave.leaveType.toLowerCase() === leaveType.toLowerCase(),
+    );
+    leaveToBeUpdated.leaveType = leaveType;
+    leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
+    leaveToBeUpdated.remaining = resourceLeaves[i]?.currentLeaveBalance;
+    leaveToBeUpdated.taken = resourceLeaves[i]?.currentLeaveApplied;
+  }
+
   const showFromDatePicker = () => {
     setFromCalenderVisible(true);
   };
@@ -153,7 +206,7 @@ const ApplyLeave = ({navigation, route}) => {
   function weekdayCount(startDate, endDate) {
     let dayCount = 0;
 
-    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime() - 375);
+    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
     const presentDate = new Date(startDate);
@@ -515,7 +568,6 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const applyLeave = async () => {
-    console.log('leaveType,leaveType', leaveType);
     if (!fromDate.fromDateObj || !toDate.toDateObj) {
       alert('Please select dates for which you want to apply for a leave.');
       return;
@@ -552,7 +604,6 @@ const ApplyLeave = ({navigation, route}) => {
     }
 
     if (leaveType.toLowerCase() === 'restricted holiday') {
-      console.log('andar', 'gya bhai');
       const positiveDays = openLeavesCount?.rhOpen + totalNumberOfLeaveDays;
       if (positiveDays > restrictedLeaves?.currentLeaveBalance) {
         alert(

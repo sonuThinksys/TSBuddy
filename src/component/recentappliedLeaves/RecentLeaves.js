@@ -77,7 +77,7 @@ const RecentLeaves = ({navigation}) => {
   );
 };
 const renderItem = ({item, index}) => {
-  console.log('item.status', item);
+  // console.log('item.status', item);
   return (
     <View key={index} style={styles.imageView}>
       <Image

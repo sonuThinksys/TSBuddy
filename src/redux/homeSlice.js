@@ -92,6 +92,41 @@ const snacks = 'snacks';
 //     }
 //   },
 // );
+
+export const getResourseLeaveDetails = createAsyncThunk(
+  'getResourseLeaveDetails',
+  async ({token, id}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const apiUrl = `${endPoints.getResourceLeaves}${id}`;
+    // http://10.101.23.48:81/api/Leave/GetAllocatedLeaves?empId=10860
+    // http://10.101.23.48:81/api/Leave/GetAllocatedLeaves?empId=EMP/10860
+
+    try {
+      const {data, status} = await axios.get(apiUrl, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (error) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
 export const cancelSubscribedLunchRequest = createAsyncThunk(
   'cancelSubscribedLunchRequest',
   async ({token, body}) => {
@@ -711,6 +746,7 @@ export const getAttendencaeData = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
+        // console.log('data11:', data);
         if (status === 200) {
           return Promise.resolve(data);
         } else {
@@ -797,13 +833,6 @@ export const getEmployeeData = createAsyncThunk(
         return Promise.reject(new Error(err));
       }
     }
-  },
-);
-
-export const getholidayDataIWithImage = createAsyncThunk(
-  'home/holidayDataIWithImage',
-  async () => {
-    return Promise.resolve(holidayDatawithImage);
   },
 );
 
@@ -1015,19 +1044,6 @@ const homeSlice = createSlice({
     //   state.leavesData = [];
     //   state.leavesDataError = action.payload;
     // });
-    builder.addCase(getholidayDataIWithImage.pending, state => {
-      state.holidayDataWithImageLoading = true;
-    });
-    builder.addCase(getholidayDataIWithImage.fulfilled, (state, action) => {
-      state.holidayDataWithImageLoading = false;
-      state.holidayDataIWithImage = action.payload;
-      state.holidayDataWithImageError = undefined;
-    });
-    builder.addCase(getholidayDataIWithImage.rejected, (state, action) => {
-      state.holidayDataWithImageLoading = false;
-      state.holidayDataIWithImage = [];
-      state.holidayDataWithImageError = action.payload;
-    });
 
     //fgfgfg
     builder.addCase(getEmployeeProfileData.pending, state => {

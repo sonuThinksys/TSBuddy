@@ -19,48 +19,40 @@ import styles from './MenuItemStyle';
 import {useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
+import jwt_decode from 'jwt-decode';
+import {useIsFocused} from '@react-navigation/native';
 
 const breakfast = 'breakfast';
 const lunch = 'lunch';
 const snacks = 'snacks';
 
-import {
-  getMenuFeedback,
-  getSingleUserFeedback,
-  getTodayMenuDetails,
-  giveMenuFeedback,
-} from 'redux/homeSlice';
+import {getTodayMenuDetails} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
+import LinearGradient from 'react-native-linear-gradient';
+import FoodFeedback from 'modals/FoodFeedback';
 
 const MenuItem = ({navigation}) => {
+  const isFocussed = useIsFocused();
   const dispatch = useDispatch();
 
   let {userFeedback, dailyMenuID} = useSelector(state => state.home);
 
-  const [feedbackCount, setFeedbackCount] = useState([
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-    {
-      likes: 0,
-      dislikes: 0,
-    },
-  ]);
-
   const [todayMenu, setTodayMenu] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState({});
   const {userToken: token} = useSelector(state => state.auth);
 
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id || '';
+
   useEffect(() => {
+    if (isFocussed) updateData();
+  }, [token, isFocussed]);
+
+  const updateData = () => {
     if (token) {
       (async () => {
         const menuDetails = await dispatch(getTodayMenuDetails(token));
-
         setTodayMenu([
           {
             type: breakfast,
@@ -108,52 +100,9 @@ const MenuItem = ({navigation}) => {
         },
       ]);
     }
-  }, []);
-
-  const getFeedbackUpdatedData = async () => {
-    try {
-      // const foodFeedback = await dispatch(getMenuFeedback(token));
-      // setFeedbackCount([
-      //   {
-      //     likes: foodFeedback?.payload?.totalBreakfastlikes,
-      //     dislikes: foodFeedback?.payload?.totalBreakfastdislikes,
-      //   },
-      //   {
-      //     likes: foodFeedback?.payload?.totalLunchlikes,
-      //     dislikes: foodFeedback?.payload?.totalLunchdislikes,
-      //   },
-      //   {
-      //     likes: foodFeedback?.payload?.totalMeallikes,
-      //     dislikes: foodFeedback?.payload?.totalMealdislikes,
-      //   },
-      // ]);
-      // if (foodFeedback?.error) {
-      //   ShowAlert({
-      //     messageHeader: ERROR,
-      //     messageSubHeader: foodFeedback?.error?.message,
-      //     buttonText: 'Close',
-      //     dispatch,
-      //     navigation,
-      //   });
-      // }
-      // const myFeedback =
-      //   dailyMenuID &&
-      //   (await dispatch(getSingleUserFeedback({token, menuID: dailyMenuID})));
-      // if (myFeedback?.error) {
-      //   ShowAlert({
-      //     messageHeader: ERROR,
-      //     messageSubHeader: myFeedback?.error?.message,
-      //     buttonText: 'Close',
-      //     dispatch,
-      //     navigation,
-      //   });
-      // }
-    } catch (err) {}
   };
 
-  useEffect(() => {
-    getFeedbackUpdatedData();
-  }, []);
+  useEffect(() => {}, []);
 
   const userData = {
     employee: 'EMP/10352',
@@ -166,6 +115,9 @@ const MenuItem = ({navigation}) => {
 
   return (
     <View style={{paddingHorizontal: wp(0.1)}}>
+      {showModal ? (
+        <FoodFeedback modalData={modalData} showModal={showModal} />
+      ) : null}
       <FlatList
         showsHorizontalScrollIndicator={false}
         horizontal={true}
@@ -204,78 +156,29 @@ const MenuItem = ({navigation}) => {
                 </ImageBackground>
               </View>
               <View style={styles.likeView} key={index}>
-                <TouchableOpacity
-                  disabled={userFeedback[index]?.feedback === 1 || !dailyMenuID}
-                  onPress={async () => {
-                    const giveUserFeedback = await dispatch(
-                      giveMenuFeedback({
-                        token,
-                        menuID: dailyMenuID,
-                        index,
-                        feedbackType: 'like',
-                        userData,
-                      }),
-                    );
-
-                    if (giveUserFeedback?.error) {
-                      ShowAlert({
-                        messageHeader: ERROR,
-                        messageSubHeader: giveUserFeedback?.error?.message,
-                        buttonText: 'Close',
-                        dispatch,
-                        navigation,
+                <LinearGradient
+                  // start={{x: 0.1, y: 0.1}}
+                  //  end={{x: 0.1, y: 1.0}}
+                  locations={[0.1, 1, 0.01]}
+                  colors={[Colors.bluishGreen, Colors.green, Colors.grey]}
+                  style={[
+                    styles.feedbackBtn,
+                    {opacity: dailyMenuID ? 1 : 0.5},
+                  ]}>
+                  <TouchableOpacity
+                    disabled={dailyMenuID ? false : true}
+                    onPress={() => {
+                      setShowModal(true);
+                      setModalData({
+                        setShowModal: setShowModal,
+                        type: item?.type,
+                        dailyMenuID: dailyMenuID,
+                        employeeID: employeeID,
                       });
-                    } else {
-                      getFeedbackUpdatedData();
-                    }
-                  }}>
-                  <Image
-                    style={{
-                      height: 20,
-                      width: 20,
-                      opacity: userFeedback[index]?.feedback === 1 ? 0.5 : 1,
-                    }}
-                    source={MonthImages.LikeImage}
-                  />
-                </TouchableOpacity>
-                <Text style={{flex: 1}}>{feedbackCount[index]?.likes}</Text>
-                <TouchableOpacity
-                  // key={index}
-                  disabled={userFeedback[index]?.feedback === 0 || !dailyMenuID}
-                  onPress={async () => {
-                    const giveUserFeedback = await dispatch(
-                      giveMenuFeedback({
-                        token,
-                        menuID: dailyMenuID,
-                        index,
-                        feedbackType: 'dislike',
-                        userData,
-                      }),
-                    );
-
-                    if (giveUserFeedback?.error) {
-                      ShowAlert({
-                        messageHeader: ERROR,
-                        messageSubHeader: giveUserFeedback?.error?.message,
-                        buttonText: 'Close',
-                        dispatch,
-                        navigation,
-                      });
-                    } else {
-                      getFeedbackUpdatedData();
-                    }
-                  }}>
-                  <Image
-                    style={{
-                      height: 20,
-                      width: 20,
-                      marginLeft: wp(20),
-                      opacity: userFeedback[index]?.feedback === 0 ? 0.5 : 1,
-                    }}
-                    source={MonthImages.dislikesm}
-                  />
-                </TouchableOpacity>
-                <Text style={{flex: 1}}>{feedbackCount[index]?.dislikes}</Text>
+                    }}>
+                    <Text style={styles.textStyle}> Feedback </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
               </View>
             </View>
           );

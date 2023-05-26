@@ -88,10 +88,13 @@ const Leaves = ({navigation}) => {
     reversLeaveesData.push(leavesData[i]);
   }
   reversLeaveesData.reverse();
-  console.log(reversLeaveesData);
+  // console.log(reversLeaveesData);
 
   const applyForLeave = () => {
-    navigation.navigate(LeaveApplyScreen, {openLeavesCount: openLeaves});
+    navigation.navigate(LeaveApplyScreen, {
+      openLeavesCount: openLeaves,
+      leavesData,
+    });
   };
 
   const renderItem = ({item}) => {
@@ -233,16 +236,7 @@ const Leaves = ({navigation}) => {
         </Pressable>
         {isGuestLogin ? (
           renderNoLeaves()
-        ) : // <FlatList
-        //   showsVerticalScrollIndicator={false}
-        //   refreshing={isRefresh}
-        //   onRefresh={updateData}
-        //   data={isGuestLogin}
-        //   // data={isGuestLogin ? guestLeavesScreenData : leavesData}
-        //   renderItem={renderItem}
-        //   keyExtractor={(_, index) => index}
-        // />
-        leavesData?.length > 0 ? (
+        ) : leavesData?.length > 0 ? (
           <FlatList
             showsVerticalScrollIndicator={false}
             refreshing={isRefresh}

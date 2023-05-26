@@ -54,7 +54,13 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
-    // isLeaveApprover && resorcesTab,
+    // {
+    //   screen: 'CheckInOut',
+    //   label: "Today's Atendance",
+    //   navigation,
+    //   key: 1,
+    //   icon: MonthImages.arrowSecond,
+    // },
     {
       screen: 'Attendence',
       label: 'Attendance',

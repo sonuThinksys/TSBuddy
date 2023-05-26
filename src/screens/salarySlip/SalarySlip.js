@@ -78,11 +78,12 @@ const SalarySlip = ({navigation}) => {
         <View style={{flex: 1}}>
           {keyOfObject ? (
             keyOfObject?.length > 0 ? (
-              keyOfObject?.map(el => {
+              keyOfObject?.map((el, index) => {
                 return (
                   <ScrollView
+                    key={index}
                     style={{flex: 1, borderWidth: 1, borderColor: 'blue'}}>
-                    <View key={el} style={{paddingHorizontal: wp(1)}}>
+                    <View key={index} style={{paddingHorizontal: wp(1)}}>
                       <View style={styles.yearMainView}>
                         <View style={styles.line}></View>
                         <View style={styles.yearTextView}>

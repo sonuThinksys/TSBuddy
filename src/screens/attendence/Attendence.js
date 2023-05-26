@@ -39,7 +39,6 @@ const Attendence = ({navigation}) => {
   const {holidayData: holidaysData = []} = useSelector(state => state.home);
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
-
   const [remainingHours, setRemainingHours] = useState(0.0);
   const [isLoading, setLoading] = useState(false);
   const [isImageLoading, setImageLoading] = useState(false);
