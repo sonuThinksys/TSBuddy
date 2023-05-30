@@ -31,7 +31,7 @@
     "moment": "^2.29.4",
     "plotly.js": "^2.17.0",
     "react": "18.1.0",
-    "react-native": "^0.70.6",
+    "react-native": "0.70.6",
     "react-native-animated-loader": "^1.0.0",
     "react-native-autoscroll-flatlist": "^1.11.2",
     "react-native-biometrics": "^3.0.1",

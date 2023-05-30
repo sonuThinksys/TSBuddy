@@ -13,6 +13,7 @@ import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import WebView from 'react-native-webview';
 // import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   heightPercentageToDP as hp,
@@ -20,7 +21,6 @@ import {
 } from 'utils/Responsive';
 
 const SalaryPdf = ({navigation, route}) => {
-  const [pdfPath, setPdfPath] = React.useState('');
   const element = route.params;
   let options = {
     html: `<!DOCTYPE html>

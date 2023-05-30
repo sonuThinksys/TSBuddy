@@ -88,7 +88,6 @@ const Leaves = ({navigation}) => {
     reversLeaveesData.push(leavesData[i]);
   }
   reversLeaveesData.reverse();
-  // console.log(reversLeaveesData);
 
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {
@@ -105,9 +104,16 @@ const Leaves = ({navigation}) => {
       if (!shouldRender) return null;
     }
 
+    const handleNavigation = () => {
+      if (item.status == 'Open') {
+        navigation.navigate(LeaveApplyScreen, {...item, fromOpenLeave: true});
+      } else {
+        navigation.navigate(LeaveDetailsScreen, item);
+      }
+    };
+
     return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate(LeaveDetailsScreen, item)}>
+      <TouchableOpacity onPress={() => handleNavigation()}>
         <View style={styles.flateListView}>
           <View
             style={{
