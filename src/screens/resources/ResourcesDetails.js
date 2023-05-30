@@ -312,7 +312,7 @@ const style = StyleSheet.create({
     width: wp(18),
     height: hp(9),
     marginRight: 10,
-    // borderWidth: 1,
+    // borderWidth: 11,
     borderRadius: 50,
   },
   name_cont: {},
@@ -339,6 +339,7 @@ const style = StyleSheet.create({
     width: wp(11),
     height: hp(5.5),
     borderRadius: 50,
+    // borderWidth: 11,
     backgroundColor: 'teal',
   },
   tab_view: {

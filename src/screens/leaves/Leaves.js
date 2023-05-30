@@ -88,6 +88,9 @@ const Leaves = ({navigation}) => {
   for (let i = 0; i < leavesData.length; i++) {
     reversLeaveesData.push(leavesData[i]);
   }
+  reversLeaveesData.sort(
+    (a, b) => new Date(a.fromDate).getTime() - new Date(b?.fromDate).getTime(),
+  );
   reversLeaveesData.reverse();
 
   const applyForLeave = () => {
@@ -182,7 +185,8 @@ const Leaves = ({navigation}) => {
     );
   };
 
-  return ( <>
+  return (
+    <>
       <View style={{paddingVertical: hp(2), flex: 1}}>
         <Pressable
           onPress={applyForLeave}

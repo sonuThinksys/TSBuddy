@@ -28,7 +28,7 @@ const SalarySlip = ({navigation}) => {
   const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
   const [isAuthenticated, setisAuthenticated] = useState(false);
-  const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
+  const [filteredSelectedDate, setFilteredSelectedDate] = useState();
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
 
   useEffect(() => {
@@ -44,15 +44,6 @@ const SalarySlip = ({navigation}) => {
 
   const keyOfObject = Object.keys(newyearWiseData);
 
-  salarySlipData.filter(data => {
-    // let filterMonth = filteredSelectedDate
-    //   ? filteredSelectedDate?.split('-')[1]
-    //   : null;
-    console.log('filterMonth', filteredSelectedDate);
-
-    // return data.month != filteredSelectedDate;
-  });
-
   useEffect(() => {
     const newObj = {};
     newObjectData &&
@@ -66,6 +57,8 @@ const SalarySlip = ({navigation}) => {
     setnewyearWiseData(newObj);
   }, [newObjectData]);
 
+  // console.log('newyearWiseData = ', newyearWiseData);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(authLoginStatus(false));
@@ -75,6 +68,33 @@ const SalarySlip = ({navigation}) => {
 
   const submitPassword = () => {
     setisAuthenticated(true);
+  };
+
+  const filterSalarySleepData = date => {
+    setFilteredSelectedDate(date);
+    setFilterCalenderOpen(false);
+    const selectedYear = filteredSelectedDate?.toString()?.split(' ')[3];
+    const selctedMonth = new Date(filteredSelectedDate).getMonth();
+
+    console.log(
+      'selectedYear',
+      filteredSelectedDate,
+      selectedYear,
+      selctedMonth,
+    );
+
+    let finalData = [];
+    for (key in newyearWiseData) {
+      if (key == selectedYear) {
+        let selectedYearData = newyearWiseData[key];
+        finalData = selectedYearData.filter(
+          element => parseInt(element.month) == parseInt(selctedMonth),
+        );
+
+        console.log('finalData', finalData);
+      }
+    }
+    // setnewyearWiseData(finalData);
   };
 
   return (
@@ -173,8 +193,7 @@ const SalarySlip = ({navigation}) => {
         isVisible={filterCalenderOpen}
         mode="date"
         onConfirm={date => {
-          setFilteredSelectedDate(date);
-          setFilterCalenderOpen(false);
+          filterSalarySleepData(date);
         }}
         onCancel={() => {
           setFilterCalenderOpen(false);

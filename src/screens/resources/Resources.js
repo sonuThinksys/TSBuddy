@@ -54,14 +54,6 @@ const Resources = () => {
   }, []);
 
   return (
-    // <ScrollView
-    //   style={{
-    //     height: hp(93),
-    //     borderWidth: 1,
-    //     backgroundColor: Colors.white,
-    //     paddingTop: 10,
-    //   }}>
-    // <View>
     <FlatList
       legacyImplementation={false}
       onScrollBeginDrag={() => setScrollBegin(true)}
@@ -80,7 +72,6 @@ const Resources = () => {
         return renderItem(item, index, navigation);
       }}
     />
-    // </View>
   );
 };
 

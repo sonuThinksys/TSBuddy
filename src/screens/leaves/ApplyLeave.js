@@ -34,6 +34,7 @@ import {
 
 import {
   applyForLeave,
+  applyForUpdateedLeave,
   getLeaveApprovers,
   updateLeaveStatus,
 } from 'redux/homeSlice';
@@ -50,12 +51,14 @@ const ApplyLeave = ({navigation, route}) => {
   const resourceData = route?.params;
   const openLeaveData = route?.params;
 
+  console.log('openLeaveData', openLeaveData);
+
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
   const fromDateObj = new Date(resourceData?.fromDate);
 
-  const openLeavFromDateObj = new Date(openLeaveData?.toDate);
+  const openLeavFromDateObj = new Date(openLeaveData?.fromDate);
   const openLeaveToDateObj = new Date(openLeaveData?.toDate);
   const openLeaveType = openLeaveData?.leaveType;
   const openLeaveNumberOfDays = openLeaveData?.totalLeaveDays;
@@ -63,6 +66,9 @@ const ApplyLeave = ({navigation, route}) => {
   const openLeavehalfDay = openLeaveData?.halfDay;
   const openLeaveReason = openLeaveData?.description;
   const openLeaveApprover = openLeaveData?.managerInfoDto?.employeeName;
+  const openLeaveApplicationId = openLeaveData?.leaveApplicationId;
+  const fiscalYear = openLeaveData?.fiscalYear;
+  const openLeaveApproverEmail = openLeaveData?.leaveApprover;
 
   const openLeaveFromDatestr = openLeavFromDateObj.toLocaleDateString(
     'en-US',
@@ -132,7 +138,6 @@ const ApplyLeave = ({navigation, route}) => {
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
-
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState(openLeaveReason || '');
@@ -146,22 +151,14 @@ const ApplyLeave = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-
       setLeaveApprovers(leaveApprovers?.payload);
-
       const listOfLeaveApprovers = leaveApprovers.payload.map(approver => {
         return {
           value: approver.leaveApprover,
           label: approver.leaveApproverName,
         };
       });
-
       setLeaveApproversList(listOfLeaveApprovers);
-
-      // setLeaveApprovers({
-      //   name: leaveApprovers?.payload[0]?.leaveApproverName,
-      //   email: leaveApprovers?.payload[0]?.leaveApprover,
-      // });
     })();
   }, []);
 
@@ -517,7 +514,7 @@ const ApplyLeave = ({navigation, route}) => {
             postingDate: new Date(),
             leaveType: leaveType,
             leaveApprover: leaveApproverMailID,
-            fiscalYear: '2023-2024',
+            fiscalYear: fiscalYear,
           },
         }),
       ));
@@ -537,6 +534,86 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
 
+  console.log(
+    'leaveApplicationId',
+    openLeaveApplicationId,
+    'employeeId',
+    employeeID,
+    'fromDate',
+    openLeavFromDateObj,
+    'toDate',
+    openLeaveToDateObj,
+    'totalLeaveDays',
+    openLeaveNumberOfDays,
+    'description',
+    openLeaveReason,
+    'halfDay',
+    openLeavehalfDay,
+    'postingDate',
+    new Date(),
+    'leaveType',
+    openLeaveType,
+    'leaveApprover',
+    openLeaveApproverEmail,
+    'fiscalYear',
+    fiscalYear,
+  );
+
+  const applyUpdatedLeave = async () => {
+    if (!fromDate.fromDateObj || !toDate.toDateObj) {
+      alert('Please select dates for which you want to apply for a leave.');
+      return;
+    }
+
+    if (!reason) {
+      alert('Please enter a reason for applying for a leave.');
+      return;
+    }
+
+    if (!leaveType) {
+      alert('Please select a leave type.');
+      return;
+    }
+
+    if (totalNumberOfLeaveDays < 0.5) {
+      alert('Difference between the number of leave days must be positive.');
+      return;
+    }
+    setLoading(true);
+    const appliedLeave =
+      token &&
+      (await dispatch(
+        applyForUpdateedLeave({
+          token,
+          body: {
+            leaveApplicationId: openLeaveApplicationId,
+            employeeId: employeeID,
+            fromDate: fromDate.fromDateObj,
+            toDate: toDate.toDateObj,
+            halfDay: 0,
+            leaveType: openLeaveType,
+            totalLeaveDays: openLeaveNumberOfDays,
+            description: openLeaveReason,
+            postingDate: new Date(),
+            leaveApprover: openLeaveApproverEmail,
+          },
+        }),
+      ));
+
+    setLoading(false);
+    if (appliedLeave?.error) {
+      alert(appliedLeave.error.message);
+    } else {
+      Alert.alert('Success', 'Leave Updated successfully!', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
+    }
+  };
   const finalizeLeave = async status => {
     const empId = +employeeID.match(/\d+/g)[0];
     const response =
@@ -546,9 +623,9 @@ const ApplyLeave = ({navigation, route}) => {
           token,
           body: {
             employeeId: empId,
-            leaveApplicationId: resourceData.leaveApplicationId,
+            leaveApplicationId: openLeaveApplicationId,
             status: status,
-            leaveType: resourceData.leaveType,
+            leaveType: openLeaveType,
           },
         }),
       ));
@@ -580,6 +657,10 @@ const ApplyLeave = ({navigation, route}) => {
     // console.log('selectedOption:', selectedOption);
   };
 
+  const handleLeaveApply = () => {
+    isEditOpenleave ? applyUpdatedLeave() : applyLeave();
+  };
+
   return (
     // <KeyboardAvoidingView behavior="height" style={styles.mainContainer}>
     <View style={{flex: 1}}>
@@ -607,7 +688,7 @@ const ApplyLeave = ({navigation, route}) => {
                 leftText: isEditOpenleave
                   ? fromDate.fromDateStr
                   : fromOpenLeave
-                  ? openLeaveTooDatestr
+                  ? openLeaveFromDatestr
                   : fromDate.fromDateStr,
                 rightText: isEditOpenleave
                   ? toDate.toDateStr
@@ -868,7 +949,7 @@ const ApplyLeave = ({navigation, route}) => {
             </View>
           ) : isEditOpenleave ? (
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={applyLeave}>
+              <Pressable style={styles.button} onPress={handleLeaveApply}>
                 <Text style={styles.applyText}>Apply</Text>
               </Pressable>
             </View>
