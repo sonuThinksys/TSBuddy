@@ -55,14 +55,12 @@ const ResourcesDetails = ({route, navigation}) => {
   // const [shouldUpdate, setShouldUpdate] = useState(false);
 
   // ================================================================
-
   useEffect(() => {
     if (isFocused) {
       (async () => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
@@ -89,9 +87,9 @@ const ResourcesDetails = ({route, navigation}) => {
     try {
       setRefresh(true);
       const allLeaves = await dispatch(getResourcesEmployeesLeaves({token}));
-
-      setRefresh(false);
     } catch (err) {
+      console.error('err:', err);
+    } finally {
       setRefresh(false);
     }
   };

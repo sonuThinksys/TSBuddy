@@ -12,6 +12,8 @@ import {
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import WebView from 'react-native-webview';
+// import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
   heightPercentageToDP as hp,
@@ -141,10 +143,23 @@ const SalaryPdf = ({navigation, route}) => {
     directory: 'Downloads',
   };
 
+  // const openPDFPreview = async () => {
+  //   let file = await RNHTMLtoPDF.convert(options);
+  //   setPdfPath(file.filePath);
+  //   console.log(`file:/${file.filePath}`);
+  // };
+
+  // React.useEffect(() => {
+  //   openPDFPreview();
+  // }, []);
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity
+          onPress={() => {
+            // console.log('File: ' + pdfPath);
+          }}>
           <View>
             <Image style={styles.downloadBTN} source={MonthImages.download} />
           </View>
@@ -165,10 +180,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.lightBlue,
   },
   pdf: {
-    flex: 1,
+    marginRight: 20,
+    marginLeft: 10,
+    marginVertical: 10,
+
+    // flex: 1,
+    // height: hp(10),
+    // width: wp(10),
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
     marginTop: 30,

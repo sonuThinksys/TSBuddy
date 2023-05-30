@@ -54,13 +54,13 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
-    {
-      screen: 'CheckInOut',
-      label: "Today's Atendance",
-      navigation,
-      key: 3,
-      icon: MonthImages.arrowSecond,
-    },
+    // {
+    //   screen: 'CheckInOut',
+    //   label: "Today's Atendance",
+    //   navigation,
+    //   key: 1,
+    //   icon: MonthImages.arrowSecond,
+    // },
     {
       screen: 'Attendence',
       label: 'Attendance',

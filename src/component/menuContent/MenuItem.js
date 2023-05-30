@@ -20,19 +20,19 @@ import {useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
 import jwt_decode from 'jwt-decode';
+import {useIsFocused} from '@react-navigation/native';
 
 const breakfast = 'breakfast';
 const lunch = 'lunch';
 const snacks = 'snacks';
 
-import {
-  getTodayMenuDetails,
-} from 'redux/homeSlice';
+import {getTodayMenuDetails} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import LinearGradient from 'react-native-linear-gradient';
 import FoodFeedback from 'modals/FoodFeedback';
 
 const MenuItem = ({navigation}) => {
+  const isFocussed = useIsFocused();
   const dispatch = useDispatch();
 
   let {userFeedback, dailyMenuID} = useSelector(state => state.home);
@@ -46,6 +46,10 @@ const MenuItem = ({navigation}) => {
   const employeeID = decoded?.id || '';
 
   useEffect(() => {
+    if (isFocussed) updateData();
+  }, [token, isFocussed]);
+
+  const updateData = () => {
     if (token) {
       (async () => {
         const menuDetails = await dispatch(getTodayMenuDetails(token));
@@ -96,7 +100,9 @@ const MenuItem = ({navigation}) => {
         },
       ]);
     }
-  }, []);
+  };
+
+  useEffect(() => {}, []);
 
   const userData = {
     employee: 'EMP/10352',

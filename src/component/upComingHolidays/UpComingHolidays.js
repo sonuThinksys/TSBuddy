@@ -11,6 +11,8 @@ import styles from './UpComingHolidaysStyles';
 import {getHolidaysData} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'constants/strings';
+import {FontFamily} from 'constants/fonts';
+import {Colors} from 'colors/Colors';
 const UpComingHolidays = ({navigation}) => {
   function sortByFiscalYear(date1, date2) {
     const a = new Date(date1?.holidayDate);
@@ -58,12 +60,26 @@ const UpComingHolidays = ({navigation}) => {
       <View style={styles.container}>
         <Text style={styles.upcomingText}>Upcoming Holidays</Text>
       </View>
-      <FlatList
-        data={duplicateHolidays}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index}
-        style={{marginRight: wp(1)}}
-      />
+      {duplicateHolidays?.length > 0 ? (
+        <FlatList
+          data={duplicateHolidays}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          style={{marginRight: wp(1)}}
+        />
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontFamily: FontFamily.RobotoMedium,
+              fontSize: 16,
+              color: Colors.lightBlue,
+              marginVertical: 4,
+            }}>
+            No holidays found.
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

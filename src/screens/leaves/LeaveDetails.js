@@ -18,7 +18,7 @@ const LeaveDetails = ({route, navigation}) => {
   console.log('data:', data);
 
   const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
-    data.postingDate,
+    data.fromDate,
   ).toLocaleString('default', {month: 'short'})}-${new Date(
     data.fromDate,
   ).getFullYear()}`;

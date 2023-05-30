@@ -63,14 +63,14 @@ const RequestLunch = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      token && dispatch(getEmployeeProfileData({token, employeeID}));
+      // token && dispatch(getEmployeeProfileData({token, employeeID}));
       const subscribedLunchRequests =
         token &&
         (await dispatch(getSubscribedLunchRequests({token, employeeID})));
 
-      setLunchRequests(subscribedLunchRequests.payload);
+      setLunchRequests(subscribedLunchRequests?.payload);
     })();
-  }, [lunchRequests.length]);
+  }, [lunchRequests?.length]);
 
   const onSelectItem = item => {
     let date = new Date().getDate();
@@ -330,12 +330,24 @@ const RequestLunch = ({navigation}) => {
           />
         </View>
         <DateTimePickerModal
+          minimumDate={startSelected ? startDate.startDateObj : undefined}
+          maximumDate={new Date(new Date()?.setDate(new Date()?.getDate() + 7))}
           isVisible={startDatePickerVisible}
           mode="date"
           onConfirm={handleStartConfirm}
           onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
         />
+        {console.log('startDate.startDateObj?.setDate', startDate.startDateObj)}
+        {/* startDateObj */}
         <DateTimePickerModal
+          minimumDate={new Date()}
+          // maximumDate={
+          //   startSelected
+          //     ? new Date(
+          //         startDate.startDateObj?.setDate(new Date()?.getDate() + 7),
+          //       )
+          //     : undefined
+          // }
           isVisible={endDatePickerVisible}
           mode="date"
           onConfirm={handleEndConfirm}
@@ -365,7 +377,7 @@ const RequestLunch = ({navigation}) => {
           <View style={styles.fifthView}>
             <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
             <TouchableOpacity
-              disabled={!value || value === 'daily'}
+              disabled={!value || value === 'daily' || !startSelected}
               // disabled={isDaily}
               onPress={() => {
                 if (permReq) {
@@ -411,7 +423,7 @@ const RequestLunch = ({navigation}) => {
           <Text style={styles.appliedText}>Lunch Request History</Text>
         </View>
 
-        {lunchRequests.length > 0 ? (
+        {lunchRequests?.length > 0 ? (
           <View>
             <FlatList
               data={lunchRequests}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Platform,
@@ -21,6 +21,9 @@ import Profile from 'screens/profile/Profile';
 import ResourcesDetails from 'screens/Resources/ResourcesDetails';
 import Resources from 'screens/Resources/Resources';
 import jwt_decode from 'jwt-decode';
+import NetInfo from '@react-native-community/netinfo';
+import {Alert} from 'react-native';
+
 // import AttendenceTab from 'screens/Resources/AttendenceTab';
 
 import Attendence from 'screens/attendence/Attendence';
@@ -38,6 +41,7 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+
 // plus.imageset
 import {
   HomeScreen,
@@ -468,6 +472,7 @@ function DrawerNavigator({navigation}) {
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
+
   return (
     <Drawer.Navigator
       drawerContent={CustomDrawer}
@@ -515,7 +520,7 @@ function DrawerNavigator({navigation}) {
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
 
-      <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} />
+      {/* <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} /> */}
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />

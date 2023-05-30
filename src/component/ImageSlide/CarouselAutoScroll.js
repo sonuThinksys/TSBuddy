@@ -23,22 +23,7 @@ import ShowAlert from 'customComponents/CustomError';
 const CarouselAutoScroll = ({navigation}) => {
   const dispatch = useDispatch();
   const [CalaenderEventData, setCalenderEventData] = useState([]);
-  const {userToken: token} = useSelector(state => state.auth);
-  useEffect(() => {
-    (async () => {
-      const events = await dispatch(getCalendereventData(token));
 
-      if (events?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: events?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-    })();
-  }, []);
   const {calendereventData: calenderData} = useSelector(state => state.home);
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
@@ -64,6 +49,7 @@ const CarouselAutoScroll = ({navigation}) => {
         arr.push(element);
       });
     });
+
     setCalenderEventData(events);
   }, [calenderData]);
 
@@ -90,6 +76,13 @@ const CarouselAutoScroll = ({navigation}) => {
     }
   }, [active]);
 
+  // if (CalaenderEventData?.length === 0) {
+  //   return (
+  //     <View>
+  //       <Text>No Events found in this Month.</Text>
+  //     </View>
+  //   );
+  // }
   return (
     <View
       style={{

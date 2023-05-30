@@ -92,6 +92,41 @@ const snacks = 'snacks';
 //     }
 //   },
 // );
+
+export const getResourseLeaveDetails = createAsyncThunk(
+  'getResourseLeaveDetails',
+  async ({token, id}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const apiUrl = `${endPoints.getResourceLeaves}${id}`;
+    // http://10.101.23.48:81/api/Leave/GetAllocatedLeaves?empId=10860
+    // http://10.101.23.48:81/api/Leave/GetAllocatedLeaves?empId=EMP/10860
+
+    try {
+      const {data, status} = await axios.get(apiUrl, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (error) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
 export const cancelSubscribedLunchRequest = createAsyncThunk(
   'cancelSubscribedLunchRequest',
   async ({token, body}) => {
@@ -400,35 +435,6 @@ export const getMenuFeedback = createAsyncThunk(
     try {
       const feedback = await axios.get(
         endPoints.getMenuFeedbackTotalCount,
-        config,
-      );
-      return Promise.resolve(feedback.data);
-    } catch (err) {
-      let statusCode = 500;
-      if (err?.response) {
-        statusCode = err?.response.status;
-      }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
-  },
-);
-
-export const addMealFeedback = createAsyncThunk(
-  'home/addMealFeedback',
-  async ({token, ...extraPayload}) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const feedback = await axios.post(
-        endPoints.addMealFeedback,
-        extraPayload,
         config,
       );
       return Promise.resolve(feedback.data);

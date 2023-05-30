@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   Pressable,
   Animated,
-  Keyboard,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';

@@ -151,9 +151,12 @@ const Profile = ({navigation}) => {
     dispatch(modalStatus(true));
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
-      {isLoading ? <Loader /> : null}
       {isShowModal && isFocussed ? (
         <CommunicationModal empDetail={empDetail} />
       ) : null}
@@ -161,11 +164,13 @@ const Profile = ({navigation}) => {
         <View>
           <ImageBackground
             style={{height: '60%', width: '100%'}}
-            source={
-              profileData?.image
-                ? `data:image/jpeg;base64,${profileData?.image}`
-                : TSBuddyBackImage
-            }>
+            source={TSBuddyBackImage}
+            // source={
+            //   profileData?.image
+            //     ? `data:image/jpeg;base64,${profileData?.image}`
+            //     : TSBuddyBackImage
+            // }
+          >
             {/* source={TSBuddyBackImage}> */}
             <View style={styles.container}>
               <View style={styles.profileView}>

@@ -289,11 +289,6 @@ const Attendence = ({navigation}) => {
           dotColor: Colors.green,
           selected: true,
         };
-      } else if (day.status === 'Present') {
-        mark[date] = {
-          selectedColor: Colors.green,
-          selected: true,
-        };
       }
     });
 
@@ -349,6 +344,7 @@ const Attendence = ({navigation}) => {
         source={attendenceMonthImages[visisbleMonth]}
         style={{
           flex: 1,
+          // justifyContent: 'space-between',
         }}>
         {showDailyStatusModal ? (
           <Modal
@@ -550,6 +546,10 @@ const RenderCalender = ({
             width: '100%',
             backgroundColor: Colors.green,
             color: Colors.white,
+            // paddingHorizontal: 10,
+            // paddingLeft: 10,
+            // paddingRight: 10,
+            // marginTop: 6,
             alignItems: 'center',
           },
 
@@ -562,9 +562,11 @@ const RenderCalender = ({
             fontWeight: 'bold',
             fontSize: 18,
             marginVertical: 10,
+            // marginHorizontal: 100,
             textAlign: 'center',
           },
           monthHeader: {
+            // width: '120%',
             justifyContent: 'center',
             alignItems: 'center',
           },

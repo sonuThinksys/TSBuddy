@@ -29,4 +29,5 @@ export default {
   getLunchRequests: `${API_URL}/FoodRequest/GetLunchRequest?empId=`,
   cancelLunchRequest: `${API_URL}/FoodRequest/CancelLunchRequest`,
   updateEmployeeLeave: `${API_URL}/Leave/UpdateEmployeeLeave`,
+  getResourceLeaves: `${API_URL}/Leave/GetAllocatedLeaves?empId=`,
 };

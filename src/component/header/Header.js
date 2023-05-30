@@ -21,7 +21,6 @@ const Header = () => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          // console.log('screenName:', screenName);
           dispatch(setFromNavigatedScreen({screenName}));
 
           navigation.navigate(employeeProfileScreen);

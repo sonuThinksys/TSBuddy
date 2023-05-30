@@ -108,9 +108,10 @@ import DeleteIcon from 'assets/allImage/delete.imageset/delete.png';
 import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
 import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
 import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
+import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
 
 //emoji
-import smily from 'assets/emoji/smily.png';
+import Smily from 'assets/emoji/smily.png';
 import angry from 'assets/emoji/angry.png';
 import lovely from 'assets/emoji/lovely.png';
 import sad from 'assets/emoji/sad.png';
@@ -213,7 +214,7 @@ export const MonthImages = {
   ResourceIcon,
 
   //emoji
-  smily: smily,
+  smily: Smily,
   angry: angry,
   newtraly: newtraly,
   sad: sad,
@@ -225,4 +226,5 @@ export const MonthImages = {
   EducationIcon,
   newYear,
   dussehra,
+  NotFound,
 };

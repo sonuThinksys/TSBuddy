@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+
 import {useIsFocused} from '@react-navigation/native';
 import {
   heightPercentageToDP as hp,
@@ -39,30 +40,7 @@ const Leaves = ({navigation}) => {
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
-
-  const [leaveApprovers, setLeaveApprovers] = useState([]);
-
-  useEffect(() => {
-    if (token) {
-      (async () => {
-        const leaveApprover = await dispatch(
-          getLeaveApprovers({token, employeeID}),
-        );
-
-        setLeaveApprovers(leaveApprover.payload);
-
-        if (leaveApprover?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: leaveApprover?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
-        }
-      })();
-    }
-  }, []);
+  const [openLeaves, setOpenLeaves] = useState({earnedOpen: 0, rhOpen: 0});
 
   useEffect(() => {
     if (isFocussed) token && updateData();
@@ -72,9 +50,30 @@ const Leaves = ({navigation}) => {
     try {
       setRefresh(true);
       const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
+      let openCount = {earnedOpen: 0, rhOpen: 0};
+      for (let i = 0; i < allLeaves?.payload?.length; i++) {
+        const status = allLeaves?.payload[i]?.status;
 
-      setRefresh(false);
+        if (status?.toLowerCase() === 'open') {
+          if (
+            allLeaves?.payload[i].leaveType.toLowerCase() === 'earned leave'
+          ) {
+            openCount.earnedOpen =
+              openCount.earnedOpen + allLeaves?.payload[i].totalLeaveDays;
+          }
+          if (
+            allLeaves?.payload[i].leaveType.toLowerCase() ===
+            'restricted holiday'
+          ) {
+            openCount.rhOpen =
+              openCount.rhOpen + allLeaves?.payload[i].totalLeaveDays;
+          }
+        }
+      }
+
+      setOpenLeaves(openCount);
     } catch (err) {
+    } finally {
       setRefresh(false);
     }
   };
@@ -94,7 +93,10 @@ const Leaves = ({navigation}) => {
   reversLeaveesData.reverse();
 
   const applyForLeave = () => {
-    navigation.navigate(LeaveApplyScreen, {leaveApprovers});
+    navigation.navigate(LeaveApplyScreen, {
+      openLeavesCount: openLeaves,
+      leavesData,
+    });
   };
 
   const renderItem = ({item}) => {
@@ -243,16 +245,7 @@ const Leaves = ({navigation}) => {
         </Pressable>
         {isGuestLogin ? (
           renderNoLeaves()
-        ) : // <FlatList
-        //   showsVerticalScrollIndicator={false}
-        //   refreshing={isRefresh}
-        //   onRefresh={updateData}
-        //   data={isGuestLogin}
-        //   // data={isGuestLogin ? guestLeavesScreenData : leavesData}
-        //   renderItem={renderItem}
-        //   keyExtractor={(_, index) => index}
-        // />
-        leavesData?.length > 0 ? (
+        ) : leavesData?.length > 0 ? (
           <FlatList
             showsVerticalScrollIndicator={false}
             refreshing={isRefresh}
