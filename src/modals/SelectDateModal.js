@@ -81,7 +81,6 @@ const SelectDateModal = ({modalData}) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              console.log('second');
               dispatch(dateOfModal(endDate1));
               setSecondSlected(true);
               setSelected(false);

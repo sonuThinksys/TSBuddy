@@ -47,6 +47,15 @@ const UpComingHolidays = ({navigation}) => {
     })();
   }, []);
 
+  const currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+
+  let fiscalYear = `${currentYear} - ${(new Date().getFullYear() % 100) + 1}`;
+
+  if (currentMonth < 3) {
+    fiscalYear = `${currentYear - 1} - ${new Date().getFullYear() % 100}`;
+  }
+
   const {holidayData: holidaysData} = useSelector(state => state.home);
 
   const duplicateHolidays =
@@ -56,9 +65,9 @@ const UpComingHolidays = ({navigation}) => {
     [];
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
       <View style={styles.container}>
-        <Text style={styles.upcomingText}>Upcoming Holidays</Text>
+        <Text style={styles.upcomingText}>Holidays {fiscalYear}</Text>
       </View>
       {duplicateHolidays?.length > 0 ? (
         <FlatList
@@ -84,18 +93,48 @@ const UpComingHolidays = ({navigation}) => {
   );
 };
 const renderItem = ({item, index}) => {
-  const newDateFormate = moment(item.holidayDate).format(`DD MMM YYYY`);
-  // let year = new Date().getFullYear();
-
-  // const date1 = +new Date();
-  // const date = +moment(item.holidayDate).format('DD');
-  // const Month = +moment(item.holidayDate).format(' MM ');
-  // const Years = +moment(item.holidayDate).format(`    YYYY`);
+  const newDateFormate = moment(item.holidayDate).format(`DD MMMM`);
+  const date = moment(item.holidayDate).format(`DD`);
+  const month = moment(item.holidayDate).format(`MMMM`);
 
   return (
-    <View>
-      {/* {date < date1 && Month >= 4 && Years <= 2021 ? ( */}
-      <View style={styles.imageView} key={index}>
+    <View style={styles.imageView} key={index}>
+      {/* <Text style={styles.text1}>{item.description}</Text>
+      <View style={{flex: 3}}>
+        <View style={styles.textView}>
+          <Text style={styles.text2}>{newDateFormate}</Text>
+        </View>
+      </View>
+      <Image
+        resizeMode="contain"
+        source={
+          item.description === 'Republic Day'
+            ? MonthImages.republicDay
+            : item.description === 'Holi'
+            ? MonthImages.holi
+            : item.description === 'Independence Day'
+            ? MonthImages.independenceDay
+            : item.description === 'Diwali'
+            ? MonthImages.diwali
+            : item.description === 'Dussehra'
+            ? MonthImages.diwali
+            : item.description === "Mahatma Gandhi's Birthday"
+            ? MonthImages.gandhiJayantiS
+            : MonthImages.gandhiJayantiS
+        }
+        style={styles.image}
+      /> */}
+
+      <View style={{flexDirection: 'row'}}>
+        <View style={styles.daysContainer}>
+          <Text style={styles.daysText}>{date}</Text>
+          <Text>{month}</Text>
+        </View>
+        <View style={styles.typeDateContainer}>
+          <Text style={styles.leaveTypeText}>{item.description}</Text>
+        </View>
+      </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Image
           resizeMode="contain"
           source={
@@ -109,20 +148,13 @@ const renderItem = ({item, index}) => {
               ? MonthImages.diwali
               : item.description === 'Dussehra'
               ? MonthImages.diwali
-              : item.description === "Mahatma Gandhi's Birthday"
+              : item.description === 'Gandhi Jayanti'
               ? MonthImages.gandhiJayantiS
-              : MonthImages.gandhiJayantiS
+              : MonthImages.newYear
           }
           style={styles.image}
         />
-        <Text style={styles.text1}>{item.description}</Text>
-        <View style={{flex: 3}}>
-          <View style={styles.textView}>
-            <Text style={styles.text2}>{newDateFormate}</Text>
-          </View>
-        </View>
       </View>
-      {/* ) : null} */}
     </View>
   );
 };

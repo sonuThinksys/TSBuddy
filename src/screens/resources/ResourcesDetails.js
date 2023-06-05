@@ -61,6 +61,7 @@ const ResourcesDetails = ({route, navigation}) => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
+        console.log('leavesData:', leavesData);
         let count = 0;
         leavesData.payload.forEach(element => {
           if (element.status == 'Open') {
@@ -68,17 +69,17 @@ const ResourcesDetails = ({route, navigation}) => {
           }
         });
 
-        setOpenCount(count);
+        // setOpenCount(count);
 
-        setResourcesEmployeesLeaves(leavesData.payload);
-        if (leavesData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: leavesData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-          });
-        }
+        // setResourcesEmployeesLeaves(leavesData.payload);
+        // if (leavesData?.error) {
+        //   ShowAlert({
+        //     messageHeader: ERROR,
+        //     messageSubHeader: leavesData?.error?.message,
+        //     buttonText: 'Close',
+        //     dispatch,
+        //   });
+        // }
       })();
     }
   }, [isFocused]);
@@ -161,6 +162,7 @@ const ResourcesDetails = ({route, navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={style.container}>

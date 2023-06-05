@@ -4,11 +4,16 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
-    marginHorizontal: wp(5),
     paddingRight: 1,
-    borderRadius: 15,
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    alignItems: 'center',
+    paddingVertical: 24,
+    minWidth: wp(60),
   },
   backgroundImage: {
     width: '100%',
@@ -28,5 +33,47 @@ export default StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  happyText: {
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoLight,
+    color: Colors.dune,
+  },
+  wishText: {
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoMedium,
+    color: Colors.darkishPink,
+  },
+  image: {
+    height: 72,
+    width: 72,
+    marginBottom: 16,
+  },
+  birthdayBoyOrGirl: {
+    fontSize: 19,
+    color: Colors.purpleShade,
+    fontFamily: FontFamily.RobotoMedium,
+    marginBottom: 10,
+  },
+  designation: {
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoLight,
+  },
+  eventDate: {
+    backgroundColor: Colors.skyBlue,
+    paddingVertical: 16,
+    marginBottom: 32,
+    alignItems: 'center',
+    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 12,
+    shadowColor: Colors.colorDodgerBlue2,
+    shadowOffset: {width: 0, height: 2}, // Set the shadow offset
+    shadowOpacity: 0.2, // Set the shadow opacity
+    shadowRadius: 0.1, // Set the shadow radius
+    elevation: 1,
+  },
+  eventDateText: {
+    fontSize: 16,
+    color: Colors.dune,
   },
 });

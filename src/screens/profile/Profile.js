@@ -6,6 +6,7 @@ import {
   ImageBackground,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -161,7 +162,10 @@ const Profile = ({navigation}) => {
         <CommunicationModal empDetail={empDetail} />
       ) : null}
       {profileData && Object.keys(profileData).length !== 0 ? (
-        <View>
+        <SafeAreaView
+          style={{
+            backgroundColor: Colors.whitishBlue,
+          }}>
           <ImageBackground
             style={{height: '60%', width: '100%'}}
             source={TSBuddyBackImage}
@@ -285,7 +289,7 @@ const Profile = ({navigation}) => {
               </View>
             </View>
           </ImageBackground>
-        </View>
+        </SafeAreaView>
       ) : null}
     </>
   );

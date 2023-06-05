@@ -8,6 +8,7 @@ import {
   FlatList,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
@@ -90,67 +91,65 @@ const renderItem = (
   navigation,
 ) => {
   return (
-    <>
-      <View key={index} style={{backgroundColor: Colors.white}}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('ResourcesDetailsScreen', {
-              designation,
-              image,
-              employeeName,
-              managerInfoDto,
-              name,
-              // navigation,
-            });
-          }}>
-          <View style={style.container}>
-            <View
-              style={{
-                flex: 0.2,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {image ? (
-                <Image
-                  resizeMode="stretch"
-                  source={{uri: `data:image/jpeg;base64,${image}`}}
-                  style={style.image}
-                  onLoad={() => console.log('Image loaded successfully!')}
+    <SafeAreaView key={index} style={{backgroundColor: Colors.whitishBlue}}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ResourcesDetailsScreen', {
+            designation,
+            image,
+            employeeName,
+            managerInfoDto,
+            name,
+            // navigation,
+          });
+        }}>
+        <View style={style.container}>
+          <View
+            style={{
+              flex: 0.2,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            {image ? (
+              <Image
+                resizeMode="stretch"
+                source={{uri: `data:image/jpeg;base64,${image}`}}
+                style={style.image}
+                onLoad={() => console.log('Image loaded successfully!')}
+              />
+            ) : (
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.black,
+                  borderRadius: 100,
+                  padding: 4,
+                }}>
+                <ResourceIcon
+                  borderWidth={1}
+                  borderColor={'black'}
+                  height={50}
+                  width={50}
+                  color={Colors.darkBlue}
                 />
-              ) : (
-                <View
-                  style={{
-                    borderWidth: 1,
-                    borderColor: Colors.black,
-                    borderRadius: 100,
-                    padding: 4,
-                  }}>
-                  <ResourceIcon
-                    borderWidth={1}
-                    borderColor={'black'}
-                    height={50}
-                    width={50}
-                    color={Colors.darkBlue}
-                  />
-                </View>
-                // <Image
-                //   source={{
-                //     uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-                //   }}
-                //   style={{width: 60, height: 60}}
-                // />
-              )}
-            </View>
-            <View style={{flex: 0.7, marginLeft: 15}}>
-              <Text numberOfLines={1} style={style.nameText}>
-                {employeeName}
-              </Text>
-              <Text style={style.desniationText}>{designation}</Text>
-            </View>
+              </View>
+              // <Image
+              //   source={{
+              //     uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
+              //   }}
+              //   style={{width: 60, height: 60}}
+              // />
+            )}
           </View>
-        </TouchableOpacity>
-      </View>
-    </>
+          <View style={{flex: 0.7, marginLeft: 15}}>
+            <Text numberOfLines={1} style={style.nameText}>
+              {employeeName}
+            </Text>
+            <Text style={style.desniationText}>{designation}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 

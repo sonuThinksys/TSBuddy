@@ -65,35 +65,35 @@ export default ({navigation}) => {
       screen: 'Attendence',
       label: 'Attendance',
       navigation,
-      key: 4,
+      key: 3,
       icon: MonthImages.AttendanceDrawer,
     },
     {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 5,
+      key: 4,
       icon: MonthImages.leavesImage,
     },
     {
       screen: 'Holidays',
       label: 'Holidays',
       navigation,
-      key: 6,
+      key: 5,
       icon: MonthImages.HolidaysIcon,
     },
     {
       screen: 'SalarySlip',
       label: 'SalarySlip',
       navigation,
-      key: 7,
+      key: 6,
       icon: MonthImages.salarySlipIcon,
     },
     {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 8,
+      key: 7,
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
@@ -178,8 +178,8 @@ const renderDrawerItem = (
           );
           navigation.closeDrawer();
         } else {
-          navigation.closeDrawer();
           navigation.navigate(screen);
+          navigation.closeDrawer();
         }
       }}
       style={{

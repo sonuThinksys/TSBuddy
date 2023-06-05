@@ -15,7 +15,6 @@ const LeaveDetails = ({route, navigation}) => {
   };
 
   const {params: data} = route;
-  console.log('data:', data);
 
   const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
     data.fromDate,

@@ -63,7 +63,7 @@ const App = () => {
 
   return (
     <>
-      <SafeAreaView style={{flex: 0, backgroundColor: Colors.darkBlue}} />
+      <SafeAreaView style={{flex: 0, backgroundColor: Colors.whitishBlue}} />
       <MainNavigator />
     </>
   );

@@ -4,14 +4,19 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
-    backgroundColor: '#CFD2CF',
-    width: wp(50),
+    backgroundColor: Colors.white,
+    width: wp(56),
     marginTop: hp(1),
-    marginHorizontal: wp(1),
-    borderRadius: 5,
-    opacity: 1,
+    marginRight: wp(4),
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12,
+    // opacity: 1,
+    paddingVertical: wp(6),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   imagebackground: {
     maxHeight: hp(18),
@@ -40,4 +45,27 @@ export default StyleSheet.create({
     borderRadius: 4,
   },
   textStyle: {color: 'white', fontWeight: 'bold'},
+  foodTypeText: {
+    color: Colors.black,
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoMedium,
+    paddingTop: hp(1.6),
+    paddingBottom: hp(1.2),
+  },
+  feedbackContainer: {
+    backgroundColor: Colors.skyBlue,
+    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 12,
+    shadowColor: Colors.colorDodgerBlue2,
+    shadowOffset: {width: 0, height: 2}, // Set the shadow offset
+    shadowOpacity: 0.2, // Set the shadow opacity
+    shadowRadius: 0.1, // Set the shadow radius
+    elevation: 1,
+    marginRight: wp(4),
+    paddingVertical: 16,
+    marginBottom: 32,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 });

@@ -1030,6 +1030,7 @@ const homeSlice = createSlice({
     // builder.addCase(getLeaveDetails.pending, (state, action) => {
     //   state.isLeaveDataLoading = true;
     // });
+
     builder.addCase(getLeaveDetails.fulfilled, (state, action) => {
       const reversedLeaves = action.payload.slice().reverse();
 
@@ -1039,6 +1040,7 @@ const homeSlice = createSlice({
       state.leavesData = reversedLeaves;
       state.leavesDataError = undefined;
     });
+
     // builder.addCase(getLeaveDetails.rejected, (state, action) => {
     //   state.isLeaveDataLoading = false;
     //   state.leavesData = [];

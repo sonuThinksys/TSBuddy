@@ -10,7 +10,7 @@ export default StyleSheet.create({
     // width:"100%",
     // justifyContent: 'space-between',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: Colors.whitishBlue,
   },
   modalContainer: {
     backgroundColor: Colors.skyColor,

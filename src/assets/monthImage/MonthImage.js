@@ -109,6 +109,13 @@ import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
 import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
 import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
+import Balloons from 'assets/newDashboardIcons/balloons.png';
+import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
+import TRMSIcon from 'assets/newDashboardIcons/trms-logo.png';
+import BreakFastIcon from 'assets/newDashboardIcons/breakfast.png';
+import LunchIcon from 'assets/newDashboardIcons/lunch.png';
+import SnacksIcon from 'assets/newDashboardIcons/snacks.png';
+import EditIcon from 'assets/newDashboardIcons/edit.svg';
 
 //emoji
 import Smily from 'assets/emoji/smily.png';
@@ -227,4 +234,11 @@ export const MonthImages = {
   newYear,
   dussehra,
   NotFound,
+  Balloons,
+  SearchIcon,
+  TRMSIcon,
+  BreakFastIcon,
+  LunchIcon,
+  SnacksIcon,
+  EditIcon,
 };

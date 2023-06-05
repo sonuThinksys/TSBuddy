@@ -32,8 +32,6 @@ const CommunicationModal = ({empDetail}) => {
       const url = `tel:+${empDetail.medium}`;
       Linking.openURL(url);
     } else if (empDetail.text.trim() == 'Send Mail to') {
-      // console.log('yahi!');
-
       Linking.openURL(`mailto:${empDetail.medium}`);
     } else if (empDetail.text.trim() == 'Send WhatsApp to') {
       let msg = 'type something';

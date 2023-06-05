@@ -33,3 +33,21 @@ export const finalCurrentDate = () => {
   const finalTodayDate = `${presentDate}, ${presentMonth}`;
   return {currentDay, finalTodayDate};
 };
+
+export const openLeavesCount = function ({leaves}) {
+  const openCount = {earnedOpen: 0, rhOpen: 0};
+  if (leaves && leaves?.length) {
+    for (let leaveData of leaves) {
+      const {status, leaveType, totalLeaveDays} = leaveData || {};
+      if (status?.toLowerCase() === 'open') {
+        if (leaveType.toLowerCase() === 'earned leave') {
+          openCount.earnedOpen = openCount.earnedOpen + totalLeaveDays;
+        }
+        if (leaveType.toLowerCase() === 'restricted holiday') {
+          openCount.rhOpen = openCount.rhOpen + totalLeaveDays;
+        }
+      }
+    }
+  }
+  return openCount;
+};

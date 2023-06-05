@@ -15,16 +15,18 @@ import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
 import Loader from 'component/loader/Loader';
-import ResourceIcon from 'assets/allImage/user.svg';
-import {FontFamily} from 'constants/fonts';
 import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
+import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
+
 let data = [
+  WelcomeHeader,
+  CarouselAutoScroll,
   MenuDetails,
   MenuItem,
-  RecentLeaves,
   RemainingLeaves,
+  RecentLeaves,
   UpComingHolidays,
 ];
 
@@ -34,8 +36,6 @@ const Home = ({navigation}) => {
   const {calendereventData: calenderData} = useSelector(state => state.home);
   const {userToken: token} = useSelector(state => state.auth);
 
-  const birthdays = calenderData?.calenderEvent;
-  const anniversaries = calenderData?.anniversaryEvent;
   const [loading, setLoading] = useState(false);
 
   var decoded = token && jwt_decode(token);
@@ -47,7 +47,6 @@ const Home = ({navigation}) => {
         setLoading(true);
 
         token && dispatch(getEmployeeProfileData({token, employeeID}));
-        console.log('calling::::::::', 'api');
 
         const events = await dispatch(getCalendereventData(token));
 
@@ -72,10 +71,16 @@ const Home = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: Colors.whitishBlue,
+        marginTop: hp(6),
+        // paddingHorizontal: 16,
+      }}>
       {isLoading ? <Loader /> : null}
 
-      {birthdays?.length > 0 || anniversaries?.length > 0 ? (
+      {/* {birthdays?.length > 0 || anniversaries?.length > 0 ? (
         !loading ? (
           <View style={{height: hp(23), backgroundColor: Colors.white}}>
             <CarouselAutoScroll />
@@ -102,10 +107,11 @@ const Home = ({navigation}) => {
             No Events found for this month.
           </Text>
         </View>
-      )}
+      )} */}
 
       {/* ) : null} */}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={data}
         style={{flex: 1}}
         keyExtractor={(item, index) => index}
