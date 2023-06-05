@@ -223,7 +223,7 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
   },
   highlighted: {
-    backgroundColor: 'lightgrey',
+    // backgroundColor: 'lightgrey',
   },
   rowText: {
     fontSize: 16,

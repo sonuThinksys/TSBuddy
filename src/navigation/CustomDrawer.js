@@ -39,6 +39,14 @@ export default ({navigation}) => {
     icon: MonthImages.ResourceIcon,
   };
 
+  const wfhTab = {
+    screen: 'WorkFromHome',
+    label: 'WFH',
+    navigation,
+    key: 4,
+    icon: MonthImages.userPS,
+  };
+
   const drawerList = [
     {
       screen: 'Home',
@@ -54,46 +62,39 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
-    // {
-    //   screen: 'CheckInOut',
-    //   label: "Today's Atendance",
-    //   navigation,
-    //   key: 1,
-    //   icon: MonthImages.arrowSecond,
-    // },
     {
       screen: 'Attendence',
       label: 'Attendance',
       navigation,
-      key: 4,
+      key: 3,
       icon: MonthImages.AttendanceDrawer,
     },
     {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 5,
+      key: 4,
       icon: MonthImages.leavesImage,
     },
     {
       screen: 'Holidays',
       label: 'Holidays',
       navigation,
-      key: 6,
+      key: 5,
       icon: MonthImages.HolidaysIcon,
     },
     {
-      screen: 'SalarySlip',
-      label: 'SalarySlip',
+      screen: 'Salary Slip',
+      label: 'Salary Slip',
       navigation,
-      key: 7,
+      key: 6,
       icon: MonthImages.salarySlipIcon,
     },
     {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 8,
+      key: 7,
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
@@ -101,23 +102,11 @@ export default ({navigation}) => {
 
   if (isLeaveApprover) {
     drawerList.splice(2, 0, resorcesTab);
+    drawerList.splice(3, 0, wfhTab);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
   }
-
-  // if (isLeaveApproover) {
-  //   drawerList.push(resorcesTab);
-  // }
-
-  // drawerList.splice(2, 0, {
-  //   screen: 'Resources',
-  //   label: 'Resources',
-  //   navigation,
-  //   key: 3,
-  //   dispatch,
-  //   icon: MonthImages.salarySlipIcon,
-  // });
 
   return (
     <ScrollView
@@ -137,6 +126,7 @@ const renderDrawerItem = (
   index,
 ) => {
   const selected = navigation.getState().index + 1 === key;
+  console.log('selected', selected);
 
   return (
     <TouchableOpacity

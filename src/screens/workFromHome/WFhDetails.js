@@ -11,26 +11,23 @@ import {
 } from 'react-native';
 import {Colors} from 'colors/Colors';
 import {
+  heightPercentageToDP,
   heightPercentageToDP as hp,
+  widthPercentageToDP,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
-import styles from '../leaves/LeaveStyles';
-import {guestLeavesScreenData} from 'guestData';
-import AttendenceTab from './AttendenceTab';
-import {FontFamily} from 'constants/fonts';
+import ResourceIcon from 'assets/allImage/user.svg';
+import {RegularzitionScreen} from 'navigation/Route';
+import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
 import {useIsFocused} from '@react-navigation/native';
-import WfhTab from './wfhTab';
+import {FontFamily} from 'constants/fonts';
 
 const screenWidth = Dimensions.get('window').width;
 
-const ResourcesDetails = ({route, navigation}) => {
-  const isFocused = useIsFocused();
+const WFHDetails = ({route, navigation}) => {
   const {
     designation,
     employeeName,
@@ -39,19 +36,17 @@ const ResourcesDetails = ({route, navigation}) => {
     name: employeeId,
   } = route.params;
 
+  const isFocused = useIsFocused();
+  const [isRefresh, setRefresh] = useState(false);
+  const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
+  const [openCount, setOpenCount] = useState(0);
+
   const employeeID = employeeId?.split('/')[1];
 
   const dispatch = useDispatch();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-
-  const [isRefresh, setRefresh] = useState(false);
-  const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
-  const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('leaves');
-  const [openCount, setOpenCount] = useState(0);
-  const [wfhCount, setWfhCount] = useState(0);
 
   useEffect(() => {
     if (isFocused) {
@@ -61,7 +56,7 @@ const ResourcesDetails = ({route, navigation}) => {
         );
 
         let count = 0;
-        leavesData.payload.employeeLeaves.forEach(element => {
+        leavesData.payload.employeeWfh.forEach(element => {
           if (element.status == 'Open') {
             count++;
           }
@@ -69,22 +64,13 @@ const ResourcesDetails = ({route, navigation}) => {
 
         setOpenCount(count);
 
-        let count1 = 0;
-        leavesData.payload.employeeWfh.forEach(element => {
-          if (element.status == 'Open') {
-            count1++;
-          }
-        });
-
-        setWfhCount(count1);
-
-        // let sortedLeavesData = leavesData.payload[0].sort((a, b) => {
+        // let sortedLeavesData = leavesData.payload.employeeWfh.sort((a, b) => {
         //   return a.fromDate - b.fromDate;
         // });
 
         // sortedLeavesData.reverse();
 
-        setResourcesEmployeesLeaves(leavesData.payload.employeeLeaves);
+        setResourcesEmployeesLeaves(leavesData.payload.employeeWfh);
         if (leavesData?.error) {
           ShowAlert({
             messageHeader: ERROR,
@@ -115,18 +101,19 @@ const ResourcesDetails = ({route, navigation}) => {
     //   if (!shouldRender) return null;
     // }
 
+    console.log('item');
     return (
       <TouchableOpacity
         onPress={() => {
           item.status !== 'Open'
-            ? navigation.navigate('resourceLeaveDetailsScreen', item)
-            : navigation.navigate('resourceLeaveDetailsScreenOpen', {
+            ? navigation.navigate('workFromHomeLeaveDetailsScreen', item)
+            : navigation.navigate('workFromHomeLeaveApplyScreenOpen', {
                 ...item,
-                fromResource: true,
-                employeeId,
+                fromWfh: true,
+                employeeID,
               });
         }}>
-        <View style={styles.flateListView}>
+        <View style={style.flateListView}>
           <View
             style={{
               flex: 1,
@@ -136,8 +123,8 @@ const ResourcesDetails = ({route, navigation}) => {
                   : item.status === 'Open'
                   ? Colors.darkPink
                   : Colors.parrotGreenLight,
-              paddingHorizontal: wp(2),
-              paddingVertical: hp(1),
+              paddingHorizontal: widthPercentageToDP(2),
+              paddingVertical: heightPercentageToDP(1),
               justifyContent: 'center',
               borderTopLeftRadius: 5,
               borderBottomLeftRadius: 5,
@@ -152,7 +139,7 @@ const ResourcesDetails = ({route, navigation}) => {
             </Text>
             <Text style={{textAlign: 'center'}}>({item.status})</Text>
           </View>
-          <View style={styles.secondView}>
+          <View style={style.secondView}>
             <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
               {item.leaveApplicationId}
             </Text>
@@ -175,6 +162,7 @@ const ResourcesDetails = ({route, navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={style.container}>
@@ -187,13 +175,21 @@ const ResourcesDetails = ({route, navigation}) => {
                 style={style.image}
               />
             ) : (
-              <Image
-                resizeMode="stretch"
-                source={{
-                  uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-                }}
-                style={style.image}
-              />
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.white,
+                  borderRadius: 50,
+                  padding: 10,
+                }}>
+                <ResourceIcon
+                  borderWidth={1}
+                  borderColor={'black'}
+                  height={50}
+                  width={50}
+                  color={Colors.white}
+                />
+              </View>
             )}
           </View>
           <View style={style.name_cont}>
@@ -229,112 +225,28 @@ const ResourcesDetails = ({route, navigation}) => {
             </View>
           </View>
         </View>
-        <View style={style.tab_view}>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('leaves');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab === 'leaves' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <View style={{position: 'relative'}}>
-                <Text style={{color: 'white', fontSize: 17}}>Leaves</Text>
-                {openCount > 0 ? (
-                  <View style={style.badges_number}>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: FontFamily.RobotoMedium,
-                      }}>
-                      {openCount}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('attendence');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab == 'attendence' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('wfh');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab === 'wfh' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <View style={{position: 'relative'}}>
-                <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
-                {wfhCount > 0 ? (
-                  <View style={style.badges_number}>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: FontFamily.RobotoMedium,
-                      }}>
-                      {wfhCount}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            </View>
-          </Pressable>
+      </View>
+
+      {resurcesEmployeeLeaves.length > 0 ? (
+        <FlatList
+          refreshing={isRefresh}
+          onRefresh={updateData}
+          data={isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index}
+        />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
+            Work from home Not Found.
+          </Text>
         </View>
-      </View>
-      <View style={style.listOfLeaves}>
-        {selectedTab === 'leaves' ? (
-          resurcesEmployeeLeaves.length > 0 ? (
-            <FlatList
-              refreshing={isRefresh}
-              onRefresh={updateData}
-              data={
-                isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves
-              }
-              renderItem={renderItem}
-              keyExtractor={(_, index) => index}
-            />
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
-                Applied Leaves Not Found.
-              </Text>
-            </View>
-          )
-        ) : selectedTab == 'attendence' ? (
-          <AttendenceTab employeeName={employeeName} employeeID={employeeID} />
-        ) : (
-          <WfhTab employeeName={employeeName} employeeID={employeeID} />
-        )}
-      </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -354,7 +266,7 @@ const style = StyleSheet.create({
   profile_cont: {
     width: wp(18),
     height: hp(9),
-    marginRight: 10,
+    marginRight: 20,
     borderRadius: 50,
   },
   name_cont: {},
@@ -369,6 +281,8 @@ const style = StyleSheet.create({
   },
   social_icon_cont: {
     alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5,
   },
   social_inner_cont: {
     width: screenWidth - wp(15),
@@ -381,39 +295,31 @@ const style = StyleSheet.create({
     width: wp(11),
     height: hp(5.5),
     borderRadius: 50,
+    // borderWidth: 11,
     backgroundColor: 'teal',
-  },
-  tab_view: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  tab: {
-    width: screenWidth / 3,
-    alignItems: 'center',
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  badges_number: {
-    backgroundColor: Colors.reddishTint,
-    width: 25,
-    height: 25,
-    borderRadius: 13,
-    position: 'absolute',
-    right: -26,
-    top: -10,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   image: {
     width: '100%',
     height: '100%',
     borderRadius: 50,
   },
-  listOfLeaves: {
-    height: hp(65),
-    marginBottom: 5,
+  flateListView: {
+    flexDirection: 'row',
+    borderRadius: 5,
+    marginVertical: heightPercentageToDP(0.5),
+    marginHorizontal: widthPercentageToDP(2),
+    backgroundColor: Colors.lightcyan,
+    shadowOpacity: 0.1,
+  },
+  secondView: {
+    flex: 2,
+    backgroundColor: Colors.lightcyan,
+    paddingHorizontal: widthPercentageToDP(2),
+    paddingVertical: heightPercentageToDP(1),
+    justifyContent: 'center',
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
   },
 });
 
-export default ResourcesDetails;
+export default WFHDetails;

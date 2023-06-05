@@ -41,6 +41,7 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
+import WorkFromHome from 'screens/workFromHome/WorkFromHome';
 
 // plus.imageset
 import {
@@ -61,10 +62,15 @@ import {
   ResourcesDetailsScreen,
   ResourcesScreen,
   CheckInOutScreen,
+  WFHDetailsScreen,
+  RegularzitionScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
 import CheckInOut from 'screens/checkInOut/CheckInOut';
+import {WorkFromHomeScreen} from './Route';
+import WFHDetails from 'screens/workFromHome/WFhDetails';
+import Regularization from 'screens/attendence/Regularization';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -76,6 +82,7 @@ const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
 const CheckInOutStack = createNativeStackNavigator();
+const WorkFromHomeStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -212,6 +219,92 @@ const HomeStackScreen = ({navigation}) => {
   );
 };
 
+const WorkFromHomeStackScreen = ({navigation}) => {
+  return (
+    <WorkFromHomeStack.Navigator>
+      <WorkFromHomeStack.Screen
+        options={drawerOption({
+          label: 'Work From Home',
+          headerIconName: MonthImages.info_scopy,
+          navigation: navigation,
+          headerIcon: MonthImages.info_scopy,
+        })}
+        name={WorkFromHomeScreen}
+        component={WorkFromHome}
+      />
+      <WorkFromHomeStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '   WFH Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={WFHDetailsScreen}
+        component={WFHDetails}
+      />
+      <WorkFromHomeStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Leave Detail',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'workFromHomeLeaveDetailsScreen'}
+        component={LeaveDetails}
+      />
+      <WorkFromHomeStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Leave Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'workFromHomeLeaveApplyScreenOpen'}
+        component={ApplyLeave}
+      />
+    </WorkFromHomeStack.Navigator>
+  );
+};
+
 const AttendenceStackScreen = ({navigation}) => {
   return (
     <AttendenceStack.Navigator screenOptions={{headerShown: false}}>
@@ -224,6 +317,15 @@ const AttendenceStackScreen = ({navigation}) => {
         })}
         name={AttendenceScreen}
         component={Attendence}
+      />
+      <AttendenceStack.Screen
+        options={drawerOption({
+          label: 'Regularization',
+          navigation: navigation,
+          showDrawer: false,
+        })}
+        name={RegularzitionScreen}
+        component={Regularization}
       />
     </AttendenceStack.Navigator>
   );
@@ -281,7 +383,6 @@ const LeavesStackScreen = ({navigation}) => {
           label: 'Leave Details',
           showDrawer: false,
           showHeaderRight: false,
-          // headerIconName: MonthImages.info_scopy,
           navigation: navigation,
         })}
         name={LeaveDetailsScreen}
@@ -520,16 +621,22 @@ function DrawerNavigator({navigation}) {
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
 
+      {isLeaveApprover ? (
+        <Drawer.Screen
+          name="WorkFromHome"
+          component={WorkFromHomeStackScreen}
+        />
+      ) : null}
+
       {/* <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} /> */}
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
 
-      <Drawer.Screen name="SalarySlip" component={SalarySlipScreen} />
+      <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
 
       <Drawer.Screen name="logout" component={Logout} />
-      {/* <Drawer.Screen name="resources" component={AttendenceTab} /> */}
     </Drawer.Navigator>
   );
 }

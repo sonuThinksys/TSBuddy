@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  TouchableHighlight,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -41,6 +42,7 @@ import {
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
+// import {TouchableHighlight} from 'react-native-gesture-handler';
 
 const ApplyLeave = ({navigation, route}) => {
   const {leavesData} = route.params;
@@ -53,9 +55,6 @@ const ApplyLeave = ({navigation, route}) => {
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-
-  console.log('openLeaveData', openLeaveData);
-
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
@@ -596,7 +595,6 @@ const ApplyLeave = ({navigation, route}) => {
     return (
       <View
         style={{
-          // paddingLeft: 8,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -728,31 +726,6 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
 
-  console.log(
-    'leaveApplicationId',
-    openLeaveApplicationId,
-    'employeeId',
-    employeeID,
-    'fromDate',
-    openLeavFromDateObj,
-    'toDate',
-    openLeaveToDateObj,
-    'totalLeaveDays',
-    openLeaveNumberOfDays,
-    'description',
-    openLeaveReason,
-    'halfDay',
-    openLeavehalfDay,
-    'postingDate',
-    new Date(),
-    'leaveType',
-    openLeaveType,
-    'leaveApprover',
-    openLeaveApproverEmail,
-    'fiscalYear',
-    fiscalYear,
-  );
-
   const applyUpdatedLeave = async () => {
     if (!fromDate.fromDateObj || !toDate.toDateObj) {
       alert('Please select dates for which you want to apply for a leave.');
@@ -810,6 +783,7 @@ const ApplyLeave = ({navigation, route}) => {
   };
   const finalizeLeave = async status => {
     const empId = +employeeID.match(/\d+/g)[0];
+
     const response =
       token &&
       (await dispatch(
@@ -992,6 +966,7 @@ const ApplyLeave = ({navigation, route}) => {
                       paddingVertical: 5,
                       height: 32,
                     }}
+                    dropdownTextHighlightStyle={{color: Colors.white}}
                     isFullWidth={true}
                     showsVerticalScrollIndicator={false}
                     defaultValue={

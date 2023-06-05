@@ -219,11 +219,7 @@ const RequestLunch = ({navigation}) => {
       alert('You can not apply for the lunch request after 10:30.');
       return;
     }
-    // if (currentHour > 10 || (currentHour === 10 && currentMinutes > 30)) {
-    //   alert('You can not apply for the lunch request after 10:30.');
-    //   return;
-    // }
-    //
+
     setIsLoading(true);
 
     try {

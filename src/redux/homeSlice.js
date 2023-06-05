@@ -570,6 +570,40 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
   },
 );
 
+export const getAttReguarzationReason = createAsyncThunk(
+  'getReguarzationReason',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getAttRegularizationReason,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
 export const GetDailyAttendanceByEmpId = createAsyncThunk(
   'dailyAttendanceByEmpId',
   async ({token, employeeID, year, month}) => {
