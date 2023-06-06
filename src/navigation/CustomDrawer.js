@@ -126,7 +126,6 @@ const renderDrawerItem = (
   index,
 ) => {
   const selected = navigation.getState().index + 1 === key;
-  console.log('selected', selected);
 
   return (
     <TouchableOpacity
