@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  TouchableHighlight,
+  SafeAreaView,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -42,11 +42,22 @@ import {
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
-// import {TouchableHighlight} from 'react-native-gesture-handler';
+import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
 
 const ApplyLeave = ({navigation, route}) => {
-  const {leavesData} = route.params;
+  const {
+    leavesData,
+    isLeaveDataLoading: {isLoading},
+  } = useSelector(state => state.home);
+
+  // const {leavesData = []} = route?.params ||  {};
+
+  // =================================================================
+  const openCount = returnOpenStatusCount({leaves: leavesData});
+  // =================================================================
+
   const {openLeavesCount} = route?.params || {};
+  // const {openLeavesCount, leavesData = []} = route?.params || {};
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -628,7 +639,7 @@ const ApplyLeave = ({navigation, route}) => {
       return;
     }
 
-    for (let i = 0; i < leavesData.length; i++) {
+    for (let i = 0; i < leavesData?.length; i++) {
       let {fromDate: startDate1, toDate: endDate1} = leavesData[i];
       startDate1 = new Date(startDate1);
       endDate1 = new Date(endDate1);
@@ -832,7 +843,7 @@ const ApplyLeave = ({navigation, route}) => {
 
   return (
     // <KeyboardAvoidingView behavior="height" style={styles.mainContainer}>
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <View style={styles.swiperContainer}>{sliderComponent()}</View>
       <View
         showsVerticalScrollIndicator={false}
@@ -1164,7 +1175,7 @@ const ApplyLeave = ({navigation, route}) => {
           </View>
         ) : null}
       </View>
-    </View>
+    </SafeAreaView>
     // </KeyboardAvoidingView>
   );
 };

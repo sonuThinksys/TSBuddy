@@ -21,8 +21,6 @@ import Profile from 'screens/profile/Profile';
 import ResourcesDetails from 'screens/Resources/ResourcesDetails';
 import Resources from 'screens/Resources/Resources';
 import jwt_decode from 'jwt-decode';
-import NetInfo from '@react-native-community/netinfo';
-import {Alert} from 'react-native';
 
 // import AttendenceTab from 'screens/Resources/AttendenceTab';
 
@@ -71,6 +69,7 @@ import CheckInOut from 'screens/checkInOut/CheckInOut';
 import {WorkFromHomeScreen} from './Route';
 import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
+import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -94,23 +93,28 @@ const drawerOption = ({
   headerIcon,
 }) => {
   return {
-    label: () => <Text>{label}</Text>,
     headerShown: true,
+    headerTransparent: true,
+
     headerLeft: showDrawer
-      ? props => (
+      ? () => (
           <TouchableOpacity
+            // style={{}}
             onPress={() => {
               navigation.openDrawer();
             }}>
-            <Image
+            {/* <Image
               source={MonthImages.DrwaerMenu}
               style={{height: 22, width: 22}}
-            />
+            /> */}
+            <MenuSVG fill={Colors.dune} height={24} width={24} />
           </TouchableOpacity>
         )
       : null,
-    headerStyle: {backgroundColor: Colors.darkBlue},
-    headerTintColor: Colors.white,
+    headerStyle: {
+      padding: 20,
+    },
+    headerTintColor: Colors.purple,
     headerTitle: () => (
       // <TouchableOpacity>
       <View
@@ -120,22 +124,8 @@ const drawerOption = ({
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text
-          disabled={true}
-          style={{
-            color: Colors.white,
-            textAlign: 'center',
-            marginLeft:
-              Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
-            //paddingTop: hp(0.5),
-            fontSize: 16,
-            // fontWeight: 'bold',
-            marginRight: wp(2),
-            // marginLeft: wp(25),
-            fontFamily: FontFamily.RobotoRegular,
-          }}>
-          {label}
-        </Text>
+        <Image source={MonthImages.TRMSIcon} style={{width: 108, height: 40}} />
+
         {headerIcon && (
           <Image source={headerIcon} style={{height: 22, width: 22}} />
         )}
@@ -150,7 +140,7 @@ const drawerOption = ({
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            {fromLeave && (
+            {/* {fromLeave && (
               <Pressable
                 style={{
                   ...styles.newLeaveText,
@@ -175,13 +165,106 @@ const drawerOption = ({
                   New
                 </Text>
               </Pressable>
-            )}
+            )} */}
             <Header />
           </View>
         )
       : null,
   };
+
+  // return {
+  //   label: () => <Text>{label}</Text>,
+  //   headerShown: true,
+  //   headerLeft: showDrawer
+  //     ? props => (
+  //         <TouchableOpacity
+  //           onPress={() => {
+  //             navigation.openDrawer();
+  //           }}>
+  //           <Image
+  //             source={MonthImages.DrwaerMenu}
+  //             style={{height: 22, width: 22}}
+  //           />
+  //         </TouchableOpacity>
+  //       )
+  //     : null,
+  //   headerStyle: {backgroundColor: Colors.darkBlue},
+  //   headerTintColor: Colors.white,
+  //   headerTitle: () => (
+  //     // <TouchableOpacity>
+  //     <View
+  //       style={{
+  //         display: 'flex',
+  //         flexDirection: 'row',
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //       }}>
+  //       <Text
+  //         disabled={true}
+  //         style={{
+  //           color: Colors.white,
+  //           textAlign: 'center',
+  //           marginLeft:
+  //             Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
+  //           //paddingTop: hp(0.5),
+  //           fontSize: 16,
+  //           // fontWeight: 'bold',
+  //           marginRight: wp(2),
+  //           // marginLeft: wp(25),
+  //           fontFamily: FontFamily.RobotoRegular,
+  //         }}>
+  //         {label}
+  //       </Text>
+  //       {headerIcon && (
+  //         <Image source={headerIcon} style={{height: 22, width: 22}} />
+  //       )}
+  //     </View>
+  //     // </TouchableOpacity>
+  //   ),
+  //   headerRight: showHeaderRight
+  //     ? () => (
+  //         <View
+  //           style={{
+  //             flexDirection: 'row',
+  //             justifyContent: 'center',
+  //             alignItems: 'center',
+  //           }}>
+  //           {fromLeave && (
+  //             <Pressable
+  //               style={{
+  //                 ...styles.newLeaveText,
+  //                 flexDirection: 'row',
+  //                 justifyContent: 'center',
+  //                 alignItems: 'center',
+  //               }}
+  //               onPress={() => {
+  //                 navigation.navigate('LeaveApplyScreen');
+  //               }}>
+  //               <Image
+  //                 source={MonthImages.plus}
+  //                 style={{height: 15, width: 15}}
+  //               />
+  //               <Text
+  //                 style={{
+  //                   color: Colors.white,
+  //                   fontFamily: FontFamily.RobotoBold,
+  //                   fontSize: FontSize.h15,
+  //                   paddingLeft: 7,
+  //                 }}>
+  //                 New
+  //               </Text>
+  //             </Pressable>
+  //           )}
+  //           <Header />
+  //         </View>
+  //       )
+  //     : null,
+  // };
 };
+
+const CustomHeader = () => (
+  <View style={{height: 100, backgroundColor: 'transparent'}} /> // Adjust the height as per your content requirements
+);
 
 const HomeStackScreen = ({navigation}) => {
   return (
@@ -190,10 +273,10 @@ const HomeStackScreen = ({navigation}) => {
         name={HomeScreen}
         component={Home}
         options={drawerOption({
-          label: 'Home',
+          label: 'trms',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
-          headerIcon: MonthImages.info_scopy,
+          headerIcon: false,
         })}
       />
       <HomeStack.Screen
@@ -313,7 +396,8 @@ const AttendenceStackScreen = ({navigation}) => {
           label: 'Attendance',
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
-          headerIcon: MonthImages.info_scopy,
+          // headerIcon: MonthImages.info_scopy,
+          headerIcon: false,
         })}
         name={AttendenceScreen}
         component={Attendence}

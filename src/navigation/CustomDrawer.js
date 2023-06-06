@@ -167,8 +167,8 @@ const renderDrawerItem = (
           );
           navigation.closeDrawer();
         } else {
-          navigation.closeDrawer();
           navigation.navigate(screen);
+          navigation.closeDrawer();
         }
       }}
       style={{

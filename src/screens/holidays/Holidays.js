@@ -22,7 +22,6 @@ const Holidays = () => {
   );
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
-  console.log('holidaysData = ', holidaysData);
   const [isRefresh, setRefresh] = useState(false);
 
   const updateData = async () => {

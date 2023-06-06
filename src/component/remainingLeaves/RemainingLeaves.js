@@ -1,21 +1,32 @@
-import React from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Dimensions, Pressable} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 
-import {BarChart, LineChart} from 'react-native-chart-kit';
+import {BarChart} from 'react-native-chart-kit';
+import {useNavigation} from '@react-navigation/native';
+import jwt_decode from 'jwt-decode';
 
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
+import {CommonActions} from '@react-navigation/native';
+
 const RemainingLeaves = () => {
+  const [loading, setLoading] = useState(false);
+  const {userToken: token} = useSelector(state => state.auth);
+  const decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
+  const navigation = useNavigation();
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(
     state => state.home,
   );
+
+  const {leavesData} = useSelector(state => state.home);
 
   const restrictedLeavesData = [
     isGuestLogin ? 1 : remainingLeaves[1]?.totalLeavesAllocated,
@@ -29,12 +40,11 @@ const RemainingLeaves = () => {
     isGuestLogin ? 8 : remainingLeaves[0]?.currentLeaveBalance,
   ];
 
-  const totalEarnedTypesAvailable = earnedLeavesData.length;
-  const totalRestrictedTypesAvailable = restrictedLeavesData.length;
-
   const barChartGraph = ({data, rh}) => {
     return (
       <BarChart
+        showVerticalLabels={true}
+        verticalLabelRotation={30}
         segments={rh ? 2 : 4}
         spacingInner={0}
         flatColor={true}
@@ -49,9 +59,9 @@ const RemainingLeaves = () => {
             {
               data,
               colors: [
-                () => Colors.orange,
-                () => Colors.darkBlue,
-                () => Colors.green,
+                () => Colors.lovelyYellow,
+                () => Colors.lovelyBlue,
+                () => Colors.lovelyGreen,
                 () => Colors.red,
               ],
             },
@@ -59,27 +69,30 @@ const RemainingLeaves = () => {
         }}
         width={
           rh
-            ? Dimensions.get('window').width * 0.44
-            : Dimensions.get('window').width * 0.5
+            ? Dimensions.get('window').width * 0.45
+            : Dimensions.get('window').width * 0.45
         }
         height={220}
         chartConfig={{
-          backgroundGradientFrom: '#f1f3f5',
-          backgroundGradientTo: '#f1f3f5',
+          backgroundColor: Colors.white,
+          backgroundGradientFrom: Colors.white,
+          backgroundGradientTo: Colors.white,
           decimalPlaces: 0,
           fillShadowGradientOpacity: '0.5',
-          barPercentage: !rh
-            ? totalEarnedTypesAvailable === 3
-              ? 0.72
-              : 0.56
-            : totalRestrictedTypesAvailable === 3
-            ? 0.72
-            : 0.56,
+          barPercentage: 0.25,
+          // barPercentage: !rh
+          //   ? totalEarnedTypesAvailable === 3
+          //     ? 0.72
+          //     : 0.56
+          //   : totalRestrictedTypesAvailable === 3
+          //   ? 0.72
+          //   : 0.56,
           color: (opacity = 1) =>
             Colors.customColor({opacity, r: 0, g: 0, b: 0}),
           style: {
             borderRadius: 0,
           },
+          categoryPercentage: 0.5,
         }}
         style={{
           marginVertical: 10,
@@ -99,16 +112,47 @@ const RemainingLeaves = () => {
   //     </View>
   //   );
   // }
+
+  const updateData = async () => {
+    try {
+      setLoading(true);
+      const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
+      const openCount = openLeavesCount({leaves: allLeaves?.payload});
+      setOpenLeaves(openCount);
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    token && updateData();
+    // if (isFocussed) token && updateData();
+  }, [employeeID, token]);
+
   return (
-    <View>
+    <View style={{paddingHorizontal: 20}}>
       <View style={styles.container}>
-        <Text style={styles.remainingText}>Remaining Leaves</Text>
+        <Text style={styles.remainingText}>Manage Leaves</Text>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Leaves', {
+              screen: 'LeaveApplyScreen',
+              // params: {leavesData},
+            });
+          }}
+          style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>Apply</Text>
+        </Pressable>
       </View>
       {remainingLeaves?.length === 0 ? (
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: Colors.white,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
           }}>
           <Text
             style={{
@@ -121,7 +165,7 @@ const RemainingLeaves = () => {
           </Text>
         </View>
       ) : (
-        <View>
+        <View style={styles.leavesContainer}>
           <View
             style={{
               flexDirection: 'row',
@@ -137,6 +181,9 @@ const RemainingLeaves = () => {
                   position: 'absolute',
                   top: 200,
                   left: wp(19),
+                  fontSize: 16,
+                  fontFamily: FontFamily.RobotoLight,
+                  marginTop: hp(0.5),
                 }}>
                 Earned Leave
               </Text>
@@ -152,6 +199,9 @@ const RemainingLeaves = () => {
                   bottom: 0,
                   top: 200,
                   right: 10,
+                  fontSize: 16,
+                  fontFamily: FontFamily.RobotoLight,
+                  marginTop: hp(0.5),
                 }}>
                 Restricted Leave
               </Text>
@@ -170,10 +220,10 @@ const RemainingLeaves = () => {
               <View style={styles.leavesType3}></View>
               <Text>+ve Balance</Text>
             </View>
-            <View style={styles.leaveType}>
+            {/* <View style={styles.leaveType}>
               <View style={styles.leavesType4}></View>
               <Text>-ve Balance</Text>
-            </View>
+            </View> */}
           </View>
         </View>
       )}

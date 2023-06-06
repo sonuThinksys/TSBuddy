@@ -7,18 +7,31 @@ import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
-    paddingVertical: hp(1),
+    paddingBottom: hp(1),
     paddingHorizontal: wp(3),
-    backgroundColor: Colors.skyColor,
     marginTop: hp(1),
   },
   imageView: {
-    display: 'flex',
+    // display: 'flex',
+    // flexDirection: 'row',
+    // backgroundColor: Colors.white,
+    // marginTop: hp(0.6),
+    // shadowOpacity: 0.1,
+    // paddingLeft: wp(1),
     flexDirection: 'row',
     backgroundColor: Colors.white,
     marginTop: hp(0.6),
-    shadowOpacity: 0.1,
-    paddingLeft: wp(1),
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingVertical: wp(4),
+    shadowColor: Colors.colorDodgerBlue2,
+    shadowOffset: {width: 0, height: 2}, // Set the shadow offset
+    shadowOpacity: 0.2, // Set the shadow opacity
+    shadowRadius: 0.1, // Set the shadow radius
+    elevation: 1,
+    marginBottom: 5,
+    paddingHorizontal: wp(4),
+    justifyContent: 'space-between',
   },
   textView: {
     paddingVertical: hp(1.6),
@@ -28,12 +41,35 @@ export default StyleSheet.create({
     marginVertical: hp(0.5),
     backgroundColor: Colors.darkCyan,
   },
-  image: {height: 40, width: 40, marginTop: hp(1.8), flex: 1},
+  // image: {height: 40, width: 40, marginTop: hp(1.8), flex: 1},
+  image: {height: wp(10), width: wp(10)},
   text1: {marginTop: hp(2.4), flex: 5, marginLeft: wp(1)},
   text2: {
     fontFamily: FontFamily.RobotoBlack,
     fontSize: FontSize.h16,
     color: Colors.white,
   },
-  upcomingText: {fontFamily: FontFamily.RobotoBlack, fontSize: FontSize.h16},
+  upcomingText: {
+    fontFamily: FontFamily.RobotoLight,
+    fontSize: FontSize.h18,
+    marginTop: hp(1),
+    color: Colors.black,
+  },
+  daysContainer: {
+    marginRight: wp(5),
+    width: wp(16),
+  },
+  daysText: {
+    fontSize: 26,
+    fontFamily: FontFamily.RobotoLight,
+    paddingLeft: 5,
+  },
+  typeDateContainer: {
+    justifyContent: 'center',
+  },
+  leaveTypeText: {
+    fontSize: 18,
+    color: '#0F673E',
+    fontFamily: FontFamily.RobotoMedium,
+  },
 });

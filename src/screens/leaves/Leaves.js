@@ -6,6 +6,7 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
+  SafeAreaView,
 } from 'react-native';
 
 import {useIsFocused} from '@react-navigation/native';
@@ -27,6 +28,7 @@ import {guestLeavesScreenData} from 'guestData';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
+import {openLeavesCount} from 'utils/utils';
 
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -50,27 +52,7 @@ const Leaves = ({navigation}) => {
     try {
       setRefresh(true);
       const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
-      let openCount = {earnedOpen: 0, rhOpen: 0};
-      for (let i = 0; i < allLeaves?.payload?.length; i++) {
-        const status = allLeaves?.payload[i]?.status;
-
-        if (status?.toLowerCase() === 'open') {
-          if (
-            allLeaves?.payload[i].leaveType.toLowerCase() === 'earned leave'
-          ) {
-            openCount.earnedOpen =
-              openCount.earnedOpen + allLeaves?.payload[i].totalLeaveDays;
-          }
-          if (
-            allLeaves?.payload[i].leaveType.toLowerCase() ===
-            'restricted holiday'
-          ) {
-            openCount.rhOpen =
-              openCount.rhOpen + allLeaves?.payload[i].totalLeaveDays;
-          }
-        }
-      }
-
+      const openCount = openLeavesCount({leaves: allLeaves?.payload});
       setOpenLeaves(openCount);
     } catch (err) {
     } finally {
@@ -95,7 +77,6 @@ const Leaves = ({navigation}) => {
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {
       openLeavesCount: openLeaves,
-      leavesData,
     });
   };
 
@@ -189,7 +170,13 @@ const Leaves = ({navigation}) => {
 
   return (
     <>
-      <View style={{paddingVertical: hp(2), flex: 1}}>
+      <SafeAreaView
+        style={{
+          paddingVertical: hp(2),
+          marginTop: hp(7),
+          flex: 1,
+          backgroundColor: Colors.whitishBlue,
+        }}>
         <Pressable
           onPress={applyForLeave}
           style={{
@@ -269,7 +256,7 @@ const Leaves = ({navigation}) => {
           }}
         />
 
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             setFilterCalenderOpen(true);
           }}
@@ -278,8 +265,8 @@ const Leaves = ({navigation}) => {
             source={MonthImages.filterIcon2x}
             style={{height: 55, width: 55, borderRadius: 25}}
           />
-        </TouchableOpacity>
-      </View>
+        </Pressable>
+      </SafeAreaView>
     </>
   );
 };

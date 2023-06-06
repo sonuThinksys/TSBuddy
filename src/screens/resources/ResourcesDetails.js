@@ -59,7 +59,6 @@ const ResourcesDetails = ({route, navigation}) => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-
         let count = 0;
         leavesData.payload.employeeLeaves.forEach(element => {
           if (element.status == 'Open') {
@@ -67,7 +66,7 @@ const ResourcesDetails = ({route, navigation}) => {
           }
         });
 
-        setOpenCount(count);
+        // setOpenCount(count);
 
         let count1 = 0;
         leavesData.payload.employeeWfh.forEach(element => {
@@ -175,6 +174,7 @@ const ResourcesDetails = ({route, navigation}) => {
       </TouchableOpacity>
     );
   };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={style.container}>

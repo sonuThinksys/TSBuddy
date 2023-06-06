@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -22,14 +23,15 @@ import {ERROR} from 'constants/strings';
 import jwt_decode from 'jwt-decode';
 import {useIsFocused} from '@react-navigation/native';
 
-const breakfast = 'breakfast';
-const lunch = 'lunch';
-const snacks = 'snacks';
+const breakfast = 'Breakfast';
+const lunch = 'Lunch';
+const snacks = 'Snacks';
 
 import {getTodayMenuDetails} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import LinearGradient from 'react-native-linear-gradient';
 import FoodFeedback from 'modals/FoodFeedback';
+import EditIcon from 'assets/newDashboardIcons/edit.svg';
 
 const MenuItem = ({navigation}) => {
   const isFocussed = useIsFocused();
@@ -114,10 +116,8 @@ const MenuItem = ({navigation}) => {
   };
 
   return (
-    <View style={{paddingHorizontal: wp(0.1)}}>
-      {showModal ? (
-        <FoodFeedback modalData={modalData} showModal={showModal} />
-      ) : null}
+    <View style={{paddingLeft: 20}}>
+      <FoodFeedback modalData={modalData} showModal={showModal} />
       <FlatList
         showsHorizontalScrollIndicator={false}
         horizontal={true}
@@ -125,9 +125,30 @@ const MenuItem = ({navigation}) => {
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return (
-            <View key={index} style={styles.container}>
-              <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
-                {item?.type}
+            <View>
+              <View key={index} style={styles.container}>
+                <Image
+                  source={item.img_url}
+                  style={{
+                    height: wp(26),
+                    width: wp(26),
+                    borderRadius: wp(13),
+                    overflow: 'hidden',
+                  }}
+                />
+                <Text style={styles.foodTypeText}>{item?.type}</Text>
+                <ScrollView nestedScrollEnabled={true}>
+                  <Text
+                    style={{
+                      color: Colors.dune,
+                      fontSize: 14,
+                      textAlign: 'center',
+                    }}>
+                    {item.food ? item.food : 'N/A'}
+                  </Text>
+                </ScrollView>
+                {/* <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
+                {item?.type}fffff
               </Text>
               <View>
                 <ImageBackground
@@ -179,7 +200,27 @@ const MenuItem = ({navigation}) => {
                     <Text style={styles.textStyle}> Feedback </Text>
                   </TouchableOpacity>
                 </LinearGradient>
+              </View> */}
               </View>
+              <Pressable
+                style={styles.feedbackContainer}
+                onPress={() => {
+                  setShowModal(true);
+                  setModalData({
+                    setShowModal: setShowModal,
+                    type: item?.type,
+                    dailyMenuID: dailyMenuID,
+                    employeeID: employeeID,
+                  });
+                }}>
+                <EditIcon
+                  height={22}
+                  width={22}
+                  marginRight={6}
+                  color={Colors.black}
+                />
+                <Text>Feedback</Text>
+              </Pressable>
             </View>
           );
         }}

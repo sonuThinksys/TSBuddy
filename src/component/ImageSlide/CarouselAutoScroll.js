@@ -1,24 +1,21 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   ImageBackground,
-  Dimensions,
   View,
   Text,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './AutoscrollStyle';
 
 import BirthdayAnniV from 'modals/BirthdayAnniV';
 import {Colors} from 'colors/Colors';
-import {getCalendereventData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-const width = Dimensions.get('screen').width;
-import {imageArr} from 'utils/defaultData';
-import {ERROR} from 'constants/strings';
-import ShowAlert from 'customComponents/CustomError';
+import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 
 const CarouselAutoScroll = ({navigation}) => {
   const dispatch = useDispatch();
@@ -72,7 +69,7 @@ const CarouselAutoScroll = ({navigation}) => {
 
   useEffect(() => {
     if (CalaenderEventData && CalaenderEventData.length > 0) {
-      imageRef.current.scrollToIndex({index: active, animated: true});
+      imageRef?.current?.scrollToIndex({index: active, animated: true});
     }
   }, [active]);
 
@@ -83,21 +80,19 @@ const CarouselAutoScroll = ({navigation}) => {
   //     </View>
   //   );
   // }
+
   return (
     <View
       style={{
         flex: 1,
         justifyContent: 'center',
+        paddingLeft: 20,
       }}>
       {showModal ? (
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
       <FlatList
         showsHorizontalScrollIndicator={false}
-        // onViewableItemsChanged={onViewableItemsChangedHandler}
-        // viewabilityConfig={{
-        //   itemVisiblePercentThreshold: 50,
-        // }}
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         ref={imageRef}
         pagingEnabled
@@ -105,52 +100,47 @@ const CarouselAutoScroll = ({navigation}) => {
         horizontal
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => (
-          // <View >
-          <TouchableOpacity
-            key={index}
-            style={styles.container}
-            // style={{marginHorizontal: 10}}
-            onPress={() => {
-              setModalData({
-                startsOn: item.startsOn,
-                dateOfJoining: item.dateOfJoining,
-                name: item.employeeName,
-                description: item.description,
-                isBirthday: item.isBirthday,
-
-                setShowModal: setShowModal,
-              });
-              setShowModal(true);
+          <View
+            style={{
+              marginRight: wp(5),
             }}>
-            <ImageBackground
-              source={
-                !item.isBirthday
-                  ? MonthImages.workAnniversaryy
-                  : MonthImages.BirthdayImage
-              }
-              resizeMode="stretch"
-              imageStyle={{
-                borderRadius: 15,
-              }}
-              style={styles.backgroundImage}>
-              <View style={styles.textView}>
-                <Text
-                  numberOfLines={2}
-                  style={{color: Colors.white, textAlign: 'center'}}>
-                  {!item.isBirthday
-                    ? `Happy Work Aniversary ${item.employeeName} on ${moment(
-                        item.dateOfJoining,
-                      ).format('DD MMM ')}`
-                    : `Happy Birthday ${item.employeeName} on ${moment(
-                        item.startsOn,
-                      ).format('DD MMM ')}`}
-                </Text>
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
-          // </View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image
+                source={MonthImages.Balloons}
+                style={{height: 40, width: 40, marginRight: 24}}
+              />
+              <Text style={styles.happyText}>Happy </Text>
+              <Text style={styles.wishText}>Birthday</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.container}
+              key={index}
+              onPress={() => {
+                setModalData({
+                  startsOn: item.startsOn,
+                  dateOfJoining: item.dateOfJoining,
+                  name: item.employeeName,
+                  description: item.description,
+                  isBirthday: item.isBirthday,
+
+                  setShowModal: setShowModal,
+                });
+                setShowModal(true);
+              }}>
+              <Image source={defaultUserIcon} style={styles.image} />
+              <Text style={styles.birthdayBoyOrGirl}>{item.employeeName}</Text>
+              <Text style={styles.designation}>Head of Department</Text>
+            </TouchableOpacity>
+            <View style={styles.eventDate}>
+              <Text style={styles.eventDateText}>
+                {item?.isBirthday
+                  ? moment(item.dateOfBirth).format('DD MMM')
+                  : moment(item.dateOfJoining).format('DD MMM')}
+              </Text>
+            </View>
+          </View>
         )}
-        // style={{...StyleSheet.AbsoluteFill}}
       />
     </View>
   );
@@ -175,3 +165,44 @@ const useInterval = (callback, delay) => {
 };
 
 export default CarouselAutoScroll;
+
+{
+  /* <ImageBackground
+                source={
+                  !item.isBirthday
+                    ? MonthImages.workAnniversaryy
+                    : MonthImages.BirthdayImage
+                }
+                resizeMode="stretch"
+                imageStyle={{
+                  borderRadius: 15,
+                }}
+                style={styles.backgroundImage}> */
+}
+{
+  /* <View style={styles.textView}>
+                <Text
+                  numberOfLines={2}
+                  style={{color: Colors.white, textAlign: 'center'}}>
+                  {!item.isBirthday
+                    ? `Happy Work Aniversary ${item.employeeName} on ${moment(
+                        item.dateOfJoining,
+                      ).format('DD MMM ')}`
+                    : `Happy Birthday ${item.employeeName} on ${moment(
+                        item.startsOn,
+                      ).format('DD MMM ')}`}
+                </Text>
+              </View> */
+}
+{
+  /* </ImageBackground> */
+}
+{
+  /* <View
+                style={{
+                  borderWidth: 5,
+                  borderColor: 'green',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}> */
+}

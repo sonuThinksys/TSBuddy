@@ -11,6 +11,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';
 import {employeeProfileScreen} from 'navigation/Route';
 import {setFromNavigatedScreen} from 'redux/homeSlice';
+import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -22,18 +24,9 @@ const Header = () => {
       <TouchableOpacity
         onPress={() => {
           dispatch(setFromNavigatedScreen({screenName}));
-
           navigation.navigate(employeeProfileScreen);
         }}>
-        <Image
-          source={MonthImages.searchIconwhite}
-          style={{
-            height: 22,
-            width: 22,
-            marginRight: wp(1),
-            // color: Colors.white,
-          }}
-        />
+        <SearchIcon height={26} width={26} />
       </TouchableOpacity>
     </View>
   );

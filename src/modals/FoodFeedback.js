@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
@@ -24,6 +25,7 @@ import {addMealFeedback} from 'redux/homeSlice';
 import {styles} from './FoodFeedbackStyles';
 
 const FoodFeedback = ({modalData, showModal}) => {
+  const deviceWidth = Dimensions.get('window').width;
   const [submit, setSubmit] = useState({});
   const [text, setText] = useState('');
   const [reaction, setReaction] = useState(0);
@@ -58,7 +60,19 @@ const FoodFeedback = ({modalData, showModal}) => {
 
   const renderItem = ({item, index}) => {
     return (
-      <View style={{paddingHorizontal: wp(2)}} key={index}>
+      <View
+        style={{
+          width: wp(16),
+          // alignItems:
+          //   index !== 0 && index !== 4
+          //     ? 'center'
+          //     : index === 0
+          //     ? 'flex-start'
+          //     : 'flex-end',
+          alignItems: 'center',
+          // borderWidth: 1,
+        }}
+        key={index}>
         <TouchableOpacity
           onPress={() => {
             onSelectItem(item, index);
@@ -67,8 +81,10 @@ const FoodFeedback = ({modalData, showModal}) => {
             style={[
               styles.emojiImages,
               {
-                borderWidth: item.isSelected ? 3 : 0,
-                borderColor: item.isSelected ? Colors.blackishGreen : 'white',
+                borderWidth: item.isSelected ? 1 : 0,
+                borderColor: item.isSelected
+                  ? Colors.blackishGreen
+                  : Colors.white,
               },
             ]}
             source={item.image}
@@ -123,6 +139,7 @@ const FoodFeedback = ({modalData, showModal}) => {
               setShowModal(false);
             }}>
             <View style={styles.modalBackground}>
+              <Text style={styles.foodTypeText}>{type}</Text>
               <View style={styles.emojiConteiner}>
                 <FlatList
                   data={emojidata}
@@ -133,40 +150,27 @@ const FoodFeedback = ({modalData, showModal}) => {
               </View>
               <TextInput
                 style={styles.txtInputFeedback}
-                placeholder="   Enter your feedback here.."
+                placeholder=" Write your feedback..."
                 onChangeText={e => {
                   setText(e);
                 }}
               />
               <View style={styles.btnContainer}>
-                <LinearGradient
-                  locations={[0.1, 1, 0.01]}
-                  colors={[
-                    Colors.blackishGreen,
-                    Colors.reddishTint,
-                    Colors.grey,
-                  ]}
-                  style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setShowModal(false);
-                    }}>
-                    <Text style={styles.textStyle}> Cancle </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
+                <TouchableOpacity
+                  style={styles.buttonCancel}
+                  onPress={() => {
+                    setShowModal(false);
+                  }}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </TouchableOpacity>
 
-                <LinearGradient
-                  locations={[0.1, 1, 0.01]}
-                  colors={[Colors.blackishGreen, Colors.green, Colors.grey]}
-                  style={styles.btn}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleSubmit();
-                      // console.log('Press Submit', text, submit);
-                    }}>
-                    <Text style={styles.textStyle}> Submit </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
+                <TouchableOpacity
+                  style={[styles.buttonCancel, styles.buttonSubmit]}
+                  onPress={() => {
+                    handleSubmit();
+                  }}>
+                  <Text style={styles.textStyle}>Submit</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>

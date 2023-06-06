@@ -5,8 +5,11 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
+  mainContainer: {
+    backgroundColor: Colors.whitishBlue,
+  },
   container: {
-    backgroundColor: Colors.darkBlue,
+    backgroundColor: Colors.lighterBlue,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: wp(5),
@@ -26,48 +29,52 @@ export default StyleSheet.create({
   },
   secondView: {
     backgroundColor: Colors.white,
-    shadowOpacity: 0.1,
     top: hp(1),
-    marginHorizontal: wp(2),
+    marginHorizontal: wp(4),
+    marginVertical: wp(4),
     paddingHorizontal: wp(2),
     paddingVertical: hp(2),
     display: 'flex',
+    borderRadius: 12,
+    marginBottom: hp(7),
   },
   dropDownView: {
-    flexDirection: 'row',
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
-    alignItems: 'center',
-    zIndex: 1000,
   },
   thirdView: {
-    flexDirection: 'row',
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
-    alignItems: 'center',
     marginTop: hp(2),
   },
   fourthView: {
-    borderRadius: 4,
+    borderRadius: wp(25),
     borderWidth: 1,
-    width: wp(50),
-    height: hp(4),
-    justifyContent: 'center',
+    width: wp(40),
+    // justifyContent: 'center',
     alignItems: 'center',
-  },
-  fifthView: {
+    borderColor: Colors.grey,
     flexDirection: 'row',
+    paddingHorizontal: wp(3.2),
+    paddingVertical: hp(1.2),
+    justifyContent: 'space-between',
+  },
+
+  fifthView: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
-    alignItems: 'center',
+    marginTop: hp(2),
   },
   sixthView: {
-    borderRadius: 4,
+    borderRadius: wp(25),
     borderWidth: 1,
-    width: wp(50),
-    height: hp(4),
-    justifyContent: 'center',
+    width: wp(40),
     alignItems: 'center',
+    borderColor: Colors.grey,
+    flexDirection: 'row',
+    paddingHorizontal: wp(3.2),
+    paddingVertical: hp(1.2),
+    justifyContent: 'space-between',
   },
   submitView: {
     backgroundColor: Colors.darkBlue,
@@ -76,25 +83,23 @@ export default StyleSheet.create({
     marginHorizontal: wp(20),
   },
   buttomView: {
-    backgroundColor: Colors.white,
     shadowOpacity: 0.1,
-    top: hp(2),
+    // top: hp(2),
     marginHorizontal: wp(2),
     paddingHorizontal: wp(2),
     paddingVertical: hp(2),
-    display: 'flex',
-    height: hp(52),
+    // height: hp(52),
   },
   appliedView: {
-    backgroundColor: Colors.lightGray,
-    paddingVertical: hp(1.5),
-    borderBottomWidth: 1,
+    marginHorizontal: wp(4),
+    // backgroundColor: Colors.lightGray,
+    // paddingVertical: hp(1.5),
+    // borderBottomWidth: 1,
   },
   appliedText: {
-    color: Colors.customColor({r: 1, g: 98, b: 43}),
+    color: Colors.lovelyPurple,
     fontWeight: 'bold',
     fontSize: 18,
-    textAlign: 'center',
   },
   monthlyRequestView: {
     marginTop: hp(1),
@@ -188,5 +193,9 @@ export default StyleSheet.create({
   image: {
     width: 20,
     aspectRatio: 1,
+  },
+  datesContainer: {
+    flexDirection: 'row',
+    zIndex: -1,
   },
 });

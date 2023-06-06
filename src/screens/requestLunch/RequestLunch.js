@@ -31,13 +31,13 @@ import {
   requestLunchSubmission,
 } from 'redux/homeSlice';
 import {FontFamily} from 'constants/fonts';
+import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
-  console.log('dateData:', dateData);
 
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
@@ -83,11 +83,11 @@ const RequestLunch = ({navigation}) => {
       setEndSelected(true);
 
       setStartDate({
-        startDateStr: date + '/' + month + '/' + year,
+        startDateStr: date + '-' + month + '-' + year,
         startDateObj: todayDate,
       });
       setEndDate({
-        endDateStr: date + '/' + month + '/' + year,
+        endDateStr: date + '-' + month + '-' + year,
         endDateObj: todayDate,
       });
       setIsDaily(true);
@@ -185,8 +185,6 @@ const RequestLunch = ({navigation}) => {
       }
 
       const dateStr = `${year}-${monthNumber}-${startingDate}`;
-      console.log('dateStr:', dateStr);
-
       dateObj = {
         requestStartDate: dateStr,
       };
@@ -204,13 +202,6 @@ const RequestLunch = ({navigation}) => {
     const currentHour = todayDateObj.getHours();
     const currentMinutes = todayDateObj.getMinutes();
     const appliedDate = new Date(dateObj.requestStartDate).getDate();
-    console.log(
-      'appliedDate === todayDate',
-      appliedDate === todayDate,
-      currentHour > 10,
-      currentHour === 10,
-      currentMinutes > 29,
-    );
 
     if (
       appliedDate === todayDate &&
@@ -277,7 +268,7 @@ const RequestLunch = ({navigation}) => {
 
   return (
     // <SharedElement id="enter">
-    <View>
+    <View style={styles.mainContainer}>
       <View style={styles.container}>
         <View>
           <TouchableOpacity
@@ -301,29 +292,47 @@ const RequestLunch = ({navigation}) => {
 
       <View style={styles.secondView}>
         <View style={styles.dropDownView}>
-          <Text style={{flex: 1, fontSize: 20}}>Request Lunch :</Text>
-          <DropDownPicker
-            open={open}
-            placeholder={'Please Select'}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            onSelectItem={onSelectItem}
-            containerStyle={{width: wp(50)}}
-            style={{height: hp(1), height: 10, borderRadius: 4}}
-            dropDownStyle={{
-              backgroundColor: Colors.lightBlue,
-              borderBottomWidth: 1,
-            }}
-            labelStyle={{
-              fontSize: 13,
-              textAlign: 'left',
+          <Text
+            style={{
+              marginBottom: hp(1.6),
+              fontSize: 18,
               color: Colors.black,
-              alignSelf: 'center',
-            }}
-          />
+            }}>
+            Request Type:
+          </Text>
+          <View
+            style={{
+              zIndex: 9999,
+            }}>
+            <DropDownPicker
+              open={open}
+              placeholder={'Please Select'}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              onSelectItem={onSelectItem}
+              containerStyle={{height: 40}}
+              style={{
+                height: hp(1),
+                height: 10,
+                borderRadius: 50,
+                borderColor: Colors.grey,
+                marginBottom: hp(3),
+              }}
+              dropDownStyle={{
+                backgroundColor: Colors.lightBlue,
+                borderBottomWidth: 1,
+              }}
+              labelStyle={{
+                fontSize: 13,
+                textAlign: 'left',
+                color: Colors.black,
+                alignSelf: 'center',
+              }}
+            />
+          </View>
         </View>
         <DateTimePickerModal
           minimumDate={startSelected ? startDate.startDateObj : undefined}
@@ -333,8 +342,6 @@ const RequestLunch = ({navigation}) => {
           onConfirm={handleStartConfirm}
           onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
         />
-        {console.log('startDate.startDateObj?.setDate', startDate.startDateObj)}
-        {/* startDateObj */}
         <DateTimePickerModal
           minimumDate={new Date()}
           // maximumDate={
@@ -349,76 +356,132 @@ const RequestLunch = ({navigation}) => {
           onConfirm={handleEndConfirm}
           onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
         />
-        <View style={styles.thirdView}>
-          {openModal ? <SelectDateModal modalData={modalData} /> : null}
-          <Text style={{flex: 1, fontSize: 20}}>Start Date :</Text>
-          <TouchableOpacity
-            disabled={!value || value === 'daily'}
-            onPress={() => {
-              if (permReq) {
-                setOpenModal(true);
-              } else {
-                setStartDatePickerVisible(true);
-              }
-            }}>
-            <View style={styles.fourthView}>
-              <Text style={styles.selectedDated}>
-                {' '}
-                {value !== 'monthly' ? startDate.startDateStr : dateData}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        {value !== 'monthly' ? (
-          <View style={styles.fifthView}>
-            <Text style={{flex: 1, fontSize: 20}}>End Date :</Text>
+        <View style={styles.datesContainer}>
+          <View style={styles.thirdView}>
+            {openModal ? <SelectDateModal modalData={modalData} /> : null}
+            <Text
+              style={{
+                marginBottom: hp(1),
+                fontSize: 18,
+                color: Colors.black,
+              }}>
+              Start Date :
+            </Text>
             <TouchableOpacity
-              disabled={!value || value === 'daily' || !startSelected}
-              // disabled={isDaily}
+              disabled={!value || value === 'daily'}
               onPress={() => {
                 if (permReq) {
                   setOpenModal(true);
                 } else {
-                  setEndDatePickerVisible(true);
+                  setStartDatePickerVisible(true);
                 }
               }}>
-              <View style={styles.sixthView}>
-                <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
+              <View style={styles.fourthView}>
+                <Text style={styles.selectedDated}>
+                  {value !== 'monthly' ? startDate.startDateStr : dateData}
+                </Text>
+                <CalenderIcon
+                  fill={Colors.lightGray1}
+                  height={hp(2)}
+                  width={hp(2)}
+                  marginRight={wp(0.64)}
+                />
               </View>
             </TouchableOpacity>
           </View>
-        ) : null}
-
-        <TouchableOpacity
-          style={{
-            // opacity: !startSelected || !value ? 0.5 : 1,
-            // opacity: 1,
-            opacity: opacity,
-            // value !== 'monthly' ? (!startSelected || !endSelected || !value)
-            //   ? 0.5
-            //   : !dateData
-            //   ? 0.5
-            //   : 1,
-            marginTop: 20,
-          }}
-          disabled={
-            value !== 'monthly'
-              ? !startSelected || !endSelected || !value
-              : !dateData
-          }
-          onPress={onSubmit}>
-          <View style={styles.submitView}>
-            <Text style={{color: Colors.white, textAlign: 'center'}}>
-              Submit
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttomView}>
-        <View style={styles.appliedView}>
-          <Text style={styles.appliedText}>Lunch Request History</Text>
+          {value !== 'monthly' ? (
+            <View style={styles.fifthView}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Colors.black,
+                  marginBottom: hp(1),
+                }}>
+                End Date :
+              </Text>
+              <TouchableOpacity
+                disabled={!value || value === 'daily' || !startSelected}
+                // disabled={isDaily}
+                onPress={() => {
+                  if (permReq) {
+                    setOpenModal(true);
+                  } else {
+                    setEndDatePickerVisible(true);
+                  }
+                }}>
+                <View style={styles.sixthView}>
+                  <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
+                  <CalenderIcon
+                    fill={Colors.lightGray1}
+                    height={hp(2)}
+                    width={hp(2)}
+                    marginRight={wp(0.64)}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
 
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: wp(4),
+          }}>
+          <TouchableOpacity
+            style={{
+              marginTop: 20,
+              backgroundColor: Colors.grayishWhite,
+              paddingHorizontal: wp(8.6),
+              borderRadius: 200,
+              paddingVertical: hp(1.4),
+            }}>
+            <View>
+              <Text
+                style={{
+                  color: Colors.black,
+                  textAlign: 'center',
+                  fontSize: 17,
+                }}>
+                Cancel
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              opacity: opacity,
+              marginTop: 20,
+              backgroundColor: Colors.lovelyPurple,
+              paddingHorizontal: wp(9.2),
+              borderRadius: 200,
+              paddingVertical: hp(1.5),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            disabled={
+              value !== 'monthly'
+                ? !startSelected || !endSelected || !value
+                : !dateData
+            }
+            onPress={onSubmit}>
+            <View>
+              <Text
+                style={{
+                  color: Colors.white,
+                  textAlign: 'center',
+                  fontSize: 17,
+                }}>
+                Apply
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.appliedView}>
+        <Text style={styles.appliedText}>Lunch Request History</Text>
+      </View>
+      <View style={styles.buttomView}>
         {lunchRequests?.length > 0 ? (
           <View>
             <FlatList
@@ -440,11 +503,16 @@ const RequestLunch = ({navigation}) => {
         ) : (
           <View
             style={{
-              flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 16, fontFamily: FontFamily.RobotoLight}}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: FontFamily.RobotoLight,
+                position: 'absolute',
+                top: hp(10),
+              }}>
               You don't have any lunch request.
             </Text>
           </View>

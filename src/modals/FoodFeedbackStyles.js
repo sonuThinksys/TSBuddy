@@ -4,15 +4,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
+import {FontFamily} from 'constants/fonts';
 
 export const styles = StyleSheet.create({
   modalBackground: {
-    width: '100%',
     backgroundColor: Colors.white,
     justifyContent: 'center',
-    position: 'relative',
-    alignItems: 'center',
     borderRadius: 5,
+    padding: wp(4),
   },
   textView: {
     marginTop: hp(15),
@@ -22,34 +21,33 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
   },
   emojiConteiner: {
-    width: '90%',
-    height: hp(10),
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems: 'center',
+    marginTop: hp(2.8),
+    marginBottom: hp(1.6),
   },
   emojiImages: {
-    width: wp(12),
-    height: hp(6.3),
+    width: wp(8),
+    height: wp(8),
     borderRadius: 50,
   },
   txtInputFeedback: {
-    borderWidth: 0.8,
-    width: '85%',
-    marginTop: hp(2),
-    marginBottom: hp(2),
-    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: Colors.grey,
+    margin: wp(2),
+    paddingTop: hp(1.4),
+    paddingBottom: hp(7),
+    paddingLeft: wp(2),
+    borderRadius: 7,
   },
   btnContainer: {
-    width: '90%',
-    height: hp(6),
-    marginTop: 10,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-end',
+    marginTop: hp(2),
+    marginBottom: hp(1),
   },
   textStyle: {
-    fontWeight: 'bold',
-    color: 'white',
+    fontFamily: FontFamily.RobotoLight,
     fontSize: 17,
   },
   btn: {
@@ -58,5 +56,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 3,
+  },
+  foodTypeText: {
+    fontSize: 19,
+    color: Colors.lovelyPurple,
+    marginLeft: wp(1),
+  },
+  buttonCancel: {
+    paddingHorizontal: wp(6),
+    paddingVertical: hp(1),
+    borderWidth: 1,
+    borderColor: Colors.dune,
+    borderRadius: 50,
+  },
+  buttonSubmit: {
+    borderColor: Colors.lovelyPurple,
+    marginLeft: wp(6),
   },
 });
