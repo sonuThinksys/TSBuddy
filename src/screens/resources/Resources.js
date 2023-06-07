@@ -42,6 +42,8 @@ const Resources = () => {
       const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
       setResourcesEmpiolyeeData(employeeData?.payload);
 
+      console.log('employeeData ; ', resourcesEmpiolyeeData[0]);
+
       if (employeeData?.error) {
         ShowAlert({
           messageHeader: ERROR,
@@ -77,7 +79,15 @@ const Resources = () => {
 };
 
 const renderItem = (
-  {designation, image, employeeName, managerInfoDto, name},
+  {
+    designation,
+    image,
+    employeeName,
+    managerInfoDto,
+    name,
+    cellNumber,
+    companyEmail,
+  },
   index,
   navigation,
 ) => {
@@ -91,7 +101,8 @@ const renderItem = (
             employeeName,
             managerInfoDto,
             name,
-            // navigation,
+            cellNumber,
+            companyEmail,
           });
         }}>
         <View style={style.container}>
@@ -106,7 +117,7 @@ const renderItem = (
                 resizeMode="stretch"
                 source={{uri: `data:image/jpeg;base64,${image}`}}
                 style={style.image}
-                onLoad={() => console.log('Image loaded successfully!')}
+                // onLoad={() => console.log('Image loaded successfully!')}
               />
             ) : (
               <View

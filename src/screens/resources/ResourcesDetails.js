@@ -15,7 +15,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
+import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import ShowAlert from 'customComponents/CustomError';
@@ -26,6 +26,7 @@ import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
 import WfhTab from './wfhTab';
+import CommunicationModal from 'modals/CommunicationModal';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -37,11 +38,14 @@ const ResourcesDetails = ({route, navigation}) => {
     image,
     managerInfoDto,
     name: employeeId,
+    companyEmail,
+    cellNumber,
   } = route.params;
 
   const employeeID = employeeId?.split('/')[1];
 
   const dispatch = useDispatch();
+  const isFocussed = useIsFocused();
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
@@ -52,6 +56,10 @@ const ResourcesDetails = ({route, navigation}) => {
   const [selectedTab, setSelectedTab] = useState('leaves');
   const [openCount, setOpenCount] = useState(0);
   const [wfhCount, setWfhCount] = useState(0);
+  const [empDetail, setClickData] = useState({});
+
+  const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
+    useSelector(state => state.home);
 
   useEffect(() => {
     if (isFocused) {
@@ -76,6 +84,7 @@ const ResourcesDetails = ({route, navigation}) => {
         });
 
         setWfhCount(count1);
+        setOpenCount(count);
 
         // let sortedLeavesData = leavesData.payload[0].sort((a, b) => {
         //   return a.fromDate - b.fromDate;
@@ -95,6 +104,33 @@ const ResourcesDetails = ({route, navigation}) => {
       })();
     }
   }, [isFocused]);
+
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
 
   const updateData = async () => {
     try {
@@ -175,167 +211,196 @@ const ResourcesDetails = ({route, navigation}) => {
     );
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={style.container}>
-        <View style={style.profile_name_cont}>
-          <View style={style.profile_cont}>
-            {image ? (
-              <Image
-                resizeMode="stretch"
-                source={{uri: `data:image/jpeg;base64,${image}`}}
-                style={style.image}
+    <>
+      {isShowModal && isFocussed ? (
+        <CommunicationModal empDetail={empDetail} />
+      ) : null}
+      <SafeAreaView style={{flex: 1}}>
+        <View style={style.container}>
+          <View style={style.profile_name_cont}>
+            <View style={style.profile_cont}>
+              {image ? (
+                <Image
+                  resizeMode="stretch"
+                  source={{uri: `data:image/jpeg;base64,${image}`}}
+                  style={style.image}
+                />
+              ) : (
+                <Image
+                  resizeMode="stretch"
+                  source={{
+                    uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
+                  }}
+                  style={style.image}
+                />
+              )}
+            </View>
+            <View style={style.name_cont}>
+              <Text style={style.name_txt}>{employeeName}</Text>
+              <Text style={style.designation_txt}>{designation}</Text>
+            </View>
+          </View>
+          <View style={style.social_icon_cont}>
+            <View style={style.social_inner_cont}>
+              <TouchableOpacity
+                onPress={() => {
+                  sendMail();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empMailS}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  dialCall();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empCallS}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  sendMessage();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empMsg}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => sendMessage()}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empWa}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={style.tab_view}>
+            <Pressable
+              onPress={() => {
+                setSelectedTab('leaves');
+              }}>
+              <View
+                style={[
+                  style.tab,
+                  selectedTab === 'leaves' && {
+                    borderBottomColor: Colors.red,
+                    borderBottomWidth: 2,
+                  },
+                ]}>
+                <View style={{position: 'relative'}}>
+                  <Text style={{color: 'white', fontSize: 17}}>Leaves</Text>
+                  {openCount > 0 ? (
+                    <View style={style.badges_number}>
+                      <Text
+                        style={{
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: FontFamily.RobotoMedium,
+                        }}>
+                        {openCount}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSelectedTab('attendence');
+              }}>
+              <View
+                style={[
+                  style.tab,
+                  selectedTab == 'attendence' && {
+                    borderBottomColor: Colors.red,
+                    borderBottomWidth: 2,
+                  },
+                ]}>
+                <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSelectedTab('wfh');
+              }}>
+              <View
+                style={[
+                  style.tab,
+                  selectedTab === 'wfh' && {
+                    borderBottomColor: Colors.red,
+                    borderBottomWidth: 2,
+                  },
+                ]}>
+                <View style={{position: 'relative'}}>
+                  <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
+                  {wfhCount > 0 ? (
+                    <View style={style.badges_number}>
+                      <Text
+                        style={{
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: FontFamily.RobotoMedium,
+                        }}>
+                        {wfhCount}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+            </Pressable>
+          </View>
+        </View>
+        <View style={style.listOfLeaves}>
+          {selectedTab === 'leaves' ? (
+            resurcesEmployeeLeaves.length > 0 ? (
+              <FlatList
+                refreshing={isRefresh}
+                onRefresh={updateData}
+                data={
+                  isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves
+                }
+                renderItem={renderItem}
+                keyExtractor={(_, index) => index}
               />
             ) : (
-              <Image
-                resizeMode="stretch"
-                source={{
-                  uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-                }}
-                style={style.image}
-              />
-            )}
-          </View>
-          <View style={style.name_cont}>
-            <Text style={style.name_txt}>{employeeName}</Text>
-            <Text style={style.designation_txt}>{designation}</Text>
-          </View>
-        </View>
-        <View style={style.social_icon_cont}>
-          <View style={style.social_inner_cont}>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empMailS}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empCallS}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empMsg}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empWa}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-          </View>
-        </View>
-        <View style={style.tab_view}>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('leaves');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab === 'leaves' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <View style={{position: 'relative'}}>
-                <Text style={{color: 'white', fontSize: 17}}>Leaves</Text>
-                {openCount > 0 ? (
-                  <View style={style.badges_number}>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: FontFamily.RobotoMedium,
-                      }}>
-                      {openCount}
-                    </Text>
-                  </View>
-                ) : null}
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
+                  Applied Leaves Not Found.
+                </Text>
               </View>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('attendence');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab == 'attendence' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedTab('wfh');
-            }}>
-            <View
-              style={[
-                style.tab,
-                selectedTab === 'wfh' && {
-                  borderBottomColor: Colors.red,
-                  borderBottomWidth: 2,
-                },
-              ]}>
-              <View style={{position: 'relative'}}>
-                <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
-                {wfhCount > 0 ? (
-                  <View style={style.badges_number}>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: FontFamily.RobotoMedium,
-                      }}>
-                      {wfhCount}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            </View>
-          </Pressable>
-        </View>
-      </View>
-      <View style={style.listOfLeaves}>
-        {selectedTab === 'leaves' ? (
-          resurcesEmployeeLeaves.length > 0 ? (
-            <FlatList
-              refreshing={isRefresh}
-              onRefresh={updateData}
-              data={
-                isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves
-              }
-              renderItem={renderItem}
-              keyExtractor={(_, index) => index}
+            )
+          ) : selectedTab == 'attendence' ? (
+            <AttendenceTab
+              employeeName={employeeName}
+              employeeID={employeeID}
             />
           ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
-                Applied Leaves Not Found.
-              </Text>
-            </View>
-          )
-        ) : selectedTab == 'attendence' ? (
-          <AttendenceTab employeeName={employeeName} employeeID={employeeID} />
-        ) : (
-          <WfhTab employeeName={employeeName} employeeID={employeeID} />
-        )}
-      </View>
-    </SafeAreaView>
+            <WfhTab employeeName={employeeName} employeeID={employeeID} />
+          )}
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 

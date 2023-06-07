@@ -29,7 +29,8 @@ const WorkFromHome = ({navigation}) => {
     state => state.auth,
   );
   const dispatch = useDispatch();
-  // const navigation = useNavigation();
+
+  console.log('resourcesEmpiolyeeData', resourcesEmpiolyeeData[0]);
 
   useEffect(() => {
     (async () => {
@@ -69,7 +70,15 @@ const WorkFromHome = ({navigation}) => {
 };
 
 const renderItem = (
-  {designation, image, employeeName, managerInfoDto, name},
+  {
+    designation,
+    image,
+    employeeName,
+    managerInfoDto,
+    name,
+    cellNumber,
+    companyEmail,
+  },
   index,
   navigation,
 ) => {
@@ -84,6 +93,8 @@ const renderItem = (
               employeeName,
               managerInfoDto,
               name,
+              cellNumber,
+              companyEmail,
             });
           }}>
           <View style={style.container}>

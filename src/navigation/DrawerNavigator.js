@@ -93,8 +93,9 @@ const drawerOption = ({
   headerIcon,
 }) => {
   return {
+    headerTitleAlign: 'center',
     headerShown: true,
-    headerTransparent: true,
+    // headerTransparent: true,
 
     headerLeft: showDrawer
       ? () => (

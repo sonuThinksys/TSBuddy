@@ -1,4 +1,5 @@
 //import ReactNativeForegroundService from '@supersami/rn-foreground-service';
+import 'react-native-gesture-handler';
 import {AppRegistry, LogBox, Text, View} from 'react-native';
 
 import React, {useLayoutEffect} from 'react';
