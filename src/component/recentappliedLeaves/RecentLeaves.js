@@ -93,7 +93,20 @@ const renderItem = ({item, index}) => {
           <Text>{item?.totalLeaveDays > 1 ? 'Days' : 'Day'}</Text>
         </View>
         <View style={styles.typeDateContainer}>
-          <Text style={styles.leaveTypeText}>Work From Home</Text>
+          <Text
+            style={[
+              styles.leaveTypeText,
+              {
+                color:
+                  item.status.toLowerCase() === 'open'
+                    ? Colors.gold
+                    : item.status.toLowerCase() === 'dismissed'
+                    ? Colors.darkBrown
+                    : Colors.darkLovelyGreen,
+              },
+            ]}>
+            {item?.leaveType}
+          </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <CalenderIcon height={11} width={11} marginRight={8} />
             <Text style={styles.dateText}>
@@ -114,13 +127,41 @@ const renderItem = ({item, index}) => {
         </View>
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <PendingIcon
-          fill={Colors.gold}
-          height={20}
-          width={20}
-          marginBottom={4}
-        />
-        <Text style={{fontSize: 12, color: Colors.gold}}>{item.status}</Text>
+        {item.status.toLowerCase() === 'open' ? (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <PendingIcon
+              fill={Colors.gold}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
+          </View>
+        ) : item.status.toLowerCase() === 'dismissed' ? (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <RejectedIcon
+              fill={Colors.darkBrown}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.darkBrown}}>
+              {item.status}
+            </Text>
+          </View>
+        ) : (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <ApprovedIcon
+              fill={Colors.darkLovelyGreen}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
+              {item.status}
+            </Text>
+          </View>
+        )}
       </View>
       {/* <Image
         resizeMode="contain"

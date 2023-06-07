@@ -172,8 +172,7 @@ const Leaves = ({navigation}) => {
     <>
       <SafeAreaView
         style={{
-          paddingVertical: hp(2),
-          marginTop: hp(7),
+          marginTop: hp(1.6),
           flex: 1,
           backgroundColor: Colors.whitishBlue,
         }}>

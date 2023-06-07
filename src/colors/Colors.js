@@ -53,4 +53,8 @@ export const Colors = {
   lighterBlue: '#0077C6',
   lovelyPurple: '#7E009E',
   grayishWhite: '#F3F3F3',
+  darkBrown: '#7A0000',
+  darkLovelyGreen: '#007304',
+  skin: '#FFF1E0',
+  darkSkin: '#9E5B00',
 };

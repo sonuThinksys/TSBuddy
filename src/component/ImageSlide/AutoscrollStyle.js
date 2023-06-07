@@ -71,6 +71,8 @@ export default StyleSheet.create({
     shadowOpacity: 0.2, // Set the shadow opacity
     shadowRadius: 0.1, // Set the shadow radius
     elevation: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   eventDateText: {
     fontSize: 16,

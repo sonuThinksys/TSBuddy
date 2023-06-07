@@ -1,6 +1,13 @@
 import {Colors} from 'colors/Colors';
 import React, {useState} from 'react';
-import {View, TouchableOpacity, FlatList, StyleSheet, Text} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -35,7 +42,7 @@ const Holidays = () => {
   };
 
   return (
-    <View style={{paddingTop: hp(1), flex: 1}}>
+    <SafeAreaView style={{paddingTop: hp(1), flex: 1}}>
       {/* {isLoading  ? <Loader /> : null} */}
       <FlatList
         data={isGuestLogin ? guestHolidaysData : holidaysData}
@@ -66,7 +73,7 @@ const Holidays = () => {
           <Text> {UPCOMING_HOLIDAYS}</Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

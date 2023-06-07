@@ -28,7 +28,6 @@ const WfhTab = ({employeeID, employeeName}) => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-        console.log('leave data show', leavesData.payload.employeeWfh);
         let count = 0;
         leavesData.payload.employeeWfh.forEach(element => {
           if (element.status == 'Open') {

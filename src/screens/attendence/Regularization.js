@@ -77,8 +77,6 @@ const Regularization = ({navigation}) => {
         listOfLeaveApprover?.push(el?.leaveApproverName),
       );
       setLeaveApproversList(listOfLeaveApprover);
-
-      console.log('leaveApprovers = ', listOfLeaveApprover);
     })();
   }, []);
 

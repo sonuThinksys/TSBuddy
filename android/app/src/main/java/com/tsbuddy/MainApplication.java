@@ -14,7 +14,6 @@ import com.tsbuddy.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =

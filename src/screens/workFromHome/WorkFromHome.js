@@ -8,6 +8,7 @@ import {
   FlatList,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
@@ -29,8 +30,7 @@ const WorkFromHome = ({navigation}) => {
     state => state.auth,
   );
   const dispatch = useDispatch();
-
-  console.log('resourcesEmpiolyeeData', resourcesEmpiolyeeData[0]);
+  // const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -50,22 +50,24 @@ const WorkFromHome = ({navigation}) => {
   }, []);
 
   return (
-    <FlatList
-      legacyImplementation={false}
-      onScrollBeginDrag={() => setScrollBegin(true)}
-      onEndReachedThreshold={0.01}
-      scrollsToTop={false}
-      showsVerticalScrollIndicator={false}
-      onMomentumScrollBegin={() => setScrollBegin(true)}
-      onMomentumScrollEnd={() => setScrollBegin(false)}
-      data={resourcesEmpiolyeeData}
-      numColumns={numValue}
-      key={numValue}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => {
-        return renderItem(item, index, navigation);
-      }}
-    />
+    <SafeAreaView>
+      <FlatList
+        legacyImplementation={false}
+        onScrollBeginDrag={() => setScrollBegin(true)}
+        onEndReachedThreshold={0.01}
+        scrollsToTop={false}
+        showsVerticalScrollIndicator={false}
+        onMomentumScrollBegin={() => setScrollBegin(true)}
+        onMomentumScrollEnd={() => setScrollBegin(false)}
+        data={resourcesEmpiolyeeData}
+        numColumns={numValue}
+        key={numValue}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => {
+          return renderItem(item, index, navigation);
+        }}
+      />
+    </SafeAreaView>
   );
 };
 

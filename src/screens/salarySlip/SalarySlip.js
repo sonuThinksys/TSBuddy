@@ -76,13 +76,6 @@ const SalarySlip = ({navigation}) => {
     const selectedYear = filteredSelectedDate?.toString()?.split(' ')[3];
     const selctedMonth = new Date(filteredSelectedDate).getMonth();
 
-    console.log(
-      'selectedYear',
-      filteredSelectedDate,
-      selectedYear,
-      selctedMonth,
-    );
-
     let finalData = [];
     for (key in newyearWiseData) {
       if (key == selectedYear) {
@@ -90,8 +83,6 @@ const SalarySlip = ({navigation}) => {
         finalData = selectedYearData.filter(
           element => parseInt(element.month) == parseInt(selctedMonth),
         );
-
-        console.log('finalData', finalData);
       }
     }
     // setnewyearWiseData(finalData);
@@ -104,8 +95,8 @@ const SalarySlip = ({navigation}) => {
       }}>
       <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
-      {/* {!isAuthenticated ? ( */}
-      {false ? (
+      {!isAuthenticated ? (
+        // {false ? (
         <SalarSlipModal submitPassword={submitPassword} />
       ) : (
         <View style={{flex: 1}}>

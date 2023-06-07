@@ -12,13 +12,14 @@ import styles from './AutoscrollStyle';
 
 import BirthdayAnniV from 'modals/BirthdayAnniV';
 import {Colors} from 'colors/Colors';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
+import BriefCase from 'assets/newDashboardIcons/briefcase.svg';
+import HappyBirthday from 'assets/newDashboardIcons/cake-candles.svg';
 
 const CarouselAutoScroll = ({navigation}) => {
-  const dispatch = useDispatch();
   const [CalaenderEventData, setCalenderEventData] = useState([]);
 
   const {calendereventData: calenderData} = useSelector(state => state.home);
@@ -47,6 +48,7 @@ const CarouselAutoScroll = ({navigation}) => {
       });
     });
 
+    console.log('events:', events);
     setCalenderEventData(events);
   }, [calenderData]);
 
@@ -99,48 +101,58 @@ const CarouselAutoScroll = ({navigation}) => {
         data={CalaenderEventData}
         horizontal
         keyExtractor={(item, index) => index}
-        renderItem={({item, index}) => (
-          <View
-            style={{
-              marginRight: wp(5),
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                source={MonthImages.Balloons}
-                style={{height: 40, width: 40, marginRight: 24}}
-              />
-              <Text style={styles.happyText}>Happy </Text>
-              <Text style={styles.wishText}>Birthday</Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.container}
-              key={index}
-              onPress={() => {
-                setModalData({
-                  startsOn: item.startsOn,
-                  dateOfJoining: item.dateOfJoining,
-                  name: item.employeeName,
-                  description: item.description,
-                  isBirthday: item.isBirthday,
-
-                  setShowModal: setShowModal,
-                });
-                setShowModal(true);
+        renderItem={({item, index}) => {
+          // console.log('ITEM:', item);
+          return (
+            <View
+              style={{
+                marginRight: wp(5),
               }}>
-              <Image source={defaultUserIcon} style={styles.image} />
-              <Text style={styles.birthdayBoyOrGirl}>{item.employeeName}</Text>
-              <Text style={styles.designation}>Head of Department</Text>
-            </TouchableOpacity>
-            <View style={styles.eventDate}>
-              <Text style={styles.eventDateText}>
-                {item?.isBirthday
-                  ? moment(item.dateOfBirth).format('DD MMM')
-                  : moment(item.dateOfJoining).format('DD MMM')}
-              </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={MonthImages.Balloons}
+                  style={{height: 40, width: 40, marginRight: 24}}
+                />
+                <Text style={styles.happyText}>Happy </Text>
+                <Text style={styles.wishText}>Birthday</Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.container}
+                key={index}
+                onPress={() => {
+                  setModalData({
+                    startsOn: item.startsOn,
+                    dateOfJoining: item.dateOfJoining,
+                    name: item.employeeName,
+                    description: item.description,
+                    isBirthday: item.isBirthday,
+
+                    setShowModal: setShowModal,
+                  });
+                  setShowModal(true);
+                }}>
+                <Image source={defaultUserIcon} style={styles.image} />
+                <Text style={styles.birthdayBoyOrGirl}>
+                  {item.employeeName}
+                </Text>
+                <Text style={styles.designation}>{item?.designation}</Text>
+              </TouchableOpacity>
+              <View style={styles.eventDate}>
+                {item.isBirthday ? (
+                  <HappyBirthday height={16} width={16} marginRight={10} />
+                ) : (
+                  <BriefCase height={16} width={16} marginRight={10} />
+                )}
+                <Text style={styles.eventDateText}>
+                  {item?.isBirthday
+                    ? moment(item?.dateOfBirth).format('DD MMM')
+                    : moment(item?.dateOfJoining).format('DD MMM')}
+                </Text>
+              </View>
             </View>
-          </View>
-        )}
+          );
+        }}
       />
     </View>
   );

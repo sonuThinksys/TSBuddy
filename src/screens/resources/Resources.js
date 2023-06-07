@@ -8,8 +8,11 @@ import {
   FlatList,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
+  // SafeAreaView,
+  StatusBar,
+  Platform,
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
 import styles from '../profile/ProfileStyle';
@@ -26,11 +29,13 @@ import {ERROR} from 'utils/string';
 import {useNavigation} from '@react-navigation/native';
 import {employeeData} from '../../../db';
 import ResourceIcon from 'assets/allImage/user.svg';
+import Loader from 'component/loader/Loader';
 
 const Resources = () => {
   const [numValue, setNumValue] = useState(1);
   const [scrollBegin, setScrollBegin] = useState(false);
   const [resourcesEmpiolyeeData, setResourcesEmpiolyeeData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
@@ -39,22 +44,30 @@ const Resources = () => {
 
   useEffect(() => {
     (async () => {
-      const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
-      setResourcesEmpiolyeeData(employeeData?.payload);
+      try {
+        setIsLoading(true);
+        const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
+        setResourcesEmpiolyeeData(employeeData?.payload);
 
-      console.log('employeeData ; ', resourcesEmpiolyeeData[0]);
-
-      if (employeeData?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: employeeData?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
+        if (employeeData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: employeeData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        console.log('Please Print an Error:', err);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <FlatList
@@ -63,13 +76,11 @@ const Resources = () => {
       onEndReachedThreshold={0.01}
       scrollsToTop={false}
       showsVerticalScrollIndicator={false}
-      // onEndReached={loadMoreData}
       onMomentumScrollBegin={() => setScrollBegin(true)}
       onMomentumScrollEnd={() => setScrollBegin(false)}
       data={resourcesEmpiolyeeData}
       numColumns={numValue}
       key={numValue}
-      // numColumns={1}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item, index}) => {
         return renderItem(item, index, navigation);
@@ -92,7 +103,7 @@ const renderItem = (
   navigation,
 ) => {
   return (
-    <SafeAreaView key={index} style={{backgroundColor: Colors.whitishBlue}}>
+    <View key={index} style={{backgroundColor: Colors.whitishBlue}}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('ResourcesDetailsScreen', {
@@ -151,7 +162,7 @@ const renderItem = (
           </View>
         </View>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

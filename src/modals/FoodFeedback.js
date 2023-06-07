@@ -161,7 +161,9 @@ const FoodFeedback = ({modalData, showModal}) => {
                   onPress={() => {
                     setShowModal(false);
                   }}>
-                  <Text style={styles.textStyle}>Cancel</Text>
+                  <Text style={[styles.textStyle, {color: Colors.dune}]}>
+                    Cancel
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

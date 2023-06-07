@@ -49,34 +49,38 @@ const Attendence = ({navigation}) => {
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
 
-  // useEffect(() => {
-  //   const pressedDate = dailyAttendance?.find(
-  //     date =>
-  //       new Date(date?.attendanceDate)?.getDate() ===
-  //       new Date(modalDate?.dateString).getDate(),
-  //   );
+  useEffect(() => {
+    const pressedDate = dailyAttendance?.find(
+      date =>
+        new Date(date?.attendanceDate)?.getDate() ===
+        new Date(modalDate?.dateString).getDate(),
+    );
 
-  //   const inTimeHours = new Date(pressedDate?.inTime)?.getHours();
-  //   const outTimeHours = new Date(pressedDate?.outTime)?.getHours();
-  //   const inTimeMinutes = new Date(pressedDate?.inTime)?.getMinutes();
-  //   const outTimeMinutes = new Date(pressedDate?.outTime)?.getMinutes();
+    //   const inTime =
+    //     inTimeHours +
+    //     ':' +
+    //     (inTimeMinutes < 10 ? '0' + inTimeMinutes : inTimeMinutes);
+    //   const outTime =
+    //     outTimeHours +
+    //     ':' +
+    //     (outTimeMinutes < 10 ? '0' + outTimeMinutes : outTimeMinutes);
 
-  //   const inTime =
-  //     inTimeHours +
-  //     ':' +
-  //     (inTimeMinutes < 10 ? '0' + inTimeMinutes : inTimeMinutes);
-  //   const outTime =
-  //     outTimeHours +
-  //     ':' +
-  //     (outTimeMinutes < 10 ? '0' + outTimeMinutes : outTimeMinutes);
+    const inTime =
+      inTimeHours +
+      ':' +
+      (inTimeMinutes < 10 ? '0' + inTimeMinutes : inTimeMinutes);
+    const outTime =
+      outTimeHours +
+      ':' +
+      (outTimeMinutes < 10 ? '0' + outTimeMinutes : outTimeMinutes);
 
-  //   const pressedDateObj = {
-  //     inTime,
-  //     outTime,
-  //     totalHours: pressedDate?.totalHours,
-  //   };
-  //   setPressedDayDate(pressedDateObj);
-  // }, [showDailyStatusModal]);
+    const pressedDateObj = {
+      inTime,
+      outTime,
+      totalHours: pressedDate?.totalHours,
+    };
+    setPressedDayDate(pressedDateObj);
+  }, [showDailyStatusModal]);
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
@@ -415,7 +419,7 @@ const Attendence = ({navigation}) => {
           mark={mark}
           setShowDailyStatusModal={setShowDailyStatusModal}
           setModalDate={setModalDate}
-          // navigation={navigation}
+          navigation={navigation}
         />
       </SafeAreaView>
     </SafeAreaView>
@@ -474,7 +478,7 @@ const RenderCalender = ({
         if (day.day < new Date().getDate()) {
           setShowDailyStatusModal(true);
           setModalDate(day);
-          // navigation.navigate(RegularzitionScreen);
+          navigation.navigate(RegularzitionScreen);
         }
       }}
       horizontal={true}
@@ -484,7 +488,6 @@ const RenderCalender = ({
       showScrollIndicator={false}
       pagingEnabled={true}
       onVisibleMonthsChange={months => {
-        console.log('months changed', months);
         setVisibleMonth(months[0]?.month);
         setVisibleYear(months[0]?.year);
       }}
