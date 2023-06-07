@@ -39,6 +39,14 @@ export default ({navigation}) => {
     icon: MonthImages.ResourceIcon,
   };
 
+  const wfhTab = {
+    screen: 'WorkFromHome',
+    label: 'WFH',
+    navigation,
+    key: 4,
+    icon: MonthImages.userPS,
+  };
+
   const drawerList = [
     {
       screen: 'Home',
@@ -54,13 +62,6 @@ export default ({navigation}) => {
       key: 2,
       icon: MonthImages.ProfileIcon,
     },
-    // {
-    //   screen: 'CheckInOut',
-    //   label: "Today's Atendance",
-    //   navigation,
-    //   key: 1,
-    //   icon: MonthImages.arrowSecond,
-    // },
     {
       screen: 'Attendence',
       label: 'Attendance',
@@ -83,8 +84,8 @@ export default ({navigation}) => {
       icon: MonthImages.HolidaysIcon,
     },
     {
-      screen: 'SalarySlip',
-      label: 'SalarySlip',
+      screen: 'Salary Slip',
+      label: 'Salary Slip',
       navigation,
       key: 6,
       icon: MonthImages.salarySlipIcon,
@@ -101,23 +102,11 @@ export default ({navigation}) => {
 
   if (isLeaveApprover) {
     drawerList.splice(2, 0, resorcesTab);
+    drawerList.splice(3, 0, wfhTab);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
   }
-
-  // if (isLeaveApproover) {
-  //   drawerList.push(resorcesTab);
-  // }
-
-  // drawerList.splice(2, 0, {
-  //   screen: 'Resources',
-  //   label: 'Resources',
-  //   navigation,
-  //   key: 3,
-  //   dispatch,
-  //   icon: MonthImages.salarySlipIcon,
-  // });
 
   return (
     <ScrollView

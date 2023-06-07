@@ -69,6 +69,9 @@ const Leaves = ({navigation}) => {
   for (let i = 0; i < leavesData.length; i++) {
     reversLeaveesData.push(leavesData[i]);
   }
+  reversLeaveesData.sort(
+    (a, b) => new Date(a.fromDate).getTime() - new Date(b?.fromDate).getTime(),
+  );
   reversLeaveesData.reverse();
 
   const applyForLeave = () => {
@@ -169,8 +172,7 @@ const Leaves = ({navigation}) => {
     <>
       <SafeAreaView
         style={{
-          paddingVertical: hp(2),
-          marginTop: hp(7),
+          marginTop: hp(1.6),
           flex: 1,
           backgroundColor: Colors.whitishBlue,
         }}>

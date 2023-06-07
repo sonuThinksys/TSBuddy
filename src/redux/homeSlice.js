@@ -277,14 +277,12 @@ export const applyForLeave = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
-
     try {
       const {data, status} = await axios.post(
         endPoints.applyLeave,
         body,
         config,
       );
-
       if (status === 200) {
         return Promise.resolve(data);
       } else {
@@ -303,10 +301,42 @@ export const applyForLeave = createAsyncThunk(
         return Promise.reject(new Error(err));
       }
     }
+  },
+);
 
-    // return axios.post(endPoints.applyLeave, body, config).then(response => {
-    //   return Promise.resolve(response);
-    // });
+export const applyForUpdateedLeave = createAsyncThunk(
+  'home/updateEmployeeLeave',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.updateEmployeeLeave,
+        body,
+        config,
+      );
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
   },
 );
 
@@ -360,17 +390,6 @@ export const giveMenuFeedback = createAsyncThunk(
     if (index === 2) type = 'meal';
 
     const apiEndpoint = endPoints.giveFeedbackPost;
-
-    // const data = {
-    //   employee: 'EMP/10352',
-    //   employeeName: 'Amit Kumar Pant',
-    //   dailyMenuId: menuId,
-    //   creation: new Date(),
-    //   breakfast: foodFeedback[0].feedback,
-    //   lunch: foodFeedback[1].feedback,
-    //   meal: foodFeedback[2].feedback,
-    //   [type]: value,
-    // };
 
     userData.dailyMenuId = menuID;
     userData[type] = value;
@@ -523,6 +542,40 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
     const config = {
       method: 'get',
       url: endPoints.getResourcesEmployeesLeaves + empID,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+export const getAttReguarzationReason = createAsyncThunk(
+  'getReguarzationReason',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getAttRegularizationReason,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -746,7 +799,6 @@ export const getAttendencaeData = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
-        // console.log('data11:', data);
         if (status === 200) {
           return Promise.resolve(data);
         } else {

@@ -19,6 +19,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
 import {monthImages} from 'defaultData';
 import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
@@ -27,6 +28,8 @@ const SalarySlip = ({navigation}) => {
   const {salarySlipData} = useSelector(state => state.home);
   const [newObjectData, setnewObjectData] = useState([]);
   const [isAuthenticated, setisAuthenticated] = useState(false);
+  const [filteredSelectedDate, setFilteredSelectedDate] = useState();
+  const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
 
   useEffect(() => {
     let newObjectData = [];
@@ -54,6 +57,8 @@ const SalarySlip = ({navigation}) => {
     setnewyearWiseData(newObj);
   }, [newObjectData]);
 
+  // console.log('newyearWiseData = ', newyearWiseData);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(authLoginStatus(false));
@@ -65,6 +70,24 @@ const SalarySlip = ({navigation}) => {
     setisAuthenticated(true);
   };
 
+  const filterSalarySleepData = date => {
+    setFilteredSelectedDate(date);
+    setFilterCalenderOpen(false);
+    const selectedYear = filteredSelectedDate?.toString()?.split(' ')[3];
+    const selctedMonth = new Date(filteredSelectedDate).getMonth();
+
+    let finalData = [];
+    for (key in newyearWiseData) {
+      if (key == selectedYear) {
+        let selectedYearData = newyearWiseData[key];
+        finalData = selectedYearData.filter(
+          element => parseInt(element.month) == parseInt(selctedMonth),
+        );
+      }
+    }
+    // setnewyearWiseData(finalData);
+  };
+
   return (
     <View
       style={{
@@ -73,6 +96,7 @@ const SalarySlip = ({navigation}) => {
       <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
 
       {!isAuthenticated ? (
+        // {false ? (
         <SalarSlipModal submitPassword={submitPassword} />
       ) : (
         <View style={{flex: 1}}>
@@ -155,6 +179,28 @@ const SalarySlip = ({navigation}) => {
           ) : null}
         </View>
       )}
+
+      <DateTimePickerModal
+        isVisible={filterCalenderOpen}
+        mode="date"
+        onConfirm={date => {
+          filterSalarySleepData(date);
+        }}
+        onCancel={() => {
+          setFilterCalenderOpen(false);
+        }}
+      />
+
+      <TouchableOpacity
+        onPress={() => {
+          setFilterCalenderOpen(true);
+        }}
+        style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
+        <Image
+          source={MonthImages.filterIcon2x}
+          style={{height: 55, width: 55, borderRadius: 25}}
+        />
+      </TouchableOpacity>
     </View>
   );
 };

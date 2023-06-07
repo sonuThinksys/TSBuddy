@@ -306,6 +306,7 @@ const UserProfile = () => {
               alignItems: 'center',
             }}>
             <TouchableOpacity
+              disabled={searchedName.length == 0}
               onPress={async () => {
                 let currentEmployee = {
                   page: 1,
@@ -333,7 +334,6 @@ const UserProfile = () => {
                   height: 25,
                   width: 25,
                   marginRight: wp(5),
-                  color: Colors.white,
                 }}
               />
             </TouchableOpacity>

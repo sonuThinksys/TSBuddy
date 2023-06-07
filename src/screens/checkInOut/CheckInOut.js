@@ -104,7 +104,6 @@ const CheckInOut = () => {
           setToggleCheckInBtn(JSON.parse(checkInOutState));
         }
       } catch (error) {
-        console.log('Error loading timer:', error);
         // setIsRunning(true);
       }
     };

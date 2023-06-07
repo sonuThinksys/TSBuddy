@@ -25,6 +25,7 @@ import {guestLeavesScreenData} from 'guestData';
 import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
+import WfhTab from './wfhTab';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -50,20 +51,16 @@ const ResourcesDetails = ({route, navigation}) => {
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
   const [selectedTab, setSelectedTab] = useState('leaves');
   const [openCount, setOpenCount] = useState(0);
+  const [wfhCount, setWfhCount] = useState(0);
 
-  // ================================================================
-  // const [shouldUpdate, setShouldUpdate] = useState(false);
-
-  // ================================================================
   useEffect(() => {
     if (isFocused) {
       (async () => {
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({token, empID: employeeID}),
         );
-        console.log('leavesData:', leavesData);
         let count = 0;
-        leavesData.payload.forEach(element => {
+        leavesData.payload.employeeLeaves.forEach(element => {
           if (element.status == 'Open') {
             count++;
           }
@@ -71,15 +68,30 @@ const ResourcesDetails = ({route, navigation}) => {
 
         // setOpenCount(count);
 
-        // setResourcesEmployeesLeaves(leavesData.payload);
-        // if (leavesData?.error) {
-        //   ShowAlert({
-        //     messageHeader: ERROR,
-        //     messageSubHeader: leavesData?.error?.message,
-        //     buttonText: 'Close',
-        //     dispatch,
-        //   });
-        // }
+        let count1 = 0;
+        leavesData.payload.employeeWfh.forEach(element => {
+          if (element.status == 'Open') {
+            count1++;
+          }
+        });
+
+        setWfhCount(count1);
+
+        // let sortedLeavesData = leavesData.payload[0].sort((a, b) => {
+        //   return a.fromDate - b.fromDate;
+        // });
+
+        // sortedLeavesData.reverse();
+
+        setResourcesEmployeesLeaves(leavesData.payload.employeeLeaves);
+        if (leavesData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leavesData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+          });
+        }
       })();
     }
   }, [isFocused]);
@@ -254,12 +266,41 @@ const ResourcesDetails = ({route, navigation}) => {
             <View
               style={[
                 style.tab,
-                selectedTab !== 'leaves' && {
+                selectedTab == 'attendence' && {
                   borderBottomColor: Colors.red,
                   borderBottomWidth: 2,
                 },
               ]}>
               <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              setSelectedTab('wfh');
+            }}>
+            <View
+              style={[
+                style.tab,
+                selectedTab === 'wfh' && {
+                  borderBottomColor: Colors.red,
+                  borderBottomWidth: 2,
+                },
+              ]}>
+              <View style={{position: 'relative'}}>
+                <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
+                {wfhCount > 0 ? (
+                  <View style={style.badges_number}>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: FontFamily.RobotoMedium,
+                      }}>
+                      {wfhCount}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
             </View>
           </Pressable>
         </View>
@@ -288,8 +329,10 @@ const ResourcesDetails = ({route, navigation}) => {
               </Text>
             </View>
           )
-        ) : (
+        ) : selectedTab == 'attendence' ? (
           <AttendenceTab employeeName={employeeName} employeeID={employeeID} />
+        ) : (
+          <WfhTab employeeName={employeeName} employeeID={employeeID} />
         )}
       </View>
     </SafeAreaView>
@@ -312,7 +355,6 @@ const style = StyleSheet.create({
     width: wp(18),
     height: hp(9),
     marginRight: 10,
-    // borderWidth: 1,
     borderRadius: 50,
   },
   name_cont: {},
@@ -346,21 +388,17 @@ const style = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   tab: {
-    // borderWidth: 1,
-    // borderColor: Colors.dune,
-    width: screenWidth / 2,
+    width: screenWidth / 3,
     alignItems: 'center',
     padding: 10,
     flexDirection: 'row',
     justifyContent: 'center',
-    // position: 'relative',
   },
   badges_number: {
     backgroundColor: Colors.reddishTint,
     width: 25,
     height: 25,
     borderRadius: 13,
-    // fontSize: 14,
     position: 'absolute',
     right: -26,
     top: -10,
@@ -373,7 +411,8 @@ const style = StyleSheet.create({
     borderRadius: 50,
   },
   listOfLeaves: {
-    height: hp(67),
+    height: hp(65),
+    marginBottom: 5,
   },
 });
 

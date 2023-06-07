@@ -31,6 +31,11 @@ let data = [
 ];
 
 const Home = ({navigation}) => {
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitleAlign: 'center',
+  //   });
+  // }, []);
   const dispatch = useDispatch();
   const {isLoading} = useSelector(state => state.auth);
   const {calendereventData: calenderData} = useSelector(state => state.home);
@@ -71,11 +76,11 @@ const Home = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: Colors.whitishBlue,
-        marginTop: hp(6),
+        // marginTop: hp(6),
         // paddingHorizontal: 16,
       }}>
       {isLoading ? <Loader /> : null}
@@ -120,7 +125,7 @@ const Home = ({navigation}) => {
           return <Component />;
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 export default Home;

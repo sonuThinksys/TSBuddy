@@ -31,6 +31,7 @@ import {
   todaySelectedDate,
 } from 'utils/utils';
 import {FontFamily} from 'constants/fonts';
+import {RegularzitionScreen} from 'navigation/Route';
 const Attendence = ({navigation}) => {
   const {attendenceData: dailyAttendance = []} = useSelector(
     state => state.home,
@@ -45,15 +46,8 @@ const Attendence = ({navigation}) => {
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
-  console.log('pressedDayDate:', pressedDayDate);
 
   useEffect(() => {
-    // year:2023
-    // month:5
-    // day:5
-    // timestamp:1683244800000
-    // dateString:2023-05-05
-
     const pressedDate = dailyAttendance?.find(
       date =>
         new Date(date?.attendanceDate)?.getDate() ===
@@ -79,9 +73,6 @@ const Attendence = ({navigation}) => {
       outTime,
       totalHours: pressedDate?.totalHours,
     };
-
-    // console.log('pressedDate:', typeof pressedDate.inTime);
-
     setPressedDayDate(pressedDateObj);
   }, [showDailyStatusModal]);
 
@@ -432,6 +423,7 @@ const Attendence = ({navigation}) => {
           mark={mark}
           setShowDailyStatusModal={setShowDailyStatusModal}
           setModalDate={setModalDate}
+          navigation={navigation}
         />
       </SafeAreaView>
     </SafeAreaView>
@@ -466,10 +458,9 @@ const renderItem = ({item}) => {
       <Text
         style={{
           color: Colors.white,
-          // fontWeight: 'bold',
+
           fontFamily: FontFamily.RobotoBold,
           fontSize: 14,
-          // marginRight: wp(1),
         }}>
         {item.title}
       </Text>
@@ -483,6 +474,7 @@ const RenderCalender = ({
   mark,
   setShowDailyStatusModal,
   setModalDate,
+  navigation,
 }) => {
   return (
     <CalendarList
@@ -490,6 +482,7 @@ const RenderCalender = ({
         if (day.day < new Date().getDate()) {
           setShowDailyStatusModal(true);
           setModalDate(day);
+          navigation.navigate(RegularzitionScreen);
         }
       }}
       horizontal={true}
@@ -499,18 +492,11 @@ const RenderCalender = ({
       showScrollIndicator={false}
       pagingEnabled={true}
       onVisibleMonthsChange={months => {
-        console.log('months:', months);
         setVisibleMonth(months[0]?.month);
         setVisibleYear(months[0]?.year);
-        // setLoading(true)
       }}
       pastScrollRange={100}
       markedDates={mark}
-      // markedDates={{
-      //   '2023-04-01': {selected: true, marked: true, selectedColor: 'red'},
-      //   '2023-04-02': {marked: true, selectedColor: 'orange', selected: true},
-      //   '2023-04-03': {selected: true, marked: true, selectedColor: 'blue'},
-      // }}
       calendarStyle={{
         flex: 1,
         backgroundColor: Colors.white,

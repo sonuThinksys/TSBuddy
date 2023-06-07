@@ -48,7 +48,8 @@ export const styles = StyleSheet.create({
   },
   textStyle: {
     fontFamily: FontFamily.RobotoLight,
-    fontSize: 17,
+    fontSize: 16,
+    color: Colors.lovelyPurple,
   },
   btn: {
     width: wp(26),
