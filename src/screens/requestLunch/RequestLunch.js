@@ -32,6 +32,7 @@ import {
 } from 'redux/homeSlice';
 import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
+import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -210,11 +211,7 @@ const RequestLunch = ({navigation}) => {
       alert('You can not apply for the lunch request after 10:30.');
       return;
     }
-    // if (currentHour > 10 || (currentHour === 10 && currentMinutes > 30)) {
-    //   alert('You can not apply for the lunch request after 10:30.');
-    //   return;
-    // }
-    //
+
     setIsLoading(true);
 
     try {
@@ -562,7 +559,6 @@ const renderListOfAppliedRequests = ({
   lunchRequests,
   setLunchRequests,
 }) => {
-  // return <Text>Hello </Text>;
   const options = {month: 'short', day: '2-digit', year: 'numeric'};
 
   const formattedStartDate = new Date(
@@ -574,10 +570,15 @@ const renderListOfAppliedRequests = ({
     options,
   );
 
+  const appliedDate = new Date(item?.creation)?.toLocaleDateString(
+    'en-US',
+    options,
+  );
+
   return (
     <View style={styles.request}>
       <View style={styles.appliedRequestsLeft}>
-        <Text style={styles.requestText}>
+        {/* <Text style={styles.requestText}>
           {`${formattedStartDate}${
             item.requestType.toLowerCase() !== 'monthly'
               ? ' - ' + formattedEndDate
@@ -586,6 +587,54 @@ const renderListOfAppliedRequests = ({
         </Text>
         <View style={styles.requestTypeContainer}>
           <Text style={styles.requestType}>{item?.requestType}</Text>
+        </View> */}
+        <View
+          style={{
+            alignItems: 'center',
+            marginRight: wp(4),
+          }}>
+          <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
+            01
+          </Text>
+          <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+            {item?.planId === 1 || item?.planId === 2 ? 'Day' : 'Month'}
+          </Text>
+        </View>
+        <View style={{}}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: FontFamily.RobotoRegular,
+              color: Colors.dune,
+              marginBottom: hp(1),
+            }}>
+            {formattedStartDate} - {formattedEndDate}
+          </Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 11, color: Colors.lightGray1}}>
+              Applied on:{' '}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                color: Colors.lightGray1,
+                fontFamily: FontFamily.RobotoMedium,
+              }}>
+              {appliedDate}
+            </Text>
+            <Text
+              style={{
+                marginLeft: 10,
+                paddingHorizontal: 10,
+                paddingVertical: 3,
+                backgroundColor: Colors.skin,
+                color: Colors.darkSkin,
+                fontSize: 12,
+                fontFamily: FontFamily.RobotoLightItalic,
+              }}>
+              {item?.requestType}
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -629,8 +678,7 @@ const renderListOfAppliedRequests = ({
           );
         }}
         style={styles.cancelButton}>
-        <Text style={styles.cancelText}>Cancel</Text>
-        <Image style={styles.image} source={MonthImages.DeleteIcon} />
+        <TrashIcon fill={Colors.darkSkin} height={hp(2)} width={hp(2)} />
       </Pressable>
       {/* ) : ( */}
       {/* <View></View> */}
