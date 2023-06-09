@@ -5,13 +5,11 @@ import {
   Image,
   ImageBackground,
   FlatList,
-  TouchableOpacity,
   TextInput,
-  StyleSheet,
-  ActivityIndicator,
   Pressable,
   Animated,
 } from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
 import {
@@ -22,25 +20,22 @@ import {useIsFocused} from '@react-navigation/native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import RefreshIcon from 'assets/allImage/refresh.imageset/refreshIcon.png';
 import {Colors} from 'colors/Colors';
-// import Header from 'component/header/Header';
-import baseUrl from 'services/Urls';
 import {useNavigation} from '@react-navigation/native';
 import CommunicationModal from 'modals/CommunicationModal';
 import {getEmployeeData, modalStatus} from 'redux/homeSlice';
-import {FontSize} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
-import RenderListItem from './RenderList';
 import CrossIcon from 'assets/allImage/cross.imageset/cross.png';
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
+import Loader from 'component/loader/Loader';
 
 const UserProfile = () => {
+  const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
   const inputRef = useRef(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const animatedOpacity = useRef(new Animated.Value(1)).current;
 
   const {isShowModal: isShowModall, fromNavigatedScreen} = useSelector(
     state => state.home,
@@ -58,7 +53,6 @@ const UserProfile = () => {
   const [isFetchingEmployees, setIsFetchingEmployees] = useState(false);
   let skipCount = allEmpData.length || 0;
   const [employeesCount, setEmployeesCount] = useState(0);
-  const [refreshing, SetRefreshing] = useState(false);
 
   useEffect(() => {
     if (showTextInput) inputRef.current.focus();
@@ -108,10 +102,6 @@ const UserProfile = () => {
         navigation,
       });
     }
-    // if (isSearching) {
-    //   setEmpData(result?.payload?.data);
-    //   return;
-    // }
 
     if (result && result?.payload && result?.payload?.data) {
       if (isInitial) {
@@ -119,23 +109,22 @@ const UserProfile = () => {
       } else {
         setEmpData([...allEmpData, ...result?.payload?.data]);
       }
-      // !isSearching && setEmployeesCount(result.payload.count);
       setEmployeesCount(result?.payload?.count);
     }
   };
 
+  const arr = [];
+  for (let i = 0; i < 1000; i++) {
+    arr.push(i);
+  }
+
   const onChangeText = async enteredName => {
     setSearchedName(enteredName);
-
-    // const filterData = allEmpData.filter(el => {
-    //   return el.employeeName.includes(e);
-    // });
-    // setEmpData(filterData);
   };
 
   const loadMoreData = () => {
-    if (scrollBegin && employeesCount > skipCount) {
-      // fetchEmployeesData({take: 15, skip: skipCount, page: 1});
+    if (employeesCount > skipCount) {
+      // if (scrollBegin && employeesCount > skipCount) {
       fetchEmployeesData({
         currentEmployees: {
           page: 1,
@@ -146,272 +135,238 @@ const UserProfile = () => {
     }
   };
 
-  // if (allEmpData?.length === 0) {
-  //   return (
-  //     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-  //       <Text>No Employee Found!</Text>
-  //     </View>
-  //   );
-  // }
-
-  {
-    return isFetchingEmployees ? (
-      <View style={styles.loaderContainer}>
-        {/* <View style={styles.loaderBackground} /> */}
-        <ActivityIndicator size="large" color={'white'} />
-      </View>
-    ) : (
-      <View style={{flex: 1}}>
-        <View
-          style={{
-            backgroundColor: Colors.darkBlue,
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingHorizontal: wp(4),
-            paddingVertical: hp(1),
-          }}>
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <TouchableOpacity
-              onPress={() => {
-                // =================================================================
-
-                Animated.timing(animatedOpacity, {
-                  toValue: 0,
-                  duration: 10,
-                  useNativeDriver: true,
-                }).start(() => {
-                  navigation.pop();
-                  navigation.navigate(fromNavigatedScreen);
-                  Animated.timing(animatedOpacity, {
-                    toValue: 1,
-                    duration: 500,
-                    useNativeDriver: true,
-                  }).start();
-                });
-
-                // =================================================================
-                // navigation.pop();
-                // navigation.navigate(fromNavigatedScreen);
-                // navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: 2,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingTop: hp(1),
-            }}>
-            <Text
-              style={{
-                color: Colors.white,
-                marginRight: wp(2),
-                fontSize: 18,
-                fontWeight: '500',
-              }}>
-              Employees
-            </Text>
-            <Image
-              source={MonthImages.info_scopy}
-              style={{height: 20, width: 20}}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: 1,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              paddingTop: hp(0.6),
-            }}>
-            {showHoriZontal ? (
-              <TouchableOpacity
-                onPress={() => {
-                  setNumValue(3);
-                  setShowHorizontal(false);
-                }}>
-                <Image
-                  source={MonthImages.thumbnailS}
-                  style={{marginRight: wp(4)}}
-                />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  setNumValue(1);
-                  setShowHorizontal(true);
-                }}>
-                <Image
-                  source={MonthImages.listS}
-                  style={{marginRight: wp(4)}}
-                />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              onPress={() => {
-                // if (!showTextInput) {
-                //   setShowTextInput(true);
-                // } else {
-                //   setShowTextInput(false);
-                // }
-                setShowTextInput(prevState => !prevState);
-                inputRef.current?.focus();
-              }}>
-              <Image
-                source={MonthImages.searchIconwhite}
-                style={{
-                  height: 20,
-                  width: 20,
-                  // marginRight: wp(5),
-                  color: Colors.white,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            right: 10,
-            zIndex: 999,
-          }}>
+  return (
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          backgroundColor: Colors.darkBlue,
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: wp(4),
+          paddingVertical: hp(1),
+        }}>
+        <View style={{flex: 1, justifyContent: 'center'}}>
           <Pressable
             onPress={() => {
-              fetchInitialData();
-            }}
-            style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
+              navigation.pop();
+              navigation.navigate(fromNavigatedScreen);
+            }}>
             <Image
-              source={RefreshIcon}
-              style={{height: 32, width: 32, borderRadius: 25, zIndex: 9999}}
+              source={MonthImages.backArrowS}
+              style={{height: 20, width: 20}}
             />
           </Pressable>
         </View>
-        {showTextInput ? (
-          <View
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingTop: hp(1),
+          }}>
+          <Text
             style={{
-              backgroundColor: Colors.blackishGreen,
-              flexDirection: 'row',
-              paddingVertical: hp(1),
-              paddingHorizontal: wp(5),
-              // justifyContent: 'center',
-              alignItems: 'center',
+              color: Colors.white,
+              marginRight: wp(2),
+              fontSize: 18,
+              fontWeight: '500',
             }}>
-            <TouchableOpacity
-              disabled={searchedName.length == 0}
-              onPress={async () => {
-                let currentEmployee = {
-                  page: 1,
-                  skip: 0,
-                  take: 18,
-                };
-
-                if (searchedName.length) {
-                  currentEmployee = {
-                    page: 1,
-                    skip: 0,
-                    take: totalCount,
-                    name: searchedName,
-                  };
-                }
-                await fetchEmployeesData({
-                  isInitial: true,
-                  currentEmployees: currentEmployee,
-                  isSearching: true,
-                });
+            Employees
+          </Text>
+          <Image
+            source={MonthImages.info_scopy}
+            style={{height: 20, width: 20}}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            paddingTop: hp(0.6),
+          }}>
+          {showHoriZontal ? (
+            <Pressable
+              onPress={() => {
+                setNumValue(3);
+                setShowHorizontal(false);
               }}>
               <Image
-                source={MonthImages.searchIconwhite}
-                style={{
-                  height: 25,
-                  width: 25,
-                  marginRight: wp(5),
-                }}
+                source={MonthImages.thumbnailS}
+                style={{marginRight: wp(4)}}
               />
-            </TouchableOpacity>
-
-            <TextInput
-              autoFocus={true}
-              value={searchedName}
-              selectionColor={Colors.white}
-              color={Colors.white}
-              ref={inputRef}
-              // value={e}
-              onChangeText={onChangeText}
-              isEditble
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => {
+                setNumValue(1);
+                setShowHorizontal(true);
+              }}>
+              <Image source={MonthImages.listS} style={{marginRight: wp(4)}} />
+            </Pressable>
+          )}
+          <Pressable
+            onPress={() => {
+              setShowTextInput(prevState => !prevState);
+              inputRef.current?.focus();
+            }}>
+            <Image
+              source={MonthImages.searchIconwhite}
               style={{
-                height: '120%',
-                width: '80%',
-                paddingVertical: 0,
+                height: 20,
+                width: 20,
+                color: Colors.white,
               }}
             />
-            <TouchableOpacity
-              onPress={() => {
-                setSearchedName('');
-              }}
-              style={styles.clearButton}>
-              {/* <Text style={{color: 'white'}}>X</Text> */}
-              <Image
-                source={CrossIcon}
-                style={{height: 20, width: 20, tintColor: Colors.white}}
-              />
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        {isShowModall && isFocussed ? (
-          <CommunicationModal empDetail={empDetail} />
-        ) : null}
+          </Pressable>
+        </View>
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          zIndex: 999,
+        }}>
+        <Pressable
+          onPress={() => {
+            fetchInitialData();
+          }}
+          style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
+          <Image
+            source={RefreshIcon}
+            style={{height: 32, width: 32, borderRadius: 25, zIndex: 9999}}
+          />
+        </Pressable>
+      </View>
+      {showTextInput ? (
+        <View
+          style={{
+            backgroundColor: Colors.blackishGreen,
+            flexDirection: 'row',
+            paddingVertical: hp(1),
+            paddingHorizontal: wp(5),
+            // justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Pressable
+            disabled={searchedName.length == 0}
+            onPress={async () => {
+              let currentEmployee = {
+                page: 1,
+                skip: 0,
+                take: 18,
+              };
 
-        {allEmpData?.length === 0 ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Image source={NotFound} style={{height: 120, width: 160}} />
-            <Text style={{color: 'maroon', marginTop: 20}}>
-              No Employee Found!
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            windowSize={5}
-            removeClippedSubviews={true}
-            legacyImplementation={false}
-            onScrollBeginDrag={() => setScrollBegin(true)}
-            onEndReachedThreshold={0}
-            scrollsToTop={false}
-            showsVerticalScrollIndicator={false}
-            onEndReached={loadMoreData}
-            onMomentumScrollBegin={() => setScrollBegin(true)}
-            onMomentumScrollEnd={() => setScrollBegin(false)}
-            data={allEmpData}
-            numColumns={numValue}
-            key={numValue}
-            //numColumns={1}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => {
-              return renderItem(
-                item,
-                index,
-                navigation,
-                isShowModall,
-                dispatch,
-                setClickData,
-                empDetail,
-                showHoriZontal,
-              );
+              if (searchedName.length) {
+                currentEmployee = {
+                  page: 1,
+                  skip: 0,
+                  take: totalCount,
+                  name: searchedName,
+                };
+              }
+              await fetchEmployeesData({
+                isInitial: true,
+                currentEmployees: currentEmployee,
+                isSearching: true,
+              });
+
+              flatListRef.current.scrollToOffset({animated: true, offset: 0});
+            }}>
+            <Image
+              source={MonthImages.searchIconwhite}
+              style={{
+                height: 25,
+                width: 25,
+                marginRight: wp(5),
+              }}
+            />
+          </Pressable>
+
+          <TextInput
+            autoFocus={true}
+            value={searchedName}
+            selectionColor={Colors.white}
+            color={Colors.white}
+            ref={inputRef}
+            // value={e}
+            onChangeText={onChangeText}
+            isEditble
+            style={{
+              height: '120%',
+              width: '80%',
+              paddingVertical: 0,
             }}
           />
-        )}
-      </View>
-    );
-  }
+          <Pressable
+            onPress={() => {
+              setSearchedName('');
+            }}
+            style={styles.clearButton}>
+            <Image
+              source={CrossIcon}
+              style={{height: 20, width: 20, tintColor: Colors.white}}
+            />
+          </Pressable>
+        </View>
+      ) : null}
+      {isShowModall && isFocussed ? (
+        <CommunicationModal empDetail={empDetail} />
+      ) : null}
+
+      {allEmpData?.length === 0 && !isFetchingEmployees ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Image source={NotFound} style={{height: 120, width: 160}} />
+          <Text style={{color: 'maroon', marginTop: 20}}>
+            No Employee Found!
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          windowSize={5}
+          removeClippedSubviews={true}
+          legacyImplementation={false}
+          onScrollBeginDrag={() => {
+            // setScrollBegin(true);
+          }}
+          onEndReachedThreshold={0}
+          scrollsToTop={false}
+          showsVerticalScrollIndicator={false}
+          onEndReached={loadMoreData}
+          onMomentumScrollBegin={() => {
+            // setScrollBegin(true);
+          }}
+          onMomentumScrollEnd={() => {
+            // setScrollBegin(false);
+          }}
+          data={allEmpData}
+          numColumns={numValue}
+          key={numValue}
+          //numColumns={1}
+          keyExtractor={(item, index) => index.toString()}
+          ref={flatListRef}
+          renderItem={({item, index}) => {
+            return renderItem(
+              item,
+              index,
+              navigation,
+              isShowModall,
+              dispatch,
+              setClickData,
+              empDetail,
+              showHoriZontal,
+            );
+          }}
+        />
+      )}
+      {isFetchingEmployees ? <Loader /> : null}
+    </View>
+  );
 };
 
 const renderItem = (
@@ -424,6 +379,15 @@ const renderItem = (
   empDetail,
   showHoriZontal,
 ) => {
+  // return (
+  //   <View
+  //     style={{
+  //       height: 100,
+  //       borderWidth: 1,
+  //       borderColor: 'blue',
+  //       padding: 20,
+  //     }}></View>
+  // );
   return (
     <View
       key={index}
@@ -478,6 +442,7 @@ const renderItem = (
           </View>
         </TouchableOpacity>
       ) : (
+        // <View style={{padding: 10, borderWidth: 1, height: 320}}></View>
         <TouchableOpacity
           style={styles.container2}
           onPress={() => {
@@ -511,7 +476,7 @@ const renderItem = (
               {designation}
             </Text>
             <View style={styles.buttomView}>
-              <TouchableOpacity
+              <Pressable
                 style={styles.imagecontainer1}
                 onPress={() => {
                   setClickData({
@@ -524,8 +489,8 @@ const renderItem = (
                   dispatch(modalStatus(true));
                 }}>
                 <Image style={styles.callImage} source={MonthImages.callEmp} />
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.imagecontainer2}
                 onPress={() => {
                   setClickData({
@@ -537,7 +502,7 @@ const renderItem = (
                   dispatch(modalStatus(true));
                 }}>
                 <Image style={styles.mailImage} source={MonthImages.mailEmp} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </ImageBackground>
         </TouchableOpacity>

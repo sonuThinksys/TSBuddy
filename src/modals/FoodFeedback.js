@@ -25,8 +25,6 @@ import {addMealFeedback} from 'redux/homeSlice';
 import {styles} from './FoodFeedbackStyles';
 
 const FoodFeedback = ({modalData, showModal}) => {
-  const deviceWidth = Dimensions.get('window').width;
-  const [submit, setSubmit] = useState({});
   const [text, setText] = useState('');
   const [reaction, setReaction] = useState(0);
   const [emojidata, setEmojidata] = useState([
@@ -95,28 +93,36 @@ const FoodFeedback = ({modalData, showModal}) => {
   };
 
   const handleSubmit = async () => {
-    const response = await dispatch(
-      addMealFeedback({
-        token,
-        dailyMenuId: dailyMenuID,
-        employeeId: employeeID,
-        feedback: text,
-        reaction: reaction,
-        type: type,
-      }),
-    );
+    const bodyToSend = {
+      dailyMenuId: dailyMenuID,
+      employeeId: employeeID,
+      feedback: text,
+      reaction: reaction,
+      type: type,
+    };
 
-    if (response?.error) {
-      alert(response?.error?.message || 'Something went wrong.');
-    } else {
-      Alert.alert('Success', 'Feedback sent successfully!', [
-        {
-          text: 'Ok',
-          onPress: () => {
-            showModal = false;
+    try {
+      const response = await dispatch(
+        addMealFeedback({
+          token,
+          body: bodyToSend,
+        }),
+      );
+
+      if (response?.error) {
+        alert(response?.error?.message || 'Something went wrong.');
+      } else {
+        Alert.alert('Success', 'Feedback sent successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              showModal = false;
+            },
           },
-        },
-      ]);
+        ]);
+      }
+    } catch (err) {
+      console.log('err1111:', err);
     }
   };
 

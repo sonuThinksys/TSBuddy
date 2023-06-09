@@ -45,6 +45,7 @@ export default StyleSheet.create({
     marginVertical: hp(0.5),
     // marginHorizontal: wp(0.1),
     width: wp(33.5),
+    height: hp(16),
   },
   backgroundImage: {alignItems: 'center', paddingBottom: hp(0.4)},
   buttomView: {

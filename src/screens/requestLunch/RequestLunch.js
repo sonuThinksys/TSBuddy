@@ -33,6 +33,7 @@ import {
 import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
+import Loader from 'component/loader/Loader';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -266,6 +267,7 @@ const RequestLunch = ({navigation}) => {
   } else {
     if (!dateData) opacity = 0.5;
   }
+ 
 
   return (
     // <SharedElement id="enter">
@@ -336,22 +338,24 @@ const RequestLunch = ({navigation}) => {
           </View>
         </View>
         <DateTimePickerModal
-          minimumDate={startSelected ? startDate.startDateObj : undefined}
-          maximumDate={new Date(new Date()?.setDate(new Date()?.getDate() + 7))}
+          minimumDate={new Date()}
+          maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
+          // minimumDate={startSelected ? startDate.startDateObj : undefined}
+          // maximumDate={new Date(new Date()?.setDate(new Date()?.getDate() + 7))}
           isVisible={startDatePickerVisible}
           mode="date"
           onConfirm={handleStartConfirm}
           onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
         />
         <DateTimePickerModal
-          minimumDate={new Date()}
-          // maximumDate={
-          //   startSelected
-          //     ? new Date(
-          //         startDate.startDateObj?.setDate(new Date()?.getDate() + 7),
-          //       )
-          //     : undefined
-          // }
+          minimumDate={startSelected ? startDate?.startDateObj : undefined}
+          maximumDate={
+            startSelected
+              ? new Date(
+                  new Date().setDate(startDate.startDateObj.getDate() + 7),
+                )
+              : undefined
+          }
           isVisible={endDatePickerVisible}
           mode="date"
           onConfirm={handleEndConfirm}
@@ -518,35 +522,9 @@ const RequestLunch = ({navigation}) => {
             </Text>
           </View>
         )}
-
-        {/* <View style={styles.monthlyRequestView}>
-          <View style={styles.monthlyView}>
-            <Text style={{fontSize: 15}}>Monthly Request</Text>
-
-            <TouchableOpacity onPress={cancelRequest} style={styles.cancelView}>
-              <Text
-                style={{
-                  color: Colors.white,
-                  fontWeight: 'bold',
-                }}>
-                Cancel Request
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttomTextView}>
-            <Text style={styles.buttomText}>Start Date :</Text>
-            <TextInput editable={false} value={'1/September/2022'} />
-          </View>
-        </View> */}
       </View>
-      {isLoading ? (
-        <View style={styles.loaderContainer}>
-          <View style={styles.loaderBackground} />
-          <ActivityIndicator size="large" />
-        </View>
-      ) : null}
+      {isLoading ? <Loader /> : null}
     </View>
-    // </SharedElement>
   );
 };
 
@@ -578,16 +556,6 @@ const renderListOfAppliedRequests = ({
   return (
     <View style={styles.request}>
       <View style={styles.appliedRequestsLeft}>
-        {/* <Text style={styles.requestText}>
-          {`${formattedStartDate}${
-            item.requestType.toLowerCase() !== 'monthly'
-              ? ' - ' + formattedEndDate
-              : ''
-          }`}
-        </Text>
-        <View style={styles.requestTypeContainer}>
-          <Text style={styles.requestType}>{item?.requestType}</Text>
-        </View> */}
         <View
           style={{
             alignItems: 'center',
@@ -651,27 +619,30 @@ const renderListOfAppliedRequests = ({
               {
                 text: 'Yes',
                 onPress: async () => {
-                  setIsLoading(true);
-                  const response = await dispatch(
-                    onCancel({
-                      token,
-                      body: {id: item.id},
-                    }),
-                  );
-                  // console.log('response:', response?.error?.message);
-                  if (response?.error) {
-                    alert(response?.error.message);
-                  } else {
-                    Alert.alert('Success', 'Request canceled Successfully.', [
-                      {text: 'Ok', onPress: () => null},
-                    ]);
-                    const newLunchRequestList = lunchRequests.filter(
-                      request => request.id !== item.id,
+                  try {
+                    setIsLoading(true);
+                    const response = await dispatch(
+                      onCancel({
+                        token,
+                        body: {id: item.id},
+                      }),
                     );
-                    setLunchRequests(newLunchRequestList);
+                    // console.log('response:', response?.error?.message);
+                    if (response?.error) {
+                      alert(response?.error.message);
+                    } else {
+                      Alert.alert('Success', 'Request canceled Successfully.', [
+                        {text: 'Ok', onPress: () => null},
+                      ]);
+                      const newLunchRequestList = lunchRequests.filter(
+                        request => request.id !== item.id,
+                      );
+                      setLunchRequests(newLunchRequestList);
+                    }
+                  } catch (err) {
+                  } finally {
+                    setIsLoading(false);
                   }
-
-                  setIsLoading(false);
                 },
               },
             ],
@@ -680,9 +651,6 @@ const renderListOfAppliedRequests = ({
         style={styles.cancelButton}>
         <TrashIcon fill={Colors.darkSkin} height={hp(2)} width={hp(2)} />
       </Pressable>
-      {/* ) : ( */}
-      {/* <View></View> */}
-      {/* )} */}
     </View>
   );
 };

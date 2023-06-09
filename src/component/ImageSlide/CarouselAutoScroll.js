@@ -48,7 +48,6 @@ const CarouselAutoScroll = ({navigation}) => {
       });
     });
 
-    console.log('events:', events);
     setCalenderEventData(events);
   }, [calenderData]);
 
@@ -102,7 +101,6 @@ const CarouselAutoScroll = ({navigation}) => {
         horizontal
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
-          // console.log('ITEM:', item);
           return (
             <View
               style={{
