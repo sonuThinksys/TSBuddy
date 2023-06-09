@@ -2,9 +2,11 @@ import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {StyleSheet, Text, View} from 'react-native';
 import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
+import {useSelector} from 'react-redux';
 
 const WelcomeHeader = () => {
-  const userName = 'Utkarsh gupta';
+  const {employeeProfile: profileData} = useSelector(state => state.home);
+  const userName = profileData?.employeeName;
   return (
     <View style={styles.mainContainer}>
       <View style={styles.welcomeContainer}>

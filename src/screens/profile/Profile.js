@@ -17,7 +17,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {getEmployeeProfileData} from 'redux/homeSlice';
+// import {getEmployeeProfileData} from 'redux/homeSlice';
 import {useIsFocused} from '@react-navigation/native';
 import baseUrl from 'services/Urls';
 import moment from 'moment';
@@ -40,25 +40,25 @@ const Profile = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
-  useEffect(() => {
-    (async () => {
-      if (token) {
-        const profileDetails = await dispatch(
-          getEmployeeProfileData({token, employeeID}),
-        );
+  // useEffect(() => {
+  //   (async () => {
+  //     if (token) {
+  //       const profileDetails = await dispatch(
+  //         getEmployeeProfileData({token, employeeID}),
+  //       );
 
-        if (profileDetails?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: profileDetails?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
-        }
-      }
-    })();
-  }, []);
+  //       if (profileDetails?.error) {
+  //         ShowAlert({
+  //           messageHeader: ERROR,
+  //           messageSubHeader: profileDetails?.error?.message,
+  //           buttonText: 'Close',
+  //           dispatch,
+  //           navigation,
+  //         });
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
   const {
     employeeProfile: profileData,

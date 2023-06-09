@@ -66,6 +66,7 @@ const ApplyLeave = ({navigation, route}) => {
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
+  console.log('openLeaveData:', openLeaveData);
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
@@ -80,7 +81,16 @@ const ApplyLeave = ({navigation, route}) => {
   const openLeaveReason = openLeaveData?.description;
   const openLeaveApprover = openLeaveData?.managerInfoDto?.employeeName;
   const openLeaveApplicationId = openLeaveData?.leaveApplicationId;
-  const fiscalYear = openLeaveData?.fiscalYear;
+
+  const currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+
+  const fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
+
+  if (currentMonth < 3) {
+    fiscalYear = `${currentYear - 1} - ${new Date().getFullYear()}`;
+  }
+
   const openLeaveApproverEmail = openLeaveData?.leaveApprover;
 
   const openLeaveFromDatestr = openLeavFromDateObj.toLocaleDateString(
@@ -650,8 +660,13 @@ const ApplyLeave = ({navigation, route}) => {
         (startDate1 >= startDate2 && endDate2 >= startDate1) ||
         (startDate2 >= startDate1 && startDate2 <= endDate1)
       ) {
-        alert('Leaves are already applied to these dates.');
-        return;
+        if (
+          leavesData[i].status.toLowerCase() === 'open' ||
+          leavesData[i].status.toLowerCase() === 'approved'
+        ) {
+          alert('Leaves are already applied to these dates.');
+          return;
+        }
       }
 
       if (
@@ -660,8 +675,13 @@ const ApplyLeave = ({navigation, route}) => {
         startDate2.toDateString() === startDate1.toDateString() ||
         startDate2.toDateString() === endDate1.toDateString()
       ) {
-        alert('Leaves are already applied to these dates.');
-        return;
+        if (
+          leavesData[i].status.toLowerCase() === 'open' ||
+          leavesData[i].status.toLowerCase() === 'approved'
+        ) {
+          alert('Leaves are already applied to these dates.');
+          return;
+        }
       }
     }
 
@@ -793,7 +813,8 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
   const finalizeLeave = async status => {
-    const empId = +employeeID.match(/\d+/g)[0];
+    // const empId = +employeeID.match(/\d+/g)[0];
+    const empId = route?.params?.employeeId.match(/\d+/g)[0];
 
     const response =
       token &&

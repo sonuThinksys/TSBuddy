@@ -91,6 +91,7 @@ const drawerOption = ({
   showDrawer = true,
   showHeaderRight = true,
   headerIcon,
+  isHome = false,
 }) => {
   return {
     headerTitleAlign: 'center',
@@ -123,13 +124,20 @@ const drawerOption = ({
       <View
         style={{
           // display: 'flex',
-          // flexDirection: 'row',
+          flexDirection: 'row',
           // justifyContent: 'center',
           // alignItems: 'center',
           marginRight: 'auto',
           marginLeft: 'auto',
         }}>
-        <Image source={MonthImages.TRMSIcon} style={{width: 108, height: 40}} />
+        {isHome ? (
+          <Image
+            source={MonthImages.TRMSIcon}
+            style={{width: 108, height: 40}}
+          />
+        ) : (
+          <Text>{label}</Text>
+        )}
         {/* <Text>TRMS</Text> */}
 
         {headerIcon && (
