@@ -48,7 +48,6 @@ const CarouselAutoScroll = ({navigation}) => {
       });
     });
 
-    console.log('events:', events);
     setCalenderEventData(events);
   }, [calenderData]);
 
@@ -100,9 +99,17 @@ const CarouselAutoScroll = ({navigation}) => {
         pagingEnabled
         data={CalaenderEventData}
         horizontal
+        onScrollToIndexFailed={info => {
+          const wait = new Promise(resolve => setTimeout(resolve, 500));
+          wait.then(() => {
+            imageRef?.current?.scrollToIndex({
+              index: info.index,
+              animated: true,
+            });
+          });
+        }}
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
-          // console.log('ITEM:', item);
           return (
             <View
               style={{

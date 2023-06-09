@@ -138,7 +138,7 @@ const renderItem = ({item, index}) => {
         <Image
           resizeMode="contain"
           source={
-            item.description === 'Republic Day'
+            item.description === 'Republic day'
               ? MonthImages.republicDay
               : item.description === 'Holi'
               ? MonthImages.holi
@@ -147,7 +147,7 @@ const renderItem = ({item, index}) => {
               : item.description === 'Diwali'
               ? MonthImages.diwali
               : item.description === 'Dussehra'
-              ? MonthImages.diwali
+              ? MonthImages.dussehra
               : item.description === 'Gandhi Jayanti'
               ? MonthImages.gandhiJayantiS
               : MonthImages.newYear

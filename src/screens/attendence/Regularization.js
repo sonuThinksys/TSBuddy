@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  Alert,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -21,16 +22,25 @@ import {useEffect, useState} from 'react';
 import style from './RegularzationStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAttReguarzationReason, getLeaveApprovers} from 'redux/homeSlice';
+import {
+  getAttReguarzationReason,
+  getLeaveApprovers,
+  requestForAttendanceRegularization,
+} from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
 import jwt_decode from 'jwt-decode';
+import {Value} from 'react-native-reanimated';
 
-const Regularization = ({navigation}) => {
+const Regularization = ({navigation, route}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState('fullDay');
   const [checkBox, setCheckBox] = useState(false);
   const [regularizationReason, setRegularzitionReason] = useState([]);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   const [selectDay, setSelectDay] = useState('');
+  const [selectApprover, setSelectApprover] = useState('');
+  const [selectReasons, setSelectReasons] = useState('');
+  const [commentText, setCommentText] = useState('');
+
   const [dayData, setDayData] = useState([
     {
       isSelected: false,
@@ -38,6 +48,9 @@ const Regularization = ({navigation}) => {
     },
     {isSelected: false, type: 'Full day'},
   ]);
+
+  const attendanceId = route?.params?.attendanceId;
+  const attendanceDate = route?.params?.attendanceDate;
 
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -157,7 +170,57 @@ const Regularization = ({navigation}) => {
     );
   };
 
-  const handleSubmit = () => {};
+  console.log(
+    'attendanceId',
+    attendanceId,
+    'employeeId',
+    employeeID,
+    'attendanceDate',
+    attendanceDate,
+    'reasonId',
+    selectReasons,
+    'attendanceType',
+    selectDay,
+    'halfDayInfo',
+    null,
+    'comment',
+    commentText,
+    'mode',
+    'Office',
+  );
+
+  const handleSubmit = async () => {
+    const requestRegularsation =
+      token &&
+      (await dispatch(
+        requestForAttendanceRegularization({
+          token,
+          body: {
+            attendanceId: attendanceId,
+            employeeId: employeeID,
+            attendanceDate: attendanceDate,
+            reasonId: selectReasons,
+            attendanceType: selectDay,
+            halfDayInfo: null,
+            comment: commentText,
+            mode: 'Office',
+          },
+        }),
+      ));
+
+    if (requestRegularsation?.error) {
+      alert(requestRegularsation.error.message);
+    } else {
+      Alert.alert('Success', 'Regularisation form submitted successfully!', [
+        {
+          text: 'Ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        },
+      ]);
+    }
+  };
 
   return (
     <View style={style.container}>
@@ -174,10 +237,12 @@ const Regularization = ({navigation}) => {
             height: 38,
             paddingLeft: 15,
           }}
+          onSelect={itemName => {
+            setSelectApprover(itemName);
+          }}
           dropdownTextHighlightStyle={{color: Colors.white}}
           isFullWidth={true}
           showsVerticalScrollIndicator={false}
-          // defaultValue={}
           options={leaveApproversList}
           dropdownStyle={{
             width: '50%',
@@ -185,8 +250,8 @@ const Regularization = ({navigation}) => {
               leaveApproversList && leaveApproversList.length == 1
                 ? 30
                 : leaveApproversList.length == 2
-                ? 100
-                : 120,
+                ? 50
+                : 110,
             paddingLeft: 6,
             lineHeight: 2,
           }}
@@ -207,6 +272,9 @@ const Regularization = ({navigation}) => {
             paddingVertical: 5,
             height: 38,
             paddingLeft: 15,
+          }}
+          onSelect={item => {
+            setSelectReasons(item + 1);
           }}
           renderRightComponent={renderRightComponent}
           renderRow={renderRow}
@@ -238,7 +306,13 @@ const Regularization = ({navigation}) => {
         <Text style={style.text}>Comment</Text>
       </View>
       <View style={style.commentCont}>
-        <TextInput style={style.comentBox} multiline={true} />
+        <TextInput
+          style={style.comentBox}
+          onChangeText={text => {
+            setCommentText(text);
+          }}
+          multiline={true}
+        />
       </View>
       <View style={style.btnCont}>
         <TouchableOpacity

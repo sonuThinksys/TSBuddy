@@ -61,7 +61,6 @@ const WfhTab = ({employeeID, employeeName}) => {
       setRefresh(true);
       const allLeaves = await dispatch(getResourcesEmployeesLeaves({token}));
     } catch (err) {
-      console.error('err:', err);
     } finally {
       setRefresh(false);
     }

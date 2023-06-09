@@ -32,12 +32,11 @@ import {
 } from 'utils/utils';
 import {FontFamily} from 'constants/fonts';
 import {RegularzitionScreen} from 'navigation/Route';
+import Loader from 'component/LoadingScreen/LoadingScreen';
 const Attendence = ({navigation}) => {
   const {attendenceData: dailyAttendance = []} = useSelector(
     state => state.home,
   );
-
-  console.log('Rendering');
 
   const {holidayData: holidaysData = []} = useSelector(state => state.home);
   const [visisbleMonth, setVisibleMonth] = useState(0);
@@ -49,6 +48,8 @@ const Attendence = ({navigation}) => {
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
 
+  const [finalWeekTime, setFinalWeekTime] = useState('00:00');
+
   useEffect(() => {
     const pressedDate = dailyAttendance?.find(
       date =>
@@ -56,14 +57,10 @@ const Attendence = ({navigation}) => {
         new Date(modalDate?.dateString).getDate(),
     );
 
-    //   const inTime =
-    //     inTimeHours +
-    //     ':' +
-    //     (inTimeMinutes < 10 ? '0' + inTimeMinutes : inTimeMinutes);
-    //   const outTime =
-    //     outTimeHours +
-    //     ':' +
-    //     (outTimeMinutes < 10 ? '0' + outTimeMinutes : outTimeMinutes);
+    const inTimeHours = new Date(pressedDate?.inTime)?.getHours();
+    const outTimeHours = new Date(pressedDate?.outTime)?.getHours();
+    const inTimeMinutes = new Date(pressedDate?.inTime)?.getMinutes();
+    const outTimeMinutes = new Date(pressedDate?.outTime)?.getMinutes();
 
     const inTime =
       inTimeHours +
@@ -94,38 +91,45 @@ const Attendence = ({navigation}) => {
     return date.getDate();
   }
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (employeeID && token) {
-  //       try {
-  //         if (visisbleMonth > 0 || visibleYear > 0) {
-  //           setLoading(true);
-  //           const attendence = await dispatch(
-  //             getAttendencaeData({
-  //               token,
-  //               employeeID,
-  //               visisbleMonth,
-  //               visibleYear,
-  //             }),
-  //           );
-  //           if (attendence?.error) {
-  //             ShowAlert({
-  //               messageHeader: ERROR,
-  //               messageSubHeader: attendence?.error?.message,
-  //               buttonText: 'Close',
-  //               dispatch,
-  //               navigation,
-  //             });
-  //           }
-  //         }
-  //       } catch (err) {
-  //         setLoading(false);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //   })();
-  // }, []);
+  async function fetchData() {
+    if (employeeID && token) {
+      try {
+        if (visisbleMonth > 0 || visibleYear > 0) {
+          // setLoading(true);
+          const attendence = await dispatch(
+            getAttendencaeData({
+              token,
+              employeeID,
+              visisbleMonth,
+              visibleYear,
+            }),
+          );
+          if (attendence?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: attendence?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+        }
+      } catch (err) {
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 100);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [visisbleMonth]);
 
   const startEndDate = () => {
     let startDate = attendanceDate(1);
@@ -137,14 +141,11 @@ const Attendence = ({navigation}) => {
   let startDateFormat = startEndDateFormat(startDate);
   let endDateFormat = startEndDateFormat(endDate);
 
-  const [finalWeekTime, setFinalWeekTime] = useState('00:00');
-
   useEffect(() => {
     let privMonDAy = new Date();
     privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
     var now = new Date();
     const todayDateIndex = now.getDay();
-
     const todayDate = now.getDate();
 
     let weekDays = [];
@@ -215,26 +216,25 @@ const Attendence = ({navigation}) => {
         extraTime: `-${hoursLeft}:${minutesLeft}`,
       });
     }
-  }, [dailyAttendance]);
+  }, []);
 
   let monthMark = {};
   const daysInMonth = getDaysInMonth(visisbleMonth - 1);
-  // const daysInMonth = new Date().getDate();
 
-  for (let i = 1; i <= daysInMonth; i++) {
-    const date = i > 9 ? i : '0' + i;
-    const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
-    const dateStr = `${visibleYear}-${month}-${date}`;
-    if (new Date(dateStr) < Date.now()) {
-      const dateIndex = new Date(dateStr).getDay();
-      if (dateIndex !== 6 && dateIndex !== 0) {
-        monthMark = {
-          ...monthMark,
-          [dateStr]: {selected: true, selectedColor: 'red'},
-        };
-      }
-    }
-  }
+  // for (let i = 1; i <= daysInMonth; i++) {
+  //   const date = i > 9 ? i : '0' + i;
+  //   const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
+  //   const dateStr = `${visibleYear}-${month}-${date}`;
+  //   if (new Date(dateStr) < Date.now()) {
+  //     const dateIndex = new Date(dateStr).getDay();
+  //     if (dateIndex !== 6 && dateIndex !== 0) {
+  //       monthMark = {
+  //         ...monthMark,
+  //         [dateStr]: {selected: true, selectedColor: 'red'},
+  //       };
+  //     }
+  //   }
+  // }
 
   let todayDate = todaySelectedDate();
 
@@ -244,40 +244,41 @@ const Attendence = ({navigation}) => {
   };
 
   let holidayDate;
-  // holidaysData &&
-  //   holidaysData?.length &&
-  //   holidaysData?.forEach(day => {
-  //     holidayDate = day.holidayDate.split('T')[0];
-  //     if (holidayDate) {
-  //       monthMark[holidayDate] = {
-  //         selectedColor: Colors.pink,
-  //         selected: true,
-  //       };
-  //     }
-  //   });
+  holidaysData &&
+    holidaysData?.length &&
+    holidaysData?.forEach(day => {
+      holidayDate = day.holidayDate.split('T')[0];
+      if (holidayDate) {
+        monthMark[holidayDate] = {
+          selectedColor: Colors.pink,
+          selected: true,
+        };
+      }
+    });
 
-  // dailyAttendance &&
-  //   dailyAttendance.length &&
-  //   dailyAttendance?.forEach(day => {
-  //     let date = day?.attendanceDate?.split('T')[0];
-  //     if (day.attendanceType === 'H') {
-  //       monthMark[date] = {
-  //         selectedColor: Colors.lightBlue,
-  //         selected: true,
-  //       };
-  //     } else if (day.attendanceType === 'A') {
-  //       monthMark[date] = {
-  //         selectedColor: Colors.reddishTint,
-  //         selected: true,
-  //       };
-  //     } else if (day.attendanceType === 'F') {
-  //       monthMark[date] = {
-  //         selectedColor: Colors.parrotGreen,
-  //         dotColor: Colors.green,
-  //         selected: true,
-  //       };
-  //     }
-  //   });
+  console.log('dailyAttendance', dailyAttendance);
+  dailyAttendance &&
+    dailyAttendance.length &&
+    dailyAttendance?.forEach(day => {
+      let date = day?.attendanceDate?.split('T')[0];
+      if (day.attendanceType === 'H') {
+        monthMark[date] = {
+          selectedColor: Colors.lightBlue,
+          selected: true,
+        };
+      } else if (day.attendanceType === 'A') {
+        monthMark[date] = {
+          selectedColor: Colors.reddishTint,
+          selected: true,
+        };
+      } else if (day.attendanceType === 'F') {
+        monthMark[date] = {
+          selectedColor: Colors.parrotGreen,
+          dotColor: Colors.green,
+          selected: true,
+        };
+      }
+    });
 
   let mark = monthMark;
   const DATA = [
@@ -329,11 +330,10 @@ const Attendence = ({navigation}) => {
         // onLoadStart={() => setImageLoading(true)}
         // onLoadEnd={() => setImageLoading(false)}
         source={attendenceMonthImages[visisbleMonth]}
-        // source={attendenceMonthImages[1]}
         style={{
           flex: 1,
         }}>
-        {/* {showDailyStatusModal ? (
+        {showDailyStatusModal ? (
           <Modal
             style={{
               justifyContent: 'center',
@@ -362,7 +362,7 @@ const Attendence = ({navigation}) => {
               </View>
             </View>
           </Modal>
-        ) : null} */}
+        ) : null}
         <View
           style={{
             flex: 1,
@@ -412,7 +412,7 @@ const Attendence = ({navigation}) => {
           </View>
         </View>
       </ImageBackground>
-      <SafeAreaView style={{flex: 1.2, position: 'relative'}}>
+      <View style={{flex: 1.2, position: 'relative'}}>
         <RenderCalender1
           setVisibleMonth={setVisibleMonth}
           setVisibleYear={setVisibleYear}
@@ -420,8 +420,9 @@ const Attendence = ({navigation}) => {
           setShowDailyStatusModal={setShowDailyStatusModal}
           setModalDate={setModalDate}
           navigation={navigation}
+          dailyAttendance={dailyAttendance}
         />
-      </SafeAreaView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -471,16 +472,32 @@ const RenderCalender = ({
   setShowDailyStatusModal,
   setModalDate,
   navigation,
+  dailyAttendance,
 }) => {
   return (
     <CalendarList
       onDayPress={day => {
-        if (day.day < new Date().getDate()) {
+        let filterData = dailyAttendance?.filter(element => {
+          let date = element?.attendanceDate?.split('T')[0];
+          return date == day.dateString;
+        });
+        let attendanceId = filterData[0]?.attendanceId;
+        let attendanceDate = filterData[0]?.attendanceDate;
+
+        if (
+          filterData[0]?.attendanceType == 'H' ||
+          filterData[0]?.attendanceType == 'A'
+        ) {
+          navigation.navigate(RegularzitionScreen, {
+            attendanceId,
+            attendanceDate,
+          });
+        } else {
           setShowDailyStatusModal(true);
           setModalDate(day);
-          navigation.navigate(RegularzitionScreen);
         }
       }}
+      displayLoadingIndicator={true}
       horizontal={true}
       markingType={'custom'}
       scrollEnabled={true}

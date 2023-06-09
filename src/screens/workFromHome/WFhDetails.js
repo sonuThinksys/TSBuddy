@@ -96,7 +96,6 @@ const WFHDetails = ({route, navigation}) => {
       setRefresh(true);
       const allLeaves = await dispatch(getResourcesEmployeesLeaves({token}));
     } catch (err) {
-      console.error('err:', err);
     } finally {
       setRefresh(false);
     }

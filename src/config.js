@@ -31,4 +31,5 @@ export default {
   updateEmployeeLeave: `${API_URL}/Leave/UpdateEmployeeLeave`,
   getResourceLeaves: `${API_URL}/Leave/GetAllocatedLeaves?empId=`,
   getAttRegularizationReason: `${API_URL}/Attendance/GetAttRegularizationReason`,
+  AttendanceRegularizationRequest: `${API_URL}/Attendance/AttendanceRegularizationRequest`,
 };

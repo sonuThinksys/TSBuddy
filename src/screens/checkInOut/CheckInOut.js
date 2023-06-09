@@ -116,9 +116,7 @@ const CheckInOut = () => {
       try {
         await AsyncStorage.setItem('stopwatchTimer', timer.toString());
         await AsyncStorage.setItem('btnState', toggleCheckInBtn.toString());
-      } catch (error) {
-        console.log('Error saving timer:', error);
-      }
+      } catch (error) {}
     };
 
     saveTimer();

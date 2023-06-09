@@ -658,7 +658,6 @@ const renderListOfAppliedRequests = ({
                       body: {id: item.id},
                     }),
                   );
-                  // console.log('response:', response?.error?.message);
                   if (response?.error) {
                     alert(response?.error.message);
                   } else {

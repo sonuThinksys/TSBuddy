@@ -59,7 +59,6 @@ const Resources = () => {
           });
         }
       } catch (err) {
-        console.log('Please Print an Error:', err);
       } finally {
         setIsLoading(false);
       }
@@ -128,7 +127,6 @@ const renderItem = (
                 resizeMode="stretch"
                 source={{uri: `data:image/jpeg;base64,${image}`}}
                 style={style.image}
-                // onLoad={() => console.log('Image loaded successfully!')}
               />
             ) : (
               <View

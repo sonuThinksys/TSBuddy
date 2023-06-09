@@ -164,6 +164,7 @@ export const MonthImages = {
   IndpendenceMax: IndpendenceMax,
   republicDay: republicDay,
   RepublicMax: RepublicMax,
+  dussehra,
   // Menu Images and Icons
   Lunch: Lunch,
   breakfastImgS: breakfastImgS,

@@ -67,10 +67,8 @@ import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
 import CheckInOut from 'screens/checkInOut/CheckInOut';
 import {WorkFromHomeScreen} from './Route';
-import WFHDetails from 'screens/workFromHome/WFhDetails';
-import Regularization from 'screens/attendence/Regularization';
+
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
-import {WorkFromHomeScreen} from './Route';
 import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
 

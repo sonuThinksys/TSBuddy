@@ -147,7 +147,6 @@ export const cancelSubscribedLunchRequest = createAsyncThunk(
         return Promise.reject(new Error('Something Went Wrong.'));
       }
     } catch (err) {
-      console.log('err11:', err?.response);
       let statusCode = 500;
       if (err?.response) {
         statusCode = err?.response?.status;
@@ -316,6 +315,42 @@ export const applyForUpdateedLeave = createAsyncThunk(
     try {
       const {data, status} = await axios.post(
         endPoints.updateEmployeeLeave,
+        body,
+        config,
+      );
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const requestForAttendanceRegularization = createAsyncThunk(
+  'home/requestForAttendanceRegularization',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.AttendanceRegularizationRequest,
         body,
         config,
       );

@@ -57,8 +57,6 @@ const SalarySlip = ({navigation}) => {
     setnewyearWiseData(newObj);
   }, [newObjectData]);
 
-  // console.log('newyearWiseData = ', newyearWiseData);
-
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       dispatch(authLoginStatus(false));
