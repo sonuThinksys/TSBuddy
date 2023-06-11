@@ -41,6 +41,8 @@ const RequestLunch = ({navigation}) => {
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
 
+  console.log('dateData dateData', dateData);
+
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
   });
@@ -69,6 +71,13 @@ const RequestLunch = ({navigation}) => {
       const subscribedLunchRequests =
         token &&
         (await dispatch(getSubscribedLunchRequests({token, employeeID})));
+
+      let lunchRequestsList = subscribedLunchRequests?.payload;
+      const sortedLunchRequestList = lunchRequestsList.sort(
+        (a, b) =>
+          new Date(a?.requestStartDate).getTime() -
+          new Date(b?.requestStartDate).getTime(),
+      );
 
       setLunchRequests(subscribedLunchRequests?.payload);
     })();
@@ -136,7 +145,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleStartConfirm = date => {
-    setStartSelected(true);
     let selectedDate = date.getDate();
 
     let selectedMonth = monthsName[date.getMonth()];
@@ -146,6 +154,7 @@ const RequestLunch = ({navigation}) => {
       startDateObj: date,
     });
     hideDatePicker(setStartDatePickerVisible);
+    setStartSelected(true);
   };
 
   const handleEndConfirm = date => {
@@ -162,6 +171,8 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
+    setStartDate({startDateStr: 'Select Start Date'});
+    setEndDate({endDateStr: 'Select End Date'});
     let requestType;
     if (value === 'daily') requestType = 1;
     else if (value === 'duration') requestType = 2;
@@ -349,7 +360,7 @@ const RequestLunch = ({navigation}) => {
         <DateTimePickerModal
           minimumDate={startSelected ? startDate?.startDateObj : undefined}
           maximumDate={
-            startSelected
+            startSelected && startDate?.startDateObj?.getDate
               ? new Date(
                   new Date().setDate(startDate.startDateObj.getDate() + 7),
                 )
@@ -426,7 +437,6 @@ const RequestLunch = ({navigation}) => {
             </View>
           ) : null}
         </View>
-
         <View
           style={{
             flexDirection: 'row',
@@ -487,8 +497,9 @@ const RequestLunch = ({navigation}) => {
       </View>
       <View style={styles.buttomView}>
         {lunchRequests?.length > 0 ? (
-          <View>
+          <View style={{flexBasis: 300}}>
             <FlatList
+              showsVerticalScrollIndicator={false}
               data={lunchRequests}
               renderItem={({item}) => {
                 return renderListOfAppliedRequests({
@@ -502,6 +513,7 @@ const RequestLunch = ({navigation}) => {
                 });
               }}
               keyExtractor={item => item.id.toString()}
+              scrol
             />
           </View>
         ) : (
