@@ -1,5 +1,5 @@
 // import RenderListItem from 'component/useProfile/RenderList';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -26,7 +26,7 @@ import {
 import {color} from 'react-native-reanimated';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {employeeData} from '../../../db';
 import ResourceIcon from 'assets/allImage/user.svg';
 import Loader from 'component/loader/Loader';
@@ -41,6 +41,15 @@ const Resources = () => {
   );
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const isFocussed = useIsFocused();
+  const flatListRef = useRef(null);
+
+  useEffect(() => {
+    if (isFocussed && flatListRef.current) {
+      flatListRef.current.scrollToOffset({offset: 0, animated: true});
+    }
+  }, [isFocussed]);
 
   useEffect(() => {
     (async () => {
@@ -70,6 +79,7 @@ const Resources = () => {
 
   return (
     <FlatList
+      ref={flatListRef}
       legacyImplementation={false}
       onScrollBeginDrag={() => setScrollBegin(true)}
       onEndReachedThreshold={0.01}

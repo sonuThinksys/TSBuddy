@@ -261,6 +261,7 @@ const HomeStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
           headerIcon: false,
+          isHome: true,
         })}
       />
       <HomeStack.Screen

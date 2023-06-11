@@ -44,8 +44,10 @@ const SelectDateModal = ({modalData}) => {
       <View style={styles.container}>
         <Text style={styles.SelectText}>Select Start Date</Text>
         <View style={styles.container2}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
+              console.log('Press');
+              return;
               dispatch(dateOfModal(satrtDate1));
               setSelected(true);
               setSecondSlected(false);
@@ -78,7 +80,7 @@ const SelectDateModal = ({modalData}) => {
               </Ripple>
               <Text>{satrtDate1}</Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
           <TouchableOpacity
             onPress={() => {
               dispatch(dateOfModal(endDate1));
