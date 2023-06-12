@@ -68,7 +68,7 @@ const Profile = ({navigation}) => {
 
   const data = [
     {
-      image: MonthImages.mailEmp,
+      image: MonthImages.EmailIconBAndW,
       nameOfField: 'Email ID',
       email: isGuestLogin
         ? guestProfileData.companyEmail
@@ -76,7 +76,7 @@ const Profile = ({navigation}) => {
       id: '1',
     },
     {
-      image: MonthImages.callEmp,
+      image: MonthImages.phnIcon,
       nameOfField: 'Mobile No.',
       email: isGuestLogin
         ? guestProfileData.cellNumber
@@ -185,14 +185,6 @@ const Profile = ({navigation}) => {
                 /> */}
 
                 {profileData?.image ? (
-                  // <Image
-                  //   resizeMode="stretch"
-                  //   // source={{uri: `${baseUrl}${image}`}}
-                  //   source={{
-                  //     uri: `data:image/jpeg;base64,${profileData?.image}`,
-                  //   }}
-                  //   style={{height: 120, width: 120, borderRadius: 60}}
-                  // />
                   <Image
                     resizeMode="stretch"
                     source={{

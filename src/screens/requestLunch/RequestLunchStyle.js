@@ -4,6 +4,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.whitishBlue,
@@ -25,7 +26,7 @@ export default StyleSheet.create({
     color: Colors.white,
     // marginRight: wp(2),
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: FontFamily.RobotoMedium,
   },
   secondView: {
     backgroundColor: Colors.white,

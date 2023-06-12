@@ -9,6 +9,7 @@ import {
   Alert,
   FlatList,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
@@ -60,6 +61,11 @@ const RequestLunch = ({navigation}) => {
   const [startSelected, setStartSelected] = useState(false);
   const [endSelected, setEndSelected] = useState(false);
   const [lunchRequests, setLunchRequests] = useState([]);
+  const [monthlyStartDate, setMonthlyStartDate] = useState('Select..');
+
+  const setUpcomingMonthlyStartDate = ({date}) => {
+    setMonthlyStartDate(date);
+  };
 
   const dispatch = useDispatch();
 
@@ -81,9 +87,6 @@ const RequestLunch = ({navigation}) => {
     let month = monthsName[todayDate.getMonth()];
     let year = new Date().getFullYear();
     if (item.value === 'daily') {
-      setStartSelected(true);
-      setEndSelected(true);
-
       setStartDate({
         startDateStr: date + '-' + month + '-' + year,
         startDateObj: todayDate,
@@ -94,11 +97,13 @@ const RequestLunch = ({navigation}) => {
       });
       setIsDaily(true);
       setPermReq(false);
+      setStartSelected(true);
+      setEndSelected(true);
     } else if (item.value === 'duration') {
-      setStartSelected(false);
-      setEndSelected(false);
       setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
+      setStartSelected(false);
+      setEndSelected(false);
       setIsDaily(false);
       setPermReq(false);
     } else {
@@ -111,16 +116,19 @@ const RequestLunch = ({navigation}) => {
       if (date === 1) {
         month = monthsName[todayDate.getMonth()];
         setStartDate1(date + '-' + month + '-' + year);
-        setEndDate1(16 + '-' + month + '-' + year);
-      } else if (date > 1 && date < 16) {
-        month = monthsName[todayDate.getMonth()];
-        setStartDate1(16 + '-' + month + '-' + year);
-        month = monthsName[todayDate.getMonth() + 1];
-        setEndDate1(1 + '-' + month + '-' + year);
-      } else if (date >= 16 && date < 31) {
+        // setEndDate1(16 + '-' + month + '-' + year);
+      }
+      // else if (date > 1 && date < 16) {
+      //   month = monthsName[todayDate.getMonth()];
+      //   setStartDate1(16 + '-' + month + '-' + year);
+      //   month = monthsName[todayDate.getMonth() + 1];
+      //   setEndDate1(1 + '-' + month + '-' + year);
+      // }
+      else {
+        // else if (date >= 16 && date < 31) {
         month = monthsName[todayDate.getMonth() + 1];
         setStartDate1(1 + '-' + month + '-' + year);
-        setEndDate1(16 + '-' + month + '-' + year);
+        // setEndDate1(16 + '-' + month + '-' + year);
       }
     }
   };
@@ -128,7 +136,7 @@ const RequestLunch = ({navigation}) => {
     openModal: openModal,
     setOpenModal: setOpenModal,
     satrtDate1: satrtDate1,
-    endDate1: endDate1,
+    // endDate1: endDate1,
   };
 
   const hideDatePicker = pickerToClose => {
@@ -136,16 +144,16 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleStartConfirm = date => {
-    setStartSelected(true);
     let selectedDate = date.getDate();
 
     let selectedMonth = monthsName[date.getMonth()];
     let selectedYear = date.getFullYear();
+    hideDatePicker(setStartDatePickerVisible);
     setStartDate({
       startDateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
       startDateObj: date,
     });
-    hideDatePicker(setStartDatePickerVisible);
+    setStartSelected(true);
   };
 
   const handleEndConfirm = date => {
@@ -169,7 +177,7 @@ const RequestLunch = ({navigation}) => {
 
     let dateObj = {};
     if (value === 'monthly') {
-      const dateArray = dateData.split('-');
+      const dateArray = monthlyStartDate.split('-');
       const day = dateArray[0];
       let startingDate = day;
       if (day.length === 1) startingDate = 0 + startingDate;
@@ -265,9 +273,8 @@ const RequestLunch = ({navigation}) => {
   if (value !== 'monthly') {
     if (!startSelected || !endSelected || !value) opacity = 0.5;
   } else {
-    if (!dateData) opacity = 0.5;
+    if (!monthlyStartDate) opacity = 0.5;
   }
- 
 
   return (
     // <SharedElement id="enter">
@@ -340,8 +347,6 @@ const RequestLunch = ({navigation}) => {
         <DateTimePickerModal
           minimumDate={new Date()}
           maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
-          // minimumDate={startSelected ? startDate.startDateObj : undefined}
-          // maximumDate={new Date(new Date()?.setDate(new Date()?.getDate() + 7))}
           isVisible={startDatePickerVisible}
           mode="date"
           onConfirm={handleStartConfirm}
@@ -350,7 +355,7 @@ const RequestLunch = ({navigation}) => {
         <DateTimePickerModal
           minimumDate={startSelected ? startDate?.startDateObj : undefined}
           maximumDate={
-            startSelected
+            startSelected && startDate?.startDateObj?.getDate
               ? new Date(
                   new Date().setDate(startDate.startDateObj.getDate() + 7),
                 )
@@ -363,7 +368,12 @@ const RequestLunch = ({navigation}) => {
         />
         <View style={styles.datesContainer}>
           <View style={styles.thirdView}>
-            {openModal ? <SelectDateModal modalData={modalData} /> : null}
+            {openModal ? (
+              <SelectDateModal
+                modalData={modalData}
+                setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
+              />
+            ) : null}
             <Text
               style={{
                 marginBottom: hp(1),
@@ -383,7 +393,9 @@ const RequestLunch = ({navigation}) => {
               }}>
               <View style={styles.fourthView}>
                 <Text style={styles.selectedDated}>
-                  {value !== 'monthly' ? startDate.startDateStr : dateData}
+                  {value !== 'monthly'
+                    ? startDate.startDateStr
+                    : monthlyStartDate}
                 </Text>
                 <CalenderIcon
                   fill={Colors.lightGray1}
@@ -467,7 +479,7 @@ const RequestLunch = ({navigation}) => {
             disabled={
               value !== 'monthly'
                 ? !startSelected || !endSelected || !value
-                : !dateData
+                : !monthlyStartDate
             }
             onPress={onSubmit}>
             <View>
@@ -488,23 +500,21 @@ const RequestLunch = ({navigation}) => {
       </View>
       <View style={styles.buttomView}>
         {lunchRequests?.length > 0 ? (
-          <View>
-            <FlatList
-              data={lunchRequests}
-              renderItem={({item}) => {
-                return renderListOfAppliedRequests({
-                  item,
-                  dispatch,
-                  token,
-                  onCancel: cancelSubscribedLunchRequest,
-                  setIsLoading,
-                  lunchRequests,
-                  setLunchRequests,
-                });
-              }}
-              keyExtractor={item => item.id.toString()}
-            />
-          </View>
+          <FlatList
+            data={lunchRequests}
+            renderItem={({item}) => {
+              return renderListOfAppliedRequests({
+                item,
+                dispatch,
+                token,
+                onCancel: cancelSubscribedLunchRequest,
+                setIsLoading,
+                lunchRequests,
+                setLunchRequests,
+              });
+            }}
+            keyExtractor={item => item.id.toString()}
+          />
         ) : (
           <View
             style={{

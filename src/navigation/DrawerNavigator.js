@@ -108,13 +108,17 @@ const drawerOption = ({
               source={MonthImages.DrwaerMenu}
               style={{height: 22, width: 22}}
             /> */}
-            <MenuSVG fill={Colors.dune} height={24} width={24} />
+            <MenuSVG
+              fill={isHome ? Colors.black : Colors.white}
+              height={24}
+              width={24}
+            />
           </TouchableOpacity>
         )
       : null,
     headerStyle: {
       padding: 20,
-      backgroundColor: '#EEF2FA',
+      backgroundColor: isHome ? '#EEF2FA' : Colors.lighterBlue,
     },
     headerTintColor: Colors.purple,
     headerTitle: () => (
@@ -134,12 +138,23 @@ const drawerOption = ({
             style={{width: 108, height: 40}}
           />
         ) : (
-          <Text>{label}</Text>
+          <Text
+            style={{
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: FontFamily.RobotoMedium,
+            }}>
+            {label}
+          </Text>
         )}
         {/* <Text>TRMS</Text> */}
 
         {headerIcon && (
-          <Image source={headerIcon} style={{height: 22, width: 22}} />
+          <Image
+            source={headerIcon}
+            fill={isHome ? Colors.black : Colors.white}
+            style={{height: 22, width: 22}}
+          />
         )}
       </View>
       // </TouchableOpacity>
@@ -152,7 +167,7 @@ const drawerOption = ({
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Header />
+            <Header isHome={isHome} />
           </View>
         )
       : null,
@@ -259,6 +274,7 @@ const HomeStackScreen = ({navigation}) => {
           headerIconName: MonthImages.info_scopy,
           navigation: navigation,
           headerIcon: false,
+          isHome: true,
         })}
       />
       <HomeStack.Screen

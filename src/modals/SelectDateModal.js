@@ -3,12 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
   TouchableWithoutFeedback,
-  TouchableHighlight,
-  Image,
-  Pressable,
-  Linking,
   StyleSheet,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -18,15 +13,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {useDispatch} from 'react-redux';
-import {modalStatus} from 'redux/homeSlice';
+
 import Ripple from 'react-native-material-ripple';
-import {dateOfModal} from 'redux/homeSlice';
-const SelectDateModal = ({modalData}) => {
+const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
   const {openModal, setOpenModal, satrtDate1, endDate1} = modalData;
-  const dispatch = useDispatch();
   const [select, setSelected] = useState(false);
-  const [secondSleceted, setSecondSlected] = useState(false);
 
   return (
     <Modal
@@ -46,9 +37,9 @@ const SelectDateModal = ({modalData}) => {
         <View style={styles.container2}>
           <TouchableOpacity
             onPress={() => {
-              dispatch(dateOfModal(satrtDate1));
+              setUpcomingMonthlyStartDate({date: satrtDate1});
+
               setSelected(true);
-              setSecondSlected(false);
             }}>
             <View style={styles.container3}>
               <Ripple
@@ -60,7 +51,6 @@ const SelectDateModal = ({modalData}) => {
                 rippleContainerBorderRadius={20}
                 onPress={() => {
                   setSelected(true);
-                  setSecondSlected(false);
                 }}>
                 <View
                   style={{
@@ -79,50 +69,7 @@ const SelectDateModal = ({modalData}) => {
               <Text>{satrtDate1}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              dispatch(dateOfModal(endDate1));
-              setSecondSlected(true);
-              setSelected(false);
-            }}>
-            <View style={styles.reppleView}>
-              <Ripple
-                rippleColor={Colors.red}
-                rippleOpacity={0.5}
-                rippleDuration={400}
-                rippleSize={500}
-                rippleCentered={true}
-                rippleContainerBorderRadius={20}
-                onPress={() => {
-                  setSecondSlected(true);
-                  setSelected(false);
-                }}>
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    borderColor: secondSleceted ? Colors.red : Colors.grey,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginHorizontal: wp(1),
-                  }}>
-                  {secondSleceted ? (
-                    <View
-                      style={{
-                        backgroundColor: Colors.red,
-                        height: 10,
-                        width: 10,
-                        borderRadius: 10,
-                      }}></View>
-                  ) : null}
-                </View>
-              </Ripple>
 
-              <Text>{endDate1}</Text>
-            </View>
-          </TouchableOpacity>
           <Text style={{color: Colors.grey, fontSize: 13}}>
             **Monthly lunch can only be started from 1st or 16th of any month
           </Text>
@@ -131,7 +78,6 @@ const SelectDateModal = ({modalData}) => {
         <View style={styles.okView}>
           <TouchableWithoutFeedback
             onPress={() => {
-              // dispatch(dateOfModal(satrtDate1));
               setOpenModal(false);
             }}>
             <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>

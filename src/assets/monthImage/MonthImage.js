@@ -54,7 +54,12 @@ import BirthdayImage from 'assets/allImage/birthdayImage.imageset/B5.jpg';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import mailEmp from 'assets/allImage/mailImg.imageset/mailEmp.png';
 import callEmp from 'assets/allImage/callImg.imageset/callEmp.png';
+import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
+import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
+import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
 import phnIcon from 'assets/allImage/userphone.imageset/phnIcon.png';
+import CalenderIcon from 'assets/allImage/profilecal.imageset/Calender2x.png';
+import EmailIconBAndW from 'assets/allImage/useremail.imageset/emailUS.png';
 import empMsg from 'assets/allImage/msg.imageset/empMsg.png';
 import empCallS from 'assets/allImage/call.imageset/empCallS.png';
 import empMailS from 'assets/allImage/mail.imageset/empMailS.png';
@@ -88,7 +93,6 @@ import emailUS from 'assets/allImage/useremail.imageset/emailUS.png';
 import userPS from 'assets/allImage/userimage.imageset/userPS.png';
 import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
 import EventImage from 'assets/allImage/eventBG.imageset/EventImage.png';
-import CalenderIcon from 'assets/allImage/profilecal.imageset/Calender2x.png';
 import DropDownIcon from 'assets/allImage/downimg.imageset/dropdown2.png';
 import whiteBlank from 'assets/allImage/topBg.imageset/whiteBlank.png';
 
@@ -105,9 +109,7 @@ import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
 import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
 import ResourceIcon from 'assets/allImage/Resources.imageset/resourcesIcon.png';
 import DeleteIcon from 'assets/allImage/delete.imageset/delete.png';
-import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
-import EmployeeIdIcon from 'assets/allImage/userimpid.imageset/empId.png';
-import EducationIcon from 'assets/allImage/useredu.imageset/edu2x.png';
+
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
 import Balloons from 'assets/newDashboardIcons/balloons.png';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
@@ -241,4 +243,5 @@ export const MonthImages = {
   LunchIcon,
   SnacksIcon,
   EditIcon,
+  EmailIconBAndW,
 };

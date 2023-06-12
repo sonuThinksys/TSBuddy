@@ -13,7 +13,7 @@ import {employeeProfileScreen} from 'navigation/Route';
 import {setFromNavigatedScreen} from 'redux/homeSlice';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
 
-const Header = () => {
+const Header = ({isHome}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
@@ -26,7 +26,11 @@ const Header = () => {
           dispatch(setFromNavigatedScreen({screenName}));
           navigation.navigate(employeeProfileScreen);
         }}>
-        <SearchIcon height={26} width={26} />
+        <SearchIcon
+          fill={isHome ? Colors.black : Colors.white}
+          height={26}
+          width={26}
+        />
       </TouchableOpacity>
     </View>
   );
