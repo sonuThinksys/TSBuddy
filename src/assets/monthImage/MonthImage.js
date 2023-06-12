@@ -118,6 +118,7 @@ import BreakFastIcon from 'assets/newDashboardIcons/breakfast.png';
 import LunchIcon from 'assets/newDashboardIcons/lunch.png';
 import SnacksIcon from 'assets/newDashboardIcons/snacks.png';
 import EditIcon from 'assets/newDashboardIcons/edit.svg';
+import AnniversaryIcon from 'assets/newDashboardIcons/laurel.png';
 
 //emoji
 import Smily from 'assets/emoji/smily.png';
@@ -245,4 +246,5 @@ export const MonthImages = {
   SnacksIcon,
   EditIcon,
   EmailIconBAndW,
+  AnniversaryIcon,
 };

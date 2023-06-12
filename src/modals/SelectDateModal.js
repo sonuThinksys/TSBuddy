@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
+  Pressable,
 } from 'react-native';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
 import {
@@ -16,7 +16,7 @@ import {
 
 import Ripple from 'react-native-material-ripple';
 const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
-  const {openModal, setOpenModal, satrtDate1, endDate1} = modalData;
+  const {openModal, setOpenModal, satrtDate1} = modalData;
   const [select, setSelected] = useState(false);
 
   return (

@@ -57,4 +57,5 @@ export const Colors = {
   darkLovelyGreen: '#007304',
   skin: '#FFF1E0',
   darkSkin: '#9E5B00',
+  fadedOrange: '#D97300',
 };

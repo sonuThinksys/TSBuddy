@@ -177,7 +177,7 @@ const renderDrawerItem = (
         borderBottomColor: Colors.lightBlack,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: selected ? Colors.lightBlue : null,
+        backgroundColor: selected ? Colors.royalBlue : null,
       }}>
       <Image
         source={icon}

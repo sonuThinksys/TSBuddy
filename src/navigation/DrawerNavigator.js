@@ -174,95 +174,6 @@ const drawerOption = ({
         )
       : null,
   };
-
-  // return {
-  //   label: () => <Text>{label}</Text>,
-  //   headerShown: true,
-  //   headerLeft: showDrawer
-  //     ? props => (
-  //         <TouchableOpacity
-  //           onPress={() => {
-  //             navigation.openDrawer();
-  //           }}>
-  //           <Image
-  //             source={MonthImages.DrwaerMenu}
-  //             style={{height: 22, width: 22}}
-  //           />
-  //         </TouchableOpacity>
-  //       )
-  //     : null,
-  //   headerStyle: {backgroundColor: Colors.darkBlue},
-  //   headerTintColor: Colors.white,
-  //   headerTitle: () => (
-  //     // <TouchableOpacity>
-  //     <View
-  //       style={{
-  //         display: 'flex',
-  //         flexDirection: 'row',
-  //         justifyContent: 'center',
-  //         alignItems: 'center',
-  //       }}>
-  //       <Text
-  //         disabled={true}
-  //         style={{
-  //           color: Colors.white,
-  //           textAlign: 'center',
-  //           marginLeft:
-  //             Platform.OS === 'ios' ? 0.1 : !showDrawer ? wp(20) : wp(32),
-  //           //paddingTop: hp(0.5),
-  //           fontSize: 16,
-  //           // fontWeight: 'bold',
-  //           marginRight: wp(2),
-  //           // marginLeft: wp(25),
-  //           fontFamily: FontFamily.RobotoRegular,
-  //         }}>
-  //         {label}
-  //       </Text>
-  //       {headerIcon && (
-  //         <Image source={headerIcon} style={{height: 22, width: 22}} />
-  //       )}
-  //     </View>
-  //     // </TouchableOpacity>
-  //   ),
-  //   headerRight: showHeaderRight
-  //     ? () => (
-  //         <View
-  //           style={{
-  //             flexDirection: 'row',
-  //             justifyContent: 'center',
-  //             alignItems: 'center',
-  //           }}>
-  //           {fromLeave && (
-  //             <Pressable
-  //               style={{
-  //                 ...styles.newLeaveText,
-  //                 flexDirection: 'row',
-  //                 justifyContent: 'center',
-  //                 alignItems: 'center',
-  //               }}
-  //               onPress={() => {
-  //                 navigation.navigate('LeaveApplyScreen');
-  //               }}>
-  //               <Image
-  //                 source={MonthImages.plus}
-  //                 style={{height: 15, width: 15}}
-  //               />
-  //               <Text
-  //                 style={{
-  //                   color: Colors.white,
-  //                   fontFamily: FontFamily.RobotoBold,
-  //                   fontSize: FontSize.h15,
-  //                   paddingLeft: 7,
-  //                 }}>
-  //                 New
-  //               </Text>
-  //             </Pressable>
-  //           )}
-  //           <Header />
-  //         </View>
-  //       )
-  //     : null,
-  // };
 };
 
 const HomeStackScreen = ({navigation}) => {
@@ -665,13 +576,10 @@ function DrawerNavigator({navigation}) {
       initialRouteName="Home"
       screenOptions={{
         drawerStyle: {
-          backgroundColor: Colors.royalBlue, //Set Drawer background
+          backgroundColor: Colors.lightBlue,
           width: wp(35),
           borderBottomWidth: 1,
           borderBottomColor: Colors.white,
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          // paddingLeft: 0,
         },
         headerShown: false,
         headerStyle: {

@@ -78,4 +78,11 @@ export default StyleSheet.create({
     fontSize: 16,
     color: Colors.dune,
   },
+  anniversaryText: {
+    position: 'absolute',
+    fontSize: 14,
+    bottom: 12,
+    left: 16,
+    color: Colors.fadedOrange,
+  },
 });
