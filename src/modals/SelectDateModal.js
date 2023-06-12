@@ -35,10 +35,9 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
       <View style={styles.container}>
         <Text style={styles.SelectText}>Select Start Date</Text>
         <View style={styles.container2}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               setUpcomingMonthlyStartDate({date: satrtDate1});
-
               setSelected(true);
             }}>
             <View style={styles.container3}>
@@ -68,7 +67,7 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
               </Ripple>
               <Text>{satrtDate1}</Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
 
           <Text style={{color: Colors.grey, fontSize: 13}}>
             **Monthly lunch can only be started from 1st or 16th of any month

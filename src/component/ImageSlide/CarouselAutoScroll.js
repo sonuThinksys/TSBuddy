@@ -99,6 +99,15 @@ const CarouselAutoScroll = ({navigation}) => {
         pagingEnabled
         data={CalaenderEventData}
         horizontal
+        onScrollToIndexFailed={info => {
+          const wait = new Promise(resolve => setTimeout(resolve, 500));
+          wait.then(() => {
+            imageRef?.current?.scrollToIndex({
+              index: info.index,
+              animated: true,
+            });
+          });
+        }}
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return (

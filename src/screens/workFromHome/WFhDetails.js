@@ -21,9 +21,10 @@ import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import ResourceIcon from 'assets/allImage/user.svg';
 import {RegularzitionScreen} from 'navigation/Route';
-import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
+import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
 import {useIsFocused} from '@react-navigation/native';
 import {FontFamily} from 'constants/fonts';
+import CommunicationModal from 'modals/CommunicationModal';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -34,13 +35,20 @@ const WFHDetails = ({route, navigation}) => {
     image,
     managerInfoDto,
     name: employeeId,
+    cellNumber,
+    companyEmail,
   } = route.params;
 
   const isFocused = useIsFocused();
   const [isRefresh, setRefresh] = useState(false);
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
   const [openCount, setOpenCount] = useState(0);
+  const [empDetail, setClickData] = useState({});
 
+  const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
+    useSelector(state => state.home);
+
+  const isFocussed = useIsFocused();
   const employeeID = employeeId?.split('/')[1];
 
   const dispatch = useDispatch();
@@ -88,10 +96,36 @@ const WFHDetails = ({route, navigation}) => {
       setRefresh(true);
       const allLeaves = await dispatch(getResourcesEmployeesLeaves({token}));
     } catch (err) {
-      console.error('err:', err);
     } finally {
       setRefresh(false);
     }
+  };
+
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
   };
 
   const renderItem = ({item}) => {
@@ -100,7 +134,6 @@ const WFHDetails = ({route, navigation}) => {
     //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
     //   if (!shouldRender) return null;
     // }
-
     return (
       <TouchableOpacity
         onPress={() => {
@@ -163,90 +196,115 @@ const WFHDetails = ({route, navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={style.container}>
-        <View style={style.profile_name_cont}>
-          <View style={style.profile_cont}>
-            {image ? (
-              <Image
-                resizeMode="stretch"
-                source={{uri: `data:image/jpeg;base64,${image}`}}
-                style={style.image}
-              />
-            ) : (
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderColor: Colors.white,
-                  borderRadius: 50,
-                  padding: 10,
-                }}>
-                <ResourceIcon
-                  borderWidth={1}
-                  borderColor={'black'}
-                  height={50}
-                  width={50}
-                  color={Colors.white}
+    <>
+      {isShowModal && isFocussed ? (
+        <CommunicationModal empDetail={empDetail} />
+      ) : null}
+      <SafeAreaView style={{flex: 1}}>
+        <View style={style.container}>
+          <View style={style.profile_name_cont}>
+            <View style={style.profile_cont}>
+              {image ? (
+                <Image
+                  resizeMode="stretch"
+                  source={{uri: `data:image/jpeg;base64,${image}`}}
+                  style={style.image}
                 />
-              </View>
-            )}
+              ) : (
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.white,
+                    borderRadius: 50,
+                    padding: 10,
+                  }}>
+                  <ResourceIcon
+                    borderWidth={1}
+                    borderColor={'black'}
+                    height={50}
+                    width={50}
+                    color={Colors.white}
+                  />
+                </View>
+              )}
+            </View>
+            <View style={style.name_cont}>
+              <Text style={style.name_txt}>{employeeName}</Text>
+              <Text style={style.designation_txt}>{designation}</Text>
+            </View>
           </View>
-          <View style={style.name_cont}>
-            <Text style={style.name_txt}>{employeeName}</Text>
-            <Text style={style.designation_txt}>{designation}</Text>
+          <View style={style.social_icon_cont}>
+            <View style={style.social_inner_cont}>
+              <TouchableOpacity
+                onPress={() => {
+                  sendMail();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empMailS}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  dialCall();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empCallS}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  sendMessage();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empMsg}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  sendMessage();
+                }}>
+                <View style={style.social_icon}>
+                  <Image
+                    source={MonthImages.empWa}
+                    style={{height: '100%', width: '100%'}}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <View style={style.social_icon_cont}>
-          <View style={style.social_inner_cont}>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empMailS}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empCallS}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empMsg}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-            <View style={style.social_icon}>
-              <Image
-                source={MonthImages.empWa}
-                style={{height: '100%', width: '100%'}}
-              />
-            </View>
-          </View>
-        </View>
-      </View>
 
-      {resurcesEmployeeLeaves.length > 0 ? (
-        <FlatList
-          refreshing={isRefresh}
-          onRefresh={updateData}
-          data={isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves}
-          renderItem={renderItem}
-          keyExtractor={(_, index) => index}
-        />
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
-            Work from home Not Found.
-          </Text>
-        </View>
-      )}
-    </SafeAreaView>
+        {resurcesEmployeeLeaves.length > 0 ? (
+          <FlatList
+            refreshing={isRefresh}
+            onRefresh={updateData}
+            data={isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves}
+            renderItem={renderItem}
+            keyExtractor={(_, index) => index}
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
+              Work from home Not Found.
+            </Text>
+          </View>
+        )}
+      </SafeAreaView>
+    </>
   );
 };
 

@@ -35,7 +35,7 @@ export const holidayDatawithImage = [
     id: '1',
   },
   {
-    nameOfHolidays: 'Republic Day',
+    nameOfHolidays: 'Republic day',
     descriptions:
       '26th January of every year is celebrated as the Republic Day of India. On this day in the year 1950, Constitution of India came into effect, making India one of the largest Sovereign-Democratic- Republic nations of the world. Republic Day is one of the three national holidays of India, celebration of which is observed in the National Capital of India at India Gate in the presence of President of India, Prime Minister of India and other higher officials.',
     imageOfHoliday: MonthImages.RepublicMax,

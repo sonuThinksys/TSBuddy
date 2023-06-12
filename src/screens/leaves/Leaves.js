@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -38,6 +38,7 @@ const Leaves = ({navigation}) => {
   const employeeID = decoded?.id;
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
+  const flatListRef = useRef(null);
 
   const [filterCalenderOpen, setFilterCalenderOpen] = useState(false);
   const [isRefresh, setRefresh] = useState(false);
@@ -47,6 +48,12 @@ const Leaves = ({navigation}) => {
   useEffect(() => {
     if (isFocussed) token && updateData();
   }, [employeeID, token, isFocussed]);
+
+  useEffect(() => {
+    if (isFocussed && flatListRef.current) {
+      flatListRef.current.scrollToOffset({offset: 0, animated: true});
+    }
+  }, [isFocussed]);
 
   const updateData = async () => {
     try {
@@ -233,6 +240,7 @@ const Leaves = ({navigation}) => {
           renderNoLeaves()
         ) : leavesData?.length > 0 ? (
           <FlatList
+            ref={flatListRef}
             showsVerticalScrollIndicator={false}
             refreshing={isRefresh}
             onRefresh={updateData}

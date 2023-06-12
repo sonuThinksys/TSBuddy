@@ -42,6 +42,8 @@ const RequestLunch = ({navigation}) => {
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
 
+  console.log('dateData dateData', dateData);
+
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
   });
@@ -75,6 +77,13 @@ const RequestLunch = ({navigation}) => {
       const subscribedLunchRequests =
         token &&
         (await dispatch(getSubscribedLunchRequests({token, employeeID})));
+
+      let lunchRequestsList = subscribedLunchRequests?.payload;
+      const sortedLunchRequestList = lunchRequestsList.sort(
+        (a, b) =>
+          new Date(a?.requestStartDate).getTime() -
+          new Date(b?.requestStartDate).getTime(),
+      );
 
       setLunchRequests(subscribedLunchRequests?.payload);
     })();
@@ -170,6 +179,8 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
+    setStartDate({startDateStr: 'Select Start Date'});
+    setEndDate({endDateStr: 'Select End Date'});
     let requestType;
     if (value === 'daily') requestType = 1;
     else if (value === 'duration') requestType = 2;
@@ -439,7 +450,6 @@ const RequestLunch = ({navigation}) => {
             </View>
           ) : null}
         </View>
-
         <View
           style={{
             flexDirection: 'row',
@@ -500,21 +510,25 @@ const RequestLunch = ({navigation}) => {
       </View>
       <View style={styles.buttomView}>
         {lunchRequests?.length > 0 ? (
-          <FlatList
-            data={lunchRequests}
-            renderItem={({item}) => {
-              return renderListOfAppliedRequests({
-                item,
-                dispatch,
-                token,
-                onCancel: cancelSubscribedLunchRequest,
-                setIsLoading,
-                lunchRequests,
-                setLunchRequests,
-              });
-            }}
-            keyExtractor={item => item.id.toString()}
-          />
+          <View style={{flexBasis: 300}}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={lunchRequests}
+              renderItem={({item}) => {
+                return renderListOfAppliedRequests({
+                  item,
+                  dispatch,
+                  token,
+                  onCancel: cancelSubscribedLunchRequest,
+                  setIsLoading,
+                  lunchRequests,
+                  setLunchRequests,
+                });
+              }}
+              keyExtractor={item => item.id.toString()}
+              scrol
+            />
+          </View>
         ) : (
           <View
             style={{

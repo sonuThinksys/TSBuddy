@@ -1,5 +1,5 @@
 // import RenderListItem from 'component/useProfile/RenderList';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -26,7 +26,7 @@ import {
 import {color} from 'react-native-reanimated';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {employeeData} from '../../../db';
 import ResourceIcon from 'assets/allImage/user.svg';
 import Loader from 'component/loader/Loader';
@@ -41,6 +41,15 @@ const Resources = () => {
   );
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const isFocussed = useIsFocused();
+  const flatListRef = useRef(null);
+
+  useEffect(() => {
+    if (isFocussed && flatListRef.current) {
+      flatListRef.current.scrollToOffset({offset: 0, animated: true});
+    }
+  }, [isFocussed]);
 
   useEffect(() => {
     (async () => {
@@ -59,7 +68,6 @@ const Resources = () => {
           });
         }
       } catch (err) {
-        console.log('Please Print an Error:', err);
       } finally {
         setIsLoading(false);
       }
@@ -71,6 +79,7 @@ const Resources = () => {
 
   return (
     <FlatList
+      ref={flatListRef}
       legacyImplementation={false}
       onScrollBeginDrag={() => setScrollBegin(true)}
       onEndReachedThreshold={0.01}
@@ -90,7 +99,15 @@ const Resources = () => {
 };
 
 const renderItem = (
-  {designation, image, employeeName, managerInfoDto, name},
+  {
+    designation,
+    image,
+    employeeName,
+    managerInfoDto,
+    name,
+    cellNumber,
+    companyEmail,
+  },
   index,
   navigation,
 ) => {
@@ -104,7 +121,8 @@ const renderItem = (
             employeeName,
             managerInfoDto,
             name,
-            // navigation,
+            cellNumber,
+            companyEmail,
           });
         }}>
         <View style={style.container}>
@@ -119,7 +137,6 @@ const renderItem = (
                 resizeMode="stretch"
                 source={{uri: `data:image/jpeg;base64,${image}`}}
                 style={style.image}
-                onLoad={() => console.log('Image loaded successfully!')}
               />
             ) : (
               <View

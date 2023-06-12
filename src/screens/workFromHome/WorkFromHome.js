@@ -72,7 +72,15 @@ const WorkFromHome = ({navigation}) => {
 };
 
 const renderItem = (
-  {designation, image, employeeName, managerInfoDto, name},
+  {
+    designation,
+    image,
+    employeeName,
+    managerInfoDto,
+    name,
+    cellNumber,
+    companyEmail,
+  },
   index,
   navigation,
 ) => {
@@ -87,6 +95,8 @@ const renderItem = (
               employeeName,
               managerInfoDto,
               name,
+              cellNumber,
+              companyEmail,
             });
           }}>
           <View style={style.container}>

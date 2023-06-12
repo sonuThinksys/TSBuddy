@@ -32,6 +32,7 @@ import {
 } from 'utils/utils';
 import {FontFamily} from 'constants/fonts';
 import {RegularzitionScreen} from 'navigation/Route';
+import Loader from 'component/LoadingScreen/LoadingScreen';
 const Attendence = ({navigation}) => {
   const {attendenceData: dailyAttendance = []} = useSelector(
     state => state.home,
@@ -46,6 +47,8 @@ const Attendence = ({navigation}) => {
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
+
+  const [finalWeekTime, setFinalWeekTime] = useState('00:00');
 
   useEffect(() => {
     const pressedDate = dailyAttendance?.find(
@@ -82,72 +85,67 @@ const Attendence = ({navigation}) => {
   const employeeID = decoded?.id || '';
 
   function getDaysInMonth(monthIndex) {
-    // Create a new Date object with the current year and the given month index (0-based)
     const date = new Date(new Date().getFullYear(), monthIndex, 1);
-
-    // Move the date to the next month
     date.setMonth(date.getMonth() + 1);
-
-    // Set the date to the last day of the previous month
     date.setDate(date.getDate() - 1);
-
-    // Return the date's day (which is the number of days in the month)
     return date.getDate();
   }
 
-  useEffect(() => {
-    (async () => {
-      if (employeeID && token) {
-        try {
-          if (visisbleMonth > 0 || visibleYear > 0) {
-            setLoading(true);
-            const attendence = await dispatch(
-              getAttendencaeData({
-                token,
-                employeeID,
-                visisbleMonth,
-                visibleYear,
-              }),
-            );
-            // const data = attendence?.payload?.dailyAttendance;
-
-            if (attendence?.error) {
-              ShowAlert({
-                messageHeader: ERROR,
-                messageSubHeader: attendence?.error?.message,
-                buttonText: 'Close',
-                dispatch,
-                navigation,
-              });
-            }
+  async function fetchData() {
+    if (employeeID && token) {
+      try {
+        if (visisbleMonth > 0 || visibleYear > 0) {
+          // setLoading(true);
+          const attendence = await dispatch(
+            getAttendencaeData({
+              token,
+              employeeID,
+              visisbleMonth,
+              visibleYear,
+            }),
+          );
+          if (attendence?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: attendence?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
           }
-        } catch (err) {
-        } finally {
-          setLoading(false);
         }
+      } catch (err) {
+        setLoading(false);
+      } finally {
+        setLoading(false);
       }
-    })();
-  }, [visisbleMonth, visibleYear]);
+    }
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 100);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [visisbleMonth]);
 
   const startEndDate = () => {
     let startDate = attendanceDate(1);
-
     let endDate = attendanceDate(7);
     return {startDate, endDate};
   };
   const {startDate, endDate} = startEndDate();
-  // format the dates to your desired format
+
   let startDateFormat = startEndDateFormat(startDate);
   let endDateFormat = startEndDateFormat(endDate);
-
-  const [finalWeekTime, setFinalWeekTime] = useState('00:00');
 
   useEffect(() => {
     let privMonDAy = new Date();
     privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
     var now = new Date();
     const todayDateIndex = now.getDay();
-
     const todayDate = now.getDate();
 
     let weekDays = [];
@@ -175,7 +173,7 @@ const Attendence = ({navigation}) => {
       let [hours, minutes] = timeStr?.split('.');
 
       if (day?.attendanceType !== 'A') {
-        if (minutes.length === 1) minutes = minutes + 0;
+        if (minutes?.length === 1) minutes = minutes + 0;
 
         thisWeekHours += +hours;
         thisWeekExtraMinutes += +minutes;
@@ -218,27 +216,25 @@ const Attendence = ({navigation}) => {
         extraTime: `-${hoursLeft}:${minutesLeft}`,
       });
     }
-  }, [dailyAttendance]);
+  }, []);
 
   let monthMark = {};
-
   const daysInMonth = getDaysInMonth(visisbleMonth - 1);
-  // const daysInMonth = new Date().getDate();
 
-  for (let i = 1; i <= daysInMonth; i++) {
-    const date = i > 9 ? i : '0' + i;
-    const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
-    const dateStr = `${visibleYear}-${month}-${date}`;
-    if (new Date(dateStr) < Date.now()) {
-      const dateIndex = new Date(dateStr).getDay();
-      if (dateIndex !== 6 && dateIndex !== 0) {
-        monthMark = {
-          ...monthMark,
-          [dateStr]: {selected: true, selectedColor: 'red'},
-        };
-      }
-    }
-  }
+  // for (let i = 1; i <= daysInMonth; i++) {
+  //   const date = i > 9 ? i : '0' + i;
+  //   const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
+  //   const dateStr = `${visibleYear}-${month}-${date}`;
+  //   if (new Date(dateStr) < Date.now()) {
+  //     const dateIndex = new Date(dateStr).getDay();
+  //     if (dateIndex !== 6 && dateIndex !== 0) {
+  //       monthMark = {
+  //         ...monthMark,
+  //         [dateStr]: {selected: true, selectedColor: 'red'},
+  //       };
+  //     }
+  //   }
+  // }
 
   let todayDate = todaySelectedDate();
 
@@ -260,6 +256,7 @@ const Attendence = ({navigation}) => {
       }
     });
 
+  console.log('dailyAttendance', dailyAttendance);
   dailyAttendance &&
     dailyAttendance.length &&
     dailyAttendance?.forEach(day => {
@@ -322,20 +319,19 @@ const Attendence = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {isLoading ? (
+      {/* {isLoading ? (
         <View style={styles.loaderContainer}>
           <View style={styles.loaderBackground} />
           <ActivityIndicator size="large" />
         </View>
-      ) : null}
+      ) : null} */}
       <ImageBackground
         resizeMode="stretch"
-        onLoadStart={() => setImageLoading(true)}
-        onLoadEnd={() => setImageLoading(false)}
+        // onLoadStart={() => setImageLoading(true)}
+        // onLoadEnd={() => setImageLoading(false)}
         source={attendenceMonthImages[visisbleMonth]}
         style={{
           flex: 1,
-          // justifyContent: 'space-between',
         }}>
         {showDailyStatusModal ? (
           <Modal
@@ -372,7 +368,7 @@ const Attendence = ({navigation}) => {
             flex: 1,
             justifyContent: 'space-between',
           }}>
-          {isImageLoading ? renderLoading() : null}
+          {/* {isImageLoading ? renderLoading() : null}    */}
           <View style={styles.secondContainer}>
             <View>
               <Text style={styles.monthText}>{finalTodayDate}</Text>
@@ -416,7 +412,7 @@ const Attendence = ({navigation}) => {
           </View>
         </View>
       </ImageBackground>
-      <SafeAreaView style={{flex: 1.2, position: 'relative'}}>
+      <View style={{flex: 1.2, position: 'relative'}}>
         <RenderCalender1
           setVisibleMonth={setVisibleMonth}
           setVisibleYear={setVisibleYear}
@@ -424,8 +420,9 @@ const Attendence = ({navigation}) => {
           setShowDailyStatusModal={setShowDailyStatusModal}
           setModalDate={setModalDate}
           navigation={navigation}
+          dailyAttendance={dailyAttendance}
         />
-      </SafeAreaView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -475,16 +472,32 @@ const RenderCalender = ({
   setShowDailyStatusModal,
   setModalDate,
   navigation,
+  dailyAttendance,
 }) => {
   return (
     <CalendarList
       onDayPress={day => {
-        if (day.day < new Date().getDate()) {
+        let filterData = dailyAttendance?.filter(element => {
+          let date = element?.attendanceDate?.split('T')[0];
+          return date == day.dateString;
+        });
+        let attendanceId = filterData[0]?.attendanceId;
+        let attendanceDate = filterData[0]?.attendanceDate;
+
+        if (
+          filterData[0]?.attendanceType == 'H' ||
+          filterData[0]?.attendanceType == 'A'
+        ) {
+          navigation.navigate(RegularzitionScreen, {
+            attendanceId,
+            attendanceDate,
+          });
+        } else {
           setShowDailyStatusModal(true);
           setModalDate(day);
-          navigation.navigate(RegularzitionScreen);
         }
       }}
+      displayLoadingIndicator={true}
       horizontal={true}
       markingType={'custom'}
       scrollEnabled={true}
@@ -532,17 +545,11 @@ const RenderCalender = ({
             width: '100%',
             backgroundColor: Colors.green,
             color: Colors.white,
-            // paddingHorizontal: 10,
-            // paddingLeft: 10,
-            // paddingRight: 10,
-            // marginTop: 6,
             alignItems: 'center',
           },
-
           partialHeader: {
             paddingHorizontal: 15,
           },
-
           monthText: {
             color: Colors.white,
             fontWeight: 'bold',

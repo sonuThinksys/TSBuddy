@@ -967,6 +967,7 @@ const ApplyLeave = ({navigation, route}) => {
                   </View>
                 ),
               })}
+
               {card({
                 zIndex: 1000,
                 leftLabel: 'Leave Type',
@@ -987,6 +988,7 @@ const ApplyLeave = ({navigation, route}) => {
                 resourseRightText: resourceData?.totalLeaveDays,
                 leftDropdown: (
                   // <View>
+
                   <ModalDropdown
                     disabled={
                       fromResource || (!isEditOpenleave && fromOpenLeave)
@@ -1006,7 +1008,7 @@ const ApplyLeave = ({navigation, route}) => {
                         ? resourceData.leaveType
                         : fromOpenLeave
                         ? openLeaveType
-                        : ''
+                        : leaveTypes[0]
                     }
                     options={leaveTypes}
                     dropdownStyle={{
