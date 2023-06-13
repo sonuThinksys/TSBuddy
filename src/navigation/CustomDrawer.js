@@ -24,6 +24,7 @@ import {
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {loginStatus, logOut} from 'Auth/LoginSlice';
+import {homeReset} from 'redux/homeSlice';
 
 export default ({navigation}) => {
   const {userToken: token} = useSelector(state => state.auth);
@@ -159,6 +160,9 @@ const renderDrawerItem = (
                       );
 
                     dispatch(logOut());
+                    setTimeout(() => {
+                      dispatch(homeReset());
+                    }, 20);
                   }
                   // ========================================================================
                 },

@@ -71,6 +71,7 @@ import {WorkFromHomeScreen} from './Route';
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
 import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
+import CustomHeader from './CustomHeader';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -97,19 +98,13 @@ const drawerOption = ({
     headerTitleAlign: 'center',
     headerShown: true,
     // headerTransparent: true,
-    headerTitleAlign: 'center',
 
     headerLeft: showDrawer
       ? () => (
           <TouchableOpacity
-            // style={{}}
             onPress={() => {
               navigation.openDrawer();
             }}>
-            {/* <Image
-              source={MonthImages.DrwaerMenu}
-              style={{height: 22, width: 22}}
-            /> */}
             <MenuSVG
               fill={isHome ? Colors.black : Colors.white}
               height={24}
@@ -432,9 +427,7 @@ const SalarySlipScreen = ({navigation}) => {
 
 const ResourcesStackScreen = ({navigation}) => {
   return (
-    <ResourcesStack.Navigator
-      // screenOptions={{headerShown: false}}
-      initialRouteName={ResourcesScreen}>
+    <ResourcesStack.Navigator initialRouteName={ResourcesScreen}>
       <ResourcesStack.Screen
         options={drawerOption({
           label: 'Resources',
@@ -446,72 +439,23 @@ const ResourcesStackScreen = ({navigation}) => {
       />
 
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Resource Detail',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              // style={{backgroundColor: 'red'}}
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={({navigation}) => {
+          return CustomHeader({navigation, title: 'Resourse Details'});
+        }}
         name={ResourcesDetailsScreen}
         component={ResourcesDetails}
       />
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Leave Detail',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={({navigation}) => {
+          return CustomHeader({navigation, title: 'Leave Details'});
+        }}
         name={'resourceLeaveDetailsScreen'}
         component={LeaveDetails}
       />
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Leave Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={({navigation}) => {
+          return CustomHeader({navigation, title: 'Finalize Leave'});
+        }}
         name={'resourceLeaveDetailsScreenOpen'}
         component={ApplyLeave}
       />

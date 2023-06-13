@@ -119,6 +119,7 @@ const ApplyLeave = ({navigation, route}) => {
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
+  console.log('token:', token);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 

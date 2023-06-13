@@ -1007,6 +1007,10 @@ const homeSlice = createSlice({
   name: 'home',
   initialState,
   reducers: {
+    homeReset: (state, action) => {
+      console.log('yes', 'went');
+      state.employeeProfile = {};
+    },
     loadingStatus: (state, action) => {
       state.isLoading = action.payload;
     },
@@ -1178,7 +1182,7 @@ const homeSlice = createSlice({
     });
     builder.addCase(getEmployeeProfileData.rejected, (state, action) => {
       state.employeeProfileLoading = false;
-      state.employeeProfile = [];
+      state.employeeProfile = {};
       state.employeeProfileError = action.payload;
     });
     builder.addCase(getCalendereventData.pending, state => {
@@ -1232,4 +1236,5 @@ export const {
   setRecentAppliedLeaves,
   setRemainingLeaves,
   setFromNavigatedScreen,
+  homeReset,
 } = homeSlice.actions;

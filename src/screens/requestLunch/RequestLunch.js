@@ -4,12 +4,9 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput,
-  ActivityIndicator,
   Alert,
   FlatList,
   Pressable,
-  ScrollView,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
@@ -179,8 +176,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
-    setStartDate({startDateStr: 'Select Start Date'});
-    setEndDate({endDateStr: 'Select End Date'});
     let requestType;
     if (value === 'daily') requestType = 1;
     else if (value === 'duration') requestType = 2;
@@ -217,6 +212,27 @@ const RequestLunch = ({navigation}) => {
       dateObj = {requestEndDate, requestStartDate};
     }
     //
+
+    console.log(
+      'startEndDates:',
+      startDate.startDateObj.getDay(),
+      endDate.endDateObj.getDay(),
+    );
+
+    if (
+      startDate?.startDateObj?.getDay() === 0 ||
+      startDate.startDateObj.getDay() === 6
+    ) {
+      alert('You Cannot Start a lunch request on Weekends.');
+      return;
+    }
+    if (
+      endDate?.endDateObj?.getDay() === 0 ||
+      endDate?.endDateObj?.getDay() === 6
+    ) {
+      alert('You Cannot End a lunch request on Weekends.');
+      return;
+    }
 
     const todayDateObj = new Date();
     const todayDate = todayDateObj.getDate();
@@ -274,6 +290,8 @@ const RequestLunch = ({navigation}) => {
       alert('Something Went Wrong.');
     } finally {
       setIsLoading(false);
+      setStartDate({startDateStr: 'Select Start Date'});
+      setEndDate({endDateStr: 'Select End Date'});
     }
 
     // monthly , duration
@@ -379,12 +397,10 @@ const RequestLunch = ({navigation}) => {
         />
         <View style={styles.datesContainer}>
           <View style={styles.thirdView}>
-            {openModal ? (
-              <SelectDateModal
-                modalData={modalData}
-                setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
-              />
-            ) : null}
+            <SelectDateModal
+              modalData={modalData}
+              setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
+            />
             <Text
               style={{
                 marginBottom: hp(1),

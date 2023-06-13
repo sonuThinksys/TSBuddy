@@ -5,13 +5,14 @@ import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
 import {useSelector} from 'react-redux';
 
 const WelcomeHeader = () => {
-  const {employeeProfile: profileData} = useSelector(state => state.home);
+  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+
   const userName = profileData?.employeeName;
   return (
     <View style={styles.mainContainer}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome, </Text>
-        <Text style={styles.nameText}> {userName}</Text>
+        <Text style={styles.nameText}> {userName || 'N/A'}</Text>
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.headingContainer}>

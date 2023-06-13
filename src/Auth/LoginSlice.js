@@ -76,6 +76,9 @@ const loginSlice = createSlice({
       state.isGuestLogin = action.payload;
       state.isLoading = false;
     },
+    logInSucess: (state, action) => {
+      state.isLoggedIn = true;
+    },
   },
   extraReducers: builder => {
     builder.addCase(getUserToken.pending, state => {
@@ -106,4 +109,5 @@ export const {
   logOut,
   setBiometricEnable,
   guestLoginStatus,
+  logInSucess,
 } = loginSlice.actions;

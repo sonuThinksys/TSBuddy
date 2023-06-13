@@ -149,7 +149,6 @@ const ResourcesDetails = ({route, navigation}) => {
     //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
     //   if (!shouldRender) return null;
     // }
-
     return (
       <TouchableOpacity
         onPress={() => {

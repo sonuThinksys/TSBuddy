@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
   Pressable,
 } from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
 import {
@@ -35,7 +35,7 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
       <View style={styles.container}>
         <Text style={styles.SelectText}>Select Start Date</Text>
         <View style={styles.container2}>
-          <Pressable
+          <TouchableOpacity
             onPress={() => {
               setUpcomingMonthlyStartDate({date: satrtDate1});
               setSelected(true);
@@ -67,7 +67,7 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
               </Ripple>
               <Text>{satrtDate1}</Text>
             </View>
-          </Pressable>
+          </TouchableOpacity>
 
           <Text style={{color: Colors.grey, fontSize: 13}}>
             **Monthly lunch can only be started from 1st or 16th of any month

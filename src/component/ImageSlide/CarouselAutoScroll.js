@@ -53,13 +53,22 @@ const CarouselAutoScroll = ({navigation}) => {
 
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
+  const [scrolled, setScrolled] = useState({
+    scrollStart: false,
+    scrollStop: false,
+  });
   const imageRef = useRef();
   const [active, setActive] = useState(0);
   const indexRef = useRef(active);
 
   indexRef.current = active;
   useInterval(() => {
-    if (CalaenderEventData && CalaenderEventData.length > 0) {
+    if (
+      CalaenderEventData &&
+      CalaenderEventData.length > 0 &&
+      !scrolled.scrollStop &&
+      !scrolled.scrollStart
+    ) {
       if (active < Number(CalaenderEventData?.length) - 1) {
         setActive(active + 1);
       } else {
@@ -69,18 +78,34 @@ const CarouselAutoScroll = ({navigation}) => {
   }, 5000);
 
   useEffect(() => {
+    let timerId;
+    if (scrolled.scrollStop) {
+      setTimeout(() => {
+        timerId = setScrolled(prevScrollObj => ({
+          ...prevScrollObj,
+          scrollStop: false,
+        }));
+      }, 16000);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [scrolled.scrollStop]);
+
+  useEffect(() => {
     if (CalaenderEventData && CalaenderEventData.length > 0) {
       imageRef?.current?.scrollToIndex({index: active, animated: true});
     }
   }, [active]);
 
-  // if (CalaenderEventData?.length === 0) {
-  //   return (
-  //     <View>
-  //       <Text>No Events found in this Month.</Text>
-  //     </View>
-  //   );
-  // }
+  const handleScrollBeginDrag = () => {
+    setScrolled({scrollStart: true, scrollStop: false});
+  };
+
+  const handleScrollEndDrag = () => {
+    setScrolled({scrollStart: false, scrollStop: true});
+  };
 
   return (
     <View
@@ -93,6 +118,8 @@ const CarouselAutoScroll = ({navigation}) => {
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
       <FlatList
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
         ref={imageRef}

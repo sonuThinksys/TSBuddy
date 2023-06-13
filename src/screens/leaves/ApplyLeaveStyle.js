@@ -221,6 +221,7 @@ export default StyleSheet.create({
     padding: 8,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
+    backgroundColor: Colors.white,
   },
   highlighted: {
     // backgroundColor: 'lightgrey',

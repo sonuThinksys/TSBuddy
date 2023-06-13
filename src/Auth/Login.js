@@ -30,12 +30,13 @@ import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import fingerPrint1 from 'assets/allImage/fingerImage.png';
-import {guestLoginStatus} from './LoginSlice';
+import {guestLoginStatus, logInSucess} from './LoginSlice';
 import {loginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import {FontFamily, FontSize} from 'constants/fonts';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
+import jwt_decode from 'jwt-decode';
 import {
   BIOMETRIC_LOGIN,
   CANCEL,
@@ -50,9 +51,11 @@ import {
   TOUCH_SENSOR,
 } from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
+import {getEmployeeProfileData} from 'redux/homeSlice';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
+  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
 
   const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -143,6 +146,8 @@ const Login = ({navigation}) => {
     try {
       setLoading(true);
       let result = await dispatch(getUserToken({username, password}));
+
+      console.log('result:', result);
       if (result?.error) {
         ShowAlert({
           messageHeader: ERROR,
@@ -152,6 +157,17 @@ const Login = ({navigation}) => {
           navigation,
         });
       } else {
+        const {token} = result?.payload?.data || {};
+        var decoded = jwt_decode(token);
+        const employeeID = decoded?.id;
+        // await dispatch(
+        //   getEmployeeProfileData({
+        //     token,
+        //     employeeID,
+        //   }),
+        // );
+        // dispatch(logInSucess());
+
         if (isRemember) {
           AsyncStorage.setItem(
             'userDetailsRemeber',

@@ -37,7 +37,7 @@ const Home = ({navigation}) => {
   //   });
   // }, []);
   const dispatch = useDispatch();
-  const {isLoading} = useSelector(state => state.auth);
+  // const {isLoading} = useSelector(state => state.auth);
   const {calendereventData: calenderData} = useSelector(state => state.home);
   const {userToken: token} = useSelector(state => state.auth);
 
@@ -51,7 +51,7 @@ const Home = ({navigation}) => {
       try {
         setLoading(true);
 
-        token && dispatch(getEmployeeProfileData({token, employeeID}));
+        token && (await dispatch(getEmployeeProfileData({token, employeeID})));
 
         const events = await dispatch(getCalendereventData(token));
 
@@ -71,50 +71,18 @@ const Home = ({navigation}) => {
     })();
   }, []);
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
 
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: Colors.whitishBlue,
-        // marginTop: hp(6),
-        // paddingHorizontal: 16,
       }}>
-      {isLoading ? <Loader /> : null}
+      {loading ? <Loader /> : null}
 
-      {/* {birthdays?.length > 0 || anniversaries?.length > 0 ? (
-        !loading ? (
-          <View style={{height: hp(23), backgroundColor: Colors.white}}>
-            <CarouselAutoScroll />
-          </View>
-        ) : (
-          <Loader />
-        )
-      ) : loading ? (
-        <Loader />
-      ) : (
-        <View
-          style={{
-            height: hp(23),
-            backgroundColor: Colors.black,
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 16,
-              fontFamily: FontFamily.RobotoBold,
-              color: Colors.white,
-            }}>
-            No Events found for this month.
-          </Text>
-        </View>
-      )} */}
-
-      {/* ) : null} */}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={data}
