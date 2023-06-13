@@ -71,6 +71,9 @@ import {WorkFromHomeScreen} from './Route';
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
 import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
+import RegularisationScreen from 'screens/regularisation/RegularisationScreen';
+import RegularisationFormDetails from 'screens/regularisation/RegularisationFormDetails';
+import RegularisationTabDetails from 'screens/Resources/RegularisationTabDetails';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -83,6 +86,7 @@ const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
 const CheckInOutStack = createNativeStackNavigator();
 const WorkFromHomeStack = createNativeStackNavigator();
+const RegularisationStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -416,6 +420,30 @@ const ProfileStackScreen = ({navigation}) => {
   );
 };
 
+const RegularisationStackScreen = ({navigation}) => {
+  return (
+    <RegularisationStack.Navigator>
+      <RegularisationStack.Screen
+        options={drawerOption({
+          label: 'Resource List',
+          navigation: navigation,
+        })}
+        name={'Resource List screen'}
+        component={RegularisationScreen}
+      />
+      <RegularisationStack.Screen
+        options={drawerOption({
+          label: 'Regularisation Form',
+          navigation: navigation,
+          showDrawer: false,
+        })}
+        name={'RegularisationForm'}
+        component={RegularisationFormDetails}
+      />
+    </RegularisationStack.Navigator>
+  );
+};
+
 const HolidaysStackScreen = ({navigation}) => {
   return (
     <HolidaysStack.Navigator
@@ -613,6 +641,30 @@ const ResourcesStackScreen = ({navigation}) => {
         name={'attaindanceDetailsScreen'}
         component={AttaindanceDetails}
       />
+
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Regularisation Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'regularisationTabDetailsScreen'}
+        component={RegularisationTabDetails}
+      />
     </ResourcesStack.Navigator>
   );
 };
@@ -695,6 +747,13 @@ function DrawerNavigator({navigation}) {
         <Drawer.Screen
           name="WorkFromHome"
           component={WorkFromHomeStackScreen}
+        />
+      ) : null}
+
+      {isLeaveApprover ? (
+        <Drawer.Screen
+          name="RegularisationFormScreen"
+          component={RegularisationStackScreen}
         />
       ) : null}
 

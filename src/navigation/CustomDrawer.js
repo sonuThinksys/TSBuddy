@@ -31,6 +31,8 @@ export default ({navigation}) => {
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   const dispatch = useDispatch();
 
+  const {employeeProfile: profileData} = useSelector(state => state.home);
+
   const resorcesTab = {
     screen: 'Resources',
     label: 'Resources',
@@ -47,6 +49,14 @@ export default ({navigation}) => {
     icon: MonthImages.userPS,
   };
 
+  const regularisationTab = {
+    screen: 'RegularisationFormScreen',
+    label: 'Regularisation',
+    navigation,
+    key: 5,
+    icon: MonthImages.EmployeeIdIcon,
+  };
+
   const drawerList = [
     {
       screen: 'Home',
@@ -60,7 +70,11 @@ export default ({navigation}) => {
       label: 'Profile',
       navigation,
       key: 2,
-      icon: MonthImages.ProfileIcon,
+      icon: profileData?.image
+        ? (source = {
+            uri: `data:image/jpeg;base64,${profileData?.image}`,
+          })
+        : MonthImages.ProfileIcon,
     },
     {
       screen: 'Attendence',
@@ -103,6 +117,7 @@ export default ({navigation}) => {
   if (isLeaveApprover) {
     drawerList.splice(2, 0, resorcesTab);
     drawerList.splice(3, 0, wfhTab);
+    drawerList.splice(4, 0, regularisationTab);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
@@ -182,7 +197,7 @@ const renderDrawerItem = (
       <Image
         source={icon}
         resizeMode="contain"
-        style={{height: 45, width: 45}}
+        style={{height: 45, width: 45, borderRadius: 50}}
       />
       <Text
         style={{

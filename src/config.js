@@ -32,4 +32,7 @@ export default {
   getResourceLeaves: `${API_URL}/Leave/GetAllocatedLeaves?empId=`,
   getAttRegularizationReason: `${API_URL}/Attendance/GetAttRegularizationReason`,
   AttendanceRegularizationRequest: `${API_URL}/Attendance/AttendanceRegularizationRequest`,
+  getEmployeeRegularizationRequest: `${API_URL}/Attendance/GetEmployeeRegularizationRequest?empId=`,
+  updateAttRegularizeStatus: `${API_URL}/Attendance/UpdateAttRegularizeStatus`,
+  getEmployeeWorkMode: `${API_URL}/Attendance/GetEmployeeWorkMode?empId=`,
 };

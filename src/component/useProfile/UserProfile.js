@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TextInput,
   Pressable,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
@@ -29,6 +30,7 @@ import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIc
 import CrossIcon from 'assets/allImage/cross.imageset/cross.png';
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
 import Loader from 'component/loader/Loader';
+import {employeeData} from '../../../db';
 
 const UserProfile = () => {
   const flatListRef = useRef(null);
@@ -58,7 +60,7 @@ const UserProfile = () => {
     if (showTextInput) inputRef.current.focus();
   }, [showTextInput]);
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
     await fetchEmployeesData({
       isInitial: true,
       currentEmployees: {
@@ -67,7 +69,7 @@ const UserProfile = () => {
         take: 18,
       },
     });
-  };
+  });
 
   useEffect(() => {
     (async () => {
@@ -134,6 +136,165 @@ const UserProfile = () => {
       });
     }
   };
+
+  const listFooterComponent = () => {
+    return (
+      <View style={{padding: 8}}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  };
+
+  const renderItem = useCallback(
+    (
+      {
+        designation,
+        companyEmail,
+        image,
+        cellNumber,
+        employeeName,
+        managerInfoDto,
+      },
+      index,
+      navigation,
+      isShowModall,
+      dispatch,
+      setClickData,
+      empDetail,
+      showHoriZontal,
+    ) => {
+      return (
+        <View
+          key={index}
+          style={{
+            backgroundColor: Colors.white,
+          }}>
+          {showHoriZontal ? (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('UserDetail', {
+                  designation,
+                  companyEmail,
+                  image,
+                  cellNumber,
+                  employeeName,
+                  managerInfoDto,
+                });
+              }}>
+              <View style={styles.container}>
+                <View
+                  style={{
+                    flex: 0.2,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
+
+                  {image ? (
+                    <Image
+                      resizeMode="stretch"
+                      // source={{uri: `${baseUrl}${image}`}}
+                      source={{uri: `data:image/jpeg;base64,${image}`}}
+                      style={styles.image}
+                    />
+                  ) : (
+                    <Image source={defaultUserIcon} style={styles.image} />
+                  )}
+                </View>
+                <View style={{flex: 0.7}}>
+                  <Text style={styles.nameText}>{employeeName}</Text>
+                  <Text style={styles.desniationText}>{designation}</Text>
+                  <View style={styles.smallView}>
+                    <Image
+                      source={MonthImages.userPS}
+                      style={{height: 25, width: 25}}
+                    />
+                    <Text style={styles.reportingText}>
+                      {managerInfoDto.employeeName}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            // <View style={{padding: 10, borderWidth: 1, height: 320}}></View>
+            <TouchableOpacity
+              style={styles.container2}
+              onPress={() => {
+                navigation.navigate('UserDetail', {
+                  designation,
+                  companyEmail,
+                  image,
+                  cellNumber,
+                  employeeName,
+                  managerInfoDto,
+                });
+              }}>
+              <ImageBackground
+                resizeMode="contain"
+                style={styles.backgroundImage}
+                source={MonthImages.empbgS}>
+                {image ? (
+                  <Image
+                    resizeMode="stretch"
+                    // source={{uri: `${baseUrl}${image}`}}
+                    source={{uri: `data:image/jpeg;base64,${image}`}}
+                    style={styles.image}
+                  />
+                ) : (
+                  <Image source={defaultUserIcon} style={styles.image} />
+                )}
+                <Text numberOfLines={1} style={styles.nametext2}>
+                  {employeeName}
+                </Text>
+                <Text numberOfLines={1} style={styles.desText2}>
+                  {designation}
+                </Text>
+                <View style={styles.buttomView}>
+                  <Pressable
+                    style={styles.imagecontainer1}
+                    onPress={() => {
+                      setClickData({
+                        medium: cellNumber,
+                        nameOfEmployee: employeeName,
+                        text: 'Call ',
+                      });
+
+                      // setClickData('fghfgh');
+                      dispatch(modalStatus(true));
+                    }}>
+                    <Image
+                      style={styles.callImage}
+                      source={MonthImages.callEmp}
+                    />
+                  </Pressable>
+                  <Pressable
+                    style={styles.imagecontainer2}
+                    onPress={() => {
+                      setClickData({
+                        medium: companyEmail,
+                        nameOfEmployee: employeeName,
+                        text: 'Send Mail to ',
+                      });
+                      // setClickData('fghfgh');
+                      dispatch(modalStatus(true));
+                    }}>
+                    <Image
+                      style={styles.mailImage}
+                      source={MonthImages.mailEmp}
+                    />
+                  </Pressable>
+                </View>
+              </ImageBackground>
+            </TouchableOpacity>
+          )}
+        </View>
+      );
+    },
+    [allEmpData],
+  );
+
+  const keyExtractor = useCallback((item, index) => index.toString());
 
   return (
     <View style={{flex: 1}}>
@@ -328,12 +489,14 @@ const UserProfile = () => {
         </View>
       ) : (
         <FlatList
-          windowSize={5}
+          maxToRenderPerBatch={60}
+          windowSize={18}
           removeClippedSubviews={true}
           legacyImplementation={false}
           onScrollBeginDrag={() => {
             // setScrollBegin(true);
           }}
+          ListFooterComponent={isFetchingEmployees && listFooterComponent}
           onEndReachedThreshold={0}
           scrollsToTop={false}
           showsVerticalScrollIndicator={false}
@@ -348,7 +511,7 @@ const UserProfile = () => {
           numColumns={numValue}
           key={numValue}
           //numColumns={1}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={keyExtractor}
           ref={flatListRef}
           renderItem={({item, index}) => {
             return renderItem(
@@ -364,149 +527,7 @@ const UserProfile = () => {
           }}
         />
       )}
-      {isFetchingEmployees ? <Loader /> : null}
-    </View>
-  );
-};
-
-const renderItem = (
-  {designation, companyEmail, image, cellNumber, employeeName, managerInfoDto},
-  index,
-  navigation,
-  isShowModall,
-  dispatch,
-  setClickData,
-  empDetail,
-  showHoriZontal,
-) => {
-  // return (
-  //   <View
-  //     style={{
-  //       height: 100,
-  //       borderWidth: 1,
-  //       borderColor: 'blue',
-  //       padding: 20,
-  //     }}></View>
-  // );
-  return (
-    <View
-      key={index}
-      style={{
-        backgroundColor: Colors.white,
-      }}>
-      {showHoriZontal ? (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('UserDetail', {
-              designation,
-              companyEmail,
-              image,
-              cellNumber,
-              employeeName,
-              managerInfoDto,
-            });
-          }}>
-          <View style={styles.container}>
-            <View
-              style={{
-                flex: 0.2,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
-
-              {image ? (
-                <Image
-                  resizeMode="stretch"
-                  // source={{uri: `${baseUrl}${image}`}}
-                  source={{uri: `data:image/jpeg;base64,${image}`}}
-                  style={styles.image}
-                />
-              ) : (
-                <Image source={defaultUserIcon} style={styles.image} />
-              )}
-            </View>
-            <View style={{flex: 0.7}}>
-              <Text style={styles.nameText}>{employeeName}</Text>
-              <Text style={styles.desniationText}>{designation}</Text>
-              <View style={styles.smallView}>
-                <Image
-                  source={MonthImages.userPS}
-                  style={{height: 25, width: 25}}
-                />
-                <Text style={styles.reportingText}>
-                  {managerInfoDto.employeeName}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      ) : (
-        // <View style={{padding: 10, borderWidth: 1, height: 320}}></View>
-        <TouchableOpacity
-          style={styles.container2}
-          onPress={() => {
-            navigation.navigate('UserDetail', {
-              designation,
-              companyEmail,
-              image,
-              cellNumber,
-              employeeName,
-              managerInfoDto,
-            });
-          }}>
-          <ImageBackground
-            resizeMode="contain"
-            style={styles.backgroundImage}
-            source={MonthImages.empbgS}>
-            {image ? (
-              <Image
-                resizeMode="stretch"
-                // source={{uri: `${baseUrl}${image}`}}
-                source={{uri: `data:image/jpeg;base64,${image}`}}
-                style={styles.image}
-              />
-            ) : (
-              <Image source={defaultUserIcon} style={styles.image} />
-            )}
-            <Text numberOfLines={1} style={styles.nametext2}>
-              {employeeName}
-            </Text>
-            <Text numberOfLines={1} style={styles.desText2}>
-              {designation}
-            </Text>
-            <View style={styles.buttomView}>
-              <Pressable
-                style={styles.imagecontainer1}
-                onPress={() => {
-                  setClickData({
-                    medium: cellNumber,
-                    nameOfEmployee: employeeName,
-                    text: 'Call ',
-                  });
-
-                  // setClickData('fghfgh');
-                  dispatch(modalStatus(true));
-                }}>
-                <Image style={styles.callImage} source={MonthImages.callEmp} />
-              </Pressable>
-              <Pressable
-                style={styles.imagecontainer2}
-                onPress={() => {
-                  setClickData({
-                    medium: companyEmail,
-                    nameOfEmployee: employeeName,
-                    text: 'Send Mail to ',
-                  });
-                  // setClickData('fghfgh');
-                  dispatch(modalStatus(true));
-                }}>
-                <Image style={styles.mailImage} source={MonthImages.mailEmp} />
-              </Pressable>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-      )}
+      {/* {isFetchingEmployees ? <Loader /> : null} */}
     </View>
   );
 };

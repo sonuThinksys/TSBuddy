@@ -225,6 +225,42 @@ export const getSubscribedLunchRequests = createAsyncThunk(
   },
 );
 
+export const getWorkModeOfEmployee = createAsyncThunk(
+  'home/workMode',
+  async function ({token, employeeID}) {
+    var config = {
+      method: 'get',
+      url: `${endPoints.getEmployeeWorkMode}${employeeID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(async responce => {
+        const {data, status} = responce;
+
+        if (status == 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something went wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.responce) {
+          statusCode = err?.responce.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
 export const getLeaveApprovers = createAsyncThunk(
   'home/getLeaveApprovers',
   async ({token, employeeID}) => {
@@ -405,6 +441,76 @@ export const requestForAttendanceRegularization = createAsyncThunk(
         return Promise.reject(new Error(err));
       }
     }
+  },
+);
+
+export const updateAttRegularizeStatus = createAsyncThunk(
+  'home/updateAttRegularizeStatus',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.updateAttRegularizeStatus,
+        body,
+        config,
+      );
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getEmployeeRegularizationRequest = createAsyncThunk(
+  'home/getEmployeeRegularizationRequest',
+  async ({token, empId}) => {
+    console.log('getEmployeeRegularizationRequest', empId, token);
+    const config = {
+      method: 'get',
+      url: `${endPoints.getEmployeeRegularizationRequest}${empId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 

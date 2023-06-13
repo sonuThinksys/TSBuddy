@@ -104,8 +104,6 @@ const MenuItem = ({navigation}) => {
     }
   };
 
-  useEffect(() => {}, []);
-
   const userData = {
     employee: 'EMP/10352',
     employeeName: 'Amit Kumar Pant',

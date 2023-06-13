@@ -43,6 +43,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 
 const ApplyLeave = ({navigation, route}) => {
   const {
@@ -1000,7 +1001,6 @@ const ApplyLeave = ({navigation, route}) => {
                       paddingVertical: 5,
                       height: 32,
                     }}
-                    dropdownTextHighlightStyle={{color: Colors.white}}
                     isFullWidth={true}
                     showsVerticalScrollIndicator={false}
                     defaultValue={

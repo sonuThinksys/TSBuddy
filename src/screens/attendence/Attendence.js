@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -33,6 +33,30 @@ import {
 import {FontFamily} from 'constants/fonts';
 import {RegularzitionScreen} from 'navigation/Route';
 import Loader from 'component/LoadingScreen/LoadingScreen';
+
+const DATA = [
+  {
+    id: '1',
+    title: 'Absent',
+    color: Colors.reddishTint,
+  },
+  {
+    id: '2',
+    title: 'Half Day',
+    color: Colors.blue,
+  },
+  {
+    id: '3',
+    title: 'Holiday',
+    color: Colors.pink,
+  },
+  {
+    id: '4',
+    title: 'Present',
+    color: Colors.green,
+  },
+];
+
 const Attendence = ({navigation}) => {
   const {attendenceData: dailyAttendance = []} = useSelector(
     state => state.home,
@@ -47,8 +71,12 @@ const Attendence = ({navigation}) => {
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
-
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [finalWeekTime, setFinalWeekTime] = useState('00:00');
+  const [markDates, setMarkDates] = useState({});
+  const [todaysDay, setTodayDay] = useState();
+  const [todaysDate, setTodayDate] = useState();
 
   useEffect(() => {
     const pressedDate = dailyAttendance?.find(
@@ -131,17 +159,24 @@ const Attendence = ({navigation}) => {
     };
   }, [visisbleMonth]);
 
-  const startEndDate = () => {
+  const startEndDate = useCallback(() => {
     let startDate = attendanceDate(1);
     let endDate = attendanceDate(7);
     return {startDate, endDate};
-  };
-  const {startDate, endDate} = startEndDate();
-
-  let startDateFormat = startEndDateFormat(startDate);
-  let endDateFormat = startEndDateFormat(endDate);
+  }, []);
 
   useEffect(() => {
+    const {currentDay, finalTodayDate} = finalCurrentDate();
+    setTodayDate(finalTodayDate);
+    setTodayDay(currentDay);
+
+    const {startDate, endDate} = startEndDate();
+    let startDateFormat = startEndDateFormat(startDate);
+    let endDateFormat = startEndDateFormat(endDate);
+
+    setStartDate(startDateFormat);
+    setEndDate(endDateFormat);
+
     let privMonDAy = new Date();
     privMonDAy.setDate(privMonDAy.getDate() - ((privMonDAy.getDay() + 6) % 7));
     var now = new Date();
@@ -218,8 +253,7 @@ const Attendence = ({navigation}) => {
     }
   }, []);
 
-  let monthMark = {};
-  const daysInMonth = getDaysInMonth(visisbleMonth - 1);
+  // const daysInMonth = getDaysInMonth(visisbleMonth - 1);
 
   // for (let i = 1; i <= daysInMonth; i++) {
   //   const date = i > 9 ? i : '0' + i;
@@ -236,6 +270,7 @@ const Attendence = ({navigation}) => {
   //   }
   // }
 
+  let monthMark = {};
   let todayDate = todaySelectedDate();
 
   monthMark = {
@@ -256,7 +291,6 @@ const Attendence = ({navigation}) => {
       }
     });
 
-  console.log('dailyAttendance', dailyAttendance);
   dailyAttendance &&
     dailyAttendance.length &&
     dailyAttendance?.forEach(day => {
@@ -281,41 +315,55 @@ const Attendence = ({navigation}) => {
     });
 
   let mark = monthMark;
-  const DATA = [
-    {
-      id: '1',
-      title: 'Absent',
-      color: Colors.reddishTint,
-    },
-    {
-      id: '2',
-      title: 'Half Day',
-      color: Colors.blue,
-    },
-    {
-      id: '3',
-      title: 'Holiday',
-      color: Colors.pink,
-    },
-    {
-      id: '4',
-      title: 'Present',
-      color: Colors.green,
-    },
-  ];
 
-  const {currentDay, finalTodayDate} = finalCurrentDate();
-  const renderLoading = style => {
+  // const renderLoading = style => {
+  //   return (
+  //     <View
+  //       style={{
+  //         ...styles.loaderStyle,
+  //         ...style,
+  //       }}>
+  //       <ActivityIndicator size={'large'} color="white" />
+  //     </View>
+  //   );
+  // };
+
+  const renderItem = useCallback(({item}) => {
     return (
       <View
         style={{
-          ...styles.loaderStyle,
-          ...style,
+          flexDirection: 'row',
+          flex: 1,
+          marginRight: wp(2.8),
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        <ActivityIndicator size={'large'} color="white" />
+        <View
+          style={{
+            width: wp(4),
+            height: hp(2),
+            borderRadius: 20,
+            backgroundColor:
+              item.title === 'Absent'
+                ? Colors.reddishTint
+                : item.title === 'Half Day'
+                ? Colors.blue
+                : item.title === 'Present'
+                ? Colors.green
+                : Colors.pink,
+            marginRight: wp(1.6),
+          }}></View>
+        <Text
+          style={{
+            color: Colors.white,
+            fontFamily: FontFamily.RobotoBold,
+            fontSize: 14,
+          }}>
+          {item.title}
+        </Text>
       </View>
     );
-  };
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -371,14 +419,14 @@ const Attendence = ({navigation}) => {
           {/* {isImageLoading ? renderLoading() : null}    */}
           <View style={styles.secondContainer}>
             <View>
-              <Text style={styles.monthText}>{finalTodayDate}</Text>
-              <Text style={styles.dayText}>{currentDay}</Text>
+              <Text style={styles.monthText}>{todaysDate}</Text>
+              <Text style={styles.dayText}>{todaysDay}</Text>
             </View>
             <View style={styles.reportView}>
               <View style={styles.weekliyTextView}>
                 <Text style={styles.reportText}>Weekly Report</Text>
                 <Text style={styles.reportText}>
-                  {startDateFormat} - {endDateFormat}
+                  {startDate} - {endDate}
                 </Text>
               </View>
               <View style={styles.timeSpendView}>
@@ -427,44 +475,6 @@ const Attendence = ({navigation}) => {
   );
 };
 
-const renderItem = ({item}) => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        flex: 1,
-        marginRight: wp(2.8),
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <View
-        style={{
-          width: wp(4),
-          height: hp(2),
-          borderRadius: 20,
-          backgroundColor:
-            item.title === 'Absent'
-              ? Colors.reddishTint
-              : item.title === 'Half Day'
-              ? Colors.blue
-              : item.title === 'Present'
-              ? Colors.green
-              : Colors.pink,
-          marginRight: wp(1.6),
-        }}></View>
-      <Text
-        style={{
-          color: Colors.white,
-
-          fontFamily: FontFamily.RobotoBold,
-          fontSize: 14,
-        }}>
-        {item.title}
-      </Text>
-    </View>
-  );
-};
-
 const RenderCalender = ({
   setVisibleMonth,
   setVisibleYear,
@@ -497,7 +507,6 @@ const RenderCalender = ({
           setModalDate(day);
         }
       }}
-      displayLoadingIndicator={true}
       horizontal={true}
       markingType={'custom'}
       scrollEnabled={true}

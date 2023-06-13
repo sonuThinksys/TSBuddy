@@ -167,14 +167,19 @@ const Profile = ({navigation}) => {
             backgroundColor: Colors.whitishBlue,
           }}>
           <ImageBackground
+            resizeMode="cover"
             style={{height: '60%', width: '100%'}}
-            source={TSBuddyBackImage}
+            source={
+              profileData?.image
+                ? {uri: `data:image/jpeg;base64,${profileData?.image}`}
+                : defaultUserIcon
+            }
             // source={
             //   profileData?.image
             //     ? `data:image/jpeg;base64,${profileData?.image}`
             //     : TSBuddyBackImage
             // }
-          >
+            blurRadius={0.9}>
             {/* source={TSBuddyBackImage}> */}
             <View style={styles.container}>
               <View style={styles.profileView}>
@@ -198,7 +203,7 @@ const Profile = ({navigation}) => {
                     source={{
                       uri: `data:image/jpeg;base64,${profileData?.image}`,
                     }}
-                    style={{height: 80, width: 80, borderRadius: 20}}
+                    style={{height: '100%', width: '100%', borderRadius: 60}}
                   />
                 ) : (
                   <Image
@@ -245,7 +250,7 @@ const Profile = ({navigation}) => {
                       source={{
                         uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
                       }}
-                      style={{height: 80, width: 80, borderRadius: 20}}
+                      style={{height: 90, width: 90, borderRadius: 50}}
                     />
                   ) : (
                     <Image
