@@ -28,6 +28,9 @@ import {useIsFocused} from '@react-navigation/native';
 import WfhTab from './wfhTab';
 import CommunicationModal from 'modals/CommunicationModal';
 import RegularisationTab from './RegularisationTab';
+import {ResourcesDetailsScreen} from 'navigation/Route';
+import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
+import LeavesList from 'reusableComponents/LeavesList';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -105,33 +108,6 @@ const ResourcesDetails = ({route, navigation}) => {
       })();
     }
   }, [isFocused]);
-
-  const dialCall = () => {
-    setClickData({
-      medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Call',
-    });
-    dispatch(modalStatus(true));
-  };
-
-  const sendMail = () => {
-    setClickData({
-      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Send Mail to',
-    });
-    dispatch(modalStatus(true));
-  };
-
-  const sendMessage = async () => {
-    setClickData({
-      medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
-      text: 'Send SMS to',
-    });
-    dispatch(modalStatus(true));
-  };
 
   const updateData = async () => {
     try {
@@ -227,74 +203,16 @@ const ResourcesDetails = ({route, navigation}) => {
       ) : null}
       <SafeAreaView style={{flex: 1}}>
         <View style={style.container}>
-          <View style={style.profile_name_cont}>
-            <View style={style.profile_cont}>
-              {image ? (
-                <Image
-                  resizeMode="stretch"
-                  source={{uri: `data:image/jpeg;base64,${image}`}}
-                  style={style.image}
-                />
-              ) : (
-                <Image
-                  resizeMode="stretch"
-                  source={{
-                    uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-                  }}
-                  style={style.image}
-                />
-              )}
-            </View>
-            <View style={style.name_cont}>
-              <Text style={style.name_txt}>{employeeName}</Text>
-              <Text style={style.designation_txt}>{designation}</Text>
-            </View>
-          </View>
-          <View style={style.social_icon_cont}>
-            <View style={style.social_inner_cont}>
-              <TouchableOpacity
-                onPress={() => {
-                  sendMail();
-                }}>
-                <View style={style.social_icon}>
-                  <Image
-                    source={MonthImages.empMailS}
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  dialCall();
-                }}>
-                <View style={style.social_icon}>
-                  <Image
-                    source={MonthImages.empCallS}
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  sendMessage();
-                }}>
-                <View style={style.social_icon}>
-                  <Image
-                    source={MonthImages.empMsg}
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => sendMessage()}>
-                <View style={style.social_icon}>
-                  <Image
-                    source={MonthImages.empWa}
-                    style={{height: '100%', width: '100%'}}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <ResourceProfileDetails
+            empDetails={{
+              employeeName,
+              image,
+              companyEmail,
+              cellNumber,
+              designation,
+              managerInfoDto,
+            }}
+          />
           <View style={style.tab_view}>
             <Pressable
               onPress={() => {
@@ -403,15 +321,7 @@ const ResourcesDetails = ({route, navigation}) => {
         <View style={style.listOfLeaves}>
           {selectedTab === 'leaves' ? (
             resurcesEmployeeLeaves.length > 0 ? (
-              <FlatList
-                refreshing={isRefresh}
-                onRefresh={updateData}
-                data={
-                  isGuestLogin ? guestLeavesScreenData : resurcesEmployeeLeaves
-                }
-                renderItem={renderItem}
-                keyExtractor={(_, index) => index}
-              />
+              <LeavesList />
             ) : (
               <View
                 style={{

@@ -67,7 +67,6 @@ const ApplyLeave = ({navigation, route}) => {
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-  console.log('openLeaveData:', openLeaveData);
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);

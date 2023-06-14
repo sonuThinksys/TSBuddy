@@ -46,8 +46,6 @@ const SelectDateModal = ({modalData}) => {
         <View style={styles.container2}>
           <Pressable
             onPress={() => {
-              console.log('Press');
-              return;
               dispatch(dateOfModal(satrtDate1));
               setSelected(true);
               setSecondSlected(false);

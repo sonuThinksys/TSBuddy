@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import styles from './RegularisationTabDetailsStyle';
-import {useEffect, useState} from 'react';
+import {memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getEmployeeRegularizationRequest,
@@ -137,6 +137,9 @@ const RegularisationTabDetails = ({navigation, route}) => {
   return (
     <>
       <View style={styles.mainContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{route?.params?.employeeName}</Text>
+        </View>
         <View>
           {details.map((item, index) => card(item[0], item[1], index))}
         </View>
@@ -208,4 +211,4 @@ const RegularisationTabDetails = ({navigation, route}) => {
   );
 };
 
-export default RegularisationTabDetails;
+export default memo(RegularisationTabDetails);

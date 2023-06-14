@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2000,
-    backgroundColor: Colors.transparentBackground_25,
+    backgroundColor: Colors.white,
   },
 });
 export default Loader;

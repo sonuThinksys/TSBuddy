@@ -440,6 +440,29 @@ const RegularisationStackScreen = ({navigation}) => {
         name={'RegularisationForm'}
         component={RegularisationFormDetails}
       />
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Regularisation Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'regularisationTabDetailsScreen'}
+        component={RegularisationTabDetails}
+      />
     </RegularisationStack.Navigator>
   );
 };

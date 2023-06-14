@@ -145,7 +145,7 @@ const Login = ({navigation}) => {
       let result = await dispatch(getUserToken({username, password}));
       if (result?.error) {
         ShowAlert({
-          messageHeader: ERROR,
+          messageHeader: 'Invalid credentials',
           messageSubHeader: INCORRECT_LOGIN,
           buttonText: 'CLOSE',
           dispatch,

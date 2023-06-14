@@ -338,7 +338,6 @@ export const updateLeaveStatus = createAsyncThunk(
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {
-    console.log('bodyHai:', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
