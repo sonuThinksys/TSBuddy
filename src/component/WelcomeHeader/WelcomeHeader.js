@@ -85,8 +85,18 @@ const WelcomeHeader = () => {
         </View>
         <View style={styles.timeContainer}>
           <Text style={styles.time}>
-            {checkInDetails?.hours || '00'} : {checkInDetails?.minutes || '00'}{' '}
-            : {checkInDetails?.seconds || '00'} Hrs
+            {checkInDetails?.hours < 10
+              ? `0${checkInDetails?.hours}`
+              : checkInDetails?.hours || '00'}{' '}
+            :{' '}
+            {checkInDetails?.minutes < 10
+              ? `0${checkInDetails?.minutes}`
+              : checkInDetails?.minutes || '00'}{' '}
+            :{' '}
+            {checkInDetails?.seconds < 10
+              ? `0${checkInDetails?.seconds}`
+              : checkInDetails?.seconds || '00'}{' '}
+            Hrs
           </Text>
         </View>
         <View style={styles.dateContainer}>

@@ -36,13 +36,13 @@ import {
 import {
   applyForLeave,
   applyForUpdateedLeave,
+  getEmployeeShift,
   getLeaveApprovers,
   getResourseLeaveDetails,
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
-import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
 
 const ApplyLeave = ({navigation, route}) => {
   const {
@@ -50,14 +50,7 @@ const ApplyLeave = ({navigation, route}) => {
     isLeaveDataLoading: {isLoading},
   } = useSelector(state => state.home);
 
-  // const {leavesData = []} = route?.params ||  {};
-
-  // =================================================================
-  const openCount = returnOpenStatusCount({leaves: leavesData});
-  // =================================================================
-
   const {openLeavesCount} = route?.params || {};
-  // const {openLeavesCount, leavesData = []} = route?.params || {};
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -177,6 +170,21 @@ const ApplyLeave = ({navigation, route}) => {
         };
       });
       setLeaveApproversList(listOfLeaveApprovers);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const employeeShift = await dispatch(
+        getEmployeeShift({token, id: employeeID}),
+      );
+      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+      console.log('weekOffs:', weekOffs);
+
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const weekOffsIndexes = [];
+
+      // daysOfWeek.filter((el)=> )
     })();
   }, []);
 
@@ -1032,6 +1040,7 @@ const ApplyLeave = ({navigation, route}) => {
                   // </View>
                 ),
               })}
+
               <DateTimePickerModal
                 maximumDate={dateAfter6Months}
                 isVisible={fromCalenderVisible}
@@ -1046,6 +1055,7 @@ const ApplyLeave = ({navigation, route}) => {
                 onConfirm={toCalenderConfirm}
                 onCancel={toOnCancel}
               />
+
               <View style={styles.reasonContainer}>
                 <Text style={styles.reasonText}>Reason</Text>
                 {isEditOpenleave ? (

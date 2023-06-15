@@ -35,4 +35,5 @@ export default {
   updateAttRegularizeStatus: `${API_URL}/Attendance/UpdateAttRegularizeStatus`,
   getEmployeeWorkMode: `${API_URL}/Attendance/GetEmployeeWorkMode?empId=`,
   getTodayCheckInTime: `${API_URL}/Attendance/GetTodayAttendanceInTime`,
+  getEmployeeShift: `${API_URL}/FoodRequest/GetEmployeeShift?empId=`,
 };
