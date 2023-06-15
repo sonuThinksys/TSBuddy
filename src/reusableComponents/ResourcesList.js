@@ -208,4 +208,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default memo(ResourcesList);
+export default ResourcesList;

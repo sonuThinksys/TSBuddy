@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {FontFamily, FontSize} from 'constants/fonts';
 import LeavesList from 'reusableComponents/LeavesList';
+import {LeaveApplyScreen} from 'navigation/Route';
 
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -94,7 +95,7 @@ const Leaves = ({navigation}) => {
           </Text>
           <View />
         </Pressable>
-        <LeavesList />
+        <LeavesList fromOpenLeave={true} employeeId={employeeID} />
       </SafeAreaView>
     </>
   );

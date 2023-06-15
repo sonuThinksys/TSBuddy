@@ -1,7 +1,7 @@
 import WorkFromHomeList from 'reusableComponents/WorkFromHomeList';
 
-const WfhTab = ({employeeID, employeeName}) => {
-  console.log(employeeID, employeeName);
+const WfhTab = ({employeeID, employeeName, getWfhCount}) => {
+  console.log('employeeID, employeeName, ', employeeID, employeeName);
   const workFromHomeLeaveApplyScreenOpen = 'workFromHomeLeaveApplyScreenOpen';
   const workFromHomeLeaveDetailsScreen = 'workFromHomeLeaveDetailsScreen';
   return (
@@ -9,6 +9,7 @@ const WfhTab = ({employeeID, employeeName}) => {
       workFromHomeLeaveApplyScreenOpen={workFromHomeLeaveApplyScreenOpen}
       workFromHomeLeaveDetailsScreen={workFromHomeLeaveDetailsScreen}
       employeeId={employeeID}
+      getWfhCount={getWfhCount}
     />
   );
 };

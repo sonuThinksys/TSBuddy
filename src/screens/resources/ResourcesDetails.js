@@ -14,21 +14,17 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {MonthImages} from 'assets/monthImage/MonthImage';
 import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import styles from '../leaves/LeaveStyles';
-import {guestLeavesScreenData} from 'guestData';
 import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
 import WfhTab from './wfhTab';
 import CommunicationModal from 'modals/CommunicationModal';
 import RegularisationTab from './RegularisationTab';
-import {ResourcesDetailsScreen} from 'navigation/Route';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import LeavesList from 'reusableComponents/LeavesList';
 
@@ -46,6 +42,8 @@ const ResourcesDetails = ({route, navigation}) => {
     cellNumber,
   } = route.params;
 
+  let isFromResource = true;
+
   const employeeID = employeeId?.split('/')[1];
 
   const dispatch = useDispatch();
@@ -53,143 +51,26 @@ const ResourcesDetails = ({route, navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-
-  const [isRefresh, setRefresh] = useState(false);
-  const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
   const [selectedTab, setSelectedTab] = useState('leaves');
   const [openCount, setOpenCount] = useState(0);
   const [wfhCount, setWfhCount] = useState(0);
+  const [regCount, setRegCount] = useState(0);
   const [empDetail, setClickData] = useState({});
 
   const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
     useSelector(state => state.home);
 
-  useEffect(() => {
-    if (isFocused) {
-      (async () => {
-        const leavesData = await dispatch(
-          getResourcesEmployeesLeaves({token, empID: employeeID}),
-        );
-        let count = 0;
-        leavesData.payload.employeeLeaves.forEach(element => {
-          if (element.status == 'Open') {
-            count++;
-          }
-        });
-
-        // setOpenCount(count);
-
-        let count1 = 0;
-        leavesData.payload.employeeWfh.forEach(element => {
-          if (element.status == 'Open') {
-            count1++;
-          }
-        });
-
-        setWfhCount(count1);
-        setOpenCount(count);
-
-        // let sortedLeavesData = leavesData.payload[0].sort((a, b) => {
-        //   return a.fromDate - b.fromDate;
-        // });
-
-        // sortedLeavesData.reverse();
-
-        setResourcesEmployeesLeaves(leavesData.payload.employeeLeaves);
-        if (leavesData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: leavesData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-          });
-        }
-      })();
-    }
-  }, [isFocused]);
-
-  const updateData = async () => {
-    try {
-      setRefresh(true);
-      const allLeaves = await dispatch(getResourcesEmployeesLeaves({token}));
-    } catch (err) {
-      console.error('err:', err);
-    } finally {
-      setRefresh(false);
-    }
+  const getLeaveCount = count => {
+    setOpenCount(count);
   };
 
-  const renderItem = ({item, employeeName}) => {
-    // if (filteredSelectedDate) {
-    //   const shouldRender =
-    //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
-    //   if (!shouldRender) return null;
-    // }
+  const getWfhCount = count => {
+    setWfhCount(count);
+  };
 
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          item.status !== 'Open'
-            ? navigation.navigate(
-                'resourceLeaveDetailsScreen',
-                item,
-                employeeName,
-              )
-            : navigation.navigate('resourceLeaveDetailsScreenOpen', {
-                ...item,
-                fromResource: true,
-                employeeId,
-              });
-        }}>
-        <View style={styles.flateListView}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor:
-                item.status === 'Rejected' || item.status === 'Dismissed'
-                  ? Colors.grey
-                  : item.status === 'Open'
-                  ? Colors.darkPink
-                  : Colors.parrotGreenLight,
-              paddingHorizontal: wp(2),
-              paddingVertical: hp(1),
-              justifyContent: 'center',
-              borderTopLeftRadius: 5,
-              borderBottomLeftRadius: 5,
-              shadowOpacity: 0.1,
-            }}>
-            <Text style={{textAlign: 'center', fontSize: 18}}>
-              {item.totalLeaveDays}{' '}
-              {item.leaveType
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase())
-                .join('')}
-            </Text>
-            <Text style={{textAlign: 'center'}}>({item.status})</Text>
-          </View>
-          <View style={styles.secondView}>
-            <Text style={{fontWeight: 'bold', opacity: 0.7, fontSize: 16}}>
-              {item.leaveApplicationId}
-            </Text>
-            <Text style={{opacity: 0.6}}>
-              {`${new Date(item.fromDate).getDate()} ${new Date(
-                item.fromDate,
-              ).toLocaleString('default', {month: 'short'})} ${new Date(
-                item.fromDate,
-              ).getFullYear()}`}
-              {' - '}
-              {`${new Date(item.toDate).getDate()} ${new Date(
-                item.toDate,
-              ).toLocaleString('default', {month: 'short'})} ${new Date(
-                item.toDate,
-              ).getFullYear()}`}
-            </Text>
-            <Text style={{opacity: 0.8}}>{item.currentStatus}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
+  const getRegCount = count => {
+    setRegCount(count);
   };
 
   if (isLoading) {
@@ -301,7 +182,7 @@ const ResourcesDetails = ({route, navigation}) => {
                 ]}>
                 <View style={{position: 'relative'}}>
                   <Text style={{color: 'white', fontSize: 17}}>Reg</Text>
-                  {wfhCount > 0 ? (
+                  {wfhCount >= 0 ? (
                     <View style={style.badges_number}>
                       <Text
                         style={{
@@ -309,7 +190,7 @@ const ResourcesDetails = ({route, navigation}) => {
                           fontSize: 16,
                           fontFamily: FontFamily.RobotoMedium,
                         }}>
-                        {wfhCount}
+                        {regCount}
                       </Text>
                     </View>
                   ) : null}
@@ -320,31 +201,28 @@ const ResourcesDetails = ({route, navigation}) => {
         </View>
         <View style={style.listOfLeaves}>
           {selectedTab === 'leaves' ? (
-            resurcesEmployeeLeaves.length > 0 ? (
-              <LeavesList />
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={{fontFamily: FontFamily.RobotoBold, fontSize: 16}}>
-                  Applied Leaves Not Found.
-                </Text>
-              </View>
-            )
+            <LeavesList
+              fromResource={true}
+              getLeaveCount={getLeaveCount}
+              resourceEmployeeID={employeeID}
+            />
           ) : selectedTab == 'attendence' ? (
             <AttendenceTab
               employeeName={employeeName}
               employeeID={employeeID}
             />
           ) : selectedTab == 'wfh' ? (
-            <WfhTab employeeName={employeeName} employeeID={employeeID} />
+            <WfhTab
+              employeeName={employeeName}
+              employeeID={employeeID}
+              getWfhCount={getWfhCount}
+              fromResource={true}
+            />
           ) : (
             <RegularisationTab
               employeeName={employeeName}
               employeeID={employeeID}
+              getRegCount={getRegCount}
             />
           )}
         </View>

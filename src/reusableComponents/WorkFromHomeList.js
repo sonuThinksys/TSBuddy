@@ -21,13 +21,17 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {FontFamily} from 'constants/fonts';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
+import Loader from 'component/LoadingScreen/LoadingScreen';
 
 const screenWidth = Dimensions.get('window').width;
 
 const WorkFromHomeList = props => {
+  console.log('Props', props);
+  const {getWfhCount} = props;
   const isFocused = useIsFocused();
   const [isRefresh, setRefresh] = useState(false);
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [openCount, setOpenCount] = useState(0);
   const [empDetail, setClickData] = useState({});
   const navigation = useNavigation();
@@ -45,12 +49,14 @@ const WorkFromHomeList = props => {
   useEffect(() => {
     if (isFocused) {
       (async () => {
+        setLoading(true);
         const leavesData = await dispatch(
           getResourcesEmployeesLeaves({
             token,
             empID: props.isFromWFHDetails ? employeeID : props.employeeId,
           }),
         );
+        setLoading(false);
 
         let count = 0;
         leavesData?.payload?.employeeWfh?.forEach(element => {
@@ -58,14 +64,8 @@ const WorkFromHomeList = props => {
             count++;
           }
         });
-
+        !props.isFromWFHDetails && getWfhCount(count);
         setOpenCount(count);
-
-        // let sortedLeavesData = leavesData.payload.employeeWfh.sort((a, b) => {
-        //   return a.fromDate - b.fromDate;
-        // });
-
-        // sortedLeavesData.reverse();
 
         setResourcesEmployeesLeaves(leavesData?.payload?.employeeWfh);
         if (leavesData?.error) {
@@ -156,6 +156,10 @@ const WorkFromHomeList = props => {
       </TouchableOpacity>
     );
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>

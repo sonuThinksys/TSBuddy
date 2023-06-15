@@ -13,7 +13,7 @@ import {heightPercentageToDP, widthPercentageToDP} from 'utils/Responsive';
 import {ERROR} from 'utils/string';
 
 const RegularisationList = props => {
-  const {employeeID, employeeName, navigateTo} = props;
+  const {employeeID, employeeName, navigateTo, getRegCount} = props;
   console.log('props', props);
   const [isRefresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ const RegularisationList = props => {
             count++;
           }
         });
-
+        getRegCount(count);
         setOpenCount(count);
 
         setRegularisationReuestsList(regularisationRequests.payload);

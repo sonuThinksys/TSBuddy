@@ -44,6 +44,7 @@ const WFHDetails = ({route, navigation}) => {
           workFromHomeLeaveDetailsScreen={workFromHomeLeaveDetailsScreen}
           employeeId={employeeId}
           isFromWFHDetails={true}
+          fromResource={true}
         />
       </SafeAreaView>
     </>

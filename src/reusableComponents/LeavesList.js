@@ -18,7 +18,11 @@ import {
 import {Colors} from 'colors/Colors';
 
 import styles from '../screens/leaves/LeaveStyles';
-import {getLeaveApprovers, getLeaveDetails} from 'redux/homeSlice';
+import {
+  getLeaveApprovers,
+  getLeaveDetails,
+  getResourcesEmployeesLeaves,
+} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -26,13 +30,23 @@ import {LeaveDetailsScreen, LeaveApplyScreen} from 'navigation/Route';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {openLeavesCount} from 'utils/utils';
+import Loader from 'component/LoadingScreen/LoadingScreen';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
 
-const LeavesList = () => {
+const LeavesList = props => {
+  const {
+    fromResource,
+    getLeaveCount,
+    fromOpenLeave,
+    resourceEmployeeID,
+    employeeId,
+  } = props;
+
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-  var decoded = token && jwt_decode(token);
-  const employeeID = decoded?.id;
+
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
@@ -42,10 +56,8 @@ const LeavesList = () => {
   const [isRefresh, setRefresh] = useState(false);
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
   const [openLeaves, setOpenLeaves] = useState({earnedOpen: 0, rhOpen: 0});
-
-  useEffect(() => {
-    if (isFocussed) token && updateData();
-  }, [employeeID, token, isFocussed]);
+  const [loading, setLoading] = useState(false);
+  const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
 
   useEffect(() => {
     if (isFocussed && flatListRef.current) {
@@ -53,31 +65,37 @@ const LeavesList = () => {
     }
   }, [isFocussed]);
 
-  const updateData = async () => {
-    try {
-      setRefresh(true);
-      const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
-      const openCount = openLeavesCount({leaves: allLeaves?.payload});
-      setOpenLeaves(openCount);
-    } catch (err) {
-    } finally {
-      setRefresh(false);
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const leavesData = await dispatch(
+        getResourcesEmployeesLeaves({
+          token,
+          empID: fromResource ? resourceEmployeeID : employeeId,
+        }),
+      );
+      console.log('leavesData', leavesData.payload);
+      setLoading(false);
+      let count = 0;
+      leavesData?.payload?.employeeLeaves?.forEach(element => {
+        if (element.status == 'Open') {
+          count++;
+          console.log('in');
+        }
+      });
+      fromResource && getLeaveCount(count);
+      setResourcesEmployeesLeaves(leavesData?.payload?.employeeLeaves);
 
-  const {
-    leavesData,
-    isLeaveDataLoading: {isLoading},
-  } = useSelector(state => state.home);
-
-  let reversLeaveesData = [];
-  for (let i = 0; i < leavesData.length; i++) {
-    reversLeaveesData.push(leavesData[i]);
-  }
-  reversLeaveesData.sort(
-    (a, b) => new Date(a.fromDate).getTime() - new Date(b?.fromDate).getTime(),
-  );
-  reversLeaveesData.reverse();
+      if (leavesData?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: leavesData?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+        });
+      }
+    })();
+  }, []);
 
   const renderItem = ({item}) => {
     if (filteredSelectedDate) {
@@ -89,7 +107,11 @@ const LeavesList = () => {
 
     const handleNavigation = () => {
       if (item.status == 'Open') {
-        navigation.navigate(LeaveApplyScreen, {...item, fromOpenLeave: true});
+        navigation.navigate(LeaveApplyScreen, {
+          ...item,
+          fromOpenLeave,
+          fromResource,
+        });
       } else {
         navigation.navigate(LeaveDetailsScreen, item);
       }
@@ -167,6 +189,10 @@ const LeavesList = () => {
     );
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <SafeAreaView
@@ -177,13 +203,11 @@ const LeavesList = () => {
         }}>
         {isGuestLogin ? (
           renderNoLeaves()
-        ) : leavesData?.length > 0 ? (
+        ) : resurcesEmployeeLeaves?.length > 0 ? (
           <FlatList
             ref={flatListRef}
             showsVerticalScrollIndicator={false}
-            refreshing={isRefresh}
-            onRefresh={updateData}
-            data={reversLeaveesData}
+            data={resurcesEmployeeLeaves}
             renderItem={renderItem}
             keyExtractor={(_, index) => index}
           />
