@@ -17,7 +17,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.grey,
   },
   text: {
-    marginTop: hp(7.5),
+    marginTop: hp(10),
     marginHorizontal: wp(4),
     color: Colors.bluishGreen,
     fontWeight: 'bold',

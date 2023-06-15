@@ -66,7 +66,6 @@ const ApplyLeave = ({navigation, route}) => {
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-  console.log('openLeaveData:', openLeaveData);
   const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
@@ -119,7 +118,6 @@ const ApplyLeave = ({navigation, route}) => {
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
-  console.log('token:', token);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
@@ -142,7 +140,7 @@ const ApplyLeave = ({navigation, route}) => {
   });
   const [totalNumberOfLeaveDays, setTotalNumberOfLeaveDays] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedCard, setSelectedCard] = useState({leaveType: 'Earned Leave'});
+  const [selectedCard, setSelectedCard] = useState({leaveType: ''});
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState(openLeaveReason || '');
@@ -1001,7 +999,6 @@ const ApplyLeave = ({navigation, route}) => {
                       paddingVertical: 5,
                       height: 32,
                     }}
-                    dropdownTextHighlightStyle={{color: Colors.white}}
                     isFullWidth={true}
                     showsVerticalScrollIndicator={false}
                     defaultValue={
@@ -1009,7 +1006,7 @@ const ApplyLeave = ({navigation, route}) => {
                         ? resourceData.leaveType
                         : fromOpenLeave
                         ? openLeaveType
-                        : leaveTypes[0]
+                        : 'Select'
                     }
                     options={leaveTypes}
                     dropdownStyle={{

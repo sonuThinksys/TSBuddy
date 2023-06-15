@@ -54,34 +54,36 @@ const MenuItem = ({navigation}) => {
   const updateData = () => {
     if (token) {
       (async () => {
-        const menuDetails = await dispatch(getTodayMenuDetails(token));
-        setTodayMenu([
-          {
-            type: breakfast,
-            food: menuDetails.payload?.foodMenus[0]?.breakfast,
-            img_url: MonthImages.breakfastImgS,
-          },
-          {
-            type: lunch,
-            food: menuDetails.payload?.foodMenus[0]?.lunch,
-            img_url: MonthImages.Lunch,
-          },
-          {
-            type: snacks,
-            food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
-            img_url: MonthImages.snacksS,
-          },
-        ]);
+        try {
+          const menuDetails = await dispatch(getTodayMenuDetails(token));
+          setTodayMenu([
+            {
+              type: breakfast,
+              food: menuDetails.payload?.foodMenus[0]?.breakfast,
+              img_url: MonthImages.breakfastImgS,
+            },
+            {
+              type: lunch,
+              food: menuDetails.payload?.foodMenus[0]?.lunch,
+              img_url: MonthImages.Lunch,
+            },
+            {
+              type: snacks,
+              food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
+              img_url: MonthImages.snacksS,
+            },
+          ]);
 
-        if (menuDetails?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: menuDetails?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
-        }
+          if (menuDetails?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: menuDetails?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+        } catch (err) {}
       })();
     } else {
       setTodayMenu([
@@ -103,8 +105,6 @@ const MenuItem = ({navigation}) => {
       ]);
     }
   };
-
-  useEffect(() => {}, []);
 
   const userData = {
     employee: 'EMP/10352',

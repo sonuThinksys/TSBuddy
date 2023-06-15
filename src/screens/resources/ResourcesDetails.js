@@ -27,6 +27,7 @@ import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
 import WfhTab from './wfhTab';
 import CommunicationModal from 'modals/CommunicationModal';
+import RegularisationTab from './RegularisationTab';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -143,7 +144,7 @@ const ResourcesDetails = ({route, navigation}) => {
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, employeeName}) => {
     // if (filteredSelectedDate) {
     //   const shouldRender =
     //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
@@ -153,7 +154,11 @@ const ResourcesDetails = ({route, navigation}) => {
       <TouchableOpacity
         onPress={() => {
           item.status !== 'Open'
-            ? navigation.navigate('resourceLeaveDetailsScreen', item)
+            ? navigation.navigate(
+                'resourceLeaveDetailsScreen',
+                item,
+                employeeName,
+              )
             : navigation.navigate('resourceLeaveDetailsScreenOpen', {
                 ...item,
                 fromResource: true,
@@ -331,7 +336,7 @@ const ResourcesDetails = ({route, navigation}) => {
                     borderBottomWidth: 2,
                   },
                 ]}>
-                <Text style={{color: 'white', fontSize: 17}}>Attendance</Text>
+                <Text style={{color: 'white', fontSize: 17}}>Att</Text>
               </View>
             </Pressable>
             <Pressable
@@ -348,6 +353,35 @@ const ResourcesDetails = ({route, navigation}) => {
                 ]}>
                 <View style={{position: 'relative'}}>
                   <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
+                  {wfhCount > 0 ? (
+                    <View style={style.badges_number}>
+                      <Text
+                        style={{
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: FontFamily.RobotoMedium,
+                        }}>
+                        {wfhCount}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSelectedTab('regularisation');
+              }}>
+              <View
+                style={[
+                  style.tab,
+                  selectedTab === 'regularisation' && {
+                    borderBottomColor: Colors.red,
+                    borderBottomWidth: 2,
+                  },
+                ]}>
+                <View style={{position: 'relative'}}>
+                  <Text style={{color: 'white', fontSize: 17}}>Reg</Text>
                   {wfhCount > 0 ? (
                     <View style={style.badges_number}>
                       <Text
@@ -394,8 +428,13 @@ const ResourcesDetails = ({route, navigation}) => {
               employeeName={employeeName}
               employeeID={employeeID}
             />
-          ) : (
+          ) : selectedTab == 'wfh' ? (
             <WfhTab employeeName={employeeName} employeeID={employeeID} />
+          ) : (
+            <RegularisationTab
+              employeeName={employeeName}
+              employeeID={employeeID}
+            />
           )}
         </View>
       </SafeAreaView>
@@ -449,10 +488,10 @@ const style = StyleSheet.create({
   },
   tab_view: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   tab: {
-    width: screenWidth / 3,
+    width: screenWidth / 4,
     alignItems: 'center',
     padding: 10,
     flexDirection: 'row',

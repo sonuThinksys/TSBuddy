@@ -17,7 +17,6 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-// import {getEmployeeProfileData} from 'redux/homeSlice';
 import {useIsFocused} from '@react-navigation/native';
 import baseUrl from 'services/Urls';
 import moment from 'moment';
@@ -39,26 +38,6 @@ const Profile = ({navigation}) => {
   );
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (token) {
-  //       const profileDetails = await dispatch(
-  //         getEmployeeProfileData({token, employeeID}),
-  //       );
-
-  //       if (profileDetails?.error) {
-  //         ShowAlert({
-  //           messageHeader: ERROR,
-  //           messageSubHeader: profileDetails?.error?.message,
-  //           buttonText: 'Close',
-  //           dispatch,
-  //           navigation,
-  //         });
-  //       }
-  //     }
-  //   })();
-  // }, []);
 
   const {
     employeeProfile: profileData,
@@ -167,14 +146,19 @@ const Profile = ({navigation}) => {
             backgroundColor: Colors.whitishBlue,
           }}>
           <ImageBackground
+            resizeMode="cover"
             style={{height: '60%', width: '100%'}}
-            source={TSBuddyBackImage}
+            source={
+              profileData?.image
+                ? {uri: `data:image/jpeg;base64,${profileData?.image}`}
+                : defaultUserIcon
+            }
             // source={
             //   profileData?.image
             //     ? `data:image/jpeg;base64,${profileData?.image}`
             //     : TSBuddyBackImage
             // }
-          >
+            blurRadius={0.9}>
             {/* source={TSBuddyBackImage}> */}
             <View style={styles.container}>
               <View style={styles.profileView}>
@@ -190,7 +174,7 @@ const Profile = ({navigation}) => {
                     source={{
                       uri: `data:image/jpeg;base64,${profileData?.image}`,
                     }}
-                    style={{height: 80, width: 80, borderRadius: 20}}
+                    style={{height: '100%', width: '100%', borderRadius: 60}}
                   />
                 ) : (
                   <Image
@@ -237,7 +221,7 @@ const Profile = ({navigation}) => {
                       source={{
                         uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
                       }}
-                      style={{height: 80, width: 80, borderRadius: 20}}
+                      style={{height: 90, width: 90, borderRadius: 50}}
                     />
                   ) : (
                     <Image

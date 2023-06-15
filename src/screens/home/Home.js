@@ -31,14 +31,7 @@ let data = [
 ];
 
 const Home = ({navigation}) => {
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerTitleAlign: 'center',
-  //   });
-  // }, []);
   const dispatch = useDispatch();
-  // const {isLoading} = useSelector(state => state.auth);
-  const {calendereventData: calenderData} = useSelector(state => state.home);
   const {userToken: token} = useSelector(state => state.auth);
 
   const [loading, setLoading] = useState(false);
@@ -51,10 +44,25 @@ const Home = ({navigation}) => {
       try {
         setLoading(true);
 
-        token && (await dispatch(getEmployeeProfileData({token, employeeID})));
+        const empData =
+          token &&
+          (await dispatch(getEmployeeProfileData({token, employeeID})));
 
+        if (empData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: empData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        setLoading(false);
+      }
+
+      try {
         const events = await dispatch(getCalendereventData(token));
-
         if (events?.error) {
           ShowAlert({
             messageHeader: ERROR,
@@ -64,8 +72,8 @@ const Home = ({navigation}) => {
             navigation,
           });
         }
+        setLoading(false);
       } catch (err) {
-      } finally {
         setLoading(false);
       }
     })();

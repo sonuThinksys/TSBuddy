@@ -25,6 +25,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getAttReguarzationReason,
   getLeaveApprovers,
+  getWorkModeOfEmployee,
   requestForAttendanceRegularization,
 } from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
@@ -40,6 +41,8 @@ const Regularization = ({navigation, route}) => {
   const [selectApprover, setSelectApprover] = useState('');
   const [selectReasons, setSelectReasons] = useState('');
   const [commentText, setCommentText] = useState('');
+  const [workMode, setWorkMode] = useState('');
+  const [approoverId, setApproveId] = useState('');
 
   const [dayData, setDayData] = useState([
     {
@@ -85,11 +88,18 @@ const Regularization = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-
       leaveApprovers?.payload?.map(el =>
         listOfLeaveApprover?.push(el?.leaveApproverName),
       );
+
+      setApproveId(leaveApprovers?.payload?.employeeId);
       setLeaveApproversList(listOfLeaveApprover);
+    })();
+
+    (async () => {
+      const workMode =
+        token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
+      setWorkMode(workMode.payload.workMode); 
     })();
   }, []);
 
@@ -170,25 +180,6 @@ const Regularization = ({navigation, route}) => {
     );
   };
 
-  console.log(
-    'attendanceId',
-    attendanceId,
-    'employeeId',
-    employeeID,
-    'attendanceDate',
-    attendanceDate,
-    'reasonId',
-    selectReasons,
-    'attendanceType',
-    selectDay,
-    'halfDayInfo',
-    null,
-    'comment',
-    commentText,
-    'mode',
-    'Office',
-  );
-
   const handleSubmit = async () => {
     const requestRegularsation =
       token &&
@@ -203,7 +194,8 @@ const Regularization = ({navigation, route}) => {
             attendanceType: selectDay,
             halfDayInfo: null,
             comment: commentText,
-            mode: 'Office',
+            mode: workMode,
+            approverId: approoverId,
           },
         }),
       ));

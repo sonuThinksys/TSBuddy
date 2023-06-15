@@ -147,7 +147,6 @@ const Login = ({navigation}) => {
       setLoading(true);
       let result = await dispatch(getUserToken({username, password}));
 
-      console.log('result:', result);
       if (result?.error) {
         ShowAlert({
           messageHeader: ERROR,

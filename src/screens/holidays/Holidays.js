@@ -35,8 +35,8 @@ const Holidays = () => {
     try {
       setRefresh(true);
       await dispatch(getHolidaysData(token));
-      setRefresh(false);
     } catch (err) {
+    } finally {
       setRefresh(false);
     }
   };

@@ -24,7 +24,6 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {monthsName, RequestLunchLabel} from 'utils/defaultData';
 import {
   cancelSubscribedLunchRequest,
-  getEmployeeProfileData,
   getSubscribedLunchRequests,
   requestLunchSubmission,
 } from 'redux/homeSlice';
@@ -38,8 +37,6 @@ const RequestLunch = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
-
-  console.log('dateData dateData', dateData);
 
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
@@ -60,7 +57,7 @@ const RequestLunch = ({navigation}) => {
   const [startSelected, setStartSelected] = useState(false);
   const [endSelected, setEndSelected] = useState(false);
   const [lunchRequests, setLunchRequests] = useState([]);
-  const [monthlyStartDate, setMonthlyStartDate] = useState('Select..');
+  const [monthlyStartDate, setMonthlyStartDate] = useState(null);
 
   const setUpcomingMonthlyStartDate = ({date}) => {
     setMonthlyStartDate(date);
@@ -70,7 +67,6 @@ const RequestLunch = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      // token && dispatch(getEmployeeProfileData({token, employeeID}));
       const subscribedLunchRequests =
         token &&
         (await dispatch(getSubscribedLunchRequests({token, employeeID})));
@@ -184,6 +180,7 @@ const RequestLunch = ({navigation}) => {
     let dateObj = {};
     if (value === 'monthly') {
       const dateArray = monthlyStartDate.split('-');
+
       const day = dateArray[0];
       let startingDate = day;
       if (day.length === 1) startingDate = 0 + startingDate;
@@ -191,18 +188,22 @@ const RequestLunch = ({navigation}) => {
       const year = dateArray[2];
 
       let monthNumber;
+      let numberOfDaysInThisMonth;
 
       for (let i = 0; i < monthsName.length; i++) {
         if (monthsName[i].toLowerCase() === month.toLowerCase()) {
           monthNumber = i + 1 + '';
+          numberOfDaysInThisMonth = new Date(year, i + 1, 0).getDate();
           if (monthNumber.length === 1) monthNumber = 0 + monthNumber;
           break;
         }
       }
 
-      const dateStr = `${year}-${monthNumber}-${startingDate}`;
+      const startDateStr = `${year}-${monthNumber}-${startingDate}`;
+      const endDateStr = `${year}-${monthNumber}-${numberOfDaysInThisMonth}`;
       dateObj = {
-        requestStartDate: dateStr,
+        requestStartDate: startDateStr,
+        requestEndDate: endDateStr,
       };
     } else {
       const requestStartDate = startDate?.startDateObj
@@ -213,27 +214,23 @@ const RequestLunch = ({navigation}) => {
     }
     //
 
-    console.log(
-      'startEndDates:',
-      startDate.startDateObj.getDay(),
-      endDate.endDateObj.getDay(),
-    );
-
     if (
-      startDate?.startDateObj?.getDay() === 0 ||
-      startDate.startDateObj.getDay() === 6
+      value !== 'monthly' &&
+      (startDate?.startDateObj?.getDay() === 0 ||
+        startDate.startDateObj.getDay() === 6)
     ) {
       alert('You Cannot Start a lunch request on Weekends.');
       return;
     }
+
     if (
-      endDate?.endDateObj?.getDay() === 0 ||
-      endDate?.endDateObj?.getDay() === 6
+      value !== 'monthly' &&
+      (endDate?.endDateObj?.getDay() === 0 ||
+        endDate?.endDateObj?.getDay() === 6)
     ) {
       alert('You Cannot End a lunch request on Weekends.');
       return;
     }
-
     const todayDateObj = new Date();
     const todayDate = todayDateObj.getDate();
     const currentHour = todayDateObj.getHours();
@@ -422,7 +419,7 @@ const RequestLunch = ({navigation}) => {
                 <Text style={styles.selectedDated}>
                   {value !== 'monthly'
                     ? startDate.startDateStr
-                    : monthlyStartDate}
+                    : monthlyStartDate || 'Select Start Date'}
                 </Text>
                 <CalenderIcon
                   fill={Colors.lightGray1}
@@ -541,7 +538,8 @@ const RequestLunch = ({navigation}) => {
                   setLunchRequests,
                 });
               }}
-              keyExtractor={item => item.id.toString()}
+              keyExtractor={item => Math.random() * Math.random()}
+              // keyExtractor={item => item.id.toString()}
               scrol
             />
           </View>

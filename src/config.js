@@ -10,7 +10,6 @@ export default {
   employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
   calenderEventAPI: `${API_URL}/Event/GetEvents?month=${month + 1}`,
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
-  getTodayMenuGet: `${API_URL}/EmployeeDashBoard/GetEmployeeDashBoard`,
   getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
   giveFeedbackPost: `${API_URL}/FoodRequest/AddFeedback`,
   getAllEmployees: `${API_URL}/EmployeeProfile/GetAllEmployeeDetails`,
@@ -32,4 +31,8 @@ export default {
   getResourceLeaves: `${API_URL}/Leave/GetAllocatedLeaves?empId=`,
   getAttRegularizationReason: `${API_URL}/Attendance/GetAttRegularizationReason`,
   AttendanceRegularizationRequest: `${API_URL}/Attendance/AttendanceRegularizationRequest`,
+  getEmployeeRegularizationRequest: `${API_URL}/Attendance/GetEmployeeRegularizationRequest?empId=`,
+  updateAttRegularizeStatus: `${API_URL}/Attendance/UpdateAttRegularizeStatus`,
+  getEmployeeWorkMode: `${API_URL}/Attendance/GetEmployeeWorkMode?empId=`,
+  getTodayCheckInTime: `${API_URL}/Attendance/GetTodayAttendanceInTime`,
 };
