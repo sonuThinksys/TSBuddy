@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Text,
-  ScrollView,
-} from 'react-native';
+import {View, TouchableOpacity, Image, Text, ScrollView} from 'react-native';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {
@@ -15,7 +8,6 @@ import {
 } from 'utils/Responsive';
 import styles from './SalaryDetailsStyles';
 import moment from 'moment';
-import {deductionData, earnindData} from 'utils/defaultData';
 import {SalaryPDFDownloadScreen} from 'navigation/Route';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;

@@ -33,7 +33,6 @@ let data = [
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
-
   const [loading, setLoading] = useState(false);
 
   var decoded = token && jwt_decode(token);

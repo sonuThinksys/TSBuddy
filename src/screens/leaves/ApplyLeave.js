@@ -6,7 +6,6 @@ import {
   Alert,
   FlatList,
   Image,
-  KeyboardAvoidingView,
   Pressable,
   Text,
   TextInput,
@@ -37,6 +36,7 @@ import {
   applyForLeave,
   applyForUpdateedLeave,
   getEmployeeShift,
+  getFinalizedLeaveDays,
   getLeaveApprovers,
   getResourseLeaveDetails,
   updateLeaveStatus,
@@ -45,6 +45,28 @@ import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 
 const ApplyLeave = ({navigation, route}) => {
+  function getMonthIndex(shortForm) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const index =
+      months.findIndex(
+        month => month.toLowerCase() === shortForm.toLowerCase(),
+      ) + 1;
+    return index;
+  }
+
   const {
     leavesData,
     isLeaveDataLoading: {isLoading},
@@ -142,6 +164,7 @@ const ApplyLeave = ({navigation, route}) => {
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   const [resourceLeaves, setResourceLeaves] = useState([]);
+  const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
 
   const sameDateOrNot = (date1, date2) => {
     return date1.toDateString() === date2.toDateString();
@@ -179,12 +202,13 @@ const ApplyLeave = ({navigation, route}) => {
         getEmployeeShift({token, id: employeeID}),
       );
       const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
-      console.log('weekOffs:', weekOffs);
 
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const weekOffsIndexes = [];
-
-      // daysOfWeek.filter((el)=> )
+      const finalWeekOffs = [];
+      daysOfWeek.map((el, index) => {
+        if (weekOffs.includes(el)) finalWeekOffs.push(index);
+      });
+      setEmployeeWeekOffs(finalWeekOffs);
     })();
   }, []);
 
@@ -287,12 +311,20 @@ const ApplyLeave = ({navigation, route}) => {
     return dayCount;
   }
 
-  const fromCalenderConfirm = date => {
-    if (date.getDay() === 0 || date.getDay() === 6) {
+  const fromCalenderConfirm = async date => {
+    fromOnCancel();
+
+    // if (date.getDay() === 0 || date.getDay() === 6) {
+    //   // date.setDate(date.getDate() + 1);
+    //   alert(
+    //     'Please select a valid start date which should not fall on weekends.',
+    //   );
+    //   fromOnCancel();
+    //   return;
+    // }
+    if (employeeWeekOffs.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
-      alert(
-        'Please select a valid start date which should not fall on weekends.',
-      );
+      alert('You already have a weekend holiday on this day.');
       fromOnCancel();
       return;
     }
@@ -312,7 +344,6 @@ const ApplyLeave = ({navigation, route}) => {
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
-
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
     if (toDate.toDateObj) {
@@ -329,34 +360,75 @@ const ApplyLeave = ({navigation, route}) => {
       const fromDateMS = date.getTime();
       const diffInMS = toDateMS - fromDateMS;
 
-      const totalWeekdays = Math.round(weekdayCount(date, toDate.toDateObj));
+      // const totalWeekdays = Math.round(weekdayCount(date, toDate.toDateObj));
 
-      if (totalWeekdays > 5) {
-        const numberOfLeaveDays =
-          Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
-        setTotalNumberOfLeaveDays(numberOfLeaveDays);
+      // if (totalWeekdays > 5) {
+      //   const numberOfLeaveDays =
+      //     Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
+      //   setTotalNumberOfLeaveDays(numberOfLeaveDays);
+      //   setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
+      //   fromOnCancel();
+      //   return;
+      // }
+
+      const toMonthIndex =
+        getMonthIndex(toDate?.toDateStr?.split('-')[1]) < 10
+          ? `0${getMonthIndex(toDate?.toDateStr?.split('-')[1])}`
+          : getMonthIndex(toDate?.toDateStr?.split('-')[1]);
+
+      const fromMonthIndex =
+        getMonthIndex(finalTodayDate.split('-')[1]) < 10
+          ? `0${getMonthIndex(finalTodayDate.split('-')[1])}`
+          : getMonthIndex(finalTodayDate.split('-')[1]);
+
+      let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
+      toDateStr[1] = fromMonthIndex;
+      toDateStr = toDateStr.join('-');
+
+      let fromDateStr = `${presentYear}-${toMonthIndex}-${presentDate}`;
+
+      try {
+        setLoading(true);
+        const totalOutputDays = await dispatch(
+          getFinalizedLeaveDays({
+            token,
+            employeeId: employeeID,
+            fromDate: fromDateStr,
+            toDate: toDateStr,
+          }),
+        );
+
+        const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
+        const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
+
+        setTotalNumberOfLeaveDays(finalizedLeaveDays);
+        // setTotalNumberOfLeaveDays(totalWeekdays);
         setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
-        fromOnCancel();
-        return;
+      } catch (err) {
+        console.error('err:', err);
+      } finally {
+        setLoading(false);
       }
-
-      // =================================================================
-
-      setTotalNumberOfLeaveDays(totalWeekdays);
-      setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     } else {
       setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
     }
-
-    fromOnCancel();
   };
 
-  const toCalenderConfirm = date => {
-    if (date.getDay() === 0 || date.getDay() === 6) {
+  const toCalenderConfirm = async date => {
+    toOnCancel();
+
+    // if (date.getDay() === 0 || date.getDay() === 6) {
+    //   // date.setDate(date.getDate() + 1);
+    //   alert(
+    //     'Please select a valid end date which should not fall on weekends.',
+    //   );
+    //   toOnCancel();
+    //   return;
+    // }
+
+    if (employeeWeekOffs.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
-      alert(
-        'Please select a valid end date which should not fall on weekends.',
-      );
+      alert('You already have a weekend holiday on this day.');
       toOnCancel();
       return;
     }
@@ -386,27 +458,61 @@ const ApplyLeave = ({navigation, route}) => {
     const presentDate = String(date.getDate()).padStart(2, '0');
     const presentMonth = date.toLocaleString('default', {month: 'short'});
     const presentYear = date.getFullYear();
-
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    const toDateMS = date.getTime();
-    const fromDateMS = fromDate.fromDateObj.getTime();
-    const diffInMS = toDateMS - fromDateMS;
+    // const toDateMS = date.getTime();
+    // const fromDateMS = fromDate.fromDateObj.getTime();
+    // const diffInMS = toDateMS - fromDateMS;
 
-    const totalWeekdays = weekdayCount(fromDate.fromDateObj, date);
+    // const tempDate = new Date(`${fromDate.fromDateStr.split('-')[1]} 1, 2000`);
+    const fromMonthIndex =
+      getMonthIndex(fromDate.fromDateStr.split('-')[1]) < 10
+        ? `0${getMonthIndex(fromDate.fromDateStr.split('-')[1])}`
+        : getMonthIndex(fromDate.fromDateStr.split('-')[1]);
 
-    if (totalWeekdays > 5) {
-      const numberOfLeaveDays = Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
-      setTotalNumberOfLeaveDays(numberOfLeaveDays);
+    const toMonthIndex =
+      getMonthIndex(finalTodayDate.split('-')[1]) < 10
+        ? `0${getMonthIndex(finalTodayDate.split('-')[1])}`
+        : getMonthIndex(finalTodayDate.split('-')[1]);
+
+    let fromDateStr = [...fromDate?.fromDateStr?.split('-')].reverse();
+    fromDateStr[1] = fromMonthIndex;
+    fromDateStr = fromDateStr.join('-');
+
+    let toDateStr = `${presentYear}-${toMonthIndex}-${presentDate}`;
+
+    try {
+      setLoading(true);
+      const totalOutputDays = await dispatch(
+        getFinalizedLeaveDays({
+          token,
+          employeeId: employeeID,
+          fromDate: fromDateStr,
+          toDate: toDateStr,
+        }),
+      );
+
+      const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
+      const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
+      setTotalNumberOfLeaveDays(finalizedLeaveDays);
       setToDate({toDateObj: date, toDateStr: finalTodayDate});
-      toOnCancel();
-      return;
+    } catch (err) {
+      console.error('err:', err);
+    } finally {
+      setLoading(false);
     }
 
-    setTotalNumberOfLeaveDays(totalWeekdays);
+    // const totalWeekdays = weekdayCount(fromDate.fromDateObj, date);
 
-    setToDate({toDateObj: date, toDateStr: finalTodayDate});
-    toOnCancel();
+    // if (totalWeekdays > 5) {
+    //   const numberOfLeaveDays = Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
+    //   setTotalNumberOfLeaveDays(numberOfLeaveDays);
+    //   setToDate({toDateObj: date, toDateStr: finalTodayDate});
+    //   toOnCancel();
+    //   return;
+    // }
+
+    // setTotalNumberOfLeaveDays(totalWeekdays);
   };
 
   const today = new Date();
@@ -821,7 +927,14 @@ const ApplyLeave = ({navigation, route}) => {
   };
   const finalizeLeave = async status => {
     // const empId = +employeeID.match(/\d+/g)[0];
-    const empId = route?.params?.employeeId.match(/\d+/g)[0];
+    // const empId = route?.params?.employeeId.match(/\d+/g)[0];
+    let empId;
+
+    if (fromResource) {
+      empId = +resourceEmployeeID.match(/\d+/g)[0];
+    } else {
+      empId = employeeID;
+    }
 
     const response =
       token &&
@@ -1175,13 +1288,13 @@ const ApplyLeave = ({navigation, route}) => {
                 onPress={finalizeLeave.bind(null, 'Dismissed')}>
                 <Text style={styles.applyText}>Dismiss</Text>
               </Pressable>
-              <Pressable
+              {/* <Pressable
                 style={styles.resourceButton}
                 onPress={() => {
                   setIsEditOpenleave(true);
                 }}>
                 <Text style={styles.applyText}>Edit</Text>
-              </Pressable>
+              </Pressable> */}
               <Pressable
                 style={styles.resourceButton}
                 onPress={() => {

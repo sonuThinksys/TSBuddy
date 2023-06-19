@@ -21,7 +21,7 @@ const WelcomeHeader = () => {
         if (checkIn.error) {
           throw new Error('Time not found.');
         }
-        const checkInDateObj = new Date(checkIn?.payload?.time);
+        const checkInDateObj = new Date(checkIn?.payload[0]?.time);
         const totalSpentTime = +(new Date() - checkInDateObj);
 
         const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
@@ -34,7 +34,7 @@ const WelcomeHeader = () => {
           hours,
           minutes,
           seconds,
-          empMachineCode: +checkIn.payload.employeeMachineCode,
+          empMachineCode: +checkIn?.payload[0].employeeMachineCode,
         });
       } catch (err) {
         console.log('err:', err);
@@ -59,11 +59,18 @@ const WelcomeHeader = () => {
           currentSeconds += 1;
         }
 
-        setCheckInDetails({
+        // setCheckInDetails({
+        //   hours: currentHours,
+        //   minutes: currentMinutes,
+        //   seconds: currentSeconds,
+        // });
+
+        setCheckInDetails(currentCheckInDetails => ({
+          ...currentCheckInDetails,
           hours: currentHours,
           minutes: currentMinutes,
           seconds: currentSeconds,
-        });
+        }));
       }, 1000);
 
       return () => {
@@ -72,11 +79,24 @@ const WelcomeHeader = () => {
     }
   }, [checkInDetails.seconds]);
   const userName = profileData?.employeeName;
+
+  const todayDateObject = new Date();
+  const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome, </Text>
-        <Text style={styles.nameText}> {userName || 'N/A'}</Text>
+        <Text style={styles.nameText}> {userName}</Text>
+        {/* <Text style={styles.nameText}> {userName || 'N/A'}</Text> */}
       </View>
       <View style={styles.infoContainer}>
         <View style={styles.headingContainer}>
@@ -100,12 +120,21 @@ const WelcomeHeader = () => {
           </Text>
         </View>
         <View style={styles.dateContainer}>
-          <Text style={styles.dayMonthText}>Tuesday, Mar </Text>
-          <Text style={styles.dateYearText}>28, 2023</Text>
+          <Text style={styles.dayMonthText}>
+            {daysOfWeek[todayDateObject.getDay()]},{' '}
+            {todayDateObject.toLocaleString('en-US', {month: 'short'})}{' '}
+          </Text>
+          <Text style={styles.dateYearText}>
+            {todayDateObject?.getDate()}, {todayDateObject.getFullYear()}
+          </Text>
         </View>
-        <View style={styles.addressContainer}>
-          <Text style={styles.addressText}>Noida Sector 62, Uttar Pradesh</Text>
-        </View>
+        {checkInDetails?.empMachineCode !== 0 ? (
+          <View style={styles.addressContainer}>
+            <Text style={styles.addressText}>
+              Noida Sector 62, Uttar Pradesh
+            </Text>
+          </View>
+        ) : null}
         <View style={styles.lateContainer}>
           <Text style={styles.lateText}>Late by 15:42 min</Text>
         </View>
