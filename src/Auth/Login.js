@@ -149,7 +149,7 @@ const Login = ({navigation}) => {
 
       if (result?.error) {
         ShowAlert({
-          messageHeader: ERROR,
+          messageHeader: 'Invalid credentials',
           messageSubHeader: INCORRECT_LOGIN,
           buttonText: 'CLOSE',
           dispatch,

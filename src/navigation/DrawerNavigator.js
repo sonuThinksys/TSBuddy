@@ -361,6 +361,29 @@ const RegularisationStackScreen = ({navigation}) => {
         name={'RegularisationForm'}
         component={RegularisationFormDetails}
       />
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  Regularisation Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'regularisationTabDetailsScreen'}
+        component={RegularisationTabDetails}
+      />
     </RegularisationStack.Navigator>
   );
 };
@@ -473,18 +496,30 @@ const ResourcesStackScreen = ({navigation}) => {
         name={ResourcesDetailsScreen}
         component={ResourcesDetails}
       />
+
       <ResourcesStack.Screen
         options={({navigation}) => {
           return CustomHeader({navigation, title: 'Leave Details'});
         }}
-        name={'resourceLeaveDetailsScreen'}
+        name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
-      <ResourcesStack.Screen
+      {/* <ResourcesStack.Screen
         options={({navigation}) => {
           return CustomHeader({navigation, title: 'Finalize Leave'});
         }}
         name={'resourceLeaveDetailsScreenOpen'}
+        // name={'resourceLeaveDetailsScreenOpen'}
+        component={LeaveDetails}
+      /> */}
+      <ResourcesStack.Screen
+        options={drawerOption({
+          label: 'Apply Leave',
+          showDrawer: false,
+          showHeaderRight: false,
+          navigation: navigation,
+        })}
+        name={LeaveApplyScreen}
         component={ApplyLeave}
       />
 
@@ -493,7 +528,7 @@ const ResourcesStackScreen = ({navigation}) => {
           headerStyle: {
             backgroundColor: Colors.darkBlue,
           },
-          title: '  Attaidance Details',
+          title: 'WFH Detail',
           headerTintColor: Colors.white,
           headerLeft: () => (
             <TouchableOpacity
@@ -508,8 +543,31 @@ const ResourcesStackScreen = ({navigation}) => {
           ),
           headerShadowVisible: true,
         })}
-        name={'attaindanceDetailsScreen'}
-        component={AttaindanceDetails}
+        name={'workFromHomeLeaveDetailsScreen'}
+        component={LeaveDetails}
+      />
+      <ResourcesStack.Screen
+        options={({navigation}) => ({
+          headerStyle: {
+            backgroundColor: Colors.darkBlue,
+          },
+          title: '  WFH Details',
+          headerTintColor: Colors.white,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 20, width: 20}}
+              />
+            </TouchableOpacity>
+          ),
+          headerShadowVisible: true,
+        })}
+        name={'workFromHomeLeaveApplyScreenOpen'}
+        component={ApplyLeave}
       />
 
       <ResourcesStack.Screen

@@ -13,6 +13,7 @@ import {GetDailyAttendanceByEmpId} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {Colors} from 'colors/Colors';
+import Loader from 'component/LoadingScreen/LoadingScreen';
 
 const AttendenceTab = ({employeeID, employeeName}) => {
   const dispatch = useDispatch();
@@ -56,6 +57,10 @@ const AttendenceTab = ({employeeID, employeeName}) => {
     })();
   }, []);
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <ScrollView style={styles.mainContainer}>
       {attendenceArray?.length > 0
@@ -69,17 +74,6 @@ const AttendenceTab = ({employeeID, employeeName}) => {
             );
           })
         : null}
-
-      {loading ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <ActivityIndicator size="large" color={Colors.black} />
-        </View>
-      ) : null}
     </ScrollView>
   );
 };

@@ -99,7 +99,7 @@ const Regularization = ({navigation, route}) => {
     (async () => {
       const workMode =
         token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
-      setWorkMode(workMode.payload.workMode); 
+      setWorkMode(workMode.payload.workMode);
     })();
   }, []);
 

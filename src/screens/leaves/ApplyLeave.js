@@ -43,6 +43,7 @@ import {
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
+import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
 
 const ApplyLeave = ({navigation, route}) => {
   function getMonthIndex(shortForm) {
@@ -77,11 +78,12 @@ const ApplyLeave = ({navigation, route}) => {
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
   const fromOpenLeave = route?.params?.fromOpenLeave || false;
+  const resourceEmployeeID = route?.params?.resourceEmployeeID || false;
   const [isEditOpenleave, setIsEditOpenleave] = useState(false);
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-  const resourceEmployeeID = resourceData?.employeeId;
+  // const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
   const fromDateObj = new Date(resourceData?.fromDate);
@@ -952,6 +954,7 @@ const ApplyLeave = ({navigation, route}) => {
 
     setLoading(false);
     if (response?.error) {
+      console.log('Responce >> ', response?.error);
       // alert(response?.error?.message);
       Alert.alert('Failed', `Leave ${status} failed!`, [
         {
