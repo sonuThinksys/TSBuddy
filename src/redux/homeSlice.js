@@ -93,6 +93,55 @@ const snacks = 'snacks';
 //   },
 // );
 
+export const getFinalizedLeaveDays = createAsyncThunk(
+  'getFinalizedLeaveDays',
+  async ({token, employeeId, fromDate, toDate}) => {
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // };
+    const {getTotalLeaveDays} = endPoints;
+
+    const url = `${getTotalLeaveDays}${employeeId}&fromDate=${fromDate}&toDate=${toDate}`;
+
+    var config = {
+      method: 'get',
+      url: url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    // const url = `http://10.101.23.48:81/api/Leave/GetTotalLeaveDays?employeeId=10868&fromDate=2023-06-14&toDate=2023-06-26`;
+
+    try {
+      // const {data, status} = await axios.get(url, config);
+      // const {data, status} = await axios.get(url, config);
+      const {data, status} = await axios(config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const getEmployeeShift = createAsyncThunk(
   'getEmployeeShift',
   async ({token, id}) => {

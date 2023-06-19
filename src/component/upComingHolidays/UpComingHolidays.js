@@ -42,6 +42,7 @@ const UpComingHolidays = ({navigation}) => {
           buttonText: 'Close',
           dispatch,
           navigation,
+          isTokenExpired: false,
         });
       }
     })();

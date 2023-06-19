@@ -56,6 +56,7 @@ const MenuItem = ({navigation}) => {
       (async () => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
+          // const menuDetails = await dispatch(getTodayMenuDetails(token));
           setTodayMenu([
             {
               type: breakfast,
@@ -81,6 +82,7 @@ const MenuItem = ({navigation}) => {
               buttonText: 'Close',
               dispatch,
               navigation,
+              isTokenExpired: false,
             });
           }
         } catch (err) {}

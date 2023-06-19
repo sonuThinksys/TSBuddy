@@ -175,8 +175,19 @@ const renderDrawerItem = (
                       );
 
                     dispatch(logOut());
+
                     setTimeout(() => {
                       dispatch(homeReset());
+                      // navigation &&
+                      //   navigation.dispatch(
+                      //     CommonActions.reset({
+                      //       routes: [
+                      //         {
+                      //           name: 'Home',
+                      //         },
+                      //       ],
+                      //     }),
+                      //   );
                     }, 20);
                   }
                   // ========================================================================

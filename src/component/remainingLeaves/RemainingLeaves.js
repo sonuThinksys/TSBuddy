@@ -117,6 +117,18 @@ const RemainingLeaves = () => {
     try {
       setLoading(true);
       const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
+
+      if (empData?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: empData?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+          isTokenExpired: false,
+        });
+      }
+
       const openCount = openLeavesCount({leaves: allLeaves?.payload});
       setOpenLeaves(openCount);
     } catch (err) {

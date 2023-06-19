@@ -10,7 +10,15 @@ const ShowAlert = props => {
     buttonText = 'Close',
     onPress,
     dispatch,
+    isTokenExpired,
   } = props || {};
+
+  if (
+    isTokenExpired === false &&
+    messageSubHeader.toLowerCase() == 'token-expired'
+  ) {
+    return null;
+  }
   if (messageSubHeader.toLowerCase() == 'token-expired') {
     Alert.alert('Login expired', 'Please login again!', [
       {

@@ -36,4 +36,5 @@ export default {
   getEmployeeWorkMode: `${API_URL}/Attendance/GetEmployeeWorkMode?empId=`,
   getTodayCheckInTime: `${API_URL}/Attendance/GetTodayAttendanceInTime`,
   getEmployeeShift: `${API_URL}/FoodRequest/GetEmployeeShift?empId=`,
+  getTotalLeaveDays: `${API_URL}/Leave/GetTotalLeaveDays?employeeId=`,
 };

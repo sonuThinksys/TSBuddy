@@ -46,7 +46,12 @@ const Home = ({navigation}) => {
 
         const empData =
           token &&
-          (await dispatch(getEmployeeProfileData({token, employeeID})));
+          (await dispatch(
+            getEmployeeProfileData({
+              token,
+              employeeID,
+            }),
+          ));
 
         if (empData?.error) {
           ShowAlert({
@@ -55,7 +60,12 @@ const Home = ({navigation}) => {
             buttonText: 'Close',
             dispatch,
             navigation,
+            isTokenExpired: true,
           });
+
+          if (empData?.error?.message.toLowerCase() === 'token-expired') {
+            return;
+          }
         }
       } catch (err) {
         setLoading(false);
@@ -96,9 +106,9 @@ const Home = ({navigation}) => {
         data={data}
         style={{flex: 1}}
         keyExtractor={(item, index) => index}
-        renderItem={({item}) => {
+        renderItem={({item, index}) => {
           let Component = item;
-          return <Component />;
+          return <Component isTokenExpired={index === 0 ? true : false} />;
         }}
       />
     </View>
