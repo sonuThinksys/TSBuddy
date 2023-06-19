@@ -482,7 +482,6 @@ export const updateAttRegularizeStatus = createAsyncThunk(
 export const getEmployeeRegularizationRequest = createAsyncThunk(
   'home/getEmployeeRegularizationRequest',
   async ({token, empId}) => {
-    console.log('getEmployeeRegularizationRequest', empId, token);
     const config = {
       method: 'get',
       url: `${endPoints.getEmployeeRegularizationRequest}${empId}`,
@@ -853,10 +852,10 @@ export const getHolidaysData = createAsyncThunk(
 
 export const getLeaveDetails = createAsyncThunk(
   'home/getWalkThroughList',
-  async ({token, employeeID}) => {
+  async ({token, empID}) => {
     var config = {
       method: 'get',
-      url: `${endPoints.leaveDetails}${employeeID}`,
+      url: `${endPoints.leaveDetails}${empID}`,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -866,7 +865,6 @@ export const getLeaveDetails = createAsyncThunk(
     return axios(config)
       .then(async response => {
         const {data, status} = response;
-
         if (status === 200) {
           return Promise.resolve(data);
         } else {

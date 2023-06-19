@@ -43,7 +43,6 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
-import {TouchableHighlight} from 'react-native-gesture-handler';
 
 const ApplyLeave = ({navigation, route}) => {
   const {
@@ -63,11 +62,12 @@ const ApplyLeave = ({navigation, route}) => {
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
   const fromOpenLeave = route?.params?.fromOpenLeave || false;
+  const resourceEmployeeID = route?.params?.resourceEmployeeID || false;
   const [isEditOpenleave, setIsEditOpenleave] = useState(false);
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-  const resourceEmployeeID = resourceData?.employeeId;
+  // const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
   const fromDateObj = new Date(resourceData?.fromDate);
@@ -814,7 +814,8 @@ const ApplyLeave = ({navigation, route}) => {
   };
   const finalizeLeave = async status => {
     // const empId = +employeeID.match(/\d+/g)[0];
-    const empId = route?.params?.employeeId.match(/\d+/g)[0];
+    // const empId = route?.params?.employeeId.match(/\d+/g)[0];
+    const empId = route?.params?.resourceEmployeeID;
 
     const response =
       token &&
@@ -832,6 +833,7 @@ const ApplyLeave = ({navigation, route}) => {
 
     setLoading(false);
     if (response?.error) {
+      console.log('Responce >> ', response?.error);
       // alert(response?.error?.message);
       Alert.alert('Failed', `Leave ${status} failed!`, [
         {

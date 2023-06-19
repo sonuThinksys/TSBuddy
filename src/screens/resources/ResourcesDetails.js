@@ -4,21 +4,15 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  Image,
   Pressable,
-  FlatList,
-  TouchableOpacity,
 } from 'react-native';
 import {Colors} from 'colors/Colors';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
 import AttendenceTab from './AttendenceTab';
 import {FontFamily} from 'constants/fonts';
 import {useIsFocused} from '@react-navigation/native';
@@ -27,11 +21,17 @@ import CommunicationModal from 'modals/CommunicationModal';
 import RegularisationTab from './RegularisationTab';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import LeavesList from 'reusableComponents/LeavesList';
+import {
+  getEmployeeRegularizationRequest,
+  getResourcesEmployeesLeaves,
+  modalStatus,
+} from 'redux/homeSlice';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
 
 const screenWidth = Dimensions.get('window').width;
 
 const ResourcesDetails = ({route, navigation}) => {
-  const isFocused = useIsFocused();
   const {
     designation,
     employeeName,
@@ -41,8 +41,6 @@ const ResourcesDetails = ({route, navigation}) => {
     companyEmail,
     cellNumber,
   } = route.params;
-
-  let isFromResource = true;
 
   const employeeID = employeeId?.split('/')[1];
 
@@ -58,6 +56,57 @@ const ResourcesDetails = ({route, navigation}) => {
   const [regCount, setRegCount] = useState(0);
   const [empDetail, setClickData] = useState({});
 
+  useEffect(() => {
+    if (isFocussed) {
+      (async () => {
+        const regularisationRequests = await dispatch(
+          getEmployeeRegularizationRequest({token, empId: employeeID}),
+        );
+        let count = 0;
+        regularisationRequests.payload.forEach(element => {
+          if (element.status == 'Open') {
+            count++;
+          }
+        });
+        setRegCount(count);
+        if (regularisationRequests?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: regularisationRequests?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+          });
+        }
+      })();
+
+      (async () => {
+        const leavesData = await dispatch(
+          getResourcesEmployeesLeaves({
+            token,
+            empID: employeeID,
+          }),
+        );
+
+        let wfhCount = 0;
+        leavesData?.payload?.employeeWfh?.forEach(element => {
+          if (element.status == 'Open') {
+            wfhCount++;
+          }
+        });
+        setWfhCount(wfhCount);
+
+        if (leavesData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leavesData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+          });
+        }
+      })();
+    }
+  }, [isFocussed]);
+
   const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
     useSelector(state => state.home);
 
@@ -65,12 +114,31 @@ const ResourcesDetails = ({route, navigation}) => {
     setOpenCount(count);
   };
 
-  const getWfhCount = count => {
-    setWfhCount(count);
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
   };
 
-  const getRegCount = count => {
-    setRegCount(count);
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
   };
 
   if (isLoading) {
@@ -85,6 +153,9 @@ const ResourcesDetails = ({route, navigation}) => {
       <SafeAreaView style={{flex: 1}}>
         <View style={style.container}>
           <ResourceProfileDetails
+            dialCall={dialCall}
+            sendMail={sendMail}
+            sendMessage={sendMessage}
             empDetails={{
               employeeName,
               image,
@@ -182,7 +253,7 @@ const ResourcesDetails = ({route, navigation}) => {
                 ]}>
                 <View style={{position: 'relative'}}>
                   <Text style={{color: 'white', fontSize: 17}}>Reg</Text>
-                  {wfhCount >= 0 ? (
+                  {regCount > 0 ? (
                     <View style={style.badges_number}>
                       <Text
                         style={{
@@ -215,14 +286,12 @@ const ResourcesDetails = ({route, navigation}) => {
             <WfhTab
               employeeName={employeeName}
               employeeID={employeeID}
-              getWfhCount={getWfhCount}
               fromResource={true}
             />
           ) : (
             <RegularisationTab
               employeeName={employeeName}
               employeeID={employeeID}
-              getRegCount={getRegCount}
             />
           )}
         </View>

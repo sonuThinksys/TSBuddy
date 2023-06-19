@@ -41,8 +41,6 @@ const RequestLunch = ({navigation}) => {
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
 
-  console.log('dateData dateData', dateData);
-
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
   });

@@ -20,6 +20,7 @@ import {
 const screenWidth = Dimensions.get('window').width;
 
 const ResourceProfileDetails = props => {
+  console.log('Props >>', props);
   const {
     employeeName,
     image,
@@ -29,32 +30,6 @@ const ResourceProfileDetails = props => {
     managerInfoDto,
   } = props.empDetails;
 
-  const dialCall = () => {
-    // setClickData({
-    //   medium: isGuestLogin ? '9801296234' : cellNumber,
-    //   nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-    //   text: 'Call',
-    // });
-    // dispatch(modalStatus(true));
-  };
-
-  const sendMail = () => {
-    // setClickData({
-    //   medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-    //   nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-    //   text: 'Send Mail to',
-    // });
-    // dispatch(modalStatus(true));
-  };
-
-  const sendMessage = async () => {
-    // setClickData({
-    //   medium: isGuestLogin ? '9801296234' : cellNumber,
-    //   nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
-    //   text: 'Send SMS to',
-    // });
-    // dispatch(modalStatus(true));
-  };
   return (
     <View style={{backgroundColor: Colors.colorDodgerBlue2, marginBottom: 5}}>
       <View style={style.profile_name_cont}>
@@ -68,9 +43,7 @@ const ResourceProfileDetails = props => {
           ) : (
             <Image
               resizeMode="stretch"
-              source={{
-                uri: 'https://t4.ftcdn.net/jpg/00/84/67/19/360_F_84671939_jxymoYZO8Oeacc3JRBDE8bSXBWj0ZfA9.jpg',
-              }}
+              source={MonthImages.ProfileIcon}
               style={style.image}
             />
           )}
@@ -84,7 +57,7 @@ const ResourceProfileDetails = props => {
         <View style={style.social_inner_cont}>
           <TouchableOpacity
             onPress={() => {
-              sendMail();
+              props.sendMail();
             }}>
             <View style={style.social_icon}>
               <Image
@@ -95,7 +68,7 @@ const ResourceProfileDetails = props => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              dialCall();
+              props.dialCall();
             }}>
             <View style={style.social_icon}>
               <Image
@@ -106,7 +79,7 @@ const ResourceProfileDetails = props => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              sendMessage();
+              props.sendMessage();
             }}>
             <View style={style.social_icon}>
               <Image

@@ -18,6 +18,7 @@ const Leaves = ({navigation}) => {
   );
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
+
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
   const [openLeaves, setOpenLeaves] = useState({earnedOpen: 0, rhOpen: 0});

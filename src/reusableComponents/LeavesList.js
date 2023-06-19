@@ -42,7 +42,6 @@ const LeavesList = props => {
     resourceEmployeeID,
     employeeId,
   } = props;
-
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
@@ -68,23 +67,31 @@ const LeavesList = props => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const leavesData = await dispatch(
-        getResourcesEmployeesLeaves({
-          token,
-          empID: fromResource ? resourceEmployeeID : employeeId,
-        }),
-      );
-      console.log('leavesData', leavesData.payload);
+      const leavesData = fromResource
+        ? await dispatch(
+            getResourcesEmployeesLeaves({
+              token,
+              empID: resourceEmployeeID,
+            }),
+          )
+        : await dispatch(
+            getLeaveDetails({
+              token,
+              empID: employeeId,
+            }),
+          );
+
       setLoading(false);
       let count = 0;
       leavesData?.payload?.employeeLeaves?.forEach(element => {
         if (element.status == 'Open') {
           count++;
-          console.log('in');
         }
       });
       fromResource && getLeaveCount(count);
-      setResourcesEmployeesLeaves(leavesData?.payload?.employeeLeaves);
+      fromResource
+        ? setResourcesEmployeesLeaves(leavesData?.payload?.employeeLeaves)
+        : setResourcesEmployeesLeaves(leavesData?.payload);
 
       if (leavesData?.error) {
         ShowAlert({
@@ -97,6 +104,19 @@ const LeavesList = props => {
     })();
   }, []);
 
+  const handleNavigation = item => {
+    if (item.status == 'Open') {
+      navigation.navigate(LeaveApplyScreen, {
+        ...item,
+        resourceEmployeeID,
+        fromOpenLeave,
+        fromResource,
+      });
+    } else {
+      navigation.navigate(LeaveDetailsScreen, item);
+    }
+  };
+
   const renderItem = ({item}) => {
     if (filteredSelectedDate) {
       const shouldRender =
@@ -105,20 +125,8 @@ const LeavesList = props => {
       if (!shouldRender) return null;
     }
 
-    const handleNavigation = () => {
-      if (item.status == 'Open') {
-        navigation.navigate(LeaveApplyScreen, {
-          ...item,
-          fromOpenLeave,
-          fromResource,
-        });
-      } else {
-        navigation.navigate(LeaveDetailsScreen, item);
-      }
-    };
-
     return (
-      <TouchableOpacity onPress={() => handleNavigation()}>
+      <TouchableOpacity onPress={() => handleNavigation(item)}>
         <View style={styles.flateListView}>
           <View
             style={{

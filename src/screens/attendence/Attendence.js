@@ -535,6 +535,7 @@ const RenderCalender = ({
             paddingHorizontal: 1,
             backgroundColor: Colors.blue,
           },
+
           headerContainer: {
             flexDirection: 'row',
             width: '100%',
