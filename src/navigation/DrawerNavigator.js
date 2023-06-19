@@ -425,7 +425,7 @@ const RegularisationStackScreen = ({navigation}) => {
     <RegularisationStack.Navigator>
       <RegularisationStack.Screen
         options={drawerOption({
-          label: 'Resource List',
+          label: 'Regularisation Resource List',
           navigation: navigation,
         })}
         name={'Resource List screen'}
@@ -433,14 +433,14 @@ const RegularisationStackScreen = ({navigation}) => {
       />
       <RegularisationStack.Screen
         options={drawerOption({
-          label: 'Regularisation Form',
+          label: 'Regularisation List',
           navigation: navigation,
           showDrawer: false,
         })}
         name={'RegularisationForm'}
         component={RegularisationFormDetails}
       />
-      <ResourcesStack.Screen
+      <RegularisationStack.Screen
         options={({navigation}) => ({
           headerStyle: {
             backgroundColor: Colors.darkBlue,

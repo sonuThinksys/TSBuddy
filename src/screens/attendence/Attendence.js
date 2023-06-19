@@ -112,12 +112,12 @@ const Attendence = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
-  function getDaysInMonth(monthIndex) {
-    const date = new Date(new Date().getFullYear(), monthIndex, 1);
-    date.setMonth(date.getMonth() + 1);
-    date.setDate(date.getDate() - 1);
-    return date.getDate();
-  }
+  // function getDaysInMonth(monthIndex) {
+  //   const date = new Date(new Date().getFullYear(), monthIndex, 1);
+  //   date.setMonth(date.getMonth() + 1);
+  //   date.setDate(date.getDate() - 1);
+  //   return date.getDate();
+  // }
 
   async function fetchData() {
     if (employeeID && token) {
