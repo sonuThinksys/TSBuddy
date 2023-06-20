@@ -928,16 +928,15 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
   const finalizeLeave = async status => {
-    // const empId = +employeeID.match(/\d+/g)[0];
-    // const empId = route?.params?.employeeId.match(/\d+/g)[0];
-    let empId;
+    // let empId;
 
-    if (fromResource) {
-      empId = +resourceEmployeeID.match(/\d+/g)[0];
-    } else {
-      empId = employeeID;
-    }
+    // if (fromResource) {
+    //   empId = +resourceEmployeeID.match(/\d+/g)[0];
+    // } else {
+    //   empId = employeeID;
+    // }
 
+    const empId = fromResource ? route?.params?.resourceEmployeeID : employeeID;
     const response =
       token &&
       (await dispatch(
@@ -954,7 +953,6 @@ const ApplyLeave = ({navigation, route}) => {
 
     setLoading(false);
     if (response?.error) {
-      console.log('Responce >> ', response?.error);
       // alert(response?.error?.message);
       Alert.alert('Failed', `Leave ${status} failed!`, [
         {

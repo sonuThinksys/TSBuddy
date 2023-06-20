@@ -56,7 +56,7 @@ const LeavesList = props => {
   const [filteredSelectedDate, setFilteredSelectedDate] = useState(null);
   const [openLeaves, setOpenLeaves] = useState({earnedOpen: 0, rhOpen: 0});
   const [loading, setLoading] = useState(false);
-  const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
+  const [employeeLeaves, setEmployeesLeaves] = useState([]);
 
   useEffect(() => {
     if (isFocussed && flatListRef.current) {
@@ -81,6 +81,20 @@ const LeavesList = props => {
             }),
           );
 
+      const sortLeaveData = !fromResource
+        ? leavesData?.payload?.sort((a, b) => {
+            return (
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+            );
+          })
+        : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+            return (
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+            );
+          });
+
+      setEmployeesLeaves(sortLeaveData);
+
       setLoading(false);
       let count = 0;
       leavesData?.payload?.employeeLeaves?.forEach(element => {
@@ -89,9 +103,6 @@ const LeavesList = props => {
         }
       });
       fromResource && getLeaveCount(count);
-      fromResource
-        ? setResourcesEmployeesLeaves(leavesData?.payload?.employeeLeaves)
-        : setResourcesEmployeesLeaves(leavesData?.payload);
 
       if (leavesData?.error) {
         ShowAlert({
@@ -102,7 +113,7 @@ const LeavesList = props => {
         });
       }
     })();
-  }, []);
+  }, [isFocussed]);
 
   const handleNavigation = item => {
     if (item.status == 'Open') {
@@ -211,11 +222,11 @@ const LeavesList = props => {
         }}>
         {isGuestLogin ? (
           renderNoLeaves()
-        ) : resurcesEmployeeLeaves?.length > 0 ? (
+        ) : employeeLeaves?.length > 0 ? (
           <FlatList
             ref={flatListRef}
             showsVerticalScrollIndicator={false}
-            data={resurcesEmployeeLeaves}
+            data={employeeLeaves}
             renderItem={renderItem}
             keyExtractor={(_, index) => index}
           />
