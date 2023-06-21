@@ -1,6 +1,6 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -44,8 +44,11 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
+import CustomHeader from 'navigation/CustomHeader';
 
 const ApplyLeave = ({navigation, route}) => {
+  console.log('navigationStack:', navigation);
+  console.log('routeParams:', route?.params?.fromHomeApplyLeave);
   function getMonthIndex(shortForm) {
     const months = [
       'Jan',
@@ -666,8 +669,7 @@ const ApplyLeave = ({navigation, route}) => {
           scrollEnabled={true}
           contentContainerStyle={{flexGrow: 1}}
           style={{
-            backgroundColor: Colors.darkBlue,
-            // height: hp(10),
+            backgroundColor: Colors.lighterBlue,
             paddingHorizontal: wp(2.4),
             paddingVertical: hp(1.2),
             flex: 1,
@@ -676,11 +678,6 @@ const ApplyLeave = ({navigation, route}) => {
           data={leaves}
           renderItem={({item, index}) => {
             return leaveCard(item, index);
-            // <View style={styles.sliderComp}>
-            //   <Text style={{color: Colors.white}}>
-            //     {item}einnsifugvlfd;nfnliThe
-            //   </Text>
-            // </View>
           }}
           keyExtractor={(item, index) => index}
         />
@@ -985,67 +982,143 @@ const ApplyLeave = ({navigation, route}) => {
 
   return (
     // <KeyboardAvoidingView behavior="height" style={styles.mainContainer}>
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.swiperContainer}>{sliderComponent()}</View>
-      <View
-        showsVerticalScrollIndicator={false}
-        style={{flex: 1}}
-        contentContainerStyle={{
-          justifyContent: 'space-between',
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Apply Leave"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.swiperContainer}>{sliderComponent()}</View>
+        <View
+          showsVerticalScrollIndicator={false}
+          style={{flex: 1}}
+          contentContainerStyle={{
+            justifyContent: 'space-between',
 
-          flexGrow: 1,
-        }}>
-        <View style={styles.mainPart}>
-          <View style={[styles.formContainer]}>
-            <ScrollView>
-              {card({
-                leftLabel: 'From',
-                rightLabel: 'To',
-                selectableLeft: true,
-                selectableRight: true,
-                iconLeft: MonthImages.CalenderIcon,
-                iconRight: MonthImages.CalenderIcon,
-                leftOnPress: showFromDatePicker,
-                rightOnPress: showToDatePicker,
-                leftText: isEditOpenleave
-                  ? fromDate.fromDateStr
-                  : fromOpenLeave
-                  ? openLeaveFromDatestr
-                  : fromDate.fromDateStr,
-                rightText: isEditOpenleave
-                  ? toDate.toDateStr
-                  : fromOpenLeave
-                  ? openLeaveTooDatestr
-                  : toDate.toDateStr,
-                zIndex: 1000,
-                resourseRightText: toDatestr,
-                rightDisabled: !fromDate.fromDateObj,
-              })}
-              {card({
-                zIndex: 1000,
-                leftLabel: 'Created Date',
-                rightLabel: 'Half Day',
-                selectableRight: true,
-                leftText: isEditOpenleave
-                  ? finalTodayDate
-                  : fromResource
-                  ? postingDateStr
-                  : fromOpenLeave
-                  ? openLeavePostingDateStr
-                  : finalTodayDate,
-                iconRight: MonthImages.DropDownIcon,
-                rightText: 'None',
-                rightDropdown: (
-                  <View>
+            flexGrow: 1,
+          }}>
+          <View style={styles.mainPart}>
+            <View style={[styles.formContainer]}>
+              <ScrollView>
+                {card({
+                  leftLabel: 'From',
+                  rightLabel: 'To',
+                  selectableLeft: true,
+                  selectableRight: true,
+                  iconLeft: MonthImages.CalenderIcon,
+                  iconRight: MonthImages.CalenderIcon,
+                  leftOnPress: showFromDatePicker,
+                  rightOnPress: showToDatePicker,
+                  leftText: isEditOpenleave
+                    ? fromDate.fromDateStr
+                    : fromOpenLeave
+                    ? openLeaveFromDatestr
+                    : fromDate.fromDateStr,
+                  rightText: isEditOpenleave
+                    ? toDate.toDateStr
+                    : fromOpenLeave
+                    ? openLeaveTooDatestr
+                    : toDate.toDateStr,
+                  zIndex: 1000,
+                  resourseRightText: toDatestr,
+                  rightDisabled: !fromDate.fromDateObj,
+                })}
+                {card({
+                  zIndex: 1000,
+                  leftLabel: 'Created Date',
+                  rightLabel: 'Half Day',
+                  selectableRight: true,
+                  leftText: isEditOpenleave
+                    ? finalTodayDate
+                    : fromResource
+                    ? postingDateStr
+                    : fromOpenLeave
+                    ? openLeavePostingDateStr
+                    : finalTodayDate,
+                  iconRight: MonthImages.DropDownIcon,
+                  rightText: 'None',
+                  rightDropdown: (
+                    <View>
+                      <ModalDropdown
+                        disabled={
+                          !fromDate.fromDateObj ||
+                          !toDate.toDateObj ||
+                          totalNumberOfLeaveDays > 1 ||
+                          fromResource ||
+                          (!isEditOpenleave && fromOpenLeave)
+                        }
+                        renderButtonText={renderButtonText}
+                        style={{
+                          borderWidth: 1,
+                          backgroundColor: Colors.white,
+                          borderRadius: 3,
+                          paddingVertical: 5,
+                          height: 32,
+                        }}
+                        isFullWidth={true}
+                        showsVerticalScrollIndicator={false}
+                        defaultValue={
+                          !fromResource
+                            ? 'Select'
+                            : resourceHalfDay === 0
+                            ? 'None'
+                            : resourceHalfDay === 1
+                            ? 'First Half'
+                            : 'Second Half'
+                        }
+                        options={newDropDownOptions}
+                        dropdownStyle={{
+                          width: '45%',
+                          paddingLeft: 10,
+                          height: 100,
+                        }}
+                        renderRow={renderRow}
+                        onSelect={(index, itemName) => {
+                          if (itemName !== none) {
+                            setTotalNumberOfLeaveDays(0.5);
+                          } else {
+                            setTotalNumberOfLeaveDays(1);
+                          }
+                          setHalfDay(itemName);
+                        }}
+                        renderRightComponent={
+                          !fromResource
+                            ? renderRightComponent
+                            : renderRightComponentResource
+                        }
+                      />
+                    </View>
+                  ),
+                })}
+
+                {card({
+                  zIndex: 1000,
+                  leftLabel: 'Leave Type',
+                  rightLabel: 'Number of Days',
+                  selectableLeft: true,
+                  iconLeft: MonthImages.DropDownIcon,
+                  rightText:
+                    totalNumberOfLeaveDays >= 0.5
+                      ? totalNumberOfLeaveDays
+                      : fromOpenLeave
+                      ? openLeaveNumberOfDays
+                      : '',
+                  leftText: fromResource
+                    ? resourceData.leaveType
+                    : fromOpenLeave
+                    ? openLeaveType
+                    : 'Earned Leave',
+                  resourseRightText: resourceData?.totalLeaveDays,
+                  leftDropdown: (
+                    // <View>
+
                     <ModalDropdown
                       disabled={
-                        !fromDate.fromDateObj ||
-                        !toDate.toDateObj ||
-                        totalNumberOfLeaveDays > 1 ||
-                        fromResource ||
-                        (!isEditOpenleave && fromOpenLeave)
+                        fromResource || (!isEditOpenleave && fromOpenLeave)
                       }
-                      renderButtonText={renderButtonText}
                       style={{
                         borderWidth: 1,
                         backgroundColor: Colors.white,
@@ -1056,150 +1129,116 @@ const ApplyLeave = ({navigation, route}) => {
                       isFullWidth={true}
                       showsVerticalScrollIndicator={false}
                       defaultValue={
-                        !fromResource
-                          ? 'Select'
-                          : resourceHalfDay === 0
-                          ? 'None'
-                          : resourceHalfDay === 1
-                          ? 'First Half'
-                          : 'Second Half'
+                        fromResource
+                          ? resourceData.leaveType
+                          : fromOpenLeave
+                          ? openLeaveType
+                          : 'Select'
                       }
-                      options={newDropDownOptions}
+                      options={leaveTypes}
                       dropdownStyle={{
                         width: '45%',
-                        paddingLeft: 10,
-                        height: 100,
+                        paddingLeft: 6,
                       }}
+                      animated={true}
                       renderRow={renderRow}
                       onSelect={(index, itemName) => {
-                        if (itemName !== none) {
-                          setTotalNumberOfLeaveDays(0.5);
-                        } else {
-                          setTotalNumberOfLeaveDays(1);
-                        }
-                        setHalfDay(itemName);
+                        const itemIndex = leaves.findIndex(
+                          item => item.leaveType === itemName,
+                        );
+                        flatListRef.current?.scrollToIndex({
+                          animated: true,
+                          index: index,
+                          viewPosition: 0.5,
+                        });
+                        setSelectedCard({leaveType: itemName});
+                        setLeaveType(itemName);
                       }}
-                      renderRightComponent={
-                        !fromResource
-                          ? renderRightComponent
-                          : renderRightComponentResource
-                      }
+                      renderRightComponent={renderRightComponent}
                     />
-                  </View>
-                ),
-              })}
+                    // </View>
+                  ),
+                })}
 
-              {card({
-                zIndex: 1000,
-                leftLabel: 'Leave Type',
-                rightLabel: 'Number of Days',
-                selectableLeft: true,
-                iconLeft: MonthImages.DropDownIcon,
-                rightText:
-                  totalNumberOfLeaveDays >= 0.5
-                    ? totalNumberOfLeaveDays
-                    : fromOpenLeave
-                    ? openLeaveNumberOfDays
-                    : '',
-                leftText: fromResource
-                  ? resourceData.leaveType
-                  : fromOpenLeave
-                  ? openLeaveType
-                  : 'Earned Leave',
-                resourseRightText: resourceData?.totalLeaveDays,
-                leftDropdown: (
-                  // <View>
+                <DateTimePickerModal
+                  maximumDate={dateAfter6Months}
+                  isVisible={fromCalenderVisible}
+                  mode="date"
+                  onConfirm={fromCalenderConfirm}
+                  onCancel={fromOnCancel}
+                />
+                <DateTimePickerModal
+                  maximumDate={dateAfter6Months}
+                  isVisible={toCalenderVisible}
+                  mode="date"
+                  onConfirm={toCalenderConfirm}
+                  onCancel={toOnCancel}
+                />
 
-                  <ModalDropdown
-                    disabled={
-                      fromResource || (!isEditOpenleave && fromOpenLeave)
-                    }
-                    style={{
-                      borderWidth: 1,
-                      backgroundColor: Colors.white,
-                      borderRadius: 3,
-                      paddingVertical: 5,
-                      height: 32,
-                    }}
-                    isFullWidth={true}
-                    showsVerticalScrollIndicator={false}
-                    defaultValue={
-                      fromResource
-                        ? resourceData.leaveType
-                        : fromOpenLeave
-                        ? openLeaveType
-                        : 'Select'
-                    }
-                    options={leaveTypes}
-                    dropdownStyle={{
-                      width: '45%',
-                      paddingLeft: 6,
-                    }}
-                    animated={true}
-                    renderRow={renderRow}
-                    onSelect={(index, itemName) => {
-                      const itemIndex = leaves.findIndex(
-                        item => item.leaveType === itemName,
-                      );
-                      flatListRef.current?.scrollToIndex({
-                        animated: true,
-                        index: index,
-                        viewPosition: 0.5,
-                      });
-                      setSelectedCard({leaveType: itemName});
-                      setLeaveType(itemName);
-                    }}
-                    renderRightComponent={renderRightComponent}
-                  />
-                  // </View>
-                ),
-              })}
-
-              <DateTimePickerModal
-                maximumDate={dateAfter6Months}
-                isVisible={fromCalenderVisible}
-                mode="date"
-                onConfirm={fromCalenderConfirm}
-                onCancel={fromOnCancel}
-              />
-              <DateTimePickerModal
-                maximumDate={dateAfter6Months}
-                isVisible={toCalenderVisible}
-                mode="date"
-                onConfirm={toCalenderConfirm}
-                onCancel={toOnCancel}
-              />
-
-              <View style={styles.reasonContainer}>
-                <Text style={styles.reasonText}>Reason</Text>
+                <View style={styles.reasonContainer}>
+                  <Text style={styles.reasonText}>Reason</Text>
+                  {isEditOpenleave ? (
+                    <TextInput
+                      onChangeText={giveReason}
+                      multiline={true}
+                      style={styles.reasonTextInput}
+                      value={reason}
+                    />
+                  ) : fromResource ? (
+                    <Text style={styles.resourceReasonText}>
+                      {resourceData?.description}
+                    </Text>
+                  ) : fromOpenLeave ? (
+                    <Text style={styles.resourceReasonText}>
+                      {openLeaveReason}
+                    </Text>
+                  ) : (
+                    <TextInput
+                      onChangeText={giveReason}
+                      multiline={true}
+                      style={styles.reasonTextInput}
+                    />
+                  )}
+                </View>
+              </ScrollView>
+              <View style={styles.leaveApproverContainer}>
+                <Text style={styles.leaveApproverText}>Leave Approver:</Text>
                 {isEditOpenleave ? (
-                  <TextInput
-                    onChangeText={giveReason}
-                    multiline={true}
-                    style={styles.reasonTextInput}
-                    value={reason}
-                  />
+                  leaveApprovers?.length === 1 ? (
+                    <Text style={styles.leaveApproverName}>
+                      {leaveApprovers[0]?.leaveApproverName}
+                    </Text>
+                  ) : (
+                    <View>
+                      <View>
+                        <DropDownPicker
+                          placeholder={'Select....'}
+                          open={openLeaveApprovers}
+                          value={leaveApproversValue}
+                          items={leaveApproversList}
+                          setOpen={setOpenLeaveApproovers}
+                          setValue={setLeaveApproversValue}
+                          setItems={setLeaveApproversList}
+                          onSelectItem={onSelectLeaveApprover}
+                          containerStyle={{width: wp(50)}}
+                          style={{borderRadius: 4}}
+                        />
+                      </View>
+                    </View>
+                  )
                 ) : fromResource ? (
-                  <Text style={styles.resourceReasonText}>
-                    {resourceData?.description}
+                  <Text style={styles.leaveApproverName}>
+                    {resourceData.leaveApproverName}
                   </Text>
                 ) : fromOpenLeave ? (
-                  <Text style={styles.resourceReasonText}>
-                    {openLeaveReason}
+                  <Text style={styles.leaveApproverName}>
+                    {openLeaveApprover}
                   </Text>
-                ) : (
-                  <TextInput
-                    onChangeText={giveReason}
-                    multiline={true}
-                    style={styles.reasonTextInput}
-                  />
-                )}
-              </View>
-            </ScrollView>
-            <View style={styles.leaveApproverContainer}>
-              <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-              {isEditOpenleave ? (
-                leaveApprovers?.length === 1 ? (
+                ) : isGuestLogin ? (
+                  <Text style={styles.leaveApproverName}>
+                    {guestProfileData?.managerInfoDto?.employeeName}
+                  </Text>
+                ) : leaveApprovers?.length === 1 ? (
                   <Text style={styles.leaveApproverName}>
                     {leaveApprovers[0]?.leaveApproverName}
                   </Text>
@@ -1220,107 +1259,75 @@ const ApplyLeave = ({navigation, route}) => {
                       />
                     </View>
                   </View>
-                )
-              ) : fromResource ? (
-                <Text style={styles.leaveApproverName}>
-                  {resourceData.leaveApproverName}
-                </Text>
-              ) : fromOpenLeave ? (
-                <Text style={styles.leaveApproverName}>
-                  {openLeaveApprover}
-                </Text>
-              ) : isGuestLogin ? (
-                <Text style={styles.leaveApproverName}>
-                  {guestProfileData?.managerInfoDto?.employeeName}
-                </Text>
-              ) : leaveApprovers?.length === 1 ? (
-                <Text style={styles.leaveApproverName}>
-                  {leaveApprovers[0]?.leaveApproverName}
-                </Text>
-              ) : (
-                <View>
-                  <View>
-                    <DropDownPicker
-                      placeholder={'Select....'}
-                      open={openLeaveApprovers}
-                      value={leaveApproversValue}
-                      items={leaveApproversList}
-                      setOpen={setOpenLeaveApproovers}
-                      setValue={setLeaveApproversValue}
-                      setItems={setLeaveApproversList}
-                      onSelectItem={onSelectLeaveApprover}
-                      containerStyle={{width: wp(50)}}
-                      style={{borderRadius: 4}}
-                    />
-                  </View>
-                </View>
-              )}
+                )}
+              </View>
             </View>
-          </View>
 
-          {fromResource ? (
-            <View style={styles.resourceButtonContainer}>
-              <Pressable
-                style={styles.resourceButton}
-                onPress={finalizeLeave.bind(null, 'Dismissed')}>
-                <Text style={styles.applyText}>Dismiss</Text>
-              </Pressable>
-              <Pressable
-                style={styles.resourceButton}
-                onPress={finalizeLeave.bind(null, 'Rejected')}>
-                <Text style={styles.applyText}>Reject</Text>
-              </Pressable>
-              <Pressable
-                style={styles.resourceButton}
-                onPress={finalizeLeave.bind(null, 'Approved')}>
-                <Text style={styles.applyText}>Approve</Text>
-              </Pressable>
-            </View>
-          ) : isEditOpenleave ? (
-            <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={handleLeaveApply}>
-                <Text style={styles.applyText}>Apply</Text>
-              </Pressable>
-            </View>
-          ) : fromOpenLeave ? (
-            <View style={styles.resourceButtonContainer}>
-              <Pressable
-                style={styles.resourceButton}
-                onPress={finalizeLeave.bind(null, 'Dismissed')}>
-                <Text style={styles.applyText}>Dismiss</Text>
-              </Pressable>
-              {/* <Pressable
+            {fromResource ? (
+              <View style={styles.resourceButtonContainer}>
+                <Pressable
+                  style={styles.resourceButton}
+                  onPress={finalizeLeave.bind(null, 'Dismissed')}>
+                  <Text style={styles.applyText}>Dismiss</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.resourceButton}
+                  onPress={finalizeLeave.bind(null, 'Rejected')}>
+                  <Text style={styles.applyText}>Reject</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.resourceButton}
+                  onPress={finalizeLeave.bind(null, 'Approved')}>
+                  <Text style={styles.applyText}>Approve</Text>
+                </Pressable>
+              </View>
+            ) : isEditOpenleave ? (
+              <View style={styles.buttonContainer}>
+                <Pressable style={styles.button} onPress={handleLeaveApply}>
+                  <Text style={styles.applyText}>Apply</Text>
+                </Pressable>
+              </View>
+            ) : fromOpenLeave ? (
+              <View style={styles.resourceButtonContainer}>
+                <Pressable
+                  style={styles.resourceButton}
+                  onPress={finalizeLeave.bind(null, 'Dismissed')}>
+                  <Text style={styles.applyText}>Dismiss</Text>
+                </Pressable>
+                {/* <Pressable
                 style={styles.resourceButton}
                 onPress={() => {
                   setIsEditOpenleave(true);
                 }}>
                 <Text style={styles.applyText}>Edit</Text>
               </Pressable> */}
-              <Pressable
-                style={styles.resourceButton}
-                onPress={() => {
-                  navigation.goBack();
-                }}>
-                <Text style={styles.applyText}>Cancel</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <View style={styles.buttonContainer}>
-              <Pressable style={styles.button} onPress={applyLeave}>
-                <Text style={styles.applyText}>Apply</Text>
-              </Pressable>
-            </View>
-          )}
-        </View>
-
-        {loading ? (
-          <View style={styles.loaderContainer}>
-            <View style={styles.loaderBackground} />
-            <ActivityIndicator size="large" />
+                <Pressable
+                  style={styles.resourceButton}
+                  onPress={() => {
+                    navigation.goBack();
+                  }}>
+                  <Text style={styles.applyText}>Cancel</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View style={styles.buttonContainer}>
+                <Pressable style={styles.button} onPress={applyLeave}>
+                  <Text style={styles.applyText}>Apply</Text>
+                </Pressable>
+              </View>
+            )}
           </View>
-        ) : null}
-      </View>
-    </SafeAreaView>
+
+          {loading ? (
+            <View style={styles.loaderContainer}>
+              <View style={styles.loaderBackground} />
+              <ActivityIndicator size="large" />
+            </View>
+          ) : null}
+        </View>
+      </SafeAreaView>
+    </>
+
     // </KeyboardAvoidingView>
   );
 };

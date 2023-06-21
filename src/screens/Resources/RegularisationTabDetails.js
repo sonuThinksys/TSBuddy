@@ -8,6 +8,7 @@ import {
 } from 'redux/homeSlice';
 import {heightPercentageToDP} from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import CustomHeader from 'navigation/CustomHeader';
 
 const reason = [
   'Not Carrying Access Card',
@@ -136,6 +137,13 @@ const RegularisationTabDetails = ({navigation, route}) => {
   ];
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Regularization Details"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
       <View style={styles.mainContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>{route?.params?.employeeName}</Text>

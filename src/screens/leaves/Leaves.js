@@ -11,6 +11,7 @@ import jwt_decode from 'jwt-decode';
 import {FontFamily, FontSize} from 'constants/fonts';
 import LeavesList from 'reusableComponents/LeavesList';
 import {LeaveApplyScreen} from 'navigation/Route';
+import CustomHeader from 'navigation/CustomHeader';
 
 const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -37,6 +38,13 @@ const Leaves = ({navigation}) => {
 
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Leaves"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
       <SafeAreaView
         style={{
           marginTop: hp(1.6),

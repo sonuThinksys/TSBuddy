@@ -20,6 +20,7 @@ import {Colors} from 'colors/Colors';
 import {monthImages} from 'defaultData';
 import {SalaryDetailsScreen, SalaryPDFDownloadScreen} from 'navigation/Route';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import CustomHeader from 'navigation/CustomHeader';
 
 const SalarySlip = ({navigation}) => {
   const [newyearWiseData, setnewyearWiseData] = useState([]);
@@ -86,120 +87,133 @@ const SalarySlip = ({navigation}) => {
     // setnewyearWiseData(finalData);
   };
 
-  return (
-    <View
-      style={{
-        flex: 1,
-      }}>
-      <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
+  console.log('salarySlipData:', salarySlipData);
 
-      {!isAuthenticated ? (
-        // {false ? (
-        <SalarSlipModal submitPassword={submitPassword} />
-      ) : (
-        <View style={{flex: 1}}>
-          {keyOfObject ? (
-            keyOfObject?.length > 0 ? (
-              keyOfObject?.map((el, index) => {
-                return (
-                  <ScrollView
-                    key={index}
-                    style={{flex: 1, borderWidth: 1, borderColor: 'blue'}}>
-                    <View key={index} style={{paddingHorizontal: wp(1)}}>
-                      <View style={styles.yearMainView}>
-                        <View style={styles.line}></View>
-                        <View style={styles.yearTextView}>
-                          <Text style={styles.yearText}>{el}</Text>
+  return (
+    <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Salary Slips"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
+      <View
+        style={{
+          flex: 1,
+        }}>
+        {salarySlipData[2]?.employeeName ? (
+          <Text style={styles.NameView}>{salarySlipData[2]?.employeeName}</Text>
+        ) : null}
+
+        {!isAuthenticated ? (
+          // {false ? (
+          <SalarSlipModal submitPassword={submitPassword} />
+        ) : (
+          <View style={{flex: 1}}>
+            {keyOfObject ? (
+              keyOfObject?.length > 0 ? (
+                keyOfObject?.map((el, index) => {
+                  return (
+                    <ScrollView
+                      key={index}
+                      style={{flex: 1, borderWidth: 1, borderColor: 'blue'}}>
+                      <View key={index} style={{paddingHorizontal: wp(1)}}>
+                        <View style={styles.yearMainView}>
+                          <View style={styles.line}></View>
+                          <View style={styles.yearTextView}>
+                            <Text style={styles.yearText}>{el}</Text>
+                          </View>
                         </View>
-                      </View>
-                      <View style={styles.MapView}>
-                        {newyearWiseData &&
-                          Object.keys(newyearWiseData).length !== 0 &&
-                          newyearWiseData[el].map((elemnt, index) => {
-                            return (
-                              <View key={index} style={styles.ViewForMOnth}>
-                                <View style={styles.backgroundImageView}>
+                        <View style={styles.MapView}>
+                          {newyearWiseData &&
+                            Object.keys(newyearWiseData).length !== 0 &&
+                            newyearWiseData[el].map((elemnt, index) => {
+                              return (
+                                <View key={index} style={styles.ViewForMOnth}>
+                                  <View style={styles.backgroundImageView}>
+                                    <TouchableOpacity
+                                      style={{borderRadius: 5}}
+                                      onPress={() => {
+                                        navigation.navigate(
+                                          SalaryDetailsScreen,
+                                          elemnt,
+                                        );
+                                      }}>
+                                      <ImageBackground
+                                        resizeMode="cover"
+                                        imageStyle={{borderRadius: 8}}
+                                        source={elemnt.monthImage}
+                                        style={styles.backGroundImage}>
+                                        <View style={styles.smalllImageView}>
+                                          <Image
+                                            source={elemnt.monthIcon}
+                                            style={{height: 20, width: 20}}
+                                          />
+                                        </View>
+                                        <Text style={styles.monthText}>
+                                          {elemnt.monthName}
+                                        </Text>
+                                      </ImageBackground>
+                                    </TouchableOpacity>
+                                  </View>
                                   <TouchableOpacity
-                                    style={{borderRadius: 5}}
                                     onPress={() => {
                                       navigation.navigate(
-                                        SalaryDetailsScreen,
+                                        SalaryPDFDownloadScreen,
                                         elemnt,
                                       );
                                     }}>
-                                    <ImageBackground
-                                      resizeMode="cover"
-                                      imageStyle={{borderRadius: 8}}
-                                      source={elemnt.monthImage}
-                                      style={styles.backGroundImage}>
-                                      <View style={styles.smalllImageView}>
-                                        <Image
-                                          source={elemnt.monthIcon}
-                                          style={{height: 20, width: 20}}
-                                        />
+                                    <View style={styles.downloadView}>
+                                      <View style={styles.downloadTextView}>
+                                        <Text style={styles.downloadtext}>
+                                          Download
+                                        </Text>
                                       </View>
-                                      <Text style={styles.monthText}>
-                                        {elemnt.monthName}
-                                      </Text>
-                                    </ImageBackground>
+                                    </View>
                                   </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate(
-                                      SalaryPDFDownloadScreen,
-                                      elemnt,
-                                    );
-                                  }}>
-                                  <View style={styles.downloadView}>
-                                    <View style={styles.downloadTextView}>
-                                      <Text style={styles.downloadtext}>
-                                        Download
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </TouchableOpacity>
-                              </View>
-                            );
-                          })}
+                              );
+                            })}
+                        </View>
                       </View>
-                    </View>
-                  </ScrollView>
-                );
-              })
-            ) : (
-              <View style={styles.salaryNotFound}>
-                <Text style={styles.salaryNotFoundText}>
-                  Salary Slips Not found!
-                </Text>
-              </View>
-            )
-          ) : null}
-        </View>
-      )}
+                    </ScrollView>
+                  );
+                })
+              ) : (
+                <View style={styles.salaryNotFound}>
+                  <Text style={styles.salaryNotFoundText}>
+                    Salary Slips Not found!
+                  </Text>
+                </View>
+              )
+            ) : null}
+          </View>
+        )}
 
-      <DateTimePickerModal
-        isVisible={filterCalenderOpen}
-        mode="date"
-        onConfirm={date => {
-          filterSalarySleepData(date);
-        }}
-        onCancel={() => {
-          setFilterCalenderOpen(false);
-        }}
-      />
-
-      <TouchableOpacity
-        onPress={() => {
-          setFilterCalenderOpen(true);
-        }}
-        style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
-        <Image
-          source={MonthImages.filterIcon2x}
-          style={{height: 55, width: 55, borderRadius: 25}}
+        <DateTimePickerModal
+          isVisible={filterCalenderOpen}
+          mode="date"
+          onConfirm={date => {
+            filterSalarySleepData(date);
+          }}
+          onCancel={() => {
+            setFilterCalenderOpen(false);
+          }}
         />
-      </TouchableOpacity>
-    </View>
+
+        <TouchableOpacity
+          onPress={() => {
+            setFilterCalenderOpen(true);
+          }}
+          style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
+          <Image
+            source={MonthImages.filterIcon2x}
+            style={{height: 55, width: 55, borderRadius: 25}}
+          />
+        </TouchableOpacity>
+      </View>
+    </>
   );
 };
 

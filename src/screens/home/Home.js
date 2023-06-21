@@ -19,6 +19,7 @@ import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
+import CustomHeader from 'navigation/CustomHeader';
 
 let data = [
   WelcomeHeader,
@@ -31,6 +32,7 @@ let data = [
 ];
 
 const Home = ({navigation}) => {
+  console.log('navigationDrawer:', navigation);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
@@ -98,6 +100,13 @@ const Home = ({navigation}) => {
         flex: 1,
         backgroundColor: Colors.whitishBlue,
       }}>
+      <CustomHeader
+        showDrawerMenu={true}
+        title
+        navigation={navigation}
+        isHome={true}
+        showHeaderRight={true}
+      />
       {loading ? <Loader /> : null}
 
       <FlatList

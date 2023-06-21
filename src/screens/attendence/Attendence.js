@@ -33,6 +33,7 @@ import {
 import {FontFamily} from 'constants/fonts';
 import {RegularzitionScreen} from 'navigation/Route';
 import Loader from 'component/LoadingScreen/LoadingScreen';
+import CustomHeader from 'navigation/CustomHeader';
 
 const DATA = [
   {
@@ -366,112 +367,121 @@ const Attendence = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* {isLoading ? (
+    <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Attendance"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
+      <SafeAreaView style={styles.container}>
+        {/* {isLoading ? (
         <View style={styles.loaderContainer}>
           <View style={styles.loaderBackground} />
           <ActivityIndicator size="large" />
         </View>
       ) : null} */}
-      <ImageBackground
-        resizeMode="stretch"
-        // onLoadStart={() => setImageLoading(true)}
-        // onLoadEnd={() => setImageLoading(false)}
-        source={attendenceMonthImages[visisbleMonth]}
-        style={{
-          flex: 1,
-        }}>
-        {showDailyStatusModal ? (
-          <Modal
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              top: hp(20),
-            }}
-            animationType="slide"
-            transparent={true}
-            closeOnClick={true}
-            visible={showDailyStatusModal}
-            onBackdropPress={() => {
-              setShowDailyStatusModal(false);
-            }}
-            onBackButtonPress={() => {
-              setShowDailyStatusModal(false);
-            }}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.text1}>
-                In Time: {pressedDayDate?.inTime}
-              </Text>
-              <Text style={styles.text1}>
-                Out Time: {pressedDayDate?.outTime}
-              </Text>
-              <View style={styles.imageView}>
-                <Text>Total Hours: {pressedDayDate?.totalHours}</Text>
-              </View>
-            </View>
-          </Modal>
-        ) : null}
-        <View
+        <ImageBackground
+          resizeMode="stretch"
+          // onLoadStart={() => setImageLoading(true)}
+          // onLoadEnd={() => setImageLoading(false)}
+          source={attendenceMonthImages[visisbleMonth]}
           style={{
             flex: 1,
-            justifyContent: 'space-between',
           }}>
-          {/* {isImageLoading ? renderLoading() : null}    */}
-          <View style={styles.secondContainer}>
-            <View>
-              <Text style={styles.monthText}>{todaysDate}</Text>
-              <Text style={styles.dayText}>{todaysDay}</Text>
-            </View>
-            <View style={styles.reportView}>
-              <View style={styles.weekliyTextView}>
-                <Text style={styles.reportText}>Weekly Report</Text>
-                <Text style={styles.reportText}>
-                  {startDate} - {endDate}
+          {showDailyStatusModal ? (
+            <Modal
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                top: hp(20),
+              }}
+              animationType="slide"
+              transparent={true}
+              closeOnClick={true}
+              visible={showDailyStatusModal}
+              onBackdropPress={() => {
+                setShowDailyStatusModal(false);
+              }}
+              onBackButtonPress={() => {
+                setShowDailyStatusModal(false);
+              }}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.text1}>
+                  In Time: {pressedDayDate?.inTime}
                 </Text>
-              </View>
-              <View style={styles.timeSpendView}>
-                <Text style={styles.timeSpendText}>
-                  Total Hour Spend {finalWeekTime}
-                  <Text
-                    style={{
-                      color: remainingHours?.isExtra
-                        ? Colors.green
-                        : Colors.reddishTint,
-                    }}>
-                    ({remainingHours?.extraTime})
-                  </Text>
+                <Text style={styles.text1}>
+                  Out Time: {pressedDayDate?.outTime}
                 </Text>
+                <View style={styles.imageView}>
+                  <Text>Total Hours: {pressedDayDate?.totalHours}</Text>
+                </View>
               </View>
-            </View>
-          </View>
-
+            </Modal>
+          ) : null}
           <View
             style={{
-              marginTop: hp(1),
               flex: 1,
-              alignItems: 'center',
+              justifyContent: 'space-between',
             }}>
-            <FlatList
-              data={DATA}
-              horizontal={true}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-            />
+            {/* {isImageLoading ? renderLoading() : null}    */}
+            <View style={styles.secondContainer}>
+              <View>
+                <Text style={styles.monthText}>{todaysDate}</Text>
+                <Text style={styles.dayText}>{todaysDay}</Text>
+              </View>
+              <View style={styles.reportView}>
+                <View style={styles.weekliyTextView}>
+                  <Text style={styles.reportText}>Weekly Report</Text>
+                  <Text style={styles.reportText}>
+                    {startDate} - {endDate}
+                  </Text>
+                </View>
+                <View style={styles.timeSpendView}>
+                  <Text style={styles.timeSpendText}>
+                    Total Hour Spend {finalWeekTime}
+                    <Text
+                      style={{
+                        color: remainingHours?.isExtra
+                          ? Colors.green
+                          : Colors.reddishTint,
+                      }}>
+                      ({remainingHours?.extraTime})
+                    </Text>
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <View
+              style={{
+                marginTop: hp(1),
+                flex: 1,
+                alignItems: 'center',
+              }}>
+              <FlatList
+                data={DATA}
+                horizontal={true}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+              />
+            </View>
           </View>
+        </ImageBackground>
+        <View style={{flex: 1.2, position: 'relative'}}>
+          <RenderCalender1
+            setVisibleMonth={setVisibleMonth}
+            setVisibleYear={setVisibleYear}
+            mark={mark}
+            setShowDailyStatusModal={setShowDailyStatusModal}
+            setModalDate={setModalDate}
+            navigation={navigation}
+            dailyAttendance={dailyAttendance}
+          />
         </View>
-      </ImageBackground>
-      <View style={{flex: 1.2, position: 'relative'}}>
-        <RenderCalender1
-          setVisibleMonth={setVisibleMonth}
-          setVisibleYear={setVisibleYear}
-          mark={mark}
-          setShowDailyStatusModal={setShowDailyStatusModal}
-          setModalDate={setModalDate}
-          navigation={navigation}
-          dailyAttendance={dailyAttendance}
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 

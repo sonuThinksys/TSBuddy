@@ -20,7 +20,6 @@ import {
 const screenWidth = Dimensions.get('window').width;
 
 const ResourceProfileDetails = props => {
-  console.log('Props >>', props);
   const {
     employeeName,
     image,
@@ -31,7 +30,7 @@ const ResourceProfileDetails = props => {
   } = props.empDetails;
 
   return (
-    <View style={{backgroundColor: Colors.colorDodgerBlue2, marginBottom: 5}}>
+    <View style={{backgroundColor: Colors.lighterBlue, marginBottom: 5}}>
       <View style={style.profile_name_cont}>
         <View style={style.profile_cont}>
           {image ? (

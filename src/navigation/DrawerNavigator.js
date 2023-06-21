@@ -100,7 +100,7 @@ const drawerOption = ({
 }) => {
   return {
     headerTitleAlign: 'center',
-    headerShown: true,
+    headerShown: false,
     // headerTransparent: true,
 
     headerLeft: showDrawer
@@ -208,6 +208,12 @@ const HomeStackScreen = ({navigation}) => {
         component={UserDetail}
         options={{headerShown: false}}
       />
+
+      <HomeStack.Screen
+        options={{headerShown: false}}
+        name={'LeaveApplyScreen'}
+        component={ApplyLeave}
+      />
     </HomeStack.Navigator>
   );
 };
@@ -226,70 +232,22 @@ const WorkFromHomeStackScreen = ({navigation}) => {
         component={WorkFromHome}
       />
       <WorkFromHomeStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '   WFH Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
+        options={() => ({
+          headerShown: false,
         })}
         name={WFHDetailsScreen}
         component={WFHDetails}
       />
       <WorkFromHomeStack.Screen
         options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Leave Detail',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
+          headerShown: false,
         })}
         name={'workFromHomeLeaveDetailsScreen'}
         component={LeaveDetails}
       />
       <WorkFromHomeStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Leave Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
+        options={() => ({
+          headerShown: false,
         })}
         name={'workFromHomeLeaveApplyScreenOpen'}
         component={ApplyLeave}
@@ -302,21 +260,13 @@ const AttendenceStackScreen = ({navigation}) => {
   return (
     <AttendenceStack.Navigator screenOptions={{headerShown: false}}>
       <AttendenceStack.Screen
-        options={drawerOption({
-          label: 'Attendance',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-          // headerIcon: MonthImages.info_scopy,
-          headerIcon: false,
-        })}
+        options={{headerShown: false}}
         name={AttendenceScreen}
         component={Attendence}
       />
       <AttendenceStack.Screen
         options={drawerOption({
-          label: 'Regularization',
-          navigation: navigation,
-          showDrawer: false,
+          headerShown: false,
         })}
         name={RegularzitionScreen}
         component={Regularization}
@@ -329,11 +279,7 @@ const ProfileStackScreen = ({navigation}) => {
   return (
     <ProfileStack.Navigator screenOptions={{headerShown: false}}>
       <ProfileStack.Screen
-        options={drawerOption({
-          label: 'Profile',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={ProfileScreen}
         component={Profile}
       />
@@ -345,42 +291,17 @@ const RegularisationStackScreen = ({navigation}) => {
   return (
     <RegularisationStack.Navigator>
       <RegularisationStack.Screen
-        options={drawerOption({
-          label: 'Regularisation Resource List',
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={'Resource List screen'}
         component={RegularisationScreen}
       />
       <RegularisationStack.Screen
-        options={drawerOption({
-          label: 'Regularisation List',
-          navigation: navigation,
-          showDrawer: false,
-        })}
+        options={{headerShown: false}}
         name={'RegularisationForm'}
         component={RegularisationFormDetails}
       />
       <RegularisationStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Regularisation Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={{headerShown: false}}
         name={'regularisationTabDetailsScreen'}
         component={RegularisationTabDetails}
       />
@@ -394,11 +315,7 @@ const HolidaysStackScreen = ({navigation}) => {
       initialRouteName={HolidaysScreen}
       screenOptions={{headerShown: false}}>
       <HolidaysStack.Screen
-        options={drawerOption({
-          label: 'Holidays',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={HolidaysScreen}
         component={Holidays}
       />
@@ -406,38 +323,23 @@ const HolidaysStackScreen = ({navigation}) => {
   );
 };
 
-const LeavesStackScreen = ({navigation}) => {
+const LeavesStackScreen = ({}) => {
   return (
     <LeavesStack.Navigator
-      initialRouteName="leaves"
+      initialRouteName="LeavesScreeen"
       screenOptions={{headerShown: false}}>
       <LeavesStack.Screen
-        options={drawerOption({
-          label: 'Leaves',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={LeavesScreen}
         component={Leaves}
       />
       <LeavesStack.Screen
-        options={drawerOption({
-          label: 'Leave Details',
-          showDrawer: false,
-          showHeaderRight: false,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
       <LeavesStack.Screen
-        options={drawerOption({
-          label: 'Apply Leave',
-          showDrawer: false,
-          showHeaderRight: false,
-          // headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={LeaveApplyScreen}
         component={ApplyLeave}
       />
@@ -449,11 +351,7 @@ const SalarySlipScreen = ({navigation}) => {
   return (
     <SalarySlipStack.Navigator screenOptions={{headerShown: false}}>
       <SalarySlipStack.Screen
-        options={drawerOption({
-          label: 'Salary Slip',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={SalarySlipTab}
         component={SalarySlip}
       />
@@ -465,12 +363,7 @@ const SalarySlipScreen = ({navigation}) => {
       <SalarySlipStack.Screen
         name={SalaryPDFDownloadScreen}
         component={SalaryPdf}
-        options={drawerOption({
-          showDrawer: false,
-          showHeaderRight: false,
-          label: 'Preview',
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
       />
     </SalarySlipStack.Navigator>
   );
@@ -480,27 +373,19 @@ const ResourcesStackScreen = ({navigation}) => {
   return (
     <ResourcesStack.Navigator initialRouteName={ResourcesScreen}>
       <ResourcesStack.Screen
-        options={drawerOption({
-          label: 'Resources',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={ResourcesScreen}
         component={Resources}
       />
 
       <ResourcesStack.Screen
-        options={({navigation}) => {
-          return CustomHeader({navigation, title: 'Resourse Details'});
-        }}
+        options={{headerShown: false}}
         name={ResourcesDetailsScreen}
         component={ResourcesDetails}
       />
 
       <ResourcesStack.Screen
-        options={({navigation}) => {
-          return CustomHeader({navigation, title: 'Leave Details'});
-        }}
+        options={{headerShown: false}}
         name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
@@ -524,72 +409,18 @@ const ResourcesStackScreen = ({navigation}) => {
       />
 
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: 'WFH Detail',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={{headerShown: false}}
         name={'workFromHomeLeaveDetailsScreen'}
         component={LeaveDetails}
       />
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  WFH Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={{headerShown: false}}
         name={'workFromHomeLeaveApplyScreenOpen'}
         component={ApplyLeave}
       />
 
       <ResourcesStack.Screen
-        options={({navigation}) => ({
-          headerStyle: {
-            backgroundColor: Colors.darkBlue,
-          },
-          title: '  Regularisation Details',
-          headerTintColor: Colors.white,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image
-                source={MonthImages.backArrowS}
-                style={{height: 20, width: 20}}
-              />
-            </TouchableOpacity>
-          ),
-          headerShadowVisible: true,
-        })}
+        options={{headerShown: false}}
         name={'regularisationTabDetailsScreen'}
         component={RegularisationTabDetails}
       />
@@ -603,11 +434,7 @@ const CheckInOutStackScreen = ({navigation}) => {
       screenOptions={{headerShown: false}}
       initialRouteName={CheckInOutScreen}>
       <CheckInOutStack.Screen
-        options={drawerOption({
-          label: "Today's Atendance",
-          headerIconName: MonthImages.EventImage,
-          navigation: navigation,
-        })}
+        options={{headerShown: false}}
         name={CheckInOutScreen}
         component={CheckInOut}
       />

@@ -175,70 +175,83 @@ const CheckInOut = () => {
   };
 
   return (
-    <View style={{alignItems: 'center'}}>
-      <View style={styles.totalTimeAndBtnCont}>
-        <View>
-          <Text style={styles.textTimer}>{formatTime(timer)} Hrs</Text>
-          <Text style={styles.textTotalWork}>Total Work Time</Text>
-        </View>
-        {toggleCheckInBtn ? (
-          <LinearGradient
-            locations={[0.1, 1, 0.1]}
-            colors={[Colors.green, Colors.bluishGreen, Colors.green]}
-            style={[styles.checkInOutBtn]}>
-            <TouchableOpacity
-              onPress={() => {
-                handleCheckin();
-              }}>
-              <Text style={{color: 'white', fontSize: 17, fontWeight: '600'}}>
-                Checkin
-              </Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        ) : (
-          <LinearGradient
-            locations={[0.1, 1, 0.1]}
-            colors={[Colors.reddishTint, Colors.lightGray1, Colors.green]}
-            style={[styles.checkInOutBtn]}>
-            <TouchableOpacity
-              onPress={() => {
-                handleCheckout();
-              }}>
-              <Text style={{color: 'white', fontSize: 17, fontWeight: '600'}}>
-                Checkout
-              </Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        )}
-      </View>
-      <View style={styles.textInputCont}>
-        <TextInput
-          placeholder="Add Notes (Optional)"
-          style={styles.textInput}
-        />
-        <TouchableOpacity>
-          <View style={styles.addCommentBtn}>
-            <Text style={styles.btnText}>Add</Text>
+    <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Today's Atendance"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
+      <View style={{alignItems: 'center'}}>
+        <View style={styles.totalTimeAndBtnCont}>
+          <View>
+            <Text style={styles.textTimer}>{formatTime(timer)} Hrs</Text>
+            <Text style={styles.textTotalWork}>Total Work Time</Text>
           </View>
-        </TouchableOpacity>
+          {toggleCheckInBtn ? (
+            <LinearGradient
+              locations={[0.1, 1, 0.1]}
+              colors={[Colors.green, Colors.bluishGreen, Colors.green]}
+              style={[styles.checkInOutBtn]}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleCheckin();
+                }}>
+                <Text style={{color: 'white', fontSize: 17, fontWeight: '600'}}>
+                  Checkin
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          ) : (
+            <LinearGradient
+              locations={[0.1, 1, 0.1]}
+              colors={[Colors.reddishTint, Colors.lightGray1, Colors.green]}
+              style={[styles.checkInOutBtn]}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleCheckout();
+                }}>
+                <Text style={{color: 'white', fontSize: 17, fontWeight: '600'}}>
+                  Checkout
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          )}
+        </View>
+        <View style={styles.textInputCont}>
+          <TextInput
+            placeholder="Add Notes (Optional)"
+            style={styles.textInput}
+          />
+          <TouchableOpacity>
+            <View style={styles.addCommentBtn}>
+              <Text style={styles.btnText}>Add</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={styles.todayDate}>{totalDateString}</Text>
+        </View>
+        <View>
+          <Text style={styles.lateByText}>Late By 04:01:12 Hours</Text>
+        </View>
+        <View style={[styles.checkInoutTimeCont, {marginTop: hp(5)}]}>
+          <Text style={{fontSize: 16, color: Colors.black}}>
+            Check In Time :
+          </Text>
+          <Text style={{fontSize: 16, color: Colors.black}}>
+            Check Out Time :
+          </Text>
+        </View>
+        <View style={styles.checkInoutTimeCont}>
+          <Text style={{fontSize: 21, color: Colors.green}}>{checkInTime}</Text>
+          <Text style={{fontSize: 21, color: Colors.orange}}>
+            {checkOutTime}
+          </Text>
+        </View>
       </View>
-      <View>
-        <Text style={styles.todayDate}>{totalDateString}</Text>
-      </View>
-      <View>
-        <Text style={styles.lateByText}>Late By 04:01:12 Hours</Text>
-      </View>
-      <View style={[styles.checkInoutTimeCont, {marginTop: hp(5)}]}>
-        <Text style={{fontSize: 16, color: Colors.black}}>Check In Time :</Text>
-        <Text style={{fontSize: 16, color: Colors.black}}>
-          Check Out Time :
-        </Text>
-      </View>
-      <View style={styles.checkInoutTimeCont}>
-        <Text style={{fontSize: 21, color: Colors.green}}>{checkInTime}</Text>
-        <Text style={{fontSize: 21, color: Colors.orange}}>{checkOutTime}</Text>
-      </View>
-    </View>
+    </>
   );
 };
 

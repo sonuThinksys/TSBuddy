@@ -1,5 +1,6 @@
 import {View, Text} from 'react-native';
 import styles from './LeavesDetailsStyles';
+import CustomHeader from 'navigation/CustomHeader';
 const LeaveDetails = ({route, navigation}) => {
   const card = (leftText, rightText, index) => {
     return (
@@ -46,14 +47,25 @@ const LeaveDetails = ({route, navigation}) => {
   ];
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>
-          {data.totalLeaveDays} {data.leaveType} {data.status}
-        </Text>
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Leave Details"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
+      <View style={styles.mainContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>
+            {data.totalLeaveDays} {data.leaveType} {data.status}
+          </Text>
+        </View>
+        <View>
+          {details.map((item, index) => card(item[0], item[1], index))}
+        </View>
       </View>
-      <View>{details.map((item, index) => card(item[0], item[1], index))}</View>
-    </View>
+    </>
   );
 };
 

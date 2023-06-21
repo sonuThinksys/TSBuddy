@@ -28,6 +28,7 @@ import {
 } from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
+import CustomHeader from 'navigation/CustomHeader';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -147,6 +148,13 @@ const ResourcesDetails = ({route, navigation}) => {
 
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Resourse Details"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
       {isShowModal && isFocussed ? (
         <CommunicationModal empDetail={empDetail} />
       ) : null}

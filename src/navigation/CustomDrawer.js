@@ -12,7 +12,8 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {FontFamily, FontSize} from 'constants/fonts';
 import jwt_decode from 'jwt-decode';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, StackActions} from '@react-navigation/native';
+import {NavigationActions} from '@react-navigation/native';
 
 import {
   heightPercentageToDP as hp,
@@ -197,6 +198,14 @@ const renderDrawerItem = (
           );
           navigation.closeDrawer();
         } else {
+          // if (label === 'Leaves') {
+          //   navigation.navigate(screen, {
+          //     screen: 'LeavesScreeen',
+          //   });
+          // } else {
+          //   navigation.navigate(screen);
+          //   navigation.closeDrawer();
+          // }
           navigation.navigate(screen);
           navigation.closeDrawer();
         }

@@ -19,8 +19,9 @@ import moment from 'moment';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
 import {guestHolidaysData} from 'guestData';
 import {getHolidaysData} from 'redux/homeSlice';
+import CustomHeader from 'navigation/CustomHeader';
 
-const Holidays = () => {
+const Holidays = ({navigation}) => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
   const [HolidaysData, setHolidaysData] = useState({});
   const dispatch = useDispatch();
@@ -42,38 +43,47 @@ const Holidays = () => {
   };
 
   return (
-    <SafeAreaView style={{paddingTop: hp(1), flex: 1}}>
-      {/* {isLoading  ? <Loader /> : null} */}
-      <FlatList
-        data={isGuestLogin ? guestHolidaysData : holidaysData}
-        keyExtractor={(item, index) => index}
-        refreshing={isRefresh}
-        onRefresh={updateData}
-        renderItem={({item, index}) => {
-          return renderItem(
-            item,
-            index,
-            holidaysShowModal,
-            holidaysSetShowModal,
-            dispatch,
-            setHolidaysData,
-            HolidaysData,
-            moment,
-          );
-        }}
+    <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Holidays"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
       />
-      <View style={styles.container}>
-        <View style={styles.pastHolidaysContainer}>
-          <View style={styles.buttomView}></View>
-          <Text> {PAST_HOLIDAYS}</Text>
-        </View>
+      <SafeAreaView style={{paddingTop: hp(1), flex: 1}}>
+        {/* {isLoading  ? <Loader /> : null} */}
+        <FlatList
+          data={isGuestLogin ? guestHolidaysData : holidaysData}
+          keyExtractor={(item, index) => index}
+          refreshing={isRefresh}
+          onRefresh={updateData}
+          renderItem={({item, index}) => {
+            return renderItem(
+              item,
+              index,
+              holidaysShowModal,
+              holidaysSetShowModal,
+              dispatch,
+              setHolidaysData,
+              HolidaysData,
+              moment,
+            );
+          }}
+        />
+        <View style={styles.container}>
+          <View style={styles.pastHolidaysContainer}>
+            <View style={styles.buttomView}></View>
+            <Text> {PAST_HOLIDAYS}</Text>
+          </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={styles.secondButtomView}></View>
-          <Text> {UPCOMING_HOLIDAYS}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={styles.secondButtomView}></View>
+            <Text> {UPCOMING_HOLIDAYS}</Text>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 

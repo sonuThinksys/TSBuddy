@@ -9,6 +9,7 @@ import {
 import styles from './SalaryDetailsStyles';
 import moment from 'moment';
 import {SalaryPDFDownloadScreen} from 'navigation/Route';
+import CustomHeader from 'navigation/CustomHeader';
 const SalaryDetail = ({route, navigation}) => {
   const data = route.params;
   const [show, setShow] = useState(false);
@@ -33,119 +34,130 @@ const SalaryDetail = ({route, navigation}) => {
   ];
 
   return (
-    <View style={{flex: 1}}>
-      <View style={styles.container}>
-        <View style={{flex: 1}}>
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Salary Details"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
+      <View style={{flex: 1}}>
+        <View style={styles.container}>
+          <View style={{flex: 1}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image
+                source={MonthImages.backArrowS}
+                style={{height: 25, width: 25}}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.textView}>
+            <Text style={styles.text1}>Salary Detail</Text>
+          </View>
+        </View>
+        <View style={styles.imageView}>
+          <Image
+            source={data.monthImage}
+            style={{height: 80, width: 120, marginRight: wp(4)}}
+          />
+          <Text style={styles.monthText}>
+            {data?.monthName} {data?.fiscalYear?.substring(0, 4)}
+          </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              // setSalaryDetailsData(elemnt);
+              navigation.navigate(SalaryPDFDownloadScreen, data);
             }}>
             <Image
-              source={MonthImages.backArrowS}
-              style={{height: 25, width: 25}}
+              source={MonthImages.download}
+              style={{height: 40, width: 40}}
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.textView}>
-          <Text style={styles.text1}>Salary Detail</Text>
-        </View>
-      </View>
-      <View style={styles.imageView}>
-        <Image
-          source={data.monthImage}
-          style={{height: 80, width: 120, marginRight: wp(4)}}
-        />
-        <Text style={styles.monthText}>
-          {data?.monthName} {data?.fiscalYear?.substring(0, 4)}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            // setSalaryDetailsData(elemnt);
-            navigation.navigate(SalaryPDFDownloadScreen, data);
-          }}>
-          <Image
-            source={MonthImages.download}
-            style={{height: 40, width: 40}}
-          />
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        style={{flex: 1, marginBottom: hp(2)}}
-        contentContainerStyle={{flexGrow: 1}}>
-        <View style={{paddingHorizontal: wp(1)}}>
-          {renderData.map((element, index) => {
-            return (
-              <View key={index} style={styles.labelView}>
-                <Text style={{flex: 0.6}}>{element.lable}</Text>
-                <Text style={{color: Colors.grey, flex: 0.4}}>
-                  {element.value}
+        <ScrollView
+          style={{flex: 1, marginBottom: hp(2)}}
+          contentContainerStyle={{flexGrow: 1}}>
+          <View style={{paddingHorizontal: wp(1)}}>
+            {renderData.map((element, index) => {
+              return (
+                <View key={index} style={styles.labelView}>
+                  <Text style={{flex: 0.6}}>{element.lable}</Text>
+                  <Text style={{color: Colors.grey, flex: 0.4}}>
+                    {element.value}
+                  </Text>
+                </View>
+              );
+            })}
+            <TouchableOpacity
+              onPress={() => {
+                setShow(show ? false : true);
+              }}>
+              <View style={styles.earningView}>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+                  Earnings
                 </Text>
+                <View style={styles.minusImageView}>
+                  <Image
+                    source={show ? MonthImages.minus : MonthImages.plus}
+                    style={{height: 15, width: 15}}
+                  />
+                </View>
               </View>
-            );
-          })}
-          <TouchableOpacity
-            onPress={() => {
-              setShow(show ? false : true);
-            }}>
-            <View style={styles.earningView}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
-                Earnings
-              </Text>
-              <View style={styles.minusImageView}>
-                <Image
-                  source={show ? MonthImages.minus : MonthImages.plus}
-                  style={{height: 15, width: 15}}
-                />
+            </TouchableOpacity>
+            {show ? (
+              <View>
+                {data.salarySlipEarningDTOs.map((elemnt, index) => {
+                  return (
+                    <View key={index} style={styles.earningTextView}>
+                      <Text style={{flex: 0.6}}>{elemnt.eType}</Text>
+                      <Text style={{color: 'gray', flex: 0.4}}>
+                        {elemnt.eAmount}
+                      </Text>
+                    </View>
+                  );
+                })}
               </View>
-            </View>
-          </TouchableOpacity>
-          {show ? (
-            <View>
-              {data.salarySlipEarningDTOs.map((elemnt, index) => {
-                return (
-                  <View key={index} style={styles.earningTextView}>
-                    <Text style={{flex: 0.6}}>{elemnt.eType}</Text>
-                    <Text style={{color: 'gray', flex: 0.4}}>
-                      {elemnt.eAmount}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-          ) : null}
-          <TouchableOpacity
-            onPress={() => {
-              setSecondShow(secondShow ? false : true);
-            }}>
-            <View style={styles.deductionView}>
-              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
-                Deductions
-              </Text>
-              <View style={styles.deductionImageView}>
-                <Image
-                  source={secondShow ? MonthImages.minus : MonthImages.plus}
-                  style={{height: 15, width: 15}}
-                />
+            ) : null}
+            <TouchableOpacity
+              onPress={() => {
+                setSecondShow(secondShow ? false : true);
+              }}>
+              <View style={styles.deductionView}>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>
+                  Deductions
+                </Text>
+                <View style={styles.deductionImageView}>
+                  <Image
+                    source={secondShow ? MonthImages.minus : MonthImages.plus}
+                    style={{height: 15, width: 15}}
+                  />
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-          {secondShow ? (
-            <View>
-              {data.salarySlipDeductionDTOs.map((elemnt, index) => {
-                return (
-                  <View key={index} style={styles.deductionTextView}>
-                    <Text style={{flex: 0.6}}>{elemnt.dType}</Text>
-                    <Text style={{color: 'gray', flex: 0.4}}>
-                      {elemnt.dAmount}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-          ) : null}
-        </View>
-      </ScrollView>
-    </View>
+            </TouchableOpacity>
+            {secondShow ? (
+              <View>
+                {data.salarySlipDeductionDTOs.map((elemnt, index) => {
+                  return (
+                    <View key={index} style={styles.deductionTextView}>
+                      <Text style={{flex: 0.6}}>{elemnt.dType}</Text>
+                      <Text style={{color: 'gray', flex: 0.4}}>
+                        {elemnt.dAmount}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            ) : null}
+          </View>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 

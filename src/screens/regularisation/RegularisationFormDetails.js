@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode';
 import jwtDecode from 'jwt-decode';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import RegularisationList from 'reusableComponents/RegularisationList';
+import CustomHeader from 'navigation/CustomHeader';
 
 const RegularisationFormDetails = ({navigation, route}) => {
   const {
@@ -22,6 +23,13 @@ const RegularisationFormDetails = ({navigation, route}) => {
 
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Regularizations"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
       <ResourceProfileDetails
         empDetails={{
           employeeName,

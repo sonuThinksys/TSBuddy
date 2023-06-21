@@ -1,4 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
+import CustomHeader from 'navigation/CustomHeader';
+import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
@@ -24,10 +26,17 @@ const WFHDetails = ({route, navigation}) => {
 
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title={'WFH Details'}
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
       {isShowModal && isFocussed ? (
         <CommunicationModal empDetail={empDetail} />
       ) : null}
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <ResourceProfileDetails
           empDetails={{
             employeeName,
@@ -46,7 +55,7 @@ const WFHDetails = ({route, navigation}) => {
           isFromWFHDetails={true}
           fromResource={true}
         />
-      </SafeAreaView>
+      </View>
     </>
   );
 };

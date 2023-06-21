@@ -169,9 +169,18 @@ const SalaryPdf = ({navigation, route}) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <WebView source={options} style={styles.pdf} />
-    </View>
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Preview"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
+      <View style={styles.container}>
+        <WebView source={options} style={styles.pdf} />
+      </View>
+    </>
   );
 };
 

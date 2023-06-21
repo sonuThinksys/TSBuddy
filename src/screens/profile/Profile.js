@@ -28,6 +28,7 @@ import {guestProfileData} from 'guestData';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
+import CustomHeader from 'navigation/CustomHeader';
 
 const Profile = ({navigation}) => {
   const isFocussed = useIsFocused();
@@ -137,6 +138,13 @@ const Profile = ({navigation}) => {
 
   return (
     <>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Profile"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
       {isShowModal && isFocussed ? (
         <CommunicationModal empDetail={empDetail} />
       ) : null}

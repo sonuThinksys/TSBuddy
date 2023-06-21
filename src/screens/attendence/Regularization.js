@@ -31,6 +31,7 @@ import {
 import {ERROR} from 'utils/string';
 import jwt_decode from 'jwt-decode';
 import {Value} from 'react-native-reanimated';
+import CustomHeader from 'navigation/CustomHeader';
 
 const Regularization = ({navigation, route}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState('fullDay');
@@ -215,128 +216,137 @@ const Regularization = ({navigation, route}) => {
   };
 
   return (
-    <View style={style.container}>
-      <View style={style.textHeader}>
-        <Text style={style.text}>Leave Approver</Text>
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Regularization"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
+      <View style={style.container}>
+        <View style={style.textHeader}>
+          <Text style={style.text}>Leave Approver</Text>
+        </View>
+        <View style={style.dropdownCont}>
+          <ModalDropdown
+            style={{
+              borderWidth: 1,
+              backgroundColor: Colors.white,
+              borderRadius: 3,
+              paddingVertical: 5,
+              height: 38,
+              paddingLeft: 15,
+            }}
+            onSelect={itemName => {
+              setSelectApprover(itemName);
+            }}
+            dropdownTextHighlightStyle={{color: Colors.white}}
+            isFullWidth={true}
+            showsVerticalScrollIndicator={false}
+            options={leaveApproversList}
+            dropdownStyle={{
+              width: '50%',
+              height:
+                leaveApproversList && leaveApproversList.length == 1
+                  ? 30
+                  : leaveApproversList.length == 2
+                  ? 50
+                  : 110,
+              paddingLeft: 6,
+              lineHeight: 2,
+            }}
+            renderRow={renderRow}
+            animated={true}
+            renderRightComponent={renderRightComponent}
+          />
+        </View>
+        <View style={style.textHeader}>
+          <Text style={style.text}>Reason</Text>
+        </View>
+        <View style={style.dropdownCont}>
+          <ModalDropdown
+            style={{
+              borderWidth: 1,
+              backgroundColor: Colors.white,
+              borderRadius: 3,
+              paddingVertical: 5,
+              height: 38,
+              paddingLeft: 15,
+            }}
+            onSelect={item => {
+              setSelectReasons(item + 1);
+            }}
+            renderRightComponent={renderRightComponent}
+            renderRow={renderRow}
+            dropdownTextHighlightStyle={{color: Colors.white}}
+            isFullWidth={true}
+            showsVerticalScrollIndicator={false}
+            // defaultValue={}
+            options={regularizationReason}
+            dropdownStyle={{
+              width: '50%',
+              paddingLeft: 6,
+              height:
+                regularizationReason && regularizationReason?.length == 4
+                  ? 100
+                  : 150,
+            }}
+            animated={true}
+          />
+        </View>
+        <View style={style.halfFullCont}>
+          <FlatList
+            data={dayData}
+            renderItem={renderItem}
+            keyExtractor={item => item.type}
+            horizontal={true}
+          />
+        </View>
+        <View style={style.textHeader}>
+          <Text style={style.text}>Comment</Text>
+        </View>
+        <View style={style.commentCont}>
+          <TextInput
+            style={style.comentBox}
+            onChangeText={text => {
+              setCommentText(text);
+            }}
+            multiline={true}
+          />
+        </View>
+        <View style={style.btnCont}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <View
+              style={[
+                style.btn,
+                {marginRight: 10, backgroundColor: Colors.reddishTint},
+              ]}>
+              <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
+                Cancel
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handleSubmit();
+            }}>
+            <View
+              style={[
+                style.btn,
+                {backgroundColor: Colors.parrotGreen, marginTop: 10},
+              ]}>
+              <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
+                Submit
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={style.dropdownCont}>
-        <ModalDropdown
-          style={{
-            borderWidth: 1,
-            backgroundColor: Colors.white,
-            borderRadius: 3,
-            paddingVertical: 5,
-            height: 38,
-            paddingLeft: 15,
-          }}
-          onSelect={itemName => {
-            setSelectApprover(itemName);
-          }}
-          dropdownTextHighlightStyle={{color: Colors.white}}
-          isFullWidth={true}
-          showsVerticalScrollIndicator={false}
-          options={leaveApproversList}
-          dropdownStyle={{
-            width: '50%',
-            height:
-              leaveApproversList && leaveApproversList.length == 1
-                ? 30
-                : leaveApproversList.length == 2
-                ? 50
-                : 110,
-            paddingLeft: 6,
-            lineHeight: 2,
-          }}
-          renderRow={renderRow}
-          animated={true}
-          renderRightComponent={renderRightComponent}
-        />
-      </View>
-      <View style={style.textHeader}>
-        <Text style={style.text}>Reason</Text>
-      </View>
-      <View style={style.dropdownCont}>
-        <ModalDropdown
-          style={{
-            borderWidth: 1,
-            backgroundColor: Colors.white,
-            borderRadius: 3,
-            paddingVertical: 5,
-            height: 38,
-            paddingLeft: 15,
-          }}
-          onSelect={item => {
-            setSelectReasons(item + 1);
-          }}
-          renderRightComponent={renderRightComponent}
-          renderRow={renderRow}
-          dropdownTextHighlightStyle={{color: Colors.white}}
-          isFullWidth={true}
-          showsVerticalScrollIndicator={false}
-          // defaultValue={}
-          options={regularizationReason}
-          dropdownStyle={{
-            width: '50%',
-            paddingLeft: 6,
-            height:
-              regularizationReason && regularizationReason?.length == 4
-                ? 100
-                : 150,
-          }}
-          animated={true}
-        />
-      </View>
-      <View style={style.halfFullCont}>
-        <FlatList
-          data={dayData}
-          renderItem={renderItem}
-          keyExtractor={item => item.type}
-          horizontal={true}
-        />
-      </View>
-      <View style={style.textHeader}>
-        <Text style={style.text}>Comment</Text>
-      </View>
-      <View style={style.commentCont}>
-        <TextInput
-          style={style.comentBox}
-          onChangeText={text => {
-            setCommentText(text);
-          }}
-          multiline={true}
-        />
-      </View>
-      <View style={style.btnCont}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}>
-          <View
-            style={[
-              style.btn,
-              {marginRight: 10, backgroundColor: Colors.reddishTint},
-            ]}>
-            <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
-              Cancel
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            handleSubmit();
-          }}>
-          <View
-            style={[
-              style.btn,
-              {backgroundColor: Colors.parrotGreen, marginTop: 10},
-            ]}>
-            <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
-              Submit
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 };
 
