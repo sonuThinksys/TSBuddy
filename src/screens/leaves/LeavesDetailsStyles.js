@@ -40,4 +40,8 @@ export default StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 10,
   },
+  downloadBTN: {
+    width: wp(6),
+    height: hp(3),
+  },
 });

@@ -104,6 +104,20 @@ const LeavesList = props => {
       });
       fromResource && getLeaveCount(count);
 
+      const sortedLeaveData = fromResource
+        ? leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+            return (
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+            );
+          })
+        : leavesData?.payload?.sort((a, b) => {
+            return (
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+            );
+          });
+
+      setEmployeesLeaves(sortedLeaveData);
+
       if (leavesData?.error) {
         ShowAlert({
           messageHeader: ERROR,
@@ -117,14 +131,22 @@ const LeavesList = props => {
 
   const handleNavigation = item => {
     if (item.status == 'Open') {
-      navigation.navigate(LeaveApplyScreen, {
-        ...item,
-        resourceEmployeeID,
-        fromOpenLeave,
-        fromResource,
+      navigation.navigate('Leaves', {
+        screen: 'LeaveApplyScreen',
+        params: {
+          ...item,
+          resourceEmployeeID,
+          fromOpenLeave,
+          fromResource,
+        },
       });
     } else {
-      navigation.navigate(LeaveDetailsScreen, item);
+      navigation.navigate('Leaves', {
+        screen: 'LeaveDetailsScreen',
+        params: {
+          ...item,
+        },
+      });
     }
   };
 

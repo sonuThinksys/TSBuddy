@@ -2,13 +2,26 @@ import {View, Text} from 'react-native';
 import styles from '../leaves/LeavesDetailsStyles';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {getEmployeeRegularizationRequest} from 'redux/homeSlice';
+import {getEmployeeRegularizationRequest, modalStatus} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
 import jwtDecode from 'jwt-decode';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import RegularisationList from 'reusableComponents/RegularisationList';
+import {useIsFocused} from '@react-navigation/native';
+import CommunicationModal from 'modals/CommunicationModal';
 
 const RegularisationFormDetails = ({navigation, route}) => {
+  const [empDetail, setClickData] = useState({});
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
+  const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
+    useSelector(state => state.home);
+
+  const isFocussed = useIsFocused();
+
+  const dispatch = useDispatch();
+
   const {
     designation,
     image,
@@ -20,8 +33,38 @@ const RegularisationFormDetails = ({navigation, route}) => {
   } = route.params;
   const empId = name.split('/')[1];
 
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
+
   return (
     <>
+      {isShowModal && isFocussed ? (
+        <CommunicationModal empDetail={empDetail} />
+      ) : null}
       <ResourceProfileDetails
         empDetails={{
           employeeName,
@@ -31,6 +74,9 @@ const RegularisationFormDetails = ({navigation, route}) => {
           designation,
           managerInfoDto,
         }}
+        dialCall={dialCall}
+        sendMail={sendMail}
+        sendMessage={sendMessage}
       />
       <RegularisationList
         employeeID={empId}

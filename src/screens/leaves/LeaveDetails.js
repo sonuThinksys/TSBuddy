@@ -1,5 +1,8 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import styles from './LeavesDetailsStyles';
+import React from 'react';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 const LeaveDetails = ({route, navigation}) => {
   const card = (leftText, rightText, index) => {
     return (

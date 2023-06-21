@@ -1,6 +1,6 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -171,6 +171,21 @@ const ApplyLeave = ({navigation, route}) => {
   const sameDateOrNot = (date1, date2) => {
     return date1.toDateString() === date2.toDateString();
   };
+
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerLeft: () => (
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           navigation.goBack();
+  //         }}>
+  //         <View>
+  //           <Image style={styles.downloadBTN} source={MonthImages.backArrowS} />
+  //         </View>
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [navigation]);
 
   useEffect(() => {
     if (fromResource) {

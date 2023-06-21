@@ -97,12 +97,26 @@ const WorkFromHomeList = props => {
     return (
       <TouchableOpacity
         onPress={() => {
+          // item.status !== 'Open'
+          //   ? navigation.navigate(props.workFromHomeLeaveDetailsScreen, item)
+          //   : navigation.navigate(props.workFromHomeLeaveApplyScreenOpen, {
+          //       ...item,
+          //       fromWfh: true,
+          //       employeeID,
+          //     });
+
           item.status !== 'Open'
-            ? navigation.navigate(props.workFromHomeLeaveDetailsScreen, item)
-            : navigation.navigate(props.workFromHomeLeaveApplyScreenOpen, {
-                ...item,
-                fromWfh: true,
-                employeeID,
+            ? navigation.navigate('Leaves', {
+                screen: 'LeaveDetailsScreen',
+                params: item,
+              })
+            : navigation.navigate('Leaves', {
+                screen: 'LeaveApplyScreen',
+                params: {
+                  ...item,
+                  fromWfh: true,
+                  employeeID,
+                },
               });
         }}>
         <View style={style.flateListView}>

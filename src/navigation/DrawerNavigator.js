@@ -235,7 +235,7 @@ const WorkFromHomeStackScreen = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.pop();
               }}>
               <Image
                 source={MonthImages.backArrowS}
@@ -258,7 +258,7 @@ const WorkFromHomeStackScreen = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.pop();
               }}>
               <Image
                 source={MonthImages.backArrowS}
@@ -281,7 +281,7 @@ const WorkFromHomeStackScreen = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.pop();
               }}>
               <Image
                 source={MonthImages.backArrowS}
@@ -343,7 +343,7 @@ const ProfileStackScreen = ({navigation}) => {
 
 const RegularisationStackScreen = ({navigation}) => {
   return (
-    <RegularisationStack.Navigator>
+    <RegularisationStack.Navigator initialRouteName="Resource List screen">
       <RegularisationStack.Screen
         options={drawerOption({
           label: 'Regularisation Resource List',
@@ -371,7 +371,7 @@ const RegularisationStackScreen = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.pop();
               }}>
               <Image
                 source={MonthImages.backArrowS}
@@ -497,21 +497,13 @@ const ResourcesStackScreen = ({navigation}) => {
         component={ResourcesDetails}
       />
 
-      <ResourcesStack.Screen
+      {/* <ResourcesStack.Screen
         options={({navigation}) => {
           return CustomHeader({navigation, title: 'Leave Details'});
         }}
         name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
-      {/* <ResourcesStack.Screen
-        options={({navigation}) => {
-          return CustomHeader({navigation, title: 'Finalize Leave'});
-        }}
-        name={'resourceLeaveDetailsScreenOpen'}
-        // name={'resourceLeaveDetailsScreenOpen'}
-        component={LeaveDetails}
-      /> */}
       <ResourcesStack.Screen
         options={drawerOption({
           label: 'Apply Leave',
@@ -521,9 +513,17 @@ const ResourcesStackScreen = ({navigation}) => {
         })}
         name={LeaveApplyScreen}
         component={ApplyLeave}
-      />
+      /> */}
 
       <ResourcesStack.Screen
+        options={({navigation}) => {
+          return CustomHeader({navigation, title: 'Finalize Leave'});
+        }}
+        name={'attaindanceDetailsScreen'}
+        component={AttaindanceDetails}
+      />
+
+      {/* <ResourcesStack.Screen
         options={({navigation}) => ({
           headerStyle: {
             backgroundColor: Colors.darkBlue,
@@ -568,7 +568,7 @@ const ResourcesStackScreen = ({navigation}) => {
         })}
         name={'workFromHomeLeaveApplyScreenOpen'}
         component={ApplyLeave}
-      />
+      /> */}
 
       <ResourcesStack.Screen
         options={({navigation}) => ({
@@ -580,7 +580,7 @@ const ResourcesStackScreen = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.pop();
               }}>
               <Image
                 source={MonthImages.backArrowS}
