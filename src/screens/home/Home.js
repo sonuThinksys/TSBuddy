@@ -32,7 +32,6 @@ let data = [
 ];
 
 const Home = ({navigation}) => {
-  console.log('navigationDrawer:', navigation);
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,6 @@ const Home = ({navigation}) => {
     (async () => {
       try {
         setLoading(true);
-
         const empData =
           token &&
           (await dispatch(

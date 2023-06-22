@@ -93,6 +93,40 @@ const snacks = 'snacks';
 //   },
 // );
 
+export const getLunchPlans = createAsyncThunk(
+  'getLunchPlans',
+  async ({token}) => {
+    const {getLunchPlanID: url} = endPoints;
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    try {
+      const {data, status} = await axios.get(url, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const getFinalizedLeaveDays = createAsyncThunk(
   'getFinalizedLeaveDays',
   async ({token, employeeId, fromDate, toDate}) => {

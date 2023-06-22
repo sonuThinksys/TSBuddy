@@ -136,6 +136,31 @@ const UserProfile = () => {
     }
   };
 
+  const handleCall = useCallback(
+    (cellNumber, employeeName) => {
+      setClickData({
+        medium: cellNumber,
+        nameOfEmployee: employeeName,
+        text: 'Call ',
+      });
+      dispatch(modalStatus(true));
+    },
+    [isFocussed],
+  );
+
+  const handleMail = useCallback(
+    (companyEmail, employeeName) => {
+      setClickData({
+        medium: companyEmail,
+        nameOfEmployee: employeeName,
+        text: 'Send Mail to ',
+      });
+      // setClickData('fghfgh');
+      dispatch(modalStatus(true));
+    },
+    [isFocussed],
+  );
+
   const listFooterComponent = () => {
     return (
       <View style={{padding: 8}}>
@@ -217,22 +242,23 @@ const UserProfile = () => {
             </TouchableOpacity>
           ) : (
             // <View style={{padding: 10, borderWidth: 1, height: 320}}></View>
-            <TouchableOpacity
-              style={styles.container2}
-              onPress={() => {
-                navigation.navigate('UserDetail', {
-                  designation,
-                  companyEmail,
-                  image,
-                  cellNumber,
-                  employeeName,
-                  managerInfoDto,
-                });
-              }}>
-              <ImageBackground
-                resizeMode="contain"
-                style={styles.backgroundImage}
-                source={MonthImages.empbgS}>
+
+            <ImageBackground
+              resizeMode="contain"
+              style={styles.backgroundImage}
+              source={MonthImages.empbgS}>
+              <TouchableOpacity
+                style={styles.container2}
+                onPress={() => {
+                  navigation.navigate('UserDetail', {
+                    designation,
+                    companyEmail,
+                    image,
+                    cellNumber,
+                    employeeName,
+                    managerInfoDto,
+                  });
+                }}>
                 {image ? (
                   <Image
                     resizeMode="stretch"
@@ -249,43 +275,26 @@ const UserProfile = () => {
                 <Text numberOfLines={1} style={styles.desText2}>
                   {designation}
                 </Text>
-                <View style={styles.buttomView}>
-                  <Pressable
-                    style={styles.imagecontainer1}
-                    onPress={() => {
-                      setClickData({
-                        medium: cellNumber,
-                        nameOfEmployee: employeeName,
-                        text: 'Call ',
-                      });
-
-                      // setClickData('fghfgh');
-                      dispatch(modalStatus(true));
-                    }}>
-                    <Image
-                      style={styles.callImage}
-                      source={MonthImages.callEmp}
-                    />
-                  </Pressable>
-                  <Pressable
-                    style={styles.imagecontainer2}
-                    onPress={() => {
-                      setClickData({
-                        medium: companyEmail,
-                        nameOfEmployee: employeeName,
-                        text: 'Send Mail to ',
-                      });
-                      // setClickData('fghfgh');
-                      dispatch(modalStatus(true));
-                    }}>
-                    <Image
-                      style={styles.mailImage}
-                      source={MonthImages.mailEmp}
-                    />
-                  </Pressable>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              <View style={styles.buttomView}>
+                <Pressable
+                  style={styles.imagecontainer1}
+                  onPress={() => handleCall(cellNumber, employeeName)}>
+                  <Image
+                    style={styles.callImage}
+                    source={MonthImages.callEmp}
+                  />
+                </Pressable>
+                <Pressable
+                  style={styles.imagecontainer2}
+                  onPress={() => handleMail(companyEmail, employeeName)}>
+                  <Image
+                    style={styles.mailImage}
+                    source={MonthImages.mailEmp}
+                  />
+                </Pressable>
+              </View>
+            </ImageBackground>
           )}
         </View>
       );
@@ -299,7 +308,7 @@ const UserProfile = () => {
     <View style={{flex: 1}}>
       <View
         style={{
-          backgroundColor: Colors.darkBlue,
+          backgroundColor: Colors.lighterBlue,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
@@ -526,7 +535,6 @@ const UserProfile = () => {
           }}
         />
       )}
-      {isFetchingEmployees ? <Loader /> : null}
     </View>
   );
 };

@@ -136,8 +136,17 @@ const ResourcesDetails = ({route, navigation}) => {
   const sendMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
       text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendWhatsAppMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send WhatsApp to',
     });
     dispatch(modalStatus(true));
   };
@@ -150,7 +159,7 @@ const ResourcesDetails = ({route, navigation}) => {
     <>
       <CustomHeader
         showDrawerMenu={false}
-        title="Resourse Details"
+        title="Resource Details"
         navigation={navigation}
         isHome={false}
         showHeaderRight={false}
@@ -164,6 +173,7 @@ const ResourcesDetails = ({route, navigation}) => {
             dialCall={dialCall}
             sendMail={sendMail}
             sendMessage={sendMessage}
+            sendWhatsApp={sendWhatsAppMessage}
             empDetails={{
               employeeName,
               image,

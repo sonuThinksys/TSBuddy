@@ -29,6 +29,8 @@ const ResourceProfileDetails = props => {
     managerInfoDto,
   } = props.empDetails;
 
+  const {sendWhatsApp} = props;
+
   return (
     <View style={{backgroundColor: Colors.lighterBlue, marginBottom: 5}}>
       <View style={style.profile_name_cont}>
@@ -87,7 +89,7 @@ const ResourceProfileDetails = props => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => sendMessage()}>
+          <TouchableOpacity onPress={() => sendWhatsApp()}>
             <View style={style.social_icon}>
               <Image
                 source={MonthImages.empWa}

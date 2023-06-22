@@ -94,7 +94,7 @@ const UserDetail = ({navigation, route}) => {
 
       <View
         style={{
-          backgroundColor: Colors.darkBlue,
+          backgroundColor: Colors.lighterBlue,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-around',
@@ -108,7 +108,7 @@ const UserDetail = ({navigation, route}) => {
             }}>
             <Image
               source={MonthImages.backArrowS}
-              style={{height: 25, width: 25}}
+              style={{height: 20, width: 20}}
             />
           </TouchableOpacity>
         </View>
@@ -134,7 +134,7 @@ const UserDetail = ({navigation, route}) => {
       <View
         style={{
           height: hp(30),
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colors.lighterBlue,
           paddingHorizontal: wp(30),
           justifyContent: 'center',
           alignItems: 'center',

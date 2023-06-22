@@ -114,7 +114,7 @@ export default StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 6,
     marginBottom: hp(2),
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   button: {
     backgroundColor: Colors.white,
@@ -239,5 +239,9 @@ export default StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: Colors.black,
     opacity: 0.5,
+  },
+  downloadBTN: {
+    width: wp(6),
+    height: hp(3),
   },
 });

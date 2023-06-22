@@ -86,8 +86,8 @@ const renderItem = ({item, index}) => {
       <View style={{flexDirection: 'row'}}>
         <View style={styles.daysContainer}>
           <Text style={styles.daysText}>
-            {item?.totalLeaveDays > 9
-              ? item?.totalLeaveDays > 9
+            {item?.totalLeaveDays > 9 || item?.totalLeaveDays < 1
+              ? +item?.totalLeaveDays
               : `0${item?.totalLeaveDays}`}
           </Text>
           <Text>{item?.totalLeaveDays > 1 ? 'Days' : 'Day'}</Text>

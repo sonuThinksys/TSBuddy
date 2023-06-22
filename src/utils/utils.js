@@ -51,3 +51,9 @@ export const openLeavesCount = function ({leaves}) {
   }
   return openCount;
 };
+
+export const lunchChargeMessage = function (amount, type) {
+  return `You will be charged ₹${amount}/${
+    type === 'monthly' ? 'Month' : 'Day'
+  }.`;
+};

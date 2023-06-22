@@ -24,6 +24,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {monthsName, RequestLunchLabel} from 'utils/defaultData';
 import {
   cancelSubscribedLunchRequest,
+  getLunchPlans,
   getSubscribedLunchRequests,
   requestLunchSubmission,
 } from 'redux/homeSlice';
@@ -32,6 +33,7 @@ import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 import Loader from 'component/loader/Loader';
 import CustomHeader from 'navigation/CustomHeader';
+import {lunchChargeMessage} from 'utils/utils';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -42,6 +44,7 @@ const RequestLunch = ({navigation}) => {
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
   });
+
   const [endDate, setEndDate] = useState({endDateStr: 'Select End Date'});
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
@@ -59,6 +62,22 @@ const RequestLunch = ({navigation}) => {
   const [endSelected, setEndSelected] = useState(false);
   const [lunchRequests, setLunchRequests] = useState([]);
   const [monthlyStartDate, setMonthlyStartDate] = useState(null);
+  const [lunchPlans, setLunchPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+        const lunchPlans = await dispatch(getLunchPlans({token}));
+        setLunchPlans(lunchPlans.payload);
+      } catch (err) {
+        console.log('lunchPlans:err:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
   const setUpcomingMonthlyStartDate = ({date}) => {
     setMonthlyStartDate(date);
@@ -84,6 +103,21 @@ const RequestLunch = ({navigation}) => {
   }, [lunchRequests?.length]);
 
   const onSelectItem = item => {
+    const selectedPlanByUser = lunchPlans.find(
+      plan =>
+        plan?.requestType?.toLowerCase() === item.value.toLowerCase() ||
+        plan?.requestType?.toLowerCase() === item.label.toLowerCase(),
+    );
+
+    setSelectedPlan(selectedPlanByUser);
+
+    alert(
+      lunchChargeMessage(
+        selectedPlanByUser?.price,
+        selectedPlanByUser?.requestType?.toLowerCase(),
+      ),
+    );
+
     let date = new Date().getDate();
 
     const todayDate = new Date();
@@ -173,10 +207,12 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
-    let requestType;
-    if (value === 'daily') requestType = 1;
-    else if (value === 'duration') requestType = 2;
-    else requestType = 3;
+    // let requestType;
+    // if (value === 'daily') requestType = selectedPlan.id;
+    // else if (value === 'duration') requestType = selectedPlan.id;
+    // else requestType = 3;
+
+    const requestType = selectedPlan.id;
 
     let dateObj = {};
     if (value === 'monthly') {
@@ -218,7 +254,7 @@ const RequestLunch = ({navigation}) => {
     if (
       value !== 'monthly' &&
       (startDate?.startDateObj?.getDay() === 0 ||
-        startDate.startDateObj.getDay() === 6)
+        startDate?.startDateObj?.getDay() === 6)
     ) {
       alert('You Cannot Start a lunch request on Weekends.');
       return;
@@ -290,6 +326,8 @@ const RequestLunch = ({navigation}) => {
       setIsLoading(false);
       setStartDate({startDateStr: 'Select Start Date'});
       setEndDate({endDateStr: 'Select End Date'});
+      setStartSelected(false);
+      setEndSelected(false);
     }
 
     // monthly , duration
@@ -408,6 +446,7 @@ const RequestLunch = ({navigation}) => {
               Start Date :
             </Text>
             <TouchableOpacity
+              style={{opacity: !value || value === 'daily' ? 0.6 : 1}}
               disabled={!value || value === 'daily'}
               onPress={() => {
                 if (permReq) {
@@ -443,6 +482,10 @@ const RequestLunch = ({navigation}) => {
               </Text>
               <TouchableOpacity
                 disabled={!value || value === 'daily' || !startSelected}
+                style={{
+                  opacity:
+                    !value || value === 'daily' || !startSelected ? 0.6 : 1,
+                }}
                 // disabled={isDaily}
                 onPress={() => {
                   if (permReq) {

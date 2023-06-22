@@ -1,6 +1,8 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import styles from './LeavesDetailsStyles';
 import CustomHeader from 'navigation/CustomHeader';
+import React from 'react';
+
 const LeaveDetails = ({route, navigation}) => {
   const card = (leftText, rightText, index) => {
     return (
@@ -17,8 +19,8 @@ const LeaveDetails = ({route, navigation}) => {
 
   const {params: data} = route;
 
-  const applyingDate = `${new Date(data.postingDate).getDate()}-${new Date(
-    data.fromDate,
+  const applyingDate = `${new Date(data?.postingDate).getDate()}-${new Date(
+    data.postingDate,
   ).toLocaleString('default', {month: 'short'})}-${new Date(
     data.fromDate,
   ).getFullYear()}`;

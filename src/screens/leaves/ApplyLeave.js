@@ -1,6 +1,6 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -47,8 +47,6 @@ import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
 import CustomHeader from 'navigation/CustomHeader';
 
 const ApplyLeave = ({navigation, route}) => {
-  console.log('navigationStack:', navigation);
-  console.log('routeParams:', route?.params?.fromHomeApplyLeave);
   function getMonthIndex(shortForm) {
     const months = [
       'Jan',
@@ -174,6 +172,21 @@ const ApplyLeave = ({navigation, route}) => {
   const sameDateOrNot = (date1, date2) => {
     return date1.toDateString() === date2.toDateString();
   };
+
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerLeft: () => (
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           navigation.goBack();
+  //         }}>
+  //         <View>
+  //           <Image style={styles.downloadBTN} source={MonthImages.backArrowS} />
+  //         </View>
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [navigation]);
 
   useEffect(() => {
     if (fromResource) {
@@ -1232,7 +1245,7 @@ const ApplyLeave = ({navigation, route}) => {
                   </Text>
                 ) : fromOpenLeave ? (
                   <Text style={styles.leaveApproverName}>
-                    {openLeaveApprover}
+                    {openLeaveData?.leaveApproverName}
                   </Text>
                 ) : isGuestLogin ? (
                   <Text style={styles.leaveApproverName}>

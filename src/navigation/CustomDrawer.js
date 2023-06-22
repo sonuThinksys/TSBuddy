@@ -53,7 +53,7 @@ export default ({navigation}) => {
 
   const regularisationTab = {
     screen: 'RegularisationFormScreen',
-    label: 'Regularisation',
+    label: 'Regularization',
     navigation,
     key: 5,
     icon: MonthImages.EmployeeIdIcon,

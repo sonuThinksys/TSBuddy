@@ -41,13 +41,19 @@ export default StyleSheet.create({
   container2: {
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(1),
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     marginVertical: hp(0.5),
+    alignItems: 'center',
     // marginHorizontal: wp(0.1),
     width: wp(33.5),
     // height: hp(16),
   },
-  backgroundImage: {alignItems: 'center', paddingBottom: hp(0.4)},
+  backgroundImage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: hp(0.4),
+    marginVertical: 6,
+  },
   buttomView: {
     width: '100%',
     borderTopWidth: 3,
