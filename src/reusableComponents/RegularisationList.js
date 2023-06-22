@@ -76,20 +76,21 @@ const RegularisationList = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          // item.status === 'Open' &&
-          // navigation.navigate(navigateTo, {
-          //     ...item,
-          //     employeeName,
+          console.log('navigation', navigateTo);
+
+          navigation.navigate(navigateTo, {
+            ...item,
+            employeeName,
+          });
+          // item.status =
+          //   'Open' &&
+          //   navigation.navigate('RegularisationFormScreen', {
+          //     screen: 'regularisationTabDetailsScreen',
+          //     params: {
+          //       ...item,
+          //       employeeName,
+          //     },
           //   });
-          item.status =
-            'Open' &&
-            navigation.navigate('RegularisationFormScreen', {
-              screen: 'regularisationTabDetailsScreen',
-              params: {
-                ...item,
-                employeeName,
-              },
-            });
         }}>
         <View style={styles.flateListView}>
           <View

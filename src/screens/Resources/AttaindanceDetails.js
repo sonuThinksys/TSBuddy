@@ -1,7 +1,11 @@
 import {View, Text} from 'react-native';
 import styles from '../leaves/LeavesDetailsStyles';
+import CustomHeader from 'navigation/CustomHeader';
+import {useNavigation} from '@react-navigation/native';
 
-const AttaindanceDetails = (route, navigation) => {
+const AttaindanceDetails = route => {
+  const navigation = useNavigation();
+
   const card = (leftText, rightText, index) => {
     return (
       <View key={index} style={styles.card}>
@@ -28,12 +32,23 @@ const AttaindanceDetails = (route, navigation) => {
   ];
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{data.attDate}</Text>
+    <>
+      <CustomHeader
+        showDrawerMenu={false}
+        title="Attendance Details"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={false}
+      />
+      <View style={styles.mainContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{data.attDate}</Text>
+        </View>
+        <View>
+          {details.map((item, index) => card(item[0], item[1], index))}
+        </View>
       </View>
-      <View>{details.map((item, index) => card(item[0], item[1], index))}</View>
-    </View>
+    </>
   );
 };
 

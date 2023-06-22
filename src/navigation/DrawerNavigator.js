@@ -389,14 +389,7 @@ const ResourcesStackScreen = ({navigation}) => {
         name={LeaveDetailsScreen}
         component={LeaveDetails}
       />
-      {/* <ResourcesStack.Screen
-        options={({navigation}) => {
-          return CustomHeader({navigation, title: 'Finalize Leave'});
-        }}
-        name={'resourceLeaveDetailsScreenOpen'}
-        // name={'resourceLeaveDetailsScreenOpen'}
-        component={LeaveDetails}
-      /> */}
+
       <ResourcesStack.Screen
         options={drawerOption({
           label: 'Apply Leave',
@@ -423,6 +416,12 @@ const ResourcesStackScreen = ({navigation}) => {
         options={{headerShown: false}}
         name={'regularisationTabDetailsScreen'}
         component={RegularisationTabDetails}
+      />
+
+      <ResourcesStack.Screen
+        options={{headerShown: false}}
+        name={'attaindanceDetailsScreen'}
+        component={AttaindanceDetails}
       />
     </ResourcesStack.Navigator>
   );
