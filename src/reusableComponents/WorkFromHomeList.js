@@ -174,7 +174,6 @@ const WorkFromHomeList = props => {
   if (loading) {
     return <Loader />;
   }
-
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
