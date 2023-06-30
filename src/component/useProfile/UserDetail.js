@@ -39,6 +39,8 @@ const UserDetail = ({navigation, route}) => {
   const [empDetail, setClickData] = useState({});
   const {isShowModal} = useSelector(state => state.home);
 
+  const [showContactModal, setShowContactModal] = useState(false);
+
   const addToContacts = () => {
     const [firstName, lastName] = employeeName.split(' ');
 

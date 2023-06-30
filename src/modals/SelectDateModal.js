@@ -17,7 +17,7 @@ import {
 import Ripple from 'react-native-material-ripple';
 const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
   const {openModal, setOpenModal, satrtDate1} = modalData;
-  const [select, setSelected] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   return (
     <Modal
@@ -35,13 +35,13 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
       <View style={styles.container}>
         <Text style={styles.SelectText}>Select Start Date</Text>
         <View style={styles.container2}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               setUpcomingMonthlyStartDate({date: satrtDate1});
               setSelected(true);
             }}>
             <View style={styles.container3}>
-              <Ripple
+              {/* <Ripple
                 rippleColor={Colors.red}
                 rippleOpacity={0.5}
                 rippleDuration={400}
@@ -64,10 +64,20 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
                   }}>
                   {select ? <View style={styles.container4}></View> : null}
                 </View>
-              </Ripple>
+              </Ripple> */}
+              <View
+                style={{
+                  width: 16,
+                  height: 16,
+                  borderRadius: 10,
+                  borderColor: Colors.black,
+                  borderWidth: selected ? null : 1,
+                  marginRight: 5,
+                  backgroundColor: selected ? Colors.darkBrown : null,
+                }}></View>
               <Text>{satrtDate1}</Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
 
           <Text style={{color: Colors.grey, fontSize: 13}}>
             **Monthly lunch can only be started from 1st or 16th of any month
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     flexDirection: 'row',
     paddingHorizontal: wp(4),
+    alignItems: 'center',
   },
   container4: {
     backgroundColor: Colors.red,

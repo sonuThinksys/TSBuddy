@@ -153,26 +153,6 @@ const RemainingLeaves = () => {
               initial: false,
               // params: {leavesData},
             });
-
-            // TESTING================================================================
-            // navigation.dispatch(
-            //   CommonActions.navigate({
-            //     name: 'Drawer',
-            //     params: {
-            //       screen: 'Leaves',
-            //       params: {
-            //         screen: 'LeaveApplyScreen',
-            //       },
-            //     },
-            //   }),
-            // );
-            // navigation.dispatch(
-            //   CommonActions.reset({
-            //     index: 0,
-            //     routes: [{name: 'LeavesScreeen'}],
-            //   }),
-            // );
-            // TESTING================================================================
           }}
           style={styles.buttonContainer}>
           <Text style={styles.buttonText}>Apply</Text>

@@ -4,10 +4,8 @@ import endPoints from '../config';
 
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-// import {v4 as uuidv4} from 'uuid';
 
 const initialState = {
-  isLoading: true,
   isShowModal: false,
   salarySlipData: {},
   salarySlipDataLoading: false,
@@ -92,6 +90,40 @@ const snacks = 'snacks';
 //     }
 //   },
 // );
+
+export const lunchRequestCancellationDeadline = createAsyncThunk(
+  'lunchRequestCancellationDeadline',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = config.getLunchCancelDeadline;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
 
 export const getLunchPlans = createAsyncThunk(
   'getLunchPlans',
@@ -1265,9 +1297,7 @@ const homeSlice = createSlice({
     homeReset: (state, action) => {
       state.employeeProfile = {};
     },
-    loadingStatus: (state, action) => {
-      state.isLoading = action.payload;
-    },
+
     modalStatus: (state, action) => {
       state.isShowModal = action.payload;
     },
@@ -1484,7 +1514,6 @@ const homeSlice = createSlice({
 
 export default homeSlice.reducer;
 export const {
-  loadingStatus,
   modalStatus,
   dateOfModal,
   setRecentAppliedLeaves,

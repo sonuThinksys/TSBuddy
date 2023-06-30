@@ -29,18 +29,19 @@ import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIc
 import CrossIcon from 'assets/allImage/cross.imageset/cross.png';
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
 import Loader from 'component/loader/Loader';
+import {FlashList} from '@shopify/flash-list';
 import {employeeData} from '../../../db';
 
-const UserProfile = () => {
+const UserProfile = ({route}) => {
   const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
   const inputRef = useRef(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const {isShowModal: isShowModall, fromNavigatedScreen} = useSelector(
-    state => state.home,
-  );
+  const fromNavigatedScreen = route.params.screenName;
+
+  const {isShowModal: isShowModall} = useSelector(state => state.home);
 
   const {userToken: token} = useSelector(state => state.auth);
   const [showHoriZontal, setShowHorizontal] = useState(false);
@@ -124,6 +125,11 @@ const UserProfile = () => {
   };
 
   const loadMoreData = () => {
+    console.log(
+      'WENT================================================================',
+      employeesCount,
+      skipCount,
+    );
     if (employeesCount > skipCount) {
       // if (scrollBegin && employeesCount > skipCount) {
       fetchEmployeesData({
@@ -497,6 +503,8 @@ const UserProfile = () => {
         </View>
       ) : (
         <FlatList
+          initialNumToRender={36}
+          estimatedItemSize={100}
           maxToRenderPerBatch={60}
           windowSize={18}
           removeClippedSubviews={true}

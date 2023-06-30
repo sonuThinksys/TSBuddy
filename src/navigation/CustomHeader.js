@@ -131,8 +131,8 @@ const CustomHeader = function ({
           <View>
             <TouchableOpacity
               onPress={() => {
-                dispatch(setFromNavigatedScreen({screenName}));
-                navigation.navigate(employeeProfileScreen);
+                // dispatch(setFromNavigatedScreen({screenName}));
+                navigation.navigate(employeeProfileScreen, {screenName});
               }}>
               <SearchIcon
                 fill={isHome ? Colors.black : Colors.white}

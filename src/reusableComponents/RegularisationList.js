@@ -76,8 +76,6 @@ const RegularisationList = props => {
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log('navigation', navigateTo);
-
           navigation.navigate(navigateTo, {
             ...item,
             employeeName,

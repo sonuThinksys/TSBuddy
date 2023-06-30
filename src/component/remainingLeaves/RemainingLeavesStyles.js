@@ -29,7 +29,6 @@ export default StyleSheet.create({
   remainingText: {
     fontFamily: FontFamily.RobotoLight,
     fontSize: FontSize.h18,
-    marginTop: hp(1),
     color: Colors.black,
   },
   leavesTypeContainer: {

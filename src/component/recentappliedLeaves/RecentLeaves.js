@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, Text, FlatList, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, Image, Pressable} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestLeavesData} from 'guestData';
@@ -15,6 +15,8 @@ import {widthPercentageToDP as wp} from 'utils/Responsive';
 // import {ERROR} from 'constants/strings';
 
 const RecentLeaves = ({navigation}) => {
+  const [showLeaveType, setShowLeaveType] = useState('leaves');
+
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
   );
@@ -23,6 +25,22 @@ const RecentLeaves = ({navigation}) => {
     leaveMenuDetails: {recentAppliedLeaves},
   } = useSelector(state => state.home);
   const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+
+  let leavesCount = 0;
+  let wfhCount = 0;
+
+  const recent3Leaves = recentAppliedLeaves?.filter(leave => {
+    if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
+      leavesCount++;
+      return true;
+    }
+  });
+  const recent3WFH = recentAppliedLeaves?.filter(leave => {
+    if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
+      wfhCount++;
+      return true;
+    }
+  });
 
   // const dispatch = useDispatch();
 
@@ -47,7 +65,20 @@ const RecentLeaves = ({navigation}) => {
   return (
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
       <View style={styles.container}>
-        <Text style={styles.recentText}>Leaves Applied</Text>
+        <Text style={styles.recentText}>
+          {showLeaveType === 'leaves' ? 'Leaves Applies' : 'WFH Applied'}
+        </Text>
+        <Pressable
+          onPress={() => {
+            setShowLeaveType(leaveType =>
+              leaveType === 'leaves' ? 'wfh' : 'leaves',
+            );
+          }}
+          style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>
+            {showLeaveType === 'leaves' ? 'WFH' : 'Leaves'}
+          </Text>
+        </Pressable>
       </View>
       {isGuestLogin ? (
         <FlatList
@@ -56,9 +87,18 @@ const RecentLeaves = ({navigation}) => {
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
         />
-      ) : recent3AppliedLeaves?.length > 0 ? (
+      ) : (showLeaveType === 'leaves' && recent3Leaves?.length) > 0 ? (
+        // ) : recent3Leaves?.length > 0 ? (
         <FlatList
-          data={recent3AppliedLeaves}
+          data={recent3Leaves}
+          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index}
+          // style={{marginHorizontal: 4}}
+        />
+      ) : (showLeaveType === 'wfh' && recent3WFH?.length) > 0 ? (
+        <FlatList
+          data={recent3WFH}
           // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
@@ -73,7 +113,7 @@ const RecentLeaves = ({navigation}) => {
               color: Colors.lightBlue,
               marginVertical: 4,
             }}>
-            Recent Leaves not found.
+            Recent {showLeaveType === 'leaves' ? 'Leaves' : 'WFH'} not found.
           </Text>
         </View>
       )}
@@ -100,7 +140,8 @@ const renderItem = ({item, index}) => {
                 color:
                   item.status.toLowerCase() === 'open'
                     ? Colors.gold
-                    : item.status.toLowerCase() === 'dismissed'
+                    : item.status.toLowerCase() === 'dismissed' ||
+                      item.status.toLowerCase() === 'rejected'
                     ? Colors.darkBrown
                     : Colors.darkLovelyGreen,
               },
@@ -137,7 +178,8 @@ const renderItem = ({item, index}) => {
             />
             <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
           </View>
-        ) : item.status.toLowerCase() === 'dismissed' ? (
+        ) : item.status.toLowerCase() === 'dismissed' ||
+          item.status.toLowerCase() === 'rejected' ? (
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <RejectedIcon
               fill={Colors.darkBrown}

@@ -87,8 +87,6 @@ const SalarySlip = ({navigation}) => {
     // setnewyearWiseData(finalData);
   };
 
-  console.log('salarySlipData:', salarySlipData);
-
   return (
     <>
       <CustomHeader

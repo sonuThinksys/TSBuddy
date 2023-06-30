@@ -54,7 +54,6 @@ const RequestLunch = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [satrtDate1, setStartDate1] = useState('');
-  const [endDate1, setEndDate1] = useState('');
   const [items, setItems] = useState(RequestLunchLabel);
   const [isLoading, setIsLoading] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
@@ -66,6 +65,7 @@ const RequestLunch = ({navigation}) => {
   const [selectedPlan, setSelectedPlan] = useState();
 
   useEffect(() => {
+    console.log('Running useeffect1');
     (async () => {
       try {
         setIsLoading(true);
@@ -86,6 +86,7 @@ const RequestLunch = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('Running useeffect2');
     (async () => {
       const subscribedLunchRequests =
         token &&
@@ -111,12 +112,12 @@ const RequestLunch = ({navigation}) => {
 
     setSelectedPlan(selectedPlanByUser);
 
-    alert(
-      lunchChargeMessage(
-        selectedPlanByUser?.price,
-        selectedPlanByUser?.requestType?.toLowerCase(),
-      ),
-    );
+    // alert(
+    //   lunchChargeMessage(
+    //     selectedPlanByUser?.price,
+    //     selectedPlanByUser?.requestType?.toLowerCase(),
+    //   ),
+    // );
 
     let date = new Date().getDate();
 
@@ -177,7 +178,7 @@ const RequestLunch = ({navigation}) => {
   };
 
   const hideDatePicker = pickerToClose => {
-    pickerToClose();
+    pickerToClose(false);
   };
 
   const handleStartConfirm = date => {
@@ -191,9 +192,12 @@ const RequestLunch = ({navigation}) => {
       startDateObj: date,
     });
     setStartSelected(true);
+    setEndSelected(false);
+    setEndDate({endDateStr: 'Select End Date'});
   };
 
   const handleEndConfirm = date => {
+    console.log('date:', date);
     setEndSelected(true);
     let selectedDate = date.getDate();
 
@@ -341,6 +345,11 @@ const RequestLunch = ({navigation}) => {
     if (!monthlyStartDate) opacity = 0.5;
   }
 
+  let endDateMaximumLimit = startSelected ? startDate?.startDateObj : undefined;
+  console.log('endDateMaximumLimit:', endDateMaximumLimit);
+
+  const startDateCopy = new Date(startDate?.startDateObj);
+
   return (
     // <SharedElement id="enter">
     <View style={styles.mainContainer}>
@@ -348,7 +357,7 @@ const RequestLunch = ({navigation}) => {
         <View>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              navigation.pop();
             }}>
             <Image
               source={MonthImages.backArrowS}
@@ -381,7 +390,7 @@ const RequestLunch = ({navigation}) => {
             }}>
             <DropDownPicker
               open={open}
-              placeholder={'Please Select'}
+              placeholder={'Please Select..'}
               value={value}
               items={items}
               setOpen={setOpen}
@@ -420,14 +429,15 @@ const RequestLunch = ({navigation}) => {
         <DateTimePickerModal
           minimumDate={startSelected ? startDate?.startDateObj : undefined}
           maximumDate={
-            startSelected && startDate?.startDateObj?.getDate
+            startSelected
               ? new Date(
-                  new Date().setDate(startDate.startDateObj.getDate() + 7),
+                  startDate?.startDateObj?.getTime() + 7 * 24 * 60 * 60 * 1000,
                 )
               : undefined
           }
           isVisible={endDatePickerVisible}
           mode="date"
+          date={startSelected ? startDate?.startDateObj : undefined}
           onConfirm={handleEndConfirm}
           onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
         />
@@ -488,11 +498,7 @@ const RequestLunch = ({navigation}) => {
                 }}
                 // disabled={isDaily}
                 onPress={() => {
-                  if (permReq) {
-                    setOpenModal(true);
-                  } else {
-                    setEndDatePickerVisible(true);
-                  }
+                  setEndDatePickerVisible(true);
                 }}>
                 <View style={styles.sixthView}>
                   <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
@@ -514,6 +520,16 @@ const RequestLunch = ({navigation}) => {
             marginHorizontal: wp(4),
           }}>
           <TouchableOpacity
+            onPress={() => {
+              setEndSelected(false);
+              setStartSelected(false);
+              setStartDate({
+                startDateStr: 'Select Start Date',
+              });
+              setEndDate({endDateStr: 'Select End Date'});
+
+              setValue(null);
+            }}
             style={{
               marginTop: 20,
               backgroundColor: Colors.grayishWhite,
@@ -619,6 +635,8 @@ const renderListOfAppliedRequests = ({
   lunchRequests,
   setLunchRequests,
 }) => {
+  // console.log('CheckingIdAndDate:', item.planId, new Date().getDate());
+
   const options = {month: 'short', day: '2-digit', year: 'numeric'};
 
   const formattedStartDate = new Date(
@@ -706,7 +724,14 @@ const renderListOfAppliedRequests = ({
                     const response = await dispatch(
                       onCancel({
                         token,
-                        body: {id: item.id},
+                        body: {
+                          id: item.id,
+                          employeeId: item.employeeId,
+                          requestStartDate: item.requestStartDate,
+                          requestEndDate: item.requestEndDate,
+                          requestCancellationDate: new Date(),
+                          requestType: item.planId,
+                        },
                       }),
                     );
                     // console.log('response:', response?.error?.message);

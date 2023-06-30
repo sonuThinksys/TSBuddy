@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -97,17 +96,18 @@ const drawerOption = ({
   showHeaderRight = true,
   headerIcon,
   isHome = false,
+  lunch,
 }) => {
   return {
     headerTitleAlign: 'center',
-    headerShown: false,
+    headerShown: lunch ? true : false,
     // headerTransparent: true,
 
     headerLeft: showDrawer
       ? () => (
           <TouchableOpacity
             onPress={() => {
-              navigation.openDrawer();
+              navigation.goBack();
             }}>
             <MenuSVG
               fill={isHome ? Colors.black : Colors.white}
@@ -193,10 +193,15 @@ const HomeStackScreen = ({navigation}) => {
         name={RequestLunchScreen}
         component={RequestLunch}
         options={{headerShown: false}}
-        // options={drawerOption({
-        //   label: 'Request Lunch',
-        //   headerIconName: MonthImages.info_scopy,
-        // })}
+        // options={props => {
+        //   // return drawerOption({
+        //   //   label: 'Request Lunch',
+        //   //   headerIconName: MonthImages.info_scopy,
+        //   //   lunch: true,
+        //   //   ...props,
+        //   // });
+
+        // }}
       />
       <HomeStack.Screen
         name={employeeProfileScreen}

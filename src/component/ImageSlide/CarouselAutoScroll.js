@@ -6,9 +6,11 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Pressable,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './AutoscrollStyle';
+import {FlashList} from '@shopify/flash-list';
 
 import BirthdayAnniV from 'modals/BirthdayAnniV';
 import {Colors} from 'colors/Colors';
@@ -117,77 +119,140 @@ const CarouselAutoScroll = ({navigation}) => {
       {showModal ? (
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
-      <FlatList
-        onScrollBeginDrag={handleScrollBeginDrag}
-        onScrollEndDrag={handleScrollEndDrag}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
-        ref={imageRef}
-        pagingEnabled
-        data={CalaenderEventData}
-        horizontal
-        onScrollToIndexFailed={info => {
-          const wait = new Promise(resolve => setTimeout(resolve, 500));
-          wait.then(() => {
-            imageRef?.current?.scrollToIndex({
-              index: info.index,
-              animated: true,
+      {CalaenderEventData?.length ? (
+        <FlashList
+          onScrollBeginDrag={handleScrollBeginDrag}
+          onScrollEndDrag={handleScrollEndDrag}
+          showsHorizontalScrollIndicator={false}
+          // contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+          ref={imageRef}
+          // pagingEnabled
+          estimatedItemSize={200}
+          data={CalaenderEventData}
+          horizontal
+          onScrollToIndexFailed={info => {
+            const wait = new Promise(resolve => setTimeout(resolve, 500));
+            wait.then(() => {
+              imageRef?.current?.scrollToIndex({
+                index: info.index,
+                animated: true,
+              });
             });
-          });
-        }}
-        keyExtractor={(item, index) => index}
-        renderItem={({item, index}) => {
-          return (
-            <View
-              style={{
-                marginRight: wp(5),
-              }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={MonthImages.Balloons}
-                  style={{height: 40, width: 40, marginRight: 24}}
-                />
-                <Text style={styles.happyText}>Happy </Text>
-                <Text style={styles.wishText}>Birthday</Text>
-              </View>
-
-              <TouchableOpacity
-                style={styles.container}
-                key={index}
-                onPress={() => {
-                  setModalData({
-                    startsOn: item.startsOn,
-                    dateOfJoining: item.dateOfJoining,
-                    name: item.employeeName,
-                    description: item.description,
-                    isBirthday: item.isBirthday,
-
-                    setShowModal: setShowModal,
-                  });
-                  setShowModal(true);
+          }}
+          keyExtractor={(item, index) => index}
+          renderItem={({item, index}) => {
+            return (
+              <View
+                style={{
+                  marginRight: wp(5),
                 }}>
-                <Image source={defaultUserIcon} style={styles.image} />
-                <Text style={styles.birthdayBoyOrGirl}>
-                  {item.employeeName}
-                </Text>
-                <Text style={styles.designation}>{item?.designation}</Text>
-              </TouchableOpacity>
-              <View style={styles.eventDate}>
-                {item.isBirthday ? (
-                  <HappyBirthday height={16} width={16} marginRight={10} />
-                ) : (
-                  <BriefCase height={16} width={16} marginRight={10} />
-                )}
-                <Text style={styles.eventDateText}>
-                  {item?.isBirthday
-                    ? moment(item?.dateOfBirth).format('DD MMM')
-                    : moment(item?.dateOfJoining).format('DD MMM')}
-                </Text>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={MonthImages.Balloons}
+                    style={{height: 40, width: 40, marginRight: 24}}
+                  />
+                  <Text style={styles.happyText}>Happy </Text>
+                  <Text style={styles.wishText}>Birthday</Text>
+                </View>
+
+                <Pressable
+                  style={styles.container}
+                  key={index}
+                  onPress={() => {
+                    setModalData({
+                      startsOn: item.startsOn,
+                      dateOfJoining: item.dateOfJoining,
+                      name: item.employeeName,
+                      description: item.description,
+                      isBirthday: item.isBirthday,
+
+                      setShowModal: setShowModal,
+                    });
+                    setShowModal(true);
+                  }}>
+                  <Image source={defaultUserIcon} style={styles.image} />
+                  <Text style={styles.birthdayBoyOrGirl}>
+                    {item.employeeName}
+                  </Text>
+                  <Text style={styles.designation}>{item?.designation}</Text>
+                </Pressable>
+                <View style={styles.eventDate}>
+                  {item.isBirthday ? (
+                    <HappyBirthday height={16} width={16} marginRight={10} />
+                  ) : (
+                    <BriefCase height={16} width={16} marginRight={10} />
+                  )}
+                  <Text style={styles.eventDateText}>
+                    {item?.isBirthday
+                      ? moment(item?.dateOfBirth).format('DD MMM')
+                      : moment(item?.dateOfJoining).format('DD MMM')}
+                  </Text>
+                </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      ) : null}
+
+      {/* {CalaenderEventData?.length ? (
+        <FlashList
+          ref={imageRef}
+          estimatedItemSize={200}
+          data={CalaenderEventData}
+          horizontal
+          renderItem={({item, index}) => {
+            return (
+              <View
+                style={{
+                  marginRight: wp(5),
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={MonthImages.Balloons}
+                    style={{height: 40, width: 40, marginRight: 24}}
+                  />
+                  <Text style={styles.happyText}>Happy </Text>
+                  <Text style={styles.wishText}>Birthday</Text>
+                </View>
+
+                <Pressable
+                  style={styles.container}
+                  key={index}
+                  onPress={() => {
+                    setModalData({
+                      startsOn: item.startsOn,
+                      dateOfJoining: item.dateOfJoining,
+                      name: item.employeeName,
+                      description: item.description,
+                      isBirthday: item.isBirthday,
+
+                      setShowModal: setShowModal,
+                    });
+                    setShowModal(true);
+                  }}>
+                  <Image source={defaultUserIcon} style={styles.image} />
+                  <Text style={styles.birthdayBoyOrGirl}>
+                    {item.employeeName}
+                  </Text>
+                  <Text style={styles.designation}>{item?.designation}</Text>
+                </Pressable>
+                <View style={styles.eventDate}>
+                  {item.isBirthday ? (
+                    <HappyBirthday height={16} width={16} marginRight={10} />
+                  ) : (
+                    <BriefCase height={16} width={16} marginRight={10} />
+                  )}
+                  <Text style={styles.eventDateText}>
+                    {item?.isBirthday
+                      ? moment(item?.dateOfBirth).format('DD MMM')
+                      : moment(item?.dateOfJoining).format('DD MMM')}
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
+        />
+      ) : null} */}
     </View>
   );
 };

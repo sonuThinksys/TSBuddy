@@ -48,8 +48,9 @@ const MenuItem = ({navigation}) => {
   const employeeID = decoded?.id || '';
 
   useEffect(() => {
-    if (isFocussed) updateData();
-  }, [token, isFocussed]);
+    // if (isFocussed) updateData();
+    updateData();
+  }, []);
 
   const updateData = () => {
     if (token) {

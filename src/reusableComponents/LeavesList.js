@@ -65,54 +65,56 @@ const LeavesList = props => {
   }, [isFocussed]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const leavesData = fromResource
-        ? await dispatch(
-            getResourcesEmployeesLeaves({
-              token,
-              empID: resourceEmployeeID,
-            }),
-          )
-        : await dispatch(
-            getLeaveDetails({
-              token,
-              empID: employeeId,
-            }),
-          );
-
-      const sortLeaveData = !fromResource
-        ? leavesData?.payload?.sort((a, b) => {
-            return (
-              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+    if (isFocussed) {
+      (async () => {
+        setLoading(true);
+        const leavesData = fromResource
+          ? await dispatch(
+              getResourcesEmployeesLeaves({
+                token,
+                empID: resourceEmployeeID,
+              }),
+            )
+          : await dispatch(
+              getLeaveDetails({
+                token,
+                empID: employeeId,
+              }),
             );
-          })
-        : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
-            return (
-              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-            );
-          });
 
-      setEmployeesLeaves(sortLeaveData);
+        const sortLeaveData = !fromResource
+          ? leavesData?.payload?.sort((a, b) => {
+              return (
+                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+              );
+            })
+          : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+              return (
+                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+              );
+            });
 
-      setLoading(false);
-      let count = 0;
-      leavesData?.payload?.employeeLeaves?.forEach(element => {
-        if (element.status == 'Open') {
-          count++;
-        }
-      });
-      fromResource && getLeaveCount(count);
+        setEmployeesLeaves(sortLeaveData);
 
-      if (leavesData?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: leavesData?.error?.message,
-          buttonText: 'Close',
-          dispatch,
+        setLoading(false);
+        let count = 0;
+        leavesData?.payload?.employeeLeaves?.forEach(element => {
+          if (element.status == 'Open') {
+            count++;
+          }
         });
-      }
-    })();
+        fromResource && getLeaveCount(count);
+
+        if (leavesData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: leavesData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+          });
+        }
+      })();
+    }
   }, [isFocussed]);
 
   const handleNavigation = item => {

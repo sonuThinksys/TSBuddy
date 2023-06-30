@@ -26,7 +26,7 @@ import {
 import styles from './ApplyLeaveStyle';
 
 import {
-  leaveTypes,
+  // leaveTypes,
   newDropDownOptions,
   approver,
   none,
@@ -43,10 +43,14 @@ import {
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
-import {openLeavesCount as returnOpenStatusCount} from 'utils/utils';
 import CustomHeader from 'navigation/CustomHeader';
 
 const ApplyLeave = ({navigation, route}) => {
+  const {employeeProfile: empProfileData = {}} = useSelector(
+    state => state.home,
+  );
+
+  const userGender = empProfileData.gender;
   function getMonthIndex(shortForm) {
     const months = [
       'Jan',
@@ -269,10 +273,47 @@ const ApplyLeave = ({navigation, route}) => {
     },
     {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
     {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
+    // {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
+    // {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {leaveType: 'Leave Without Pay', allocated: 0, taken: 0, remaining: 0},
+    // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
+
+  const leaveTypes = [
+    'Earned Leave',
+    'Restricted Holiday',
+    'Bereavement Leave',
+    'Compensatory Off',
+    // 'Maternity Leave',
+    // 'Paternity Leave',
+    'Leave Without Pay',
+    // 'Work From Home',
+  ];
+
+  let genderLeave;
+  let leaveTypeAccordingToGender;
+  if (userGender.toLowerCase() === 'male') {
+    genderLeave = {
+      leaveType: 'Paternity Leave',
+      allocated: 0,
+      taken: 0,
+      remaining: 0,
+    };
+    leaveTypeAccordingToGender = 'Paternity Leave';
+  } else {
+    genderLeave = {
+      leaveType: 'Maternity Leave',
+      allocated: 0,
+      taken: 0,
+      remaining: 0,
+    };
+
+    leaveTypeAccordingToGender = 'Maternity Leave';
+  }
+
+  leaveTypes.splice(4, 0, leaveTypeAccordingToGender);
+
+  leaves.splice(4, 0, genderLeave);
 
   for (let i = 2; i < resourceLeaves.length; i++) {
     const leaveType = resourceLeaves[i]?.leaveType;
@@ -308,26 +349,26 @@ const ApplyLeave = ({navigation, route}) => {
     setToCalenderVisible(false);
   };
 
-  function weekdayCount(startDate, endDate) {
-    let dayCount = 0;
+  // function weekdayCount(startDate, endDate) {
+  //   let dayCount = 0;
 
-    const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
-    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+  //   const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
+  //   const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
-    const presentDate = new Date(startDate);
+  //   const presentDate = new Date(startDate);
 
-    for (let i = 0; i < diffDays; i++) {
-      const dayOfWeek = presentDate.getDay();
+  //   for (let i = 0; i < diffDays; i++) {
+  //     const dayOfWeek = presentDate.getDay();
 
-      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        dayCount++;
-      }
+  //     if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+  //       dayCount++;
+  //     }
 
-      presentDate.setDate(presentDate.getDate() + 1);
-    }
+  //     presentDate.setDate(presentDate.getDate() + 1);
+  //   }
 
-    return dayCount;
-  }
+  //   return dayCount;
+  // }
 
   const fromCalenderConfirm = async date => {
     fromOnCancel();
@@ -400,10 +441,12 @@ const ApplyLeave = ({navigation, route}) => {
           : getMonthIndex(finalTodayDate.split('-')[1]);
 
       let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
-      toDateStr[1] = fromMonthIndex;
+      // toDateStr[1] = fromMonthIndex;
+      toDateStr[1] = toMonthIndex;
       toDateStr = toDateStr.join('-');
 
-      let fromDateStr = `${presentYear}-${toMonthIndex}-${presentDate}`;
+      let fromDateStr = `${presentYear}-${fromMonthIndex}-${presentDate}`;
+      // let fromDateStr = `${presentYear}-${toMonthIndex}-${presentDate}`;
 
       try {
         setLoading(true);
@@ -751,12 +794,12 @@ const ApplyLeave = ({navigation, route}) => {
 
   const applyLeave = async () => {
     if (!fromDate.fromDateObj || !toDate.toDateObj) {
-      alert('Please select dates for which you want to apply for a leave.');
+      alert('Please select dates for which you want to apply a leave.');
       return;
     }
 
     if (!reason) {
-      alert('Please enter a reason for applying for a leave.');
+      alert('Please enter a reason for applying a leave.');
       return;
     }
 
@@ -815,7 +858,7 @@ const ApplyLeave = ({navigation, route}) => {
 
       if (positiveDays > earnedLeaves?.currentLeaveBalance) {
         alert(
-          'You either run out of leave balance or you already opened remaining leaves.',
+          'You either run out of leave balance or you already have opened remaining leaves.',
         );
         return;
       }
@@ -988,6 +1031,10 @@ const ApplyLeave = ({navigation, route}) => {
 
   const dateAfter6Months = new Date();
   dateAfter6Months.setMonth(new Date().getMonth() + 6);
+
+  const minimumDateLeaveApplication = new Date(
+    `${new Date().getFullYear()}-${new Date().getMonth()}-25`,
+  );
 
   const handleLeaveApply = () => {
     isEditOpenleave ? applyUpdatedLeave() : applyLeave();
@@ -1174,6 +1221,7 @@ const ApplyLeave = ({navigation, route}) => {
                 })}
 
                 <DateTimePickerModal
+                  minimumDate={minimumDateLeaveApplication}
                   maximumDate={dateAfter6Months}
                   isVisible={fromCalenderVisible}
                   mode="date"
@@ -1181,6 +1229,7 @@ const ApplyLeave = ({navigation, route}) => {
                   onCancel={fromOnCancel}
                 />
                 <DateTimePickerModal
+                  minimumDate={minimumDateLeaveApplication}
                   maximumDate={dateAfter6Months}
                   isVisible={toCalenderVisible}
                   mode="date"

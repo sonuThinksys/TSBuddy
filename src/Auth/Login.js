@@ -51,7 +51,6 @@ import {
   TOUCH_SENSOR,
 } from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
-import {getEmployeeProfileData} from 'redux/homeSlice';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);

@@ -64,7 +64,8 @@ export const leaveTypes = [
   'Compensatory Off',
   'Maternity Leave',
   'Paternity Leave',
-  'Work From Home',
+  'Leave Without Pay',
+  // 'Work From Home',
 ];
 
 export const newDropDownOptions = [firstFalf, secondHalf, none];

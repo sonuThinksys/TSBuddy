@@ -7,9 +7,16 @@ import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
-    paddingBottom: hp(1),
+    // paddingBottom: hp(1),
+    // paddingHorizontal: wp(3),
+    // marginTop: hp(1),
+    paddingVertical: hp(1),
     paddingHorizontal: wp(3),
     marginTop: hp(1),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: hp(0.5),
   },
   imageView: {
     display: 'flex',
@@ -45,7 +52,6 @@ export default StyleSheet.create({
   recentText: {
     fontFamily: FontFamily.RobotoLight,
     fontSize: FontSize.h18,
-    marginTop: hp(1),
     color: Colors.black,
   },
   image: {height: 25, width: 25, flex: 0.1},
@@ -64,5 +70,19 @@ export default StyleSheet.create({
     color: Colors.gold,
     marginBottom: 5,
     fontFamily: FontFamily.RobotoMedium,
+  },
+  buttonContainer: {
+    borderWidth: 1,
+    borderRadius: 100,
+    borderColor: Colors.purpleShade,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 32,
+  },
+  buttonText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h16,
+    color: Colors.purpleShade,
   },
 });
