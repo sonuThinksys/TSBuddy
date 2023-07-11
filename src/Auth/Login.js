@@ -62,8 +62,8 @@ const Login = ({navigation}) => {
   // const [password, setPassword] = useState('radhikathinksys@123');
   // const [username, setUserName] = useState('gupta.utkarsh');
   // const [password, setPassword] = useState('Nanu@789');
-  const [username, setUserName] = useState('pant.amit');
-  const [password, setPassword] = useState('thinksys@321');
+  const [username, setUserName] = useState('pant.amit@thinksys.com');
+  const [password, setPassword] = useState('pant@1234');
   const {
     userToken: token,
     formInput,

@@ -39,4 +39,6 @@ export default {
   getTotalLeaveDays: `${API_URL}/Leave/GetTotalLeaveDays?employeeId=`,
   getLunchPlanID: `${API_URL}/FoodRequest/GetPlans`,
   getLunchCancelDeadline: `${API_URL}/FoodRequest/GetTimeAndDate`,
+  WfhApplication: `${API_URL}/Leave/WfhApplication`,
+  getPolicies: `${API_URL}/Policy/GetPolicies`,
 };

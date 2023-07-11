@@ -74,6 +74,10 @@ import CustomHeader from './CustomHeader';
 import RegularisationScreen from 'screens/regularisation/RegularisationScreen';
 import RegularisationFormDetails from 'screens/regularisation/RegularisationFormDetails';
 import RegularisationTabDetails from 'screens/Resources/RegularisationTabDetails';
+import ApplyWFH from 'screens/applyWFH.js/ApplyWFH';
+import Policies from 'screens/policies/Policies';
+import EmployeeHandbook from 'screens/EmployeeHandbook/EmployeeHandbook';
+import PoliciesDetails from 'screens/policies/PoliciesDetails';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -87,6 +91,9 @@ const ResourcesStack = createNativeStackNavigator();
 const CheckInOutStack = createNativeStackNavigator();
 const WorkFromHomeStack = createNativeStackNavigator();
 const RegularisationStack = createNativeStackNavigator();
+const ApplyWfhStack = createNativeStackNavigator();
+const PoliciesStack = createNativeStackNavigator();
+const EmployeeHandbookStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -289,6 +296,47 @@ const ProfileStackScreen = ({navigation}) => {
         component={Profile}
       />
     </ProfileStack.Navigator>
+  );
+};
+
+const PoliciesStackScreen = ({navigation}) => {
+  return (
+    <PoliciesStack.Navigator screenOptions={{headerShown: false}}>
+      <PoliciesStack.Screen
+        options={{headerShown: false}}
+        name={'policies'}
+        component={Policies}
+      />
+      <PoliciesStack.Screen
+        options={{headerShown: false}}
+        name={'policiesDetails'}
+        component={PoliciesDetails}
+      />
+    </PoliciesStack.Navigator>
+  );
+};
+
+const EmploeeHandbookStackScreen = ({navigation}) => {
+  return (
+    <EmployeeHandbookStack.Navigator screenOptions={{headerShown: false}}>
+      <EmployeeHandbookStack.Screen
+        options={{headerShown: false}}
+        name={'employeeHandbookScreen'}
+        component={EmployeeHandbook}
+      />
+    </EmployeeHandbookStack.Navigator>
+  );
+};
+
+const ApplyWfhStackScreen = ({navigation}) => {
+  return (
+    <ApplyWfhStack.Navigator screenOptions={{headerShown: false}}>
+      <ApplyWfhStack.Screen
+        options={{headerShown: false}}
+        name={'applyWfm'}
+        component={ApplyWFH}
+      />
+    </ApplyWfhStack.Navigator>
   );
 };
 
@@ -517,10 +565,15 @@ function DrawerNavigator({navigation}) {
 
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
+      <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
 
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
-
+      <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
+      <Drawer.Screen
+        name="employeeHandbook"
+        component={EmploeeHandbookStackScreen}
+      />
       <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>
   );

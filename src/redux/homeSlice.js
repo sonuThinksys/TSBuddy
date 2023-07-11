@@ -245,6 +245,36 @@ export const getEmployeeShift = createAsyncThunk(
   },
 );
 
+export const getPolicies = createAsyncThunk(
+  'home/getPolicies',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const {getPolicies} = endPoints;
+    try {
+      const {data, status} = await axios.get(getPolicies, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        Promise.reject(new Error('Something went wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const getTodayCheckInTime = createAsyncThunk(
   'getTodayCheckInTime',
   async ({token}) => {
@@ -506,6 +536,44 @@ export const updateLeaveStatus = createAsyncThunk(
     } catch (err) {
       let statusCode = 500;
       if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const applyForWfhLeave = createAsyncThunk(
+  'home/applyWfh',
+  async function ({token, body}) {
+    console.log('body', body);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.WfhApplication,
+        body,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err.response) {
         statusCode = err?.response?.status;
       }
       if (statusCode == 401) {
