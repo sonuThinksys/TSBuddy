@@ -206,7 +206,11 @@ const MenuItem = ({navigation}) => {
               </View> */}
               </View>
               <Pressable
-                style={styles.feedbackContainer}
+                disabled={!dailyMenuID}
+                style={[
+                  styles.feedbackContainer,
+                  {opacity: dailyMenuID ? 1 : 0.5},
+                ]}
                 onPress={() => {
                   setShowModal(true);
                   setModalData({

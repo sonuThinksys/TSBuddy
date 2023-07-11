@@ -61,6 +61,15 @@ const RegularisationFormDetails = ({navigation, route}) => {
     dispatch(modalStatus(true));
   };
 
+  const sendWhatsAppMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send WhatsApp to',
+    });
+    dispatch(modalStatus(true));
+  };
+
   return (
     <>
       <CustomHeader
@@ -85,6 +94,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
         dialCall={dialCall}
         sendMail={sendMail}
         sendMessage={sendMessage}
+        sendWhatsApp={sendWhatsAppMessage}
       />
       <RegularisationList
         employeeID={empId}

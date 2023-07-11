@@ -25,9 +25,9 @@ const AppConfig = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <SafeAreaProvider>
-          <App />
-        </SafeAreaProvider>
+        {/* <SafeAreaProvider> */}
+        <App />
+        {/* </SafeAreaProvider> */}
       </PersistGate>
     </Provider>
   );

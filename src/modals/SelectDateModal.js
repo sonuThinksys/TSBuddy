@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useState, forwardRef} from 'react';
 import {
   View,
   Text,
@@ -15,33 +15,43 @@ import {
 } from 'utils/Responsive';
 
 import Ripple from 'react-native-material-ripple';
-const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
-  const {openModal, setOpenModal, satrtDate1} = modalData;
-  const [selected, setSelected] = useState(false);
+const SelectDateModal = forwardRef(
+  ({modalData, setUpcomingMonthlyStartDate, resetSelected}, ref) => {
+    const {openModal, setOpenModal, satrtDate1} = modalData;
+    const [selected, setSelected] = useState(false);
 
-  return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      closeOnClick={true}
-      visible={openModal}
-      backdropOpacity={0.3}
-      onBackdropPress={() => {
-        setOpenModal(false);
-      }}
-      onBackButtonPress={() => {
-        setOpenModal(false);
-      }}>
-      <View style={styles.container}>
-        <Text style={styles.SelectText}>Select Start Date</Text>
-        <View style={styles.container2}>
-          <Pressable
-            onPress={() => {
-              setUpcomingMonthlyStartDate({date: satrtDate1});
-              setSelected(true);
-            }}>
-            <View style={styles.container3}>
-              {/* <Ripple
+    const resetState = () => {
+      setSelected(false);
+    };
+
+    useImperativeHandle(ref, () => ({
+      resetSelected() {
+        setSelected(false);
+      },
+    }));
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        closeOnClick={true}
+        visible={openModal}
+        backdropOpacity={0.3}
+        onBackdropPress={() => {
+          setOpenModal(false);
+        }}
+        onBackButtonPress={() => {
+          setOpenModal(false);
+        }}>
+        <View style={styles.container}>
+          <Text style={styles.SelectText}>Select Start Date</Text>
+          <View style={styles.container2}>
+            <Pressable
+              onPress={() => {
+                setUpcomingMonthlyStartDate({date: satrtDate1});
+                setSelected(true);
+              }}>
+              <View style={styles.container3}>
+                {/* <Ripple
                 rippleColor={Colors.red}
                 rippleOpacity={0.5}
                 rippleDuration={400}
@@ -65,42 +75,48 @@ const SelectDateModal = ({modalData, setUpcomingMonthlyStartDate}) => {
                   {select ? <View style={styles.container4}></View> : null}
                 </View>
               </Ripple> */}
-              <View
-                style={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: 10,
-                  borderColor: Colors.black,
-                  borderWidth: selected ? null : 1,
-                  marginRight: 5,
-                  backgroundColor: selected ? Colors.darkBrown : null,
-                }}></View>
-              <Text>{satrtDate1}</Text>
-            </View>
-          </Pressable>
+                <View
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: 10,
+                    borderColor: Colors.black,
+                    borderWidth: selected ? null : 1,
+                    marginRight: 5,
+                    backgroundColor: selected ? Colors.darkBrown : null,
+                  }}></View>
+                <Text>{satrtDate1}</Text>
+              </View>
+            </Pressable>
 
-          <Text style={{color: Colors.grey, fontSize: 13}}>
-            **Monthly lunch can only be started from 1st or 16th of any month
-          </Text>
-        </View>
+            <Text style={{color: Colors.grey, fontSize: 13}}>
+              **Monthly lunch can only be started from 1st or 16th of any month
+            </Text>
+          </View>
 
-        <View style={styles.okView}>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              setOpenModal(false);
-            }}>
-            <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>
-              <Text
-                style={{color: Colors.white, fontWeight: 'bold', fontSize: 18}}>
-                OK
-              </Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={styles.okView}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setOpenModal(false);
+              }}>
+              <View style={{paddingVertical: hp(1), paddingHorizontal: wp(8)}}>
+                <Text
+                  style={{
+                    color: Colors.white,
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                  }}>
+                  OK
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
-      </View>
-    </Modal>
-  );
-};
+      </Modal>
+    );
+  },
+);
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.green,

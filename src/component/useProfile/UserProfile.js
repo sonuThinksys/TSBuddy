@@ -125,11 +125,6 @@ const UserProfile = ({route}) => {
   };
 
   const loadMoreData = () => {
-    console.log(
-      'WENT================================================================',
-      employeesCount,
-      skipCount,
-    );
     if (employeesCount > skipCount) {
       // if (scrollBegin && employeesCount > skipCount) {
       fetchEmployeesData({

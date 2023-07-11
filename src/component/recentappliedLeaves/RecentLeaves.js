@@ -22,20 +22,23 @@ const RecentLeaves = ({navigation}) => {
   );
 
   const {
-    leaveMenuDetails: {recentAppliedLeaves},
+    leaveMenuDetails: {recentAppliedLeaves = []},
   } = useSelector(state => state.home);
   const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
   let leavesCount = 0;
   let wfhCount = 0;
 
-  const recent3Leaves = recentAppliedLeaves?.filter(leave => {
+  const sortedLeaves = [...recentAppliedLeaves]?.sort(
+    (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+  );
+  const recent3Leaves = sortedLeaves?.filter(leave => {
     if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
       leavesCount++;
       return true;
     }
   });
-  const recent3WFH = recentAppliedLeaves?.filter(leave => {
+  const recent3WFH = sortedLeaves?.filter(leave => {
     if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
       wfhCount++;
       return true;
@@ -138,10 +141,10 @@ const renderItem = ({item, index}) => {
               styles.leaveTypeText,
               {
                 color:
-                  item.status.toLowerCase() === 'open'
+                  item.status?.toLowerCase() === 'open'
                     ? Colors.gold
-                    : item.status.toLowerCase() === 'dismissed' ||
-                      item.status.toLowerCase() === 'rejected'
+                    : item.status?.toLowerCase() === 'dismissed' ||
+                      item.status?.toLowerCase() === 'rejected'
                     ? Colors.darkBrown
                     : Colors.darkLovelyGreen,
               },
@@ -168,7 +171,7 @@ const renderItem = ({item, index}) => {
         </View>
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        {item.status.toLowerCase() === 'open' ? (
+        {item.status?.toLowerCase() === 'open' ? (
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <PendingIcon
               fill={Colors.gold}
@@ -178,8 +181,8 @@ const renderItem = ({item, index}) => {
             />
             <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
           </View>
-        ) : item.status.toLowerCase() === 'dismissed' ||
-          item.status.toLowerCase() === 'rejected' ? (
+        ) : item.status?.toLowerCase() === 'dismissed' ||
+          item.status?.toLowerCase() === 'rejected' ? (
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <RejectedIcon
               fill={Colors.darkBrown}

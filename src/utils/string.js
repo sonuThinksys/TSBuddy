@@ -10,7 +10,7 @@ const CONFIRM_FINGERPRINT = 'Confirm Fingerprint to continue';
 const SIGN_IN = 'Sign in';
 const BIOMETRIC_LOGIN = 'Biometric login';
 const ERROR = 'Something went wrong!';
-const INCORRECT_LOGIN = 'Please try agian later.';
+const INCORRECT_LOGIN = 'Please try again later.';
 const MONTHLY_LUNCH_MESSAGE = 'You will be charged ₹1000/Month.';
 const DAILY_LUNCH_MESSAGE = 'You will be charged ₹60/Day.';
 export {

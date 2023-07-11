@@ -51,7 +51,6 @@ import BirthdayImage from 'assets/allImage/birthdayImage.imageset/B5.jpg';
 
 // gadget icons amd image
 
-import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import mailEmp from 'assets/allImage/mailImg.imageset/mailEmp.png';
 import callEmp from 'assets/allImage/callImg.imageset/callEmp.png';
 import DesignationIcon from 'assets/allImage/userimage.imageset/userPS.png';
