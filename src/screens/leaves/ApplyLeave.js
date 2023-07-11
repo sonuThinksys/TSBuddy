@@ -351,7 +351,7 @@ const ApplyLeave = ({navigation, route}) => {
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
-  console.log('leaves=leaves', leaves);
+  console.log('leaves:', leaves);
 
   const leaveTypes = [
     'Earned Leave',
@@ -369,7 +369,6 @@ const ApplyLeave = ({navigation, route}) => {
         leave.leaveType === 'Maternity Leave' ||
         leave.leaveType === 'Paternity Leave',
     );
-
     let genderLeave;
     let leaveTypeAccordingToGender;
     const userGenderLowerCase = userGender?.toLowerCase();
