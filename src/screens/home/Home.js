@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, SafeAreaView, FlatList, LogBox, Text, Image} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -20,6 +20,7 @@ import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
+import {useIsFocused} from '@react-navigation/native';
 
 let data = [
   WelcomeHeader,
@@ -35,9 +36,16 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
-
+  const flatListRef = useRef(null);
+  const isFocussed = useIsFocused();
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
+
+  useEffect(() => {
+    if (isFocussed && flatListRef.current) {
+      flatListRef.current.scrollToOffset({offset: 0, animated: true});
+    }
+  }, [isFocussed]);
 
   useEffect(() => {
     (async () => {
@@ -108,6 +116,7 @@ const Home = ({navigation}) => {
       {loading ? <Loader /> : null}
 
       <FlatList
+        ref={flatListRef}
         showsVerticalScrollIndicator={false}
         data={data}
         style={{flex: 1}}

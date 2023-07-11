@@ -1,4 +1,26 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import one from '../../pages/14.jpg';
+import two from '../../pages/15.jpg';
+import three from '../../pages/16.jpg';
+import four from '../../pages/17.jpg';
+import five from '../../pages/18.jpg';
+import six from '../../pages/19.jpg';
+import seven from '../../pages/20.jpg';
+import eight from '../../pages/21.jpg';
+import nine from '../../pages/22.jpg';
+import ten from '../../pages/23.jpg';
+import eleven from '../../pages/24.jpg';
+import twelve from '../../pages/25.jpg';
+import thirten from '../../pages/26.jpg';
+import fourteen from '../../pages/27.jpg';
+import fifteen from '../../pages/28.jpg';
+import sixteen from '../../pages/29.jpg';
+import seventeen from '../../pages/30.jpg';
+import eighteen from '../../pages/31.jpg';
+import nineteen from '../../pages/32.jpg';
+import twenty from '../../pages/33.jpg';
+import twentyOne from '../../pages/34.jpg';
+import twentyTwo from '../../pages/35.jpg';
 
 export const imageArr = [
   {
@@ -104,4 +126,29 @@ export const earnindData = [
 export const deductionData = [
   {lable: 'Employee PF', value: '60000'},
   {lable: 'Meal Charges', value: '600'},
+];
+
+export const employeeHandbookData = [
+  one,
+  two,
+  three,
+  four,
+  five,
+  six,
+  seven,
+  eight,
+  nine,
+  ten,
+  eleven,
+  twelve,
+  thirten,
+  fourteen,
+  fifteen,
+  sixteen,
+  seventeen,
+  eighteen,
+  nineteen,
+  twenty,
+  twentyOne,
+  twentyTwo,
 ];

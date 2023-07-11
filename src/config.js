@@ -41,4 +41,6 @@ export default {
   getLunchCancelDeadline: `${API_URL}/FoodRequest/GetTimeAndDate`,
   getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
+  WfhApplication: `${API_URL}/Leave/WfhApplication`,
+  getPolicies: `${API_URL}/Policy/GetPolicies`,
 };
