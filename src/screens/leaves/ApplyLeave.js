@@ -346,28 +346,22 @@ const ApplyLeave = ({navigation, route}) => {
     // 'Work From Home',
   ];
   if (!fromResource) {
-    const genderSpecificLeave = allRemainingLeaves.find(
-      leave =>
-        leave.leaveType === 'Maternity Leave' ||
-        leave.leaveType === 'Paternity Leave',
-    );
-
     let genderLeave;
     let leaveTypeAccordingToGender;
     if (userGender.toLowerCase() === 'male') {
       genderLeave = {
         leaveType: 'Paternity Leave',
-        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
-        taken: genderSpecificLeave?.currentLeaveApplied || 0,
-        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
+        allocated: 0,
+        taken: 0,
+        remaining: 0,
       };
       leaveTypeAccordingToGender = 'Paternity Leave';
     } else {
       genderLeave = {
         leaveType: 'Maternity Leave',
-        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
-        taken: genderSpecificLeave?.currentLeaveApplied || 0,
-        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
+        allocated: 0,
+        taken: 0,
+        remaining: 0,
       };
 
       leaveTypeAccordingToGender = 'Maternity Leave';
@@ -381,12 +375,12 @@ const ApplyLeave = ({navigation, route}) => {
   for (let i = 2; i < resourceLeaves.length; i++) {
     const leaveType = resourceLeaves[i]?.leaveType;
 
-    let leaveToBeUpdated = leaves?.find(
+    let leaveToBeUpdated = leaves.find(
       leave => leave.leaveType.toLowerCase() === leaveType.toLowerCase(),
     );
     if (!leaveToBeUpdated) {
       leaveToBeUpdated = {};
-      leaves?.splice(2, 0, leaveToBeUpdated);
+      leaves.splice(2, 0, leaveToBeUpdated);
     }
     leaveToBeUpdated.leaveType = leaveType;
     leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
