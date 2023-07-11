@@ -69,7 +69,7 @@ const RecentLeaves = ({navigation}) => {
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
       <View style={styles.container}>
         <Text style={styles.recentText}>
-          {showLeaveType === 'leaves' ? 'Leaves Applies' : 'WFH Applied'}
+          {showLeaveType === 'leaves' ? 'Leaves Applied' : 'WFH Applied'}
         </Text>
         <Pressable
           onPress={() => {
