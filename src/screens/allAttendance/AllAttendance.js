@@ -127,110 +127,44 @@ const AllAttendance = ({navigation}) => {
     <>
       <CustomHeader
         showDrawerMenu={true}
-        title="Attendance"
+        title="All Attendance"
         navigation={navigation}
         isHome={false}
         showHeaderRight={true}
       />
-      <View style={styles.mainContainer}>
-        <View style={styles.attendanceTypeContainer}>
-          <View style={styles.typeContainer}>
-            <Pressable
-              onPress={() => {
-                setSelectedAttendanceType({type: MONTH_WISE});
-              }}
-              style={[
-                styles.leftType,
-                {
-                  backgroundColor:
-                    selectedAttendanceType.type === MONTH_WISE
-                      ? Colors.lighterBlue
-                      : Colors.white,
-                },
-              ]}>
-              <Text
-                style={{
-                  color:
-                    selectedAttendanceType.type === MONTH_WISE
-                      ? Colors.white
-                      : null,
-                }}>
-                Month Wise
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                setSelectedAttendanceType({type: DAY_WISE});
-              }}
-              style={[
-                styles.rightType,
-                {
-                  backgroundColor:
-                    selectedAttendanceType.type === DAY_WISE
-                      ? Colors.lighterBlue
-                      : Colors.white,
-                },
-              ]}>
-              <Text
-                style={{
-                  color:
-                    selectedAttendanceType.type === DAY_WISE
-                      ? Colors.white
-                      : null,
-                }}>
-                Day Wise
-              </Text>
-            </Pressable>
-          </View>
-        </View>
-
-        {selectedAttendanceType.type === DAY_WISE ? (
-          <View style={{flex: 1, marginBottom: 20}}>
-            <Pressable
-              onPress={() => {
-                setIsDateSelecting(true);
-              }}
-              style={styles.selectedDateContainer}>
-              <View style={styles.dateTextContainer}>
-                <Text style={styles.selectedDateText}>
-                  {selectedDate?.selectedDateStr}
-                </Text>
-              </View>
-              <View style={styles.dropdownIconContainer}>
-                <MonthImages.DropDownIconSVG
-                  // fill={Colors.grey}
-                  color={Colors.lightBlack}
-                  height={16}
-                  width={16}
-                />
-              </View>
-            </Pressable>
-            <DateTimePickerModal
-              // minimumDate={minimumDateLeaveApplication}
-              maximumDate={new Date()}
-              isVisible={isDateSelecting}
-              mode="date"
-              onConfirm={onDateSelection}
-              onCancel={onCancelDateSelection}
-            />
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={true}
-              contentContainerStyle={{flexGrow: 1}}
-              style={{}}
-              data={dayWiseData}
-              renderItem={({item, index}) => {
-                return <DayWiseCard item={item} />;
-              }}
-              keyExtractor={(item, index) => index}
-            />
-          </View>
-        ) : (
-          <MonthWiseCalnder />
-        )}
-
-        {isFetchingData ? <Loader /> : null}
+      <View style={styles.selectDateContainer}>
+        <DateTimePickerModal
+          maximumDate={yesterdayDateObj}
+          isVisible={showDatePicker}
+          mode="date"
+          onConfirm={onSelectDate}
+          onCancel={onCalcel}
+        />
+        <Text style={styles.selectText}>Select Date:</Text>
+        <Pressable
+          onPress={() => {
+            setShowDatePicker(true);
+          }}
+          style={styles.selectDatePressable}>
+          <Image
+            style={{height: 20, width: 20}}
+            source={MonthImages.CalenderIcon}
+          />
+        </Pressable>
       </View>
+      {employees?.length > 0 ? (
+        <FlatList
+          data={employees}
+          renderItem={({item, index}) => {
+            return (
+              <View style={styles.singleCard}>
+                <Text>{item.name}</Text>
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => index}
+        />
+      ) : null}
     </>
   );
 };
