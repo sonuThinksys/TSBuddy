@@ -149,8 +149,10 @@ const ApplyLeave = ({navigation, route}) => {
       remainingLeaves: [earnedLeaves = {}, restrictedLeaves = {}],
     },
     holidayData,
+    leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
+  console.log('allRemainingLeaves:', allRemainingLeaves);
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -237,76 +239,138 @@ const ApplyLeave = ({navigation, route}) => {
 
   const leaves = [
     {
-      leaveType: 'Earned Leave',
+      leaveType: allRemainingLeaves[0]?.leaveType || 'Earned Leave',
       allocated: isGuestLogin
         ? 15
         : fromResource
         ? resourceLeaves[0]?.totalLeavesAllocated
-        : earnedLeaves?.totalLeavesAllocated,
+        : allRemainingLeaves[0]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 7
         : fromResource
         ? resourceLeaves[0]?.currentLeaveApplied
-        : earnedLeaves?.currentLeaveApplied,
+        : allRemainingLeaves[0]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 8
         : fromResource
         ? resourceLeaves[0]?.currentLeaveBalance
-        : earnedLeaves?.currentLeaveBalance,
+        : allRemainingLeaves[0]?.currentLeaveBalance || 0,
     },
     {
-      leaveType: 'Restricted Holiday',
+      leaveType: allRemainingLeaves[1]?.leaveType || 'Restricted Holiday',
       allocated: isGuestLogin
         ? 1
         : fromResource
         ? resourceLeaves[1]?.totalLeavesAllocated
-        : restrictedLeaves?.totalLeavesAllocated,
+        : allRemainingLeaves[1]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 0
         : fromResource
         ? resourceLeaves[1]?.currentLeaveApplied
-        : restrictedLeaves?.currentLeaveApplied,
+        : allRemainingLeaves[1]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 1
         : fromResource
         ? resourceLeaves[1]?.currentLeaveBalance
-        : restrictedLeaves?.currentLeaveBalance,
+        : allRemainingLeaves[1]?.currentLeaveBalance || 0,
     },
-    {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
-    {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-    // {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-    // {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
+    {
+      leaveType: allRemainingLeaves[2]?.leaveType || 'Compensatory Off',
+      allocated: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[2]?.totalLeavesAllocated
+        : allRemainingLeaves[2]?.totalLeavesAllocated || 0,
+      taken: isGuestLogin
+        ? 0
+        : fromResource
+        ? resourceLeaves[2]?.currentLeaveApplied
+        : allRemainingLeaves[2]?.currentLeaveApplied || 0,
+      remaining: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[2]?.currentLeaveBalance
+        : allRemainingLeaves[2]?.currentLeaveBalance || 0,
+    },
+    {
+      leaveType: allRemainingLeaves[3]?.leaveType || 'Bereavement Leave',
+      allocated: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[3]?.totalLeavesAllocated
+        : allRemainingLeaves[3]?.totalLeavesAllocated || 0,
+      taken: isGuestLogin
+        ? 0
+        : fromResource
+        ? resourceLeaves[3]?.currentLeaveApplied
+        : allRemainingLeaves[3]?.currentLeaveApplied || 0,
+      remaining: isGuestLogin
+        ? 1
+        : fromResource
+        ? resourceLeaves[3]?.currentLeaveBalance
+        : allRemainingLeaves[3]?.currentLeaveBalance || 0,
+    },
+    // {
+    //   leaveType: allRemainingLeaves[4]?.leaveType || 'Leave Without Pay',
+    //   allocated: isGuestLogin
+    //     ? 1
+    //     : fromResource
+    //     ? resourceLeaves[4]?.totalLeavesAllocated
+    //     : allRemainingLeaves[4]?.totalLeavesAllocated || 0,
+    //   taken: isGuestLogin
+    //     ? 0
+    //     : fromResource
+    //     ? resourceLeaves[4]?.currentLeaveApplied
+    //     : allRemainingLeaves[4]?.currentLeaveApplied || 0,
+    //   remaining: isGuestLogin
+    //     ? 1
+    //     : fromResource
+    //     ? resourceLeaves[4]?.currentLeaveBalance
+    //     : allRemainingLeaves[4]?.currentLeaveBalance || 0,
+    // },
+    // {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
+    // {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
+    // // {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
+    // // {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
     {leaveType: 'Leave Without Pay', allocated: 0, taken: 0, remaining: 0},
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
+  console.log('leaves:', leaves);
+
   const leaveTypes = [
     'Earned Leave',
     'Restricted Holiday',
-    'Bereavement Leave',
     'Compensatory Off',
+    'Bereavement Leave',
     // 'Maternity Leave',
     // 'Paternity Leave',
     'Leave Without Pay',
     // 'Work From Home',
   ];
   if (!fromResource) {
+    const genderSpecificLeave = allRemainingLeaves.find(
+      leave =>
+        leave.leaveType === 'Maternity Leave' ||
+        leave.leaveType === 'Paternity Leave',
+    );
+    console.log('genderSpecificLeave:', genderSpecificLeave);
     let genderLeave;
     let leaveTypeAccordingToGender;
     if (userGender.toLowerCase() === 'male') {
       genderLeave = {
         leaveType: 'Paternity Leave',
-        allocated: 0,
-        taken: 0,
-        remaining: 0,
+        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
+        taken: genderSpecificLeave?.currentLeaveApplied || 0,
+        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
       };
       leaveTypeAccordingToGender = 'Paternity Leave';
     } else {
       genderLeave = {
         leaveType: 'Maternity Leave',
-        allocated: 0,
-        taken: 0,
-        remaining: 0,
+        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
+        taken: genderSpecificLeave?.currentLeaveApplied || 0,
+        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
       };
 
       leaveTypeAccordingToGender = 'Maternity Leave';
