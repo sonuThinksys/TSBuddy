@@ -51,6 +51,7 @@ const ApplyLeave = ({navigation, route}) => {
   );
 
   const userGender = empProfileData.gender;
+
   function getMonthIndex(shortForm) {
     const months = [
       'Jan',
@@ -289,38 +290,43 @@ const ApplyLeave = ({navigation, route}) => {
     'Leave Without Pay',
     // 'Work From Home',
   ];
+  if (!fromResource) {
+    let genderLeave;
+    let leaveTypeAccordingToGender;
+    if (userGender.toLowerCase() === 'male') {
+      genderLeave = {
+        leaveType: 'Paternity Leave',
+        allocated: 0,
+        taken: 0,
+        remaining: 0,
+      };
+      leaveTypeAccordingToGender = 'Paternity Leave';
+    } else {
+      genderLeave = {
+        leaveType: 'Maternity Leave',
+        allocated: 0,
+        taken: 0,
+        remaining: 0,
+      };
 
-  let genderLeave;
-  let leaveTypeAccordingToGender;
-  if (userGender.toLowerCase() === 'male') {
-    genderLeave = {
-      leaveType: 'Paternity Leave',
-      allocated: 0,
-      taken: 0,
-      remaining: 0,
-    };
-    leaveTypeAccordingToGender = 'Paternity Leave';
-  } else {
-    genderLeave = {
-      leaveType: 'Maternity Leave',
-      allocated: 0,
-      taken: 0,
-      remaining: 0,
-    };
+      leaveTypeAccordingToGender = 'Maternity Leave';
+    }
 
-    leaveTypeAccordingToGender = 'Maternity Leave';
+    leaveTypes.splice(4, 0, leaveTypeAccordingToGender);
+
+    leaves.splice(4, 0, genderLeave);
   }
-
-  leaveTypes.splice(4, 0, leaveTypeAccordingToGender);
-
-  leaves.splice(4, 0, genderLeave);
 
   for (let i = 2; i < resourceLeaves.length; i++) {
     const leaveType = resourceLeaves[i]?.leaveType;
 
-    const leaveToBeUpdated = leaves.find(
+    let leaveToBeUpdated = leaves.find(
       leave => leave.leaveType.toLowerCase() === leaveType.toLowerCase(),
     );
+    if (!leaveToBeUpdated) {
+      leaveToBeUpdated = {};
+      leaves.splice(2, 0, leaveToBeUpdated);
+    }
     leaveToBeUpdated.leaveType = leaveType;
     leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
     leaveToBeUpdated.remaining = resourceLeaves[i]?.currentLeaveBalance;

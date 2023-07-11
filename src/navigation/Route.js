@@ -18,3 +18,4 @@ export const ResourcesScreen = 'ResourcesScreen';
 export const CheckInOutScreen = 'CheckInOutScreen';
 export const WorkFromHomeScreen = 'WorkFromHomeScreen';
 export const WFHDetailsScreen = 'WFHDetailsScreen';
+export const LunchRequestsScreen = 'LunchRequests';

@@ -61,6 +61,7 @@ import {
   CheckInOutScreen,
   WFHDetailsScreen,
   RegularzitionScreen,
+  LunchRequestsScreen,
 } from './Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
@@ -74,6 +75,8 @@ import CustomHeader from './CustomHeader';
 import RegularisationScreen from 'screens/regularisation/RegularisationScreen';
 import RegularisationFormDetails from 'screens/regularisation/RegularisationFormDetails';
 import RegularisationTabDetails from 'screens/Resources/RegularisationTabDetails';
+import LunchRequests from 'screens/lunchRequests/LunchRequests';
+import AllAttendance from 'screens/allAttendance/AllAttendance';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -84,9 +87,11 @@ const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
+const AllAttendanceStack = createNativeStackNavigator();
 const CheckInOutStack = createNativeStackNavigator();
 const WorkFromHomeStack = createNativeStackNavigator();
 const RegularisationStack = createNativeStackNavigator();
+const LunchRequestsStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -96,11 +101,10 @@ const drawerOption = ({
   showHeaderRight = true,
   headerIcon,
   isHome = false,
-  lunch,
 }) => {
   return {
     headerTitleAlign: 'center',
-    headerShown: lunch ? true : false,
+    headerShown: false,
     // headerTransparent: true,
 
     headerLeft: showDrawer
@@ -220,6 +224,18 @@ const HomeStackScreen = ({navigation}) => {
         component={ApplyLeave}
       />
     </HomeStack.Navigator>
+  );
+};
+
+const LunchRequestsNavigator = ({navigation}) => {
+  return (
+    <LunchRequestsStack.Navigator>
+      <LunchRequestsStack.Screen
+        options={{headerShown: false}}
+        name={LunchRequestsScreen}
+        component={LunchRequests}
+      />
+    </LunchRequestsStack.Navigator>
   );
 };
 
@@ -431,6 +447,17 @@ const ResourcesStackScreen = ({navigation}) => {
     </ResourcesStack.Navigator>
   );
 };
+const AllAttendanceNavigator = () => {
+  return (
+    <AllAttendanceStack.Navigator screenOptions={{headerShown: false}}>
+      <AllAttendanceStack.Screen
+        name="AllAttendanceMain"
+        component={AllAttendance}
+        options={{headerShown: false}}
+      />
+    </AllAttendanceStack.Navigator>
+  );
+};
 
 const CheckInOutStackScreen = ({navigation}) => {
   return (
@@ -454,6 +481,7 @@ function DrawerNavigator({navigation}) {
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
+  const isAdmin = decoded?.role?.includes('Admin Executive') || false;
 
   return (
     <Drawer.Navigator
@@ -495,8 +523,18 @@ function DrawerNavigator({navigation}) {
 
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
 
+      {isAdmin ? (
+        <Drawer.Screen name="Lunch" component={LunchRequestsNavigator} />
+      ) : null}
+
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
+      ) : null}
+      {isLeaveApprover ? (
+        <Drawer.Screen
+          name="AllAttendance"
+          component={AllAttendanceNavigator}
+        />
       ) : null}
 
       {isLeaveApprover ? (

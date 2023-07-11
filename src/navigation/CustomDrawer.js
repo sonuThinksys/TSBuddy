@@ -33,13 +33,30 @@ export default ({navigation}) => {
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   const dispatch = useDispatch();
 
+  const isAdmin = decoded?.role?.includes('Admin Executive') || false;
   const {employeeProfile: profileData} = useSelector(state => state.home);
+
+  const lunchRequests = {
+    screen: 'Lunch',
+    label: 'Lunch Requests',
+    navigation,
+    key: 3,
+    icon: MonthImages.Lunch,
+  };
 
   const resorcesTab = {
     screen: 'Resources',
     label: 'Resources',
     navigation,
-    key: 3,
+    key: 4,
+    icon: MonthImages.ResourceIcon,
+  };
+
+  const AllAttandance = {
+    screen: 'AllAttendance',
+    label: 'All Attendance',
+    navigation,
+    key: 5,
     icon: MonthImages.ResourceIcon,
   };
 
@@ -47,7 +64,7 @@ export default ({navigation}) => {
     screen: 'WorkFromHome',
     label: 'WFH',
     navigation,
-    key: 4,
+    key: 6,
     icon: MonthImages.userPS,
   };
 
@@ -55,7 +72,7 @@ export default ({navigation}) => {
     screen: 'RegularisationFormScreen',
     label: 'Regularization',
     navigation,
-    key: 5,
+    key: 7,
     icon: MonthImages.EmployeeIdIcon,
   };
 
@@ -116,10 +133,22 @@ export default ({navigation}) => {
     },
   ];
 
+  if (isAdmin) {
+    drawerList.splice(2, 0, lunchRequests);
+    drawerList.forEach((el, index) => {
+      el.key = index + 1;
+    });
+  }
+
   if (isLeaveApprover) {
     drawerList.splice(2, 0, resorcesTab);
-    drawerList.splice(3, 0, wfhTab);
-    drawerList.splice(4, 0, regularisationTab);
+    drawerList.splice(3, 0, AllAttandance);
+    drawerList.splice(4, 0, wfhTab);
+    drawerList.splice(5, 0, regularisationTab);
+
+    // drawerList.splice(2, 0, resorcesTab);
+    // drawerList.splice(3, 0, wfhTab);
+    // drawerList.splice(4, 0, regularisationTab);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });

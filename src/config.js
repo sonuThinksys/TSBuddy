@@ -39,4 +39,6 @@ export default {
   getTotalLeaveDays: `${API_URL}/Leave/GetTotalLeaveDays?employeeId=`,
   getLunchPlanID: `${API_URL}/FoodRequest/GetPlans`,
   getLunchCancelDeadline: `${API_URL}/FoodRequest/GetTimeAndDate`,
+  getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
+  getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
 };

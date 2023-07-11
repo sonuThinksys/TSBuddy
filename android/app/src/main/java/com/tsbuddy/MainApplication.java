@@ -1,4 +1,7 @@
 package com.tsbuddy;
+// import android.content.res.Configuration;
+// import expo.modules.ApplicationLifecycleDispatcher;
+// import expo.modules.ReactNativeHostWrapper;
 
 import android.app.Application;
 import android.content.Context;
@@ -72,6 +75,7 @@ public class MainApplication extends Application implements ReactApplication {
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    // ApplicationLifecycleDispatcher.onApplicationCreate(this);
   }
 
   /**

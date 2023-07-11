@@ -11,11 +11,16 @@ import jwt_decode from 'jwt-decode';
 
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
 import {CommonActions} from '@react-navigation/native';
+import {openLeavesCount} from 'utils/utils';
+import {getLeaveDetails} from 'redux/homeSlice';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
 
 const RemainingLeaves = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
@@ -114,27 +119,31 @@ const RemainingLeaves = () => {
   // }
 
   const updateData = async () => {
-    try {
-      setLoading(true);
-      const allLeaves = await dispatch(getLeaveDetails({token, employeeID}));
+    // try {
+    setLoading(true);
+    const allLeaves = await dispatch(
+      getLeaveDetails({token, empID: employeeID}),
+    );
+    // console.log('allLeaves:', allLeaves)
 
-      if (empData?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: empData?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-          isTokenExpired: false,
-        });
-      }
-
-      const openCount = openLeavesCount({leaves: allLeaves?.payload});
-      setOpenLeaves(openCount);
-    } catch (err) {
-    } finally {
-      setLoading(false);
+    if (allLeaves?.error) {
+      ShowAlert({
+        messageHeader: ERROR,
+        messageSubHeader: allLeaves?.error?.message,
+        buttonText: 'Close',
+        dispatch,
+        navigation,
+        isTokenExpired: false,
+      });
     }
+
+    // const openCount = openLeavesCount({leaves: allLeaves?.payload});
+    // setOpenLeaves(openCount);
+    // } catch (err) {
+    //   console.log('errAaGayi:', err);
+    // } finally {
+    setLoading(false);
+    // }
   };
 
   useEffect(() => {
@@ -151,7 +160,7 @@ const RemainingLeaves = () => {
             navigation.navigate('Leaves', {
               screen: 'LeaveApplyScreen',
               initial: false,
-              // params: {leavesData},
+              params: {leavesData},
             });
           }}
           style={styles.buttonContainer}>

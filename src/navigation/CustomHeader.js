@@ -16,6 +16,7 @@ const CustomHeader = function ({
   navigation,
   isHome,
   showHeaderRight,
+  headerRight,
   // navigation2,
 }) {
   const dispatch = useDispatch();
@@ -76,7 +77,6 @@ const CustomHeader = function ({
         <Pressable
           onPress={() => {
             navigation.goBack();
-
             // navigation.pop();
           }}>
           <Image
@@ -142,7 +142,9 @@ const CustomHeader = function ({
             </TouchableOpacity>
           </View>
         </View>
-      ) : null}
+      ) : (
+        headerRight
+      )}
     </View>
   );
 };

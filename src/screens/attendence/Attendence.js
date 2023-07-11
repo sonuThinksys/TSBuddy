@@ -16,7 +16,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import styles from './AttendenceStyle';
-import {CalendarList} from 'react-native-calendars';
+import {Calendar, CalendarList} from 'react-native-calendars';
 import {Colors} from 'colors/Colors';
 import {getAttendencaeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';

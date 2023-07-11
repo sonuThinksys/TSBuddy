@@ -91,6 +91,75 @@ const snacks = 'snacks';
 //   },
 // );
 
+export const getAllResourcesAttendence = createAsyncThunk(
+  'getAllResourcesAttendence',
+  async ({token, date}) => {
+    console.log('date:', date);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getAllResourcesAttendance + date;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getTodayLunchRequests = createAsyncThunk(
+  'getTodayLunchRequests',
+  async ({token, date}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getTodayLunchRequests + date;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const lunchRequestCancellationDeadline = createAsyncThunk(
   'lunchRequestCancellationDeadline',
   async ({token}) => {
@@ -100,7 +169,7 @@ export const lunchRequestCancellationDeadline = createAsyncThunk(
       },
     };
 
-    const url = config.getLunchCancelDeadline;
+    const url = endPoints.getLunchCancelDeadline;
 
     try {
       const {data, status} = await axios.get(url, config);

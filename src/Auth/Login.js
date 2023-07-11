@@ -54,16 +54,15 @@ import ShowAlert from 'customComponents/CustomError';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
-  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
 
   const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
-  // const [username, setUserName] = useState('gupta.utkarsh');
-  // const [password, setPassword] = useState('Nanu@789');
-  const [username, setUserName] = useState('pant.amit');
-  const [password, setPassword] = useState('thinksys@321');
+  // const [username, setUserName] = useState('pant.amit@thinksys.com');
+  // const [password, setPassword] = useState('pant@1234');
+  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  const [password, setPassword] = useState('bisht@1234');
   const {
     userToken: token,
     formInput,
@@ -148,7 +147,6 @@ const Login = ({navigation}) => {
 
       if (result?.error) {
         ShowAlert({
-          messageHeader: 'Invalid credentials',
           messageSubHeader: INCORRECT_LOGIN,
           buttonText: 'CLOSE',
           dispatch,

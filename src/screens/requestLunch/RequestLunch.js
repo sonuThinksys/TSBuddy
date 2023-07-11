@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useImperativeHandle, useRef} from 'react';
 import {
   View,
   Text,
@@ -65,7 +65,6 @@ const RequestLunch = ({navigation}) => {
   const [selectedPlan, setSelectedPlan] = useState();
 
   useEffect(() => {
-    console.log('Running useeffect1');
     (async () => {
       try {
         setIsLoading(true);
@@ -86,7 +85,6 @@ const RequestLunch = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('Running useeffect2');
     (async () => {
       const subscribedLunchRequests =
         token &&
@@ -197,7 +195,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleEndConfirm = date => {
-    console.log('date:', date);
     setEndSelected(true);
     let selectedDate = date.getDate();
 
@@ -332,6 +329,7 @@ const RequestLunch = ({navigation}) => {
       setEndDate({endDateStr: 'Select End Date'});
       setStartSelected(false);
       setEndSelected(false);
+      setValue('');
     }
 
     // monthly , duration
@@ -346,9 +344,13 @@ const RequestLunch = ({navigation}) => {
   }
 
   let endDateMaximumLimit = startSelected ? startDate?.startDateObj : undefined;
-  console.log('endDateMaximumLimit:', endDateMaximumLimit);
 
   const startDateCopy = new Date(startDate?.startDateObj);
+
+  // const childRef = React.createRef();
+  const refAnimationSuccess = useRef(null);
+
+  console.log('value:', value);
 
   return (
     // <SharedElement id="enter">
@@ -431,7 +433,7 @@ const RequestLunch = ({navigation}) => {
           maximumDate={
             startSelected
               ? new Date(
-                  startDate?.startDateObj?.getTime() + 7 * 24 * 60 * 60 * 1000,
+                  startDate?.startDateObj?.getTime() + 6 * 24 * 60 * 60 * 1000,
                 )
               : undefined
           }
@@ -446,6 +448,7 @@ const RequestLunch = ({navigation}) => {
             <SelectDateModal
               modalData={modalData}
               setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
+              ref={refAnimationSuccess}
             />
             <Text
               style={{
@@ -527,8 +530,9 @@ const RequestLunch = ({navigation}) => {
                 startDateStr: 'Select Start Date',
               });
               setEndDate({endDateStr: 'Select End Date'});
-
+              setMonthlyStartDate(null);
               setValue(null);
+              refAnimationSuccess.current.resetSelected(false);
             }}
             style={{
               marginTop: 20,

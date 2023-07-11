@@ -50,12 +50,12 @@ export const foodData = [
   },
 ];
 
-export const firstFalf = 'First Half Day';
-export const secondHalf = 'Second Half Day';
+export const firstFalf = 'First Half';
+export const secondHalf = 'Second Half';
 export const none = 'None';
 
 export const whatsappInstallationAlert =
-  'Make sure WhatsApp installed on your device';
+  'Make sure WhatsApp is installed on your device.';
 
 export const leaveTypes = [
   'Earned Leave',
