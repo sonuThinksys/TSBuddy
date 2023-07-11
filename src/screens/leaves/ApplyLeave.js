@@ -151,6 +151,7 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
+  console.log('allRemainingLeaves:', allRemainingLeaves);
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -335,6 +336,8 @@ const ApplyLeave = ({navigation, route}) => {
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
+  console.log('leaves:', leaves);
+
   const leaveTypes = [
     'Earned Leave',
     'Restricted Holiday',
@@ -346,22 +349,28 @@ const ApplyLeave = ({navigation, route}) => {
     // 'Work From Home',
   ];
   if (!fromResource) {
+    const genderSpecificLeave = allRemainingLeaves.find(
+      leave =>
+        leave.leaveType === 'Maternity Leave' ||
+        leave.leaveType === 'Paternity Leave',
+    );
+    console.log('genderSpecificLeave:', genderSpecificLeave);
     let genderLeave;
     let leaveTypeAccordingToGender;
     if (userGender.toLowerCase() === 'male') {
       genderLeave = {
         leaveType: 'Paternity Leave',
-        allocated: 0,
-        taken: 0,
-        remaining: 0,
+        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
+        taken: genderSpecificLeave?.currentLeaveApplied || 0,
+        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
       };
       leaveTypeAccordingToGender = 'Paternity Leave';
     } else {
       genderLeave = {
         leaveType: 'Maternity Leave',
-        allocated: 0,
-        taken: 0,
-        remaining: 0,
+        allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
+        taken: genderSpecificLeave?.currentLeaveApplied || 0,
+        remaining: genderSpecificLeave?.currentLeaveBalance || 0,
       };
 
       leaveTypeAccordingToGender = 'Maternity Leave';
