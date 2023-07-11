@@ -158,8 +158,6 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
-  console.log('allRemainingLeaves = ', allRemainingLeaves);
-
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -340,6 +338,8 @@ const ApplyLeave = ({navigation, route}) => {
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
+  console.log('leaves:', leaves);
+
   const leaveTypes = [
     'Earned Leave',
     'Restricted Holiday',
@@ -356,7 +356,6 @@ const ApplyLeave = ({navigation, route}) => {
         leave.leaveType === 'Maternity Leave' ||
         leave.leaveType === 'Paternity Leave',
     );
-
     let genderLeave;
     let leaveTypeAccordingToGender;
     const userGenderLowerCase = userGender?.toLowerCase();
