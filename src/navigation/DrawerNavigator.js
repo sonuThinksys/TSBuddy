@@ -81,6 +81,8 @@ import EmployeeHandbook from 'screens/EmployeeHandbook/EmployeeHandbook';
 import PoliciesDetails from 'screens/policies/PoliciesDetails';
 // import LunchRequests from 'screens/lunchRequests/LunchRequests';
 // import AllAttendance from 'screens/allAttendance/AllAttendance';
+import LunchRequests from 'screens/lunchRequests/LunchRequests';
+import AllAttendance from 'screens/allAttendance/AllAttendance';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
