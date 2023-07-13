@@ -63,6 +63,7 @@ const RequestLunch = ({navigation}) => {
   const [monthlyStartDate, setMonthlyStartDate] = useState(null);
   const [lunchPlans, setLunchPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState();
+  const refAnimationSuccess = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -348,9 +349,6 @@ const RequestLunch = ({navigation}) => {
   const startDateCopy = new Date(startDate?.startDateObj);
 
   // const childRef = React.createRef();
-  const refAnimationSuccess = useRef(null);
-
-  console.log('value:', value);
 
   return (
     // <SharedElement id="enter">
@@ -524,6 +522,7 @@ const RequestLunch = ({navigation}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
+              console.log('INSIDE', 'PARENT!');
               setEndSelected(false);
               setStartSelected(false);
               setStartDate({

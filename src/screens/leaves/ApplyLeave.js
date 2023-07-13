@@ -89,7 +89,6 @@ const ApplyLeave = ({navigation, route}) => {
 
   const resourceData = route?.params;
   const openLeaveData = route?.params;
-  // const resourceEmployeeID = resourceData?.employeeId;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
   const fromDateObj = new Date(resourceData?.fromDate);
@@ -152,7 +151,6 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
-  console.log('allRemainingLeaves:', allRemainingLeaves);
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -198,6 +196,7 @@ const ApplyLeave = ({navigation, route}) => {
   useEffect(() => {
     if (fromResource) {
       (async () => {
+        console.log('resourceEmployeeID:', resourceEmployeeID);
         const empId = +resourceEmployeeID.match(/\d+/g)[0];
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
@@ -336,8 +335,6 @@ const ApplyLeave = ({navigation, route}) => {
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
-  console.log('leaves:', leaves);
-
   const leaveTypes = [
     'Earned Leave',
     'Restricted Holiday',
@@ -354,7 +351,7 @@ const ApplyLeave = ({navigation, route}) => {
         leave.leaveType === 'Maternity Leave' ||
         leave.leaveType === 'Paternity Leave',
     );
-    console.log('genderSpecificLeave:', genderSpecificLeave);
+
     let genderLeave;
     let leaveTypeAccordingToGender;
     if (userGender.toLowerCase() === 'male') {
@@ -384,12 +381,12 @@ const ApplyLeave = ({navigation, route}) => {
   for (let i = 2; i < resourceLeaves.length; i++) {
     const leaveType = resourceLeaves[i]?.leaveType;
 
-    let leaveToBeUpdated = leaves.find(
+    let leaveToBeUpdated = leaves?.find(
       leave => leave.leaveType.toLowerCase() === leaveType.toLowerCase(),
     );
     if (!leaveToBeUpdated) {
       leaveToBeUpdated = {};
-      leaves.splice(2, 0, leaveToBeUpdated);
+      leaves?.splice(2, 0, leaveToBeUpdated);
     }
     leaveToBeUpdated.leaveType = leaveType;
     leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
@@ -419,40 +416,10 @@ const ApplyLeave = ({navigation, route}) => {
     setToCalenderVisible(false);
   };
 
-  // function weekdayCount(startDate, endDate) {
-  //   let dayCount = 0;
-
-  //   const timeDiff = Math.abs(endDate?.getTime() - startDate?.getTime());
-  //   const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-
-  //   const presentDate = new Date(startDate);
-
-  //   for (let i = 0; i < diffDays; i++) {
-  //     const dayOfWeek = presentDate.getDay();
-
-  //     if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-  //       dayCount++;
-  //     }
-
-  //     presentDate.setDate(presentDate.getDate() + 1);
-  //   }
-
-  //   return dayCount;
-  // }
-
   const fromCalenderConfirm = async date => {
     fromOnCancel();
 
-    // if (date.getDay() === 0 || date.getDay() === 6) {
-    //   // date.setDate(date.getDate() + 1);
-    //   alert(
-    //     'Please select a valid start date which should not fall on weekends.',
-    //   );
-    //   fromOnCancel();
-    //   return;
-    // }
     if (employeeWeekOffs.includes(date.getDay())) {
-      // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
       fromOnCancel();
       return;
@@ -481,24 +448,9 @@ const ApplyLeave = ({navigation, route}) => {
         fromOnCancel();
         return;
       }
-      // const diffInMs = toDate.toDateObj.getTime() - date.getTime();
-      // const diffInDays = diffInMs / (1000 * 60 * 60 * 24) + 1;
-      // =================================================================
 
       const toDateMS = toDate.toDateObj.getTime();
       const fromDateMS = date.getTime();
-      const diffInMS = toDateMS - fromDateMS;
-
-      // const totalWeekdays = Math.round(weekdayCount(date, toDate.toDateObj));
-
-      // if (totalWeekdays > 5) {
-      //   const numberOfLeaveDays =
-      //     Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
-      //   setTotalNumberOfLeaveDays(numberOfLeaveDays);
-      //   setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
-      //   fromOnCancel();
-      //   return;
-      // }
 
       const toMonthIndex =
         getMonthIndex(toDate?.toDateStr?.split('-')[1]) < 10
@@ -511,12 +463,10 @@ const ApplyLeave = ({navigation, route}) => {
           : getMonthIndex(finalTodayDate.split('-')[1]);
 
       let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
-      // toDateStr[1] = fromMonthIndex;
       toDateStr[1] = toMonthIndex;
       toDateStr = toDateStr.join('-');
 
       let fromDateStr = `${presentYear}-${fromMonthIndex}-${presentDate}`;
-      // let fromDateStr = `${presentYear}-${toMonthIndex}-${presentDate}`;
 
       try {
         setLoading(true);
@@ -533,7 +483,6 @@ const ApplyLeave = ({navigation, route}) => {
         const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
 
         setTotalNumberOfLeaveDays(finalizedLeaveDays);
-        // setTotalNumberOfLeaveDays(totalWeekdays);
         setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
       } catch (err) {
         console.error('err:', err);

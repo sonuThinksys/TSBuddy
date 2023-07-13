@@ -8,6 +8,10 @@ import {
   FlatList,
   Pressable,
   TextInput,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
@@ -38,6 +42,7 @@ import {useIsFocused} from '@react-navigation/native';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useDrawerStatus} from '@react-navigation/drawer';
 
 const ApplyWFH = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -51,6 +56,7 @@ const ApplyWFH = ({navigation}) => {
   const [endDate, setEndDate] = useState({endDateStr: 'Select End Date'});
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
+  const drawerStatus = useDrawerStatus();
 
   const [openModal, setOpenModal] = useState(false);
   const [permReq, setPermReq] = useState(false);
@@ -83,6 +89,11 @@ const ApplyWFH = ({navigation}) => {
 
   const isFocused = useIsFocused();
 
+  useEffect(() => {
+    if (drawerStatus === 'open') {
+      Keyboard.dismiss();
+    }
+  }, [drawerStatus]);
   useEffect(() => {
     (async () => {
       const leaveApprovers = token
@@ -482,6 +493,7 @@ const ApplyWFH = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+
       <View style={styles.appliedView}>
         <Text style={styles.appliedText}>Work From Home History</Text>
       </View>
@@ -502,7 +514,6 @@ const ApplyWFH = ({navigation}) => {
                 });
               }}
               keyExtractor={item => Math.random() * Math.random()}
-              // keyExtractor={item => item.id.toString()}
             />
           </View>
         ) : (

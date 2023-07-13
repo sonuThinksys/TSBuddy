@@ -4,8 +4,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {getTodayCheckInTime} from 'redux/homeSlice';
-import moment, {min} from 'moment';
+import {getEmployeeShift, getTodayCheckInTime} from 'redux/homeSlice';
+import jwt_decode from 'jwt-decode';
 
 const WelcomeHeader = () => {
   const dispatch = useDispatch();
@@ -13,6 +13,19 @@ const WelcomeHeader = () => {
   const {userToken: token} = useSelector(state => state.auth);
 
   const [checkInDetails, setCheckInDetails] = useState({});
+  const [employeeShift, setEmployeeShift] = useState([]);
+  var decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id || '';
+
+  useEffect(() => {
+    (async () => {
+      const employeeShift = await dispatch(
+        getEmployeeShift({token, id: employeeID}),
+      );
+
+      setEmployeeShift(employeeShift.payload);
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -95,7 +108,7 @@ const WelcomeHeader = () => {
     <View style={styles.mainContainer}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome, </Text>
-        <Text style={styles.nameText}> {userName}</Text>
+        <Text style={styles.nameText}> {userName || 'N/A'}</Text>
         {/* <Text style={styles.nameText}> {userName || 'N/A'}</Text> */}
       </View>
       <View style={styles.infoContainer}>

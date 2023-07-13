@@ -26,7 +26,7 @@ import Loader from 'component/LoadingScreen/LoadingScreen';
 const screenWidth = Dimensions.get('window').width;
 
 const WorkFromHomeList = props => {
-  const {getWfhCount} = props;
+  const {getWfhCount, fromResource, resourceEmployeeID} = props;
   const isFocused = useIsFocused();
   const [isRefresh, setRefresh] = useState(false);
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
@@ -103,6 +103,8 @@ const WorkFromHomeList = props => {
                 ...item,
                 fromWfh: true,
                 employeeID,
+                fromResource,
+                resourceEmployeeID,
               });
 
           // item.status !== 'Open'

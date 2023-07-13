@@ -58,7 +58,6 @@ const LunchRequests = ({navigation}) => {
           </Pressable>
         }
       />
-
       {isLoading ? (
         <Loader />
       ) : (
