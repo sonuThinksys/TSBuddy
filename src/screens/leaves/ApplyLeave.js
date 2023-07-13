@@ -195,8 +195,8 @@ const ApplyLeave = ({navigation, route}) => {
   useEffect(() => {
     if (fromResource || fromWfh) {
       (async () => {
-        // const empId = +resourceEmployeeID.match(/\d+/g)[0];
-        const empId = +resourceEmployeeID;
+        console.log('resourceEmployeeID:', resourceEmployeeID);
+        const empId = +resourceEmployeeID.match(/\d+/g)[0];
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
         );
