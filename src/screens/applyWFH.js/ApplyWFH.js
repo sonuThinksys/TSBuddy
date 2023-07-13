@@ -493,7 +493,6 @@ const ApplyWFH = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-
       <View style={styles.appliedView}>
         <Text style={styles.appliedText}>Work From Home History</Text>
       </View>
