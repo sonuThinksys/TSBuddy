@@ -112,21 +112,24 @@ const renderItem = (
   const {description, holidayDate} = item;
   const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
 
-  const cureentDate = new Date().getDate();
-  const date = +moment(holidayDate).format('DD');
-
-  const Years = +moment(holidayDate).format(`    YYYY`);
   return (
     <TouchableOpacity
       onPress={() => {
         holidaysSetShowModal(true);
-        setHolidaysData({
-          ...HolidaysData,
+        setHolidaysData(prevHolidayData => ({
+          ...prevHolidayData,
           description,
           holidayDate,
           newDateFormate,
           holidaysSetShowModal,
-        });
+        }));
+        // setHolidaysData({
+        //   ...HolidaysData,
+        //   description,
+        //   holidayDate,
+        //   newDateFormate,
+        //   holidaysSetShowModal,
+        // });
       }}>
       {holidaysShowModal ? (
         <HolidayModal

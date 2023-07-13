@@ -305,6 +305,7 @@ const ResourcesDetails = ({route, navigation}) => {
               employeeName={employeeName}
               employeeID={employeeID}
               fromResource={true}
+              resourceEmployeeID={employeeID}
             />
           ) : (
             <RegularisationTab

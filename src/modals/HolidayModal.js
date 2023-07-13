@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     padding: 2,
     width: wp(32),
     height: hp(12),
-    marginTop: hp(20),
+    marginTop: hp(16),
     marginLeft: wp(4),
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,

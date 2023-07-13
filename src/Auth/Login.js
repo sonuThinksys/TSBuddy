@@ -33,7 +33,6 @@ import fingerPrint1 from 'assets/allImage/fingerImage.png';
 import {guestLoginStatus, logInSucess} from './LoginSlice';
 import {loginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
-import {FontFamily, FontSize} from 'constants/fonts';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
@@ -59,10 +58,10 @@ const Login = ({navigation}) => {
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
-  const [username, setUserName] = useState('pant.amit@thinksys.com');
-  const [password, setPassword] = useState('pant@1234');
-  // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
-  // const [password, setPassword] = useState('bisht@1234');
+  // const [username, setUserName] = useState('pant.amit@thinksys.com');
+  // const [password, setPassword] = useState('pant@1234');
+  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  const [password, setPassword] = useState('bisht@1234');
   const {
     userToken: token,
     formInput,
