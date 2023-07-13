@@ -8,9 +8,10 @@ import {
   FlatList,
   Pressable,
   TextInput,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Keyboard,
+  KeyboardAvoidingView,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
