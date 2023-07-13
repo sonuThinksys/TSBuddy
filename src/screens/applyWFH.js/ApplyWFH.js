@@ -380,17 +380,17 @@ const ApplyWFH = ({navigation}) => {
 
   return (
     <View style={styles.mainContainer}>
+      <CustomHeader
+        showDrawerMenu={true}
+        title="Apply WFH"
+        navigation={navigation}
+        isHome={false}
+        showHeaderRight={true}
+      />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <CustomHeader
-            showDrawerMenu={true}
-            title="Apply WFH"
-            navigation={navigation}
-            isHome={false}
-            showHeaderRight={true}
-          />
-
           <View style={styles.secondView}>
             <DateTimePickerModal
               minimumDate={new Date()}
@@ -612,7 +612,7 @@ const ApplyWFH = ({navigation}) => {
       <View style={styles.buttomView}>
         <View style={{flexBasis: 300}}>
           {loading ? (
-            <AnimatedLoader />
+            <Loader />
           ) : (
             <FlatList
               showsVerticalScrollIndicator={false}
