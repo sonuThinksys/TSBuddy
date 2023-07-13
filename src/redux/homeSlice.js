@@ -658,6 +658,7 @@ export const applyForWfhLeave = createAsyncThunk(
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {
+    console.log('body:', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,

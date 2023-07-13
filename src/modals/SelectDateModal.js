@@ -16,7 +16,7 @@ import {
 
 import Ripple from 'react-native-material-ripple';
 const SelectDateModal = forwardRef(
-  ({modalData, setUpcomingMonthlyStartDate, resetSelected}, ref) => {
+  ({modalData, setUpcomingMonthlyStartDate}, ref) => {
     const {openModal, setOpenModal, satrtDate1} = modalData;
     const [selected, setSelected] = useState(false);
 
@@ -26,6 +26,7 @@ const SelectDateModal = forwardRef(
 
     useImperativeHandle(ref, () => ({
       resetSelected() {
+        console.log('INSIDE', 'CHILD!');
         setSelected(false);
       },
     }));

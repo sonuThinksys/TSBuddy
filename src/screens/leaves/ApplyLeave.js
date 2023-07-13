@@ -197,6 +197,7 @@ const ApplyLeave = ({navigation, route}) => {
   useEffect(() => {
     if (fromResource || fromWfh) {
       (async () => {
+        console.log('resourceEmployeeID:', resourceEmployeeID);
         const empId = +resourceEmployeeID.match(/\d+/g)[0];
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
@@ -337,8 +338,6 @@ const ApplyLeave = ({navigation, route}) => {
     {leaveType: 'Leave Without Pay', allocated: 0, taken: 0, remaining: 0},
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
-
-  console.log('leaves:', leaves);
 
   const leaveTypes = [
     'Earned Leave',
