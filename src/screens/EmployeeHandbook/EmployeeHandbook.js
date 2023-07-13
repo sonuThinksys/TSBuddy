@@ -1,7 +1,8 @@
 import {Colors} from 'colors/Colors';
 import {styles} from 'modals/FoodFeedbackStyles';
 import CustomHeader from 'navigation/CustomHeader';
-import {useState} from 'react';
+import {react} from 'plotly.js';
+import React, {useEffect, useState} from 'react';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -19,7 +20,16 @@ let width = Dimensions.get('screen').width;
 let height = Dimensions.get('screen').height;
 
 const EmployeeHandbook = ({navigation}) => {
-  const [display, setDisplay] = useState(1);
+  const [index, setIndex] = useState(0);
+  const ref = React.useRef(null);
+
+  useEffect(() => {
+    ref.current.scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0.5,
+    });
+  }, [index]);
 
   const renderItem = ({item}) => {
     return (
@@ -47,11 +57,19 @@ const EmployeeHandbook = ({navigation}) => {
   };
 
   const handleNext = () => {
-    setDisplay(display + 1);
+    if (employeeHandbookData.length - 1 == index) return;
+
+    setIndex(index + 1);
   };
 
   const handlePriv = () => {
-    setDisplay(display - 1);
+    if (index == 0) return;
+    setIndex(index - 1);
+  };
+
+  const handleScroll = event => {
+    if (index == 0) return;
+    if (index == employeeHandbookData.length - 1) return;
   };
   return (
     <>
@@ -63,9 +81,14 @@ const EmployeeHandbook = ({navigation}) => {
         showHeaderRight={true}
       />
       <FlatList
-        data={employeeHandbookData.slice(display - 1, display)}
+        ref={ref}
+        initialScrollIndex={index}
+        onScroll={handleScroll}
+        data={employeeHandbookData}
+        pagingEnabled={true}
         renderItem={renderItem}
         horizontal={true}
+        showsHorizontalScrollIndicator={false}
         keyExtractor={index => index}
       />
       <View
@@ -74,7 +97,7 @@ const EmployeeHandbook = ({navigation}) => {
           justifyContent: 'space-around',
           marginBottom: 20,
         }}>
-        <TouchableOpacity onPress={handlePriv} disabled={display == 1}>
+        <TouchableOpacity onPress={handlePriv} disabled={index == 0}>
           <View
             style={{
               width: wp(15),
@@ -83,14 +106,14 @@ const EmployeeHandbook = ({navigation}) => {
               borderRadius: 30,
               height: hp(5),
               backgroundColor:
-                display > 1 ? Colors.lovelyBlue : Colors.lightGray,
+                index != 0 ? Colors.lovelyBlue : Colors.lightGray,
             }}>
             <Text style={{color: 'white', fontSize: 17}}>Prev</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleNext}
-          disabled={display == employeeHandbookData.length}>
+          disabled={index == employeeHandbookData.length - 1}>
           <View
             style={{
               width: wp(15),
@@ -99,7 +122,7 @@ const EmployeeHandbook = ({navigation}) => {
               borderRadius: 30,
               height: hp(5),
               backgroundColor:
-                display < employeeHandbookData.length
+                index != employeeHandbookData.length - 1
                   ? Colors.lovelyBlue
                   : Colors.lightGray,
             }}>

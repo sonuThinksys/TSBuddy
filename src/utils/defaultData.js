@@ -1,26 +1,39 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import one from '../../pages/14.jpg';
-import two from '../../pages/15.jpg';
-import three from '../../pages/16.jpg';
-import four from '../../pages/17.jpg';
-import five from '../../pages/18.jpg';
-import six from '../../pages/19.jpg';
-import seven from '../../pages/20.jpg';
-import eight from '../../pages/21.jpg';
-import nine from '../../pages/22.jpg';
-import ten from '../../pages/23.jpg';
-import eleven from '../../pages/24.jpg';
-import twelve from '../../pages/25.jpg';
-import thirten from '../../pages/26.jpg';
-import fourteen from '../../pages/27.jpg';
-import fifteen from '../../pages/28.jpg';
-import sixteen from '../../pages/29.jpg';
-import seventeen from '../../pages/30.jpg';
-import eighteen from '../../pages/31.jpg';
-import nineteen from '../../pages/32.jpg';
-import twenty from '../../pages/33.jpg';
-import twentyOne from '../../pages/34.jpg';
-import twentyTwo from '../../pages/35.jpg';
+import one from '../../pages/1.jpg';
+import two from '../../pages/2.jpg';
+import three from '../../pages/3.jpg';
+import four from '../../pages/4.jpg';
+import five from '../../pages/5.jpg';
+import six from '../../pages/6.jpg';
+import seven from '../../pages/7.jpg';
+import eight from '../../pages/8.jpg';
+import nine from '../../pages/9.jpg';
+import ten from '../../pages/10.jpg';
+import eleven from '../../pages/11.jpg';
+import twelve from '../../pages/12.jpg';
+import thirten from '../../pages/13.jpg';
+import fourteen from '../../pages/14.jpg';
+import fifteen from '../../pages/15.jpg';
+import sixteen from '../../pages/16.jpg';
+import seventeen from '../../pages/17.jpg';
+import eighteen from '../../pages/18.jpg';
+import nineteen from '../../pages/19.jpg';
+import twenty from '../../pages/20.jpg';
+import twentyOne from '../../pages/21.jpg';
+import twentyTwo from '../../pages/22.jpg';
+import twentyThree from '../../pages/23.jpg';
+import twentyFour from '../../pages/24.jpg';
+import twentyFive from '../../pages/25.jpg';
+import twentySix from '../../pages/26.jpg';
+import twentySeven from '../../pages/27.jpg';
+import twentyEight from '../../pages/28.jpg';
+import twentyNine from '../../pages/29.jpg';
+import thirty from '../../pages/30.jpg';
+import thirtyOne from '../../pages/31.jpg';
+import thirtyTwo from '../../pages/32.jpg';
+import thirtyThree from '../../pages/33.jpg';
+import thirtyFour from '../../pages/34.jpg';
+import thirtyFive from '../../pages/35.jpg';
 
 export const imageArr = [
   {
@@ -151,4 +164,17 @@ export const employeeHandbookData = [
   twenty,
   twentyOne,
   twentyTwo,
+  twentyThree,
+  twentyFour,
+  twentyFive,
+  twentySix,
+  twentySeven,
+  twentyEight,
+  twentyNine,
+  thirty,
+  thirtyOne,
+  thirtyTwo,
+  thirtyThree,
+  thirtyFour,
+  thirtyFive,
 ];
