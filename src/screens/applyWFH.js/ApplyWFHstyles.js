@@ -203,6 +203,7 @@ export default StyleSheet.create({
   reasonViewBox: {
     width: '100%',
     alignItems: 'center',
+    zIndex: -1,
   },
   reasonInputBox: {
     paddingLeft: 15,

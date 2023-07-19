@@ -43,7 +43,7 @@ const LeaveDetails = ({route, navigation}) => {
     ['Leave Time Period', rangeOfdate(data)],
     ['Leave Status', data?.status],
     ['Number Of Leaves', data?.totalLeaveDays],
-    ['Leave Balance', data?.currentLeaveBalance],
+    ['Leave Balance', data?.currentLeaveBalance || 'N/A'],
     ['Applying Date', applyingDate || '04/05/2023'],
     ['Reason', data?.description || 'Feeling not well.'],
   ];

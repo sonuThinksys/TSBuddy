@@ -13,24 +13,52 @@ const WelcomeHeader = () => {
   const {userToken: token} = useSelector(state => state.auth);
 
   const [checkInDetails, setCheckInDetails] = useState({});
-  const [employeeShift, setEmployeeShift] = useState([]);
+  const [todayStatus, setTodayStatus] = useState(null);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
   useEffect(() => {
     (async () => {
-      const employeeShift = await dispatch(
-        getEmployeeShift({token, id: employeeID}),
-      );
-
-      setEmployeeShift(employeeShift.payload);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
       try {
         const checkIn = await dispatch(getTodayCheckInTime({token}));
+
+        const employeeShift = await dispatch(
+          getEmployeeShift({token, id: employeeID}),
+        );
+
+        const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
+        const properInTime = employeeShift?.payload?.startTime;
+
+        const [properInHours, properInMinutes, properInSeconds] =
+          properInTime.split(':');
+
+        const properCheckInTimeStamp = new Date().setHours(
+          properInHours,
+          properInMinutes,
+          properInSeconds,
+        );
+
+        const checkedInTimeStamp = checkedInTimeObj.getTime();
+        const differenceInTime = checkedInTimeStamp - properCheckInTimeStamp;
+
+        const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
+        const lateMinutes = Math.floor(
+          (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const lateSeconds = Math.floor((differenceInTime % (1000 * 60)) / 1000);
+
+        setTodayStatus({
+          lateHours,
+          lateMinutes,
+          lateSeconds,
+          isLate: differenceInTime > 0,
+        });
+        console.log('checkedInTimeStamp:', differenceInTime, {
+          lateHours,
+          lateMinutes,
+          lateSeconds,
+        });
+
         if (checkIn.error) {
           throw new Error('Time not found.');
         }
@@ -149,7 +177,13 @@ const WelcomeHeader = () => {
           </View>
         ) : null}
         <View style={styles.lateContainer}>
-          <Text style={styles.lateText}>Late by 15:42 min</Text>
+          <Text style={styles.lateText}>
+            {todayStatus?.isLate ? 'Late' : 'Early'} by{' '}
+            {`${todayStatus?.lateHours || '00'}:${
+              todayStatus?.lateMinutes || '00'
+            }:${todayStatus?.lateSeconds || '00'}`}{' '}
+            hours
+          </Text>
         </View>
       </View>
     </View>
