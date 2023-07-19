@@ -145,6 +145,7 @@ const ApplyWFH = ({navigation}) => {
           leave => leave.leaveType === 'Work From Home',
         );
 
+        console.log('wfhLeaveList:', wfhLeaveList);
         let sortedWfhData = wfhLeaveList.sort(
           (a, b) =>
             new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
@@ -294,7 +295,7 @@ const ApplyWFH = ({navigation}) => {
       return;
     }
 
-    if (selectedLeaveApprover == '') {
+    if (selectedLeaveApprover === '') {
       alert('Please select a leave approver.');
       return;
     }
@@ -392,6 +393,8 @@ const ApplyWFH = ({navigation}) => {
           },
         },
       ]);
+
+      setTotalDaysCount(0);
     }
   };
 
@@ -700,8 +703,8 @@ const renderListOfAppliedRequests = ({
             marginRight: wp(4),
           }}>
           <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
-            {item.totalLeaveDays < 9 ? '0' : null}
-            {item.totalLeaveDays}
+            {item?.totalLeaveDays < 9 ? '0' : null}
+            {item?.totalLeaveDays}
           </Text>
           <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
             {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
