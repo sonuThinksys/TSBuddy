@@ -161,7 +161,7 @@ const ApplyWFH = ({navigation}) => {
         }
       })();
     }
-  }, [isFocused, startDate]);
+  }, [isFocused]);
 
   useEffect(() => {
     const diffTime = toDate?.getTime() - fromDate?.getTime();
@@ -314,7 +314,7 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('Leaves are already applied to these dates.');
+          alert('WFH are already applied to these dates.');
           return;
         }
       }
@@ -329,7 +329,7 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('Leaves are already applied to these dates.');
+          alert('WFH are already applied to these dates.');
           return;
         }
       }
@@ -354,6 +354,15 @@ const ApplyWFH = ({navigation}) => {
           },
         }),
       ));
+
+    const appliedWorkFromHome = appliedWfh?.payload;
+
+    if (!appliedWfh?.error) {
+      setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
+    } else if (appliedWfh?.error) {
+      console.log('error');
+      // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
+    }
 
     setLoading(false);
     if (appliedWfh?.error) {

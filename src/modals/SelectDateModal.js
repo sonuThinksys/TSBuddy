@@ -90,9 +90,9 @@ const SelectDateModal = forwardRef(
               </View>
             </Pressable>
 
-            <Text style={{color: Colors.grey, fontSize: 13}}>
+            {/* <Text style={{color: Colors.grey, fontSize: 13}}>
               **Monthly lunch can only be started from 1st or 16th of any month
-            </Text>
+            </Text> */}
           </View>
 
           <View style={styles.okView}>

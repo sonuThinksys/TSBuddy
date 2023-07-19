@@ -21,6 +21,8 @@ import ShowAlert from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
+import {renewToken} from 'Auth/LoginSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let data = [
   WelcomeHeader,
@@ -40,6 +42,12 @@ const Home = ({navigation}) => {
   const isFocussed = useIsFocused();
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
+
+  async function getToken() {
+    const tok = await AsyncStorage.getItem('refreshToken');
+    console.log('Token &&&&', tok);
+  }
+  getToken();
 
   useEffect(() => {
     if (isFocussed && flatListRef.current) {
@@ -70,9 +78,23 @@ const Home = ({navigation}) => {
             isTokenExpired: true,
           });
 
-          if (empData?.error?.message.toLowerCase() === 'token-expired') {
-            return;
-          }
+          // if (empData?.error?.message.toLowerCase() === 'token-expired') {
+          //   const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+          //   const result = dispatch(renewToken(refreshToken));
+
+          //   console.log('result: ' + result, result.token, result.token);
+          //   if (result?.statusCode == 500) {
+          //     ShowAlert({
+          //       messageHeader: ERROR,
+          //       messageSubHeader: empData?.error?.message,
+          //       buttonText: 'Close',
+          //       dispatch,
+          //       navigation,
+          //       isTokenExpired: true,
+          //     });
+          //   }
+          // }
         }
       } catch (err) {
         setLoading(false);

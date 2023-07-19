@@ -4,11 +4,13 @@ import axios from 'axios';
 const jwtDecode = require('jwt-decode');
 
 import endPoints from '../config';
+import {INVALID_CREDENTIAL} from 'utils/string';
 const initialState = {
   isLoggedIn: false,
   isAuthLoggedIn: false,
   isLoading: false,
   userToken: '',
+  refreshToken: '',
   userTokenGettingError: false,
   userTokenGettingLoading: false,
   formInput: {},
@@ -40,6 +42,48 @@ export const getUserToken = createAsyncThunk(
           const {response = {}, status} = result || {};
           if (status === 200) {
             return Promise.resolve({data, formInput});
+          } else if (status === 500) {
+            return Promise.reject(INVALID_CREDENTIAL);
+          } else {
+            return Promise.reject(result.response);
+            // return Promise.reject(data);
+          }
+        })
+        .catch(err => {
+          return Promise.reject({err, status: err?.response?.status});
+        });
+    } catch (err) {
+      return Promise.reject(new Error(err));
+    }
+  },
+);
+
+export const renewToken = createAsyncThunk(
+  'auth/renewToken',
+  async refreshToken => {
+    try {
+      const LoginUrl = endPoints.renewToken;
+
+      const config = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        url: LoginUrl,
+        data: refreshToken,
+      };
+      return axios(config)
+        .then(async result => {
+          alert(result);
+          console.log('Show Result: ' + result);
+          let data = result.data;
+          console.log('Show Data: ' + data);
+          const {response = {}, status} = result || {};
+          if (status === 200) {
+            return Promise.resolve({data});
+          } else if (status === 400 || status === 401) {
+            return Promise.reject(result.response);
           } else {
             return Promise.reject(result.response);
             // return Promise.reject(data);
@@ -87,6 +131,7 @@ const loginSlice = createSlice({
 
     builder.addCase(getUserToken.fulfilled, (state, action) => {
       state.userToken = action?.payload?.data?.token;
+      state.refreshToken = action?.payload?.data?.refreshToken;
       state.formInput = action?.payload?.formInput;
       const decodedData = jwtDecode(state?.userToken);
       state.employeeDetails = decodedData;
@@ -98,6 +143,22 @@ const loginSlice = createSlice({
     builder.addCase(getUserToken.rejected, (state, action) => {
       state.isLoggedIn = false;
       state.error = action.error.message;
+    });
+
+    builder.addCase(renewToken.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(renewToken.fulfilled, (state, action) => {
+      state.userToken = action?.payload?.data?.token;
+      const decodedData = jwtDecode(state?.userToken);
+      state.employeeDetails = decodedData;
+      state.isLoading = false;
+      state.isLoggedIn = true;
+      state.isGuestLogin = false;
+    });
+    builder.addCase(renewToken.rejected, (state, action) => {
+      state.error = action?.error?.message;
+      state.isLoggedIn = false;
     });
   },
 });

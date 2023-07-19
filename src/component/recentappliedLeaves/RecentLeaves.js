@@ -16,6 +16,8 @@ import {widthPercentageToDP as wp} from 'utils/Responsive';
 
 const RecentLeaves = ({navigation}) => {
   const [showLeaveType, setShowLeaveType] = useState('leaves');
+  const [recent3Leaves, setRecent3Leaves] = useState([]);
+  const [recent3WFH, setRecent3WFH] = useState([]);
 
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
@@ -26,24 +28,34 @@ const RecentLeaves = ({navigation}) => {
   } = useSelector(state => state.home);
   const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
-  let leavesCount = 0;
-  let wfhCount = 0;
+  console.log('recentAppliedLeaves', recentAppliedLeaves);
 
-  const sortedLeaves = [...recentAppliedLeaves]?.sort(
-    (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-  );
-  const recent3Leaves = sortedLeaves?.filter(leave => {
-    if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
-      leavesCount++;
-      return true;
-    }
-  });
-  const recent3WFH = sortedLeaves?.filter(leave => {
-    if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
-      wfhCount++;
-      return true;
-    }
-  });
+  useEffect(() => {
+    let leavesCount = 0;
+    let wfhCount = 0;
+
+    const sortedLeaves = [...recentAppliedLeaves]?.sort(
+      (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+    );
+    const recent3Leaves = sortedLeaves?.filter(leave => {
+      if (
+        leave.leaveType.toLowerCase() !== 'work from home' &&
+        leavesCount < 3
+      ) {
+        leavesCount++;
+        return true;
+      }
+    });
+
+    setRecent3Leaves(recent3Leaves);
+    const recent3WFH = sortedLeaves?.filter(leave => {
+      if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
+        wfhCount++;
+        return true;
+      }
+    });
+    setRecent3WFH(recent3WFH);
+  }, []);
 
   // const dispatch = useDispatch();
 

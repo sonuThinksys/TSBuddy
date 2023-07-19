@@ -54,7 +54,14 @@ const LunchRequests = ({navigation}) => {
         showHeaderRight={false}
         headerRight={
           <Pressable onPress={mailPressHandler} style={{}}>
-            <MailIcon fill={Colors.darkBrown} height={32} width={32} />
+            <Image
+              source={MonthImages.mailEmp}
+              style={{
+                height: 25,
+                width: 25,
+                tintColor: Colors.yellowishOrange,
+              }}
+            />
           </Pressable>
         }
       />
