@@ -145,6 +145,7 @@ const ApplyWFH = ({navigation}) => {
           leave => leave.leaveType === 'Work From Home',
         );
 
+        console.log('wfhLeaveList:', wfhLeaveList);
         let sortedWfhData = wfhLeaveList.sort(
           (a, b) =>
             new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
