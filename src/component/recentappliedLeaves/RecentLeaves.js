@@ -28,7 +28,6 @@ const RecentLeaves = ({navigation}) => {
   } = useSelector(state => state.home);
   const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
-  console.log('recentAppliedLeaves', recentAppliedLeaves);
 
   useEffect(() => {
     let leavesCount = 0;

@@ -62,7 +62,7 @@ export const renewToken = createAsyncThunk(
   'auth/renewToken',
   async refreshToken => {
     try {
-      const LoginUrl = endPoints.renewToken;
+      const url = endPoints.renewToken;
 
       const config = {
         method: 'POST',
@@ -70,15 +70,13 @@ export const renewToken = createAsyncThunk(
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        url: LoginUrl,
+        url: url,
         data: refreshToken,
       };
       return axios(config)
-        .then(async result => {
-          alert(result);
-          console.log('Show Result: ' + result);
+        .then(result => {
           let data = result.data;
-          console.log('Show Data: ' + data);
+
           const {response = {}, status} = result || {};
           if (status === 200) {
             return Promise.resolve({data});
@@ -145,21 +143,21 @@ const loginSlice = createSlice({
       state.error = action.error.message;
     });
 
-    builder.addCase(renewToken.pending, (state, action) => {
-      state.isLoading = true;
-    });
-    builder.addCase(renewToken.fulfilled, (state, action) => {
-      state.userToken = action?.payload?.data?.token;
-      const decodedData = jwtDecode(state?.userToken);
-      state.employeeDetails = decodedData;
-      state.isLoading = false;
-      state.isLoggedIn = true;
-      state.isGuestLogin = false;
-    });
-    builder.addCase(renewToken.rejected, (state, action) => {
-      state.error = action?.error?.message;
-      state.isLoggedIn = false;
-    });
+    // builder.addCase(renewToken.pending, (state, action) => {
+    //   state.isLoading = true;
+    // });
+    // builder.addCase(renewToken.fulfilled, (state, action) => {
+    //   state.userToken = action?.payload?.data?.token;
+    //   const decodedData = jwtDecode(state?.userToken);
+    //   state.employeeDetails = decodedData;
+    //   state.isLoading = false;
+    //   state.isLoggedIn = true;
+    //   state.isGuestLogin = false;
+    // });
+    // builder.addCase(renewToken.rejected, (state, action) => {
+    //   state.error = action?.error?.message;
+    //   state.isLoggedIn = false;
+    // });
   },
 });
 export default loginSlice.reducer;

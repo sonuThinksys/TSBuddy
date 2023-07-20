@@ -156,7 +156,10 @@ const Login = ({navigation}) => {
         const {token, refreshToken} = result?.payload?.data || {};
         var decoded = jwt_decode(token);
         const employeeID = decoded?.id;
-        AsyncStorage.setItem('refreshToken', JSON.stringify(refreshToken));
+        await AsyncStorage.setItem(
+          'refreshToken',
+          JSON.stringify(refreshToken),
+        );
         // await dispatch(
         //   getEmployeeProfileData({
         //     token,

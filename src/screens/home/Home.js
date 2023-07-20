@@ -43,12 +43,6 @@ const Home = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
-  async function getToken() {
-    const tok = await AsyncStorage.getItem('refreshToken');
-    console.log('Token &&&&', tok);
-  }
-  getToken();
-
   useEffect(() => {
     if (isFocussed && flatListRef.current) {
       flatListRef.current.scrollToOffset({offset: 0, animated: true});

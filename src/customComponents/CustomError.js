@@ -2,8 +2,9 @@ import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
 import {logOut} from 'Auth/LoginSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ShowAlert = props => {
+const ShowAlert = async props => {
   let {
     messageHeader = ERROR,
     messageSubHeader = '',
@@ -28,6 +29,7 @@ const ShowAlert = props => {
         },
       },
     ]);
+    await AsyncStorage.removeItem('refreshToken');
   } else {
     if (onPress) {
       Alert.alert(messageHeader, messageSubHeader, [

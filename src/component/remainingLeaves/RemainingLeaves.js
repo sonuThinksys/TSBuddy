@@ -124,7 +124,6 @@ const RemainingLeaves = () => {
     const allLeaves = await dispatch(
       getLeaveDetails({token, empID: employeeID}),
     );
-    // console.log('allLeaves:', allLeaves)
 
     if (allLeaves?.error) {
       ShowAlert({

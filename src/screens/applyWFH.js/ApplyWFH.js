@@ -188,12 +188,20 @@ const ApplyWFH = ({navigation}) => {
     pickerToClose(false);
   };
 
+  const startOnCancel = () => {
+    setStartDatePickerVisible(false);
+  };
+
+  const endOnCancel = () => {
+    setEndDatePickerVisible(false);
+  };
+
   const handleStartConfirm = date => {
     Keyboard.dismiss;
     if (employeeWeekOffs.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
-      fromOnCancel();
+      startOnCancel();
       return;
     }
 
@@ -204,8 +212,8 @@ const ApplyWFH = ({navigation}) => {
         holidayObj.getMonth() === date.getMonth() &&
         date.getDate() === holidayObj.getDate()
       ) {
-        alert('You can not take a leave on National holiday.');
-        fromOnCancel();
+        alert('You can not take a WFH on National holiday.');
+        startOnCancelz();
         return;
       }
     }
@@ -231,7 +239,7 @@ const ApplyWFH = ({navigation}) => {
     if (employeeWeekOffs.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
-      fromOnCancel();
+      endOnCancel();
       return;
     }
 
@@ -242,8 +250,8 @@ const ApplyWFH = ({navigation}) => {
         holidayObj.getMonth() === date.getMonth() &&
         date.getDate() === holidayObj.getDate()
       ) {
-        alert('You can not take a leave on National holiday.');
-        fromOnCancel();
+        alert('You can not take a WFH on National holiday.');
+        endOnCancel();
         return;
       }
     }
@@ -276,12 +284,12 @@ const ApplyWFH = ({navigation}) => {
   const onApplyWfh = async () => {
     setStartDate;
     if (!startDate.startDateStr || !endDate.endDateStr) {
-      alert('Please select dates for which you want to apply a leave.');
+      alert('Please select dates for which you want to apply a WFH.');
       return;
     }
 
     if (!reason) {
-      alert('Please enter a reason for applying a leave.');
+      alert('Please enter a reason for applying a WFH.');
       return;
     }
 
@@ -360,7 +368,6 @@ const ApplyWFH = ({navigation}) => {
     if (!appliedWfh?.error) {
       setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
     } else if (appliedWfh?.error) {
-      console.log('error');
       // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
     }
 
@@ -368,7 +375,7 @@ const ApplyWFH = ({navigation}) => {
     if (appliedWfh?.error) {
       alert(appliedWfh.error.message);
     } else {
-      Alert.alert('Success', 'Leave applied successfully!', [
+      Alert.alert('Success', 'WFH applied successfully!', [
         {
           text: 'Ok',
           onPress: () => {
@@ -429,10 +436,10 @@ const ApplyWFH = ({navigation}) => {
             />
             <View style={styles.datesContainer}>
               <View style={styles.thirdView}>
-                <SelectDateModal
+                {/* <SelectDateModal
                   modalData={modalData}
                   setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
-                />
+                /> */}
                 <Text
                   style={{
                     marginBottom: hp(1),
@@ -443,11 +450,7 @@ const ApplyWFH = ({navigation}) => {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    if (permReq) {
-                      setOpenModal(true);
-                    } else {
-                      setStartDatePickerVisible(true);
-                    }
+                    setStartDatePickerVisible(true);
                   }}>
                   <View style={styles.fourthView}>
                     <Text style={styles.selectedDated}>
@@ -476,7 +479,6 @@ const ApplyWFH = ({navigation}) => {
                   style={{
                     opacity: !startSelected ? 0.6 : 1,
                   }}
-                  // disabled={isDaily}
                   onPress={() => {
                     setEndDatePickerVisible(true);
                   }}>

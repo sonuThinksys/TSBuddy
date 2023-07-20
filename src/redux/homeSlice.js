@@ -94,7 +94,6 @@ const snacks = 'snacks';
 export const getAllResourcesAttendence = createAsyncThunk(
   'getAllResourcesAttendence',
   async ({token, date}) => {
-    console.log('date:', date);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -621,7 +620,6 @@ export const updateLeaveStatus = createAsyncThunk(
 export const applyForWfhLeave = createAsyncThunk(
   'home/applyWfh',
   async function ({token, body}) {
-    console.log('body', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -659,7 +657,6 @@ export const applyForWfhLeave = createAsyncThunk(
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {
-    console.log('body:', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
