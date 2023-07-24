@@ -16,6 +16,7 @@ import {useDispatch} from 'react-redux';
 import {employeeProfileScreen} from 'navigation/Route';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
 import {StackActions} from '@react-navigation/native';
+import {memo} from 'react';
 
 const CustomHeader = function ({
   showDrawerMenu,
@@ -156,4 +157,4 @@ const CustomHeader = function ({
   );
 };
 
-export default CustomHeader;
+export default memo(CustomHeader);

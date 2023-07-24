@@ -1,5 +1,5 @@
 import {Colors} from 'colors/Colors';
-import React, {useState} from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -20,6 +20,7 @@ import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
 import {guestHolidaysData} from 'guestData';
 import {getHolidaysData} from 'redux/homeSlice';
 import CustomHeader from 'navigation/CustomHeader';
+import {refresh} from '@react-native-community/netinfo';
 
 const Holidays = ({navigation}) => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
@@ -32,7 +33,7 @@ const Holidays = ({navigation}) => {
     useSelector(state => state.home);
   const [isRefresh, setRefresh] = useState(false);
 
-  const updateData = async () => {
+  const updateData = useCallback(async () => {
     try {
       setRefresh(true);
       await dispatch(getHolidaysData(token));
@@ -40,7 +41,98 @@ const Holidays = ({navigation}) => {
     } finally {
       setRefresh(false);
     }
-  };
+  }, [refresh]);
+
+  const renderItem = useCallback(
+    (
+      item,
+      index,
+      holidaysShowModal,
+      holidaysSetShowModal,
+      dispatch,
+      setHolidaysData,
+      HolidaysData,
+    ) => {
+      const {description, holidayDate} = item;
+      const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
+
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            holidaysSetShowModal(true);
+            setHolidaysData(prevHolidayData => ({
+              ...prevHolidayData,
+              description,
+              holidayDate,
+              newDateFormate,
+              holidaysSetShowModal,
+            }));
+            // setHolidaysData({
+            //   ...HolidaysData,
+            //   description,
+            //   holidayDate,
+            //   newDateFormate,
+            //   holidaysSetShowModal,
+            // });
+          }}>
+          {holidaysShowModal ? (
+            <HolidayModal
+              key={new Date()}
+              HolidaysData={HolidaysData}
+              holidaysShowModal={holidaysShowModal}
+            />
+          ) : null}
+          <View
+            // style={styles.flatelistView}
+            style={{
+              flexDirection: 'row',
+              borderRadius: 5,
+              marginVertical: hp(0.5),
+              marginHorizontal: wp(1),
+              backgroundColor: Colors.skyColor,
+              shadowOpacity: 0.1,
+            }}>
+            <View
+              //style={styles.flatelistView1}
+
+              style={{
+                flex: 1,
+                backgroundColor: getPastHoliday(holidayDate)
+                  ? Colors.colorDodgerBlue2
+                  : Colors.grey,
+                paddingHorizontal: wp(2),
+                paddingVertical: hp(1),
+                justifyContent: 'center',
+                borderTopLeftRadius: 5,
+                borderBottomLeftRadius: 5,
+                shadowOpacity: 0.1,
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: Colors.white,
+                  fontSize: 18,
+                }}>
+                {newDateFormate}
+              </Text>
+            </View>
+            <View style={styles.flatelistView2}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: getPastHoliday(holidayDate)
+                    ? Colors.black
+                    : Colors.grey,
+                }}>
+                {description}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [],
+  );
 
   return (
     <>
@@ -100,86 +192,4 @@ const getPastHoliday = d => {
   }
 };
 
-const renderItem = (
-  item,
-  index,
-  holidaysShowModal,
-  holidaysSetShowModal,
-  dispatch,
-  setHolidaysData,
-  HolidaysData,
-) => {
-  const {description, holidayDate} = item;
-  const newDateFormate = moment(holidayDate).format(DATE_FORMAT);
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        holidaysSetShowModal(true);
-        setHolidaysData(prevHolidayData => ({
-          ...prevHolidayData,
-          description,
-          holidayDate,
-          newDateFormate,
-          holidaysSetShowModal,
-        }));
-        // setHolidaysData({
-        //   ...HolidaysData,
-        //   description,
-        //   holidayDate,
-        //   newDateFormate,
-        //   holidaysSetShowModal,
-        // });
-      }}>
-      {holidaysShowModal ? (
-        <HolidayModal
-          key={new Date()}
-          HolidaysData={HolidaysData}
-          holidaysShowModal={holidaysShowModal}
-        />
-      ) : null}
-      <View
-        // style={styles.flatelistView}
-        style={{
-          flexDirection: 'row',
-          borderRadius: 5,
-          marginVertical: hp(0.5),
-          marginHorizontal: wp(1),
-          backgroundColor: Colors.skyColor,
-          shadowOpacity: 0.1,
-        }}>
-        <View
-          //style={styles.flatelistView1}
-
-          style={{
-            flex: 1,
-            backgroundColor: getPastHoliday(holidayDate)
-              ? Colors.colorDodgerBlue2
-              : Colors.grey,
-            paddingHorizontal: wp(2),
-            paddingVertical: hp(1),
-            justifyContent: 'center',
-            borderTopLeftRadius: 5,
-            borderBottomLeftRadius: 5,
-            shadowOpacity: 0.1,
-          }}>
-          <Text
-            style={{textAlign: 'center', color: Colors.white, fontSize: 18}}>
-            {newDateFormate}
-          </Text>
-        </View>
-        <View style={styles.flatelistView2}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: getPastHoliday(holidayDate) ? Colors.black : Colors.grey,
-            }}>
-            {description}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-export default Holidays;
+export default memo(Holidays);

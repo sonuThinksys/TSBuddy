@@ -1,5 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, SafeAreaView, FlatList, LogBox, Text, Image} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  FlatList,
+  LogBox,
+  Text,
+  Image,
+  Button,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -36,7 +44,7 @@ let data = [
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-  const {userToken: token} = useSelector(state => state.auth);
+  const {userToken: token, refreshToken} = useSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
@@ -63,32 +71,20 @@ const Home = ({navigation}) => {
           ));
 
         if (empData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: empData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-            isTokenExpired: true,
-          });
+          if (empData?.error?.message.toLowerCase() === 'token-expired') {
+            const result = await dispatch(renewToken({token: refreshToken}));
 
-          // if (empData?.error?.message.toLowerCase() === 'token-expired') {
-          //   const refreshToken = await AsyncStorage.getItem('refreshToken');
-
-          //   const result = dispatch(renewToken(refreshToken));
-
-          //   console.log('result: ' + result, result.token, result.token);
-          //   if (result?.statusCode == 500) {
-          //     ShowAlert({
-          //       messageHeader: ERROR,
-          //       messageSubHeader: empData?.error?.message,
-          //       buttonText: 'Close',
-          //       dispatch,
-          //       navigation,
-          //       isTokenExpired: true,
-          //     });
-          //   }
-          // }
+            if (result?.error) {
+              ShowAlert({
+                messageHeader: ERROR,
+                messageSubHeader: empData?.error?.message,
+                buttonText: 'Close',
+                dispatch,
+                navigation,
+                isTokenExpired: true,
+              });
+            }
+          }
         }
       } catch (err) {
         setLoading(false);
