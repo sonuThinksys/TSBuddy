@@ -11,6 +11,9 @@ import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
+import {getTodayMenuDetails} from 'redux/homeSlice';
 // import ShowAlert from 'customComponents/CustomError';
 // import {ERROR} from 'constants/strings';
 
@@ -18,6 +21,8 @@ const RecentLeaves = ({navigation}) => {
   const [showLeaveType, setShowLeaveType] = useState('leaves');
   const [recent3Leaves, setRecent3Leaves] = useState([]);
   const [recent3WFH, setRecent3WFH] = useState([]);
+
+  const dispatch = useDispatch();
 
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
@@ -28,6 +33,21 @@ const RecentLeaves = ({navigation}) => {
   } = useSelector(state => state.home);
   const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
+  useEffect(() => {
+    (async () => {
+      const menuDetails = await dispatch(getTodayMenuDetails(token));
+      if (menuDetails?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: menuDetails?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+          isTokenExpired: false,
+        });
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     let leavesCount = 0;
@@ -36,6 +56,7 @@ const RecentLeaves = ({navigation}) => {
     const sortedLeaves = [...recentAppliedLeaves]?.sort(
       (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
     );
+
     const recent3Leaves = sortedLeaves?.filter(leave => {
       if (
         leave.leaveType.toLowerCase() !== 'work from home' &&
@@ -53,6 +74,7 @@ const RecentLeaves = ({navigation}) => {
         return true;
       }
     });
+    console.log('recent3WFH', recent3WFH);
     setRecent3WFH(recent3WFH);
   }, []);
 

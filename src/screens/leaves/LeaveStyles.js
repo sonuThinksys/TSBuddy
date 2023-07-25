@@ -45,6 +45,7 @@ export default StyleSheet.create({
     marginHorizontal: wp(2),
     backgroundColor: Colors.lightcyan,
     shadowOpacity: 0.1,
+    elevation: 1,
   },
   secondView: {
     flex: 2,

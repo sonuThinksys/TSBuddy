@@ -38,13 +38,13 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
     holidayDatawithImage &&
       holidayDatawithImage.length &&
       holidayDatawithImage.map(el => {
-        if (el.nameOfHolidays === description) {
+        if (el.nameOfHolidays.toLowerCase() === description.toLowerCase()) {
           setImage(el.imageOfHoliday);
           setDefinition(el.descriptions);
         }
       });
   }, []);
-  console.log('rendering');
+
   return (
     <>
       {holidaysShowModal ? (
