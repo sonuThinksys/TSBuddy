@@ -30,10 +30,60 @@ const RecentLeaves = ({navigation}) => {
   const decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
-  // const {
-  //   leaveMenuDetails: {recentAppliedLeaves = []},
-  // } = useSelector(state => state.home);
-  // // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+  useEffect(() => {
+    (async () => {
+      const menuDetails = await dispatch(getTodayMenuDetails(token));
+      if (menuDetails?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: menuDetails?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+          isTokenExpired: false,
+        });
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!isGuestLogin) {
+      if (isFocussed) {
+        async () => {
+          let leavesCount = 0;
+          let wfhCount = 0;
+
+          const sortedLeaves = [...recentAppliedLeaves]?.sort(
+            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+          );
+
+          const recent3Leaves = sortedLeaves?.filter(leave => {
+            if (
+              leave.leaveType.toLowerCase() !== 'work from home' &&
+              leavesCount < 3
+            ) {
+              leavesCount++;
+              return true;
+            }
+          });
+        },
+          [isFocussed];
+
+        setRecent3Leaves(recent3Leaves);
+        const recent3WFH = sortedLeaves?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() === 'work from home' &&
+            wfhCount < 3
+          ) {
+            wfhCount++;
+            return true;
+          }
+        });
+
+        setRecent3WFH(recent3WFH);
+      }
+    }
+  }, []);
 
   const isFocussed = useIsFocused();
 
