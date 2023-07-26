@@ -30,47 +30,57 @@ const RecentLeaves = ({navigation}) => {
   const decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
+  // const {
+  //   leaveMenuDetails: {recentAppliedLeaves = []},
+  // } = useSelector(state => state.home);
+  // // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+
+  const isFocussed = useIsFocused();
+
   useEffect(() => {
-    (async () => {
-      const menuDetails = await dispatch(getTodayMenuDetails(token));
-      if (menuDetails?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: menuDetails?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-          isTokenExpired: false,
+    if (isFocussed) {
+      (async () => {
+        let leavesCount = 0;
+        let wfhCount = 0;
+
+        const leavesData = await dispatch(
+          getLeaveDetails({
+            token,
+            empID: employeeID,
+          }),
+        );
+
+        const leavesList = [];
+        const wfhList = [];
+
+        leavesData.payload.map(leave => {
+          if (leave.leaveType.toLowerCase() === 'work from home') {
+            wfhList.push(leave);
+          } else {
+            leavesList.push(leave);
+          }
         });
-      }
-    })();
-  }, []);
 
-  useEffect(() => {
-    if (!isGuestLogin) {
-      if (isFocussed) {
-        async () => {
-          let leavesCount = 0;
-          let wfhCount = 0;
+        const sortedWfhList = wfhList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-          const sortedLeaves = [...recentAppliedLeaves]?.sort(
-            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-          );
+        const sortedLeaveList = leavesList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-          const recent3Leaves = sortedLeaves?.filter(leave => {
-            if (
-              leave.leaveType.toLowerCase() !== 'work from home' &&
-              leavesCount < 3
-            ) {
-              leavesCount++;
-              return true;
-            }
-          });
-        },
-          [isFocussed];
+        const recent3Leaves = sortedLeaveList?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() !== 'work from home' &&
+            leavesCount < 3
+          ) {
+            leavesCount++;
+            return true;
+          }
+        });
 
         setRecent3Leaves(recent3Leaves);
-        const recent3WFH = sortedLeaves?.filter(leave => {
+        const recent3WFH = sortedWfhList?.filter(leave => {
           if (
             leave.leaveType.toLowerCase() === 'work from home' &&
             wfhCount < 3
@@ -81,11 +91,9 @@ const RecentLeaves = ({navigation}) => {
         });
 
         setRecent3WFH(recent3WFH);
-      }
+      })();
     }
   }, []);
-
-  const isFocussed = useIsFocused();
 
   useEffect(() => {
     if (isFocussed) {
