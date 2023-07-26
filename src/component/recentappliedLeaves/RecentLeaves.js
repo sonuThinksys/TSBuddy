@@ -13,9 +13,9 @@ import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {getTodayMenuDetails} from 'redux/homeSlice';
-// import ShowAlert from 'customComponents/CustomError';
-// import {ERROR} from 'constants/strings';
+import {getLeaveDetails, getTodayMenuDetails} from 'redux/homeSlice';
+import {useIsFocused} from '@react-navigation/native';
+import jwt_decode from 'jwt-decode';
 
 const RecentLeaves = ({navigation}) => {
   const [showLeaveType, setShowLeaveType] = useState('leaves');
@@ -28,75 +28,73 @@ const RecentLeaves = ({navigation}) => {
     state => state.auth,
   );
 
-  const {
-    leaveMenuDetails: {recentAppliedLeaves = []},
-  } = useSelector(state => state.home);
-  const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+  const decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
+
+  // const {
+  //   leaveMenuDetails: {recentAppliedLeaves = []},
+  // } = useSelector(state => state.home);
+  // // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+
+  const isFocussed = useIsFocused();
 
   useEffect(() => {
-    (async () => {
-      const menuDetails = await dispatch(getTodayMenuDetails(token));
-      if (menuDetails?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: menuDetails?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-          isTokenExpired: false,
+    if (isFocussed) {
+      (async () => {
+        let leavesCount = 0;
+        let wfhCount = 0;
+
+        const leavesData = await dispatch(
+          getLeaveDetails({
+            token,
+            empID: employeeID,
+          }),
+        );
+
+        const leavesList = [];
+        const wfhList = [];
+
+        leavesData.payload.map(leave => {
+          if (leave.leaveType.toLowerCase() === 'work from home') {
+            wfhList.push(leave);
+          } else {
+            leavesList.push(leave);
+          }
         });
-      }
-    })();
-  }, []);
 
-  useEffect(() => {
-    let leavesCount = 0;
-    let wfhCount = 0;
+        const sortedWfhList = wfhList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-    const sortedLeaves = [...recentAppliedLeaves]?.sort(
-      (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-    );
+        const sortedLeaveList = leavesList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-    const recent3Leaves = sortedLeaves?.filter(leave => {
-      if (
-        leave.leaveType.toLowerCase() !== 'work from home' &&
-        leavesCount < 3
-      ) {
-        leavesCount++;
-        return true;
-      }
-    });
+        const recent3Leaves = sortedLeaveList?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() !== 'work from home' &&
+            leavesCount < 3
+          ) {
+            leavesCount++;
+            return true;
+          }
+        });
 
-    setRecent3Leaves(recent3Leaves);
-    const recent3WFH = sortedLeaves?.filter(leave => {
-      if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
-        wfhCount++;
-        return true;
-      }
-    });
-    console.log('recent3WFH', recent3WFH);
-    setRecent3WFH(recent3WFH);
-  }, []);
+        setRecent3Leaves(recent3Leaves);
+        const recent3WFH = sortedWfhList?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() === 'work from home' &&
+            wfhCount < 3
+          ) {
+            wfhCount++;
+            return true;
+          }
+        });
 
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const leaves = await dispatch(getLeaveDetails({token, employeeID}));
-
-  //     if (leaves?.error) {
-  //       ShowAlert({
-  //         messageHeader: ERROR,
-  //         messageSubHeader: leaves?.error?.message,
-  //         buttonText: 'Close',
-  //         dispatch,
-  //         navigation,
-  //       });
-  //     }
-  //   })();
-  // }, [employeeID, token]);
-
-  // =================================================================================
+        setRecent3WFH(recent3WFH);
+      })();
+    }
+  }, [isFocussed]);
 
   return (
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
