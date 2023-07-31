@@ -549,7 +549,6 @@ const RequestLunch = ({navigation}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              console.log('INSIDE', 'PARENT!');
               setEndSelected(false);
               setStartSelected(false);
               setStartDate({

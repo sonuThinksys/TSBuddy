@@ -2,7 +2,6 @@ import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
 import {logOut} from 'Auth/LoginSlice';
-import {useSelector} from 'react-redux';
 
 const ShowAlert = props => {
   let {
@@ -40,8 +39,11 @@ const ShowAlert = props => {
   if (onPress) {
     Alert.alert(messageHeader, messageSubHeader, [
       {
-        text: buttonText,
-        onPress,
+        text: 'OK',
+        onPress: () => {
+          return null;
+          // dispatch && dispatch(logOut());
+        },
       },
     ]);
   } else {
