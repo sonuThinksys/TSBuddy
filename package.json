@@ -51,6 +51,7 @@
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^17.0.0",
     "react-native-modal-dropdown": "^1.0.2",
+    "react-native-month-year-picker": "^1.9.0",
     "react-native-pdf": "^6.6.2",
     "react-native-plotly": "^6.0.0",
     "react-native-progress-loader": "^1.0.0",

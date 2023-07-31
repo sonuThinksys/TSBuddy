@@ -392,7 +392,7 @@ const style = StyleSheet.create({
   },
   listOfLeaves: {
     height: hp(65),
-    marginBottom: 5,
+    marginBottom: 10,
   },
 });
 

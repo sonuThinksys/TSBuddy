@@ -2,7 +2,6 @@ import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
 import {logOut} from 'Auth/LoginSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ShowAlert = props => {
   let {
@@ -16,7 +15,7 @@ const ShowAlert = props => {
 
   if (
     isTokenExpired === false &&
-    messageSubHeader.toLowerCase() == 'token-expired'
+    messageSubHeader.toLowerCase() === 'token-expired'
   ) {
     return null;
   }
@@ -25,7 +24,8 @@ const ShowAlert = props => {
       {
         text: 'OK',
         onPress: () => {
-          dispatch && dispatch(logOut());
+          return null;
+          // dispatch && dispatch(logOut());
         },
       },
     ]);

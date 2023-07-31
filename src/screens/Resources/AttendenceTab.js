@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ScrollView} from 'react-native';
 import styles from './AttendenceTabStyle';
 import AttendenceTabLayout from './AttendenceTabLayout';
 import {useEffect, useState} from 'react';
@@ -12,7 +6,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {GetDailyAttendanceByEmpId} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {Colors} from 'colors/Colors';
 import Loader from 'component/LoadingScreen/LoadingScreen';
 
 const AttendenceTab = ({employeeID, employeeName}) => {
@@ -20,7 +13,6 @@ const AttendenceTab = ({employeeID, employeeName}) => {
   const {userToken: token} = useSelector(state => state.auth);
 
   const [attendenceArray, setAttendenceArray] = useState([]);
-  const [employeeAttendance, setEmployeeAttendance] = useState();
   const [loading, setLoading] = useState(false);
 
   let year = new Date().getFullYear();
