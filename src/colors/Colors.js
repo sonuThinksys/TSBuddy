@@ -34,6 +34,7 @@ export const Colors = {
   grey: '#adb5bd',
   darkTransparentColor: 'rgba(51, 51, 51, 0.8)',
   dune: '#333333',
+  lightDune: '#444444',
   lightGray1: '#666666',
   lightGray2: 'rgb(190,190,190)',
   reddishTint: '#f03e3e',
@@ -58,4 +59,7 @@ export const Colors = {
   skin: '#FFF1E0',
   darkSkin: '#9E5B00',
   fadedOrange: '#D97300',
+  lightGreen: '#b2f2bb',
+  veryLightGreen: '#d3f9d8',
+  veryLightRed: '#ffc9c9',
 };

@@ -1,134 +1,205 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {FlatList, Image, Pressable, Text, View} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+// import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './AllAttendanceStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {getAllResourcesAttendence} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import {Colors} from 'colors/Colors';
+
+import DayWiseCard from './DayWiseCard';
+import MonthWiseCalnder from './MonthWise';
+import Loader from 'component/loader/Loader';
+
+const DAY_WISE = 'day wise';
+const MONTH_WISE = 'month wise';
 
 const AllAttendance = ({navigation}) => {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [employees, setEmployees] = useState([]);
   const token = useSelector(state => state.auth.userToken);
   const dispatch = useDispatch();
-
-  // const DUMMY_DATA = [
-  //   {
-  //     name: 'Utkarsh Gupta',
-  //     empID: 10860,
-  //     attendanceDate: '05-07-2023',
-  //     inTime: '09:26:43',
-  //     outTime: '18:32:32',
-  //     regularized: 'No',
-  //     status: 'Present',
-  //   },
-  //   {
-  //     name: 'Sonu Patel',
-  //     empID: 10920,
-  //     attendanceDate: '05-07-2023',
-  //     inTime: '08:56:43',
-  //     outTime: '19:38:32',
-  //     regularized: 'No',
-  //     status: 'Present',
-  //   },
-  //   {
-  //     name: 'Roshan jambhulkar',
-  //     empID: 10859,
-  //     attendanceDate: '05-07-2023',
-  //     inTime: '09:32:43',
-  //     outTime: '18:35:32',
-  //     regularized: 'No',
-  //     status: 'Present',
-  //   },
-  //   {
-  //     name: 'Tribhuvan Bhandari',
-  //     empID: 10868,
-  //     attendanceDate: '05-07-2023',
-  //     inTime: '10:24:48',
-  //     outTime: '19:39:42',
-  //     regularized: 'No',
-  //     status: 'Present',
-  //   },
-  //   {
-  //     name: 'Kalpana Bisht',
-  //     empID: 10769,
-  //     attendanceDate: '05-07-2023',
-  //     inTime: '11:21:43',
-  //     outTime: '20:35:12',
-  //     regularized: 'No',
-  //     status: 'Present',
-  //   },
-  // ];
-
-  const onSelectDate = async date => {
-    const selectedDate = date.getDate();
-    const selectedMonth = date.getMonth() + 1;
-    const selectedYear = date.getFullYear();
-    const dateStr = `${selectedDate}-${selectedMonth}-${selectedYear}`;
-    setSelectedDate(dateStr);
-    setShowDatePicker(false);
-    (async () => {
-      const allAttendance = await dispatch(
-        getAllResourcesAttendence({token, date: dateStr}),
-      );
-    })();
-    // setEmployees(DUMMY_DATA);
-  };
-
-  const onCalcel = () => {
-    setShowDatePicker(false);
-  };
-
   const todayDateObj = new Date(); // Current date and time
-
-  // Subtract 1 day from the current date
   const yesterdayDateObj = new Date(todayDateObj);
   yesterdayDateObj.setDate(todayDateObj.getDate() - 1);
+  const yesterdayDateString = `${yesterdayDateObj.toLocaleString('default', {
+    month: 'long',
+  })} ${yesterdayDateObj.getDate()}, ${yesterdayDateObj.getFullYear()}`;
+
+  const [selectedAttendanceType, setSelectedAttendanceType] = useState({
+    type: DAY_WISE,
+  });
+  const [selectedDate, setSelectedDate] = useState({
+    selectedDateObj: yesterdayDateObj,
+    selectedDateStr: yesterdayDateString,
+  });
+
+  const [isDateSelecting, setIsDateSelecting] = useState(false);
+  const [dayWiseData, setDayWiseData] = useState([]);
+
+  const [monthWiseData, setMonthWiseData] = useState([]);
+  const [isFetchingData, setIsFetchingData] = useState(false);
+
+  const fetchDayWiseData = async dayWiseDate => {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    const yesterdayDate = today.getDate();
+    const yesterdayMonth = today.getMonth() + 1;
+    const yesterdayYear = today.getFullYear();
+    const yesterdayDateStr = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDate}`;
+
+    try {
+      setIsFetchingData(true);
+
+      const {payload: dayWise} = await dispatch(
+        getAllResourcesAttendence({
+          token,
+          // date: '2023-7-21',
+          date: dayWiseDate ? dayWiseDate : yesterdayDateStr,
+        }),
+      );
+
+      setDayWiseData(dayWise);
+    } catch (err) {
+      console.error('err:', err);
+    } finally {
+      setIsFetchingData(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDayWiseData();
+  }, []);
+
+  // Subtract 1 day from the current date
+  const onDateSelection = date => {
+    const selectedDate = date.getDate();
+    const selectedMonth = date.toLocaleString('default', {
+      month: 'long',
+    });
+    const selectedYear = date.getFullYear();
+    const selectedDateStr = `${selectedMonth} ${selectedDate}, ${selectedYear}`;
+    setSelectedDate({selectedDateObj: date, selectedDateStr});
+
+    const dateStrToSend = `${selectedYear}-${
+      date.getMonth() + 1
+    }-${selectedDate}`;
+    fetchDayWiseData(dateStrToSend);
+    setIsDateSelecting(false);
+  };
+
+  const onCancelDateSelection = () => {
+    setIsDateSelecting(false);
+  };
 
   return (
     <>
       <CustomHeader
         showDrawerMenu={true}
-        title="All Attendance"
+        title="Attendance"
         navigation={navigation}
         isHome={false}
         showHeaderRight={true}
       />
-      <View style={styles.selectDateContainer}>
-        <DateTimePickerModal
-          maximumDate={yesterdayDateObj}
-          isVisible={showDatePicker}
-          mode="date"
-          onConfirm={onSelectDate}
-          onCancel={onCalcel}
-        />
-        <Text style={styles.selectText}>Select Date:</Text>
-        <Pressable
-          onPress={() => {
-            setShowDatePicker(true);
-          }}
-          style={styles.selectDatePressable}>
-          <Image
-            style={{height: 20, width: 20}}
-            source={MonthImages.CalenderIcon}
-          />
-        </Pressable>
-      </View>
-      {employees?.length > 0 ? (
-        <FlatList
-          data={employees}
-          renderItem={({item, index}) => {
-            return (
-              <View style={styles.singleCard}>
-                <Text>{item.name}</Text>
+      <View style={styles.mainContainer}>
+        <View style={styles.attendanceTypeContainer}>
+          <View style={styles.typeContainer}>
+            <Pressable
+              onPress={() => {
+                setSelectedAttendanceType({type: MONTH_WISE});
+              }}
+              style={[
+                styles.leftType,
+                {
+                  backgroundColor:
+                    selectedAttendanceType.type === MONTH_WISE
+                      ? Colors.lighterBlue
+                      : Colors.white,
+                },
+              ]}>
+              <Text
+                style={{
+                  color:
+                    selectedAttendanceType.type === MONTH_WISE
+                      ? Colors.white
+                      : null,
+                }}>
+                Month Wise
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSelectedAttendanceType({type: DAY_WISE});
+              }}
+              style={[
+                styles.rightType,
+                {
+                  backgroundColor:
+                    selectedAttendanceType.type === DAY_WISE
+                      ? Colors.lighterBlue
+                      : Colors.white,
+                },
+              ]}>
+              <Text
+                style={{
+                  color:
+                    selectedAttendanceType.type === DAY_WISE
+                      ? Colors.white
+                      : null,
+                }}>
+                Day Wise
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {selectedAttendanceType.type === DAY_WISE ? (
+          <View style={{flex: 1, marginBottom: 20}}>
+            <Pressable
+              onPress={() => {
+                setIsDateSelecting(true);
+              }}
+              style={styles.selectedDateContainer}>
+              <View style={styles.dateTextContainer}>
+                <Text style={styles.selectedDateText}>
+                  {selectedDate?.selectedDateStr}
+                </Text>
               </View>
-            );
-          }}
-          keyExtractor={(item, index) => index}
-        />
-      ) : null}
+              <View style={styles.dropdownIconContainer}>
+                <MonthImages.DropDownIconSVG
+                  // fill={Colors.grey}
+                  color={Colors.lightBlack}
+                  height={16}
+                  width={16}
+                />
+              </View>
+            </Pressable>
+            <DateTimePickerModal
+              // minimumDate={minimumDateLeaveApplication}
+              maximumDate={new Date()}
+              isVisible={isDateSelecting}
+              mode="date"
+              onConfirm={onDateSelection}
+              onCancel={onCancelDateSelection}
+            />
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={true}
+              contentContainerStyle={{flexGrow: 1}}
+              style={{}}
+              data={dayWiseData}
+              renderItem={({item, index}) => {
+                return <DayWiseCard item={item} />;
+              }}
+              keyExtractor={(item, index) => index}
+            />
+          </View>
+        ) : (
+          <MonthWiseCalnder />
+        )}
+
+        {isFetchingData ? <Loader /> : null}
+      </View>
     </>
   );
 };

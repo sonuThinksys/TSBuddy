@@ -486,7 +486,7 @@ const ApplyLeave = ({navigation, route}) => {
         setTotalNumberOfLeaveDays(finalizedLeaveDays);
         setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
       } catch (err) {
-        console.error('err:', err);
+        console.log('err:', err);
       } finally {
         setLoading(false);
       }
@@ -582,7 +582,7 @@ const ApplyLeave = ({navigation, route}) => {
       setTotalNumberOfLeaveDays(finalizedLeaveDays);
       setToDate({toDateObj: date, toDateStr: finalTodayDate});
     } catch (err) {
-      console.error('err:', err);
+      console.log('err:', err);
     } finally {
       setLoading(false);
     }

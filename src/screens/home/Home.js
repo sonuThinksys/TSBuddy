@@ -57,6 +57,8 @@ const Home = ({navigation}) => {
     }
   }, [isFocussed]);
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
     (async () => {
       try {

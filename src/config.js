@@ -42,7 +42,7 @@ export default {
   WfhApplication: `${API_URL}/Leave/WfhApplication`,
   getPolicies: `${API_URL}/Policy/GetPolicies`,
   getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
-  getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
+
   renewToken: `${API_URL}/Account/RenewToken`,
   getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
