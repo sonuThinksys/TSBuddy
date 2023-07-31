@@ -48,6 +48,8 @@ const Home = ({navigation}) => {
     }
   }, [isFocussed]);
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
     if (isFocussed) {
       (async () => {
