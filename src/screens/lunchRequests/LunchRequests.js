@@ -35,7 +35,7 @@ const LunchRequests = ({navigation}) => {
 
         setLunchRequests(allLunchRequests.payload);
       } catch (err) {
-        console.error('errorIs:', err);
+        console.error('error:', err);
       } finally {
         setIsLoading(false);
       }
@@ -54,7 +54,14 @@ const LunchRequests = ({navigation}) => {
         showHeaderRight={false}
         headerRight={
           <Pressable onPress={mailPressHandler} style={{}}>
-            <MailIcon fill={Colors.darkBrown} height={32} width={32} />
+            <Image
+              source={MonthImages.mailEmp}
+              style={{
+                height: 25,
+                width: 25,
+                tintColor: Colors.reddishTint,
+              }}
+            />
           </Pressable>
         }
       />

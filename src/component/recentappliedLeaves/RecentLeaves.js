@@ -32,6 +32,7 @@ const RecentLeaves = ({navigation}) => {
   const sortedLeaves = [...recentAppliedLeaves]?.sort(
     (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
   );
+  console.log('sortedLeaves:', sortedLeaves);
   const recent3Leaves = sortedLeaves?.filter(leave => {
     if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
       leavesCount++;

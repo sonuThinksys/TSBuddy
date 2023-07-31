@@ -78,7 +78,7 @@ const WelcomeHeader = () => {
           empMachineCode: +checkIn?.payload[0].employeeMachineCode,
         });
       } catch (err) {
-        console.log('err:', err);
+        // console.log('err:', err);
       }
     })();
   }, []);

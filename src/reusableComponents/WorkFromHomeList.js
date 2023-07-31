@@ -14,7 +14,7 @@ import {
   widthPercentageToDP,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {memo, useEffect, useState} from 'react';
+import {memo, useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
@@ -88,7 +88,7 @@ const WorkFromHomeList = props => {
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = useCallback(({item}) => {
     // if (filteredSelectedDate) {
     //   const shouldRender =
     //     filteredSelectedDate?.getTime() >= new Date(item?.fromDate).getTime();
@@ -171,7 +171,7 @@ const WorkFromHomeList = props => {
         </View>
       </TouchableOpacity>
     );
-  };
+  }, []);
 
   if (loading) {
     return <Loader />;

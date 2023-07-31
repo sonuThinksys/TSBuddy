@@ -13,6 +13,7 @@ const ERROR = 'Something went wrong!';
 const INCORRECT_LOGIN = 'Please try again later.';
 const MONTHLY_LUNCH_MESSAGE = 'You will be charged ₹1000/Month.';
 const DAILY_LUNCH_MESSAGE = 'You will be charged ₹60/Day.';
+const INVALID_CREDENTIAL = 'Invalid credentials';
 export {
   COPY_RIGHT,
   GUEST_LOGIN,
@@ -27,4 +28,5 @@ export {
   INCORRECT_LOGIN,
   MONTHLY_LUNCH_MESSAGE,
   DAILY_LUNCH_MESSAGE,
+  INVALID_CREDENTIAL,
 };

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -14,6 +14,7 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import {holidayDatawithImage} from '../../db';
+import {bounce} from 'react-native/Libraries/Animated/Easing';
 
 const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
   const {description, holidayDate, newDateFormate, holidaysSetShowModal} =
@@ -43,7 +44,7 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
         }
       });
   }, []);
-
+  console.log('rendering');
   return (
     <>
       {holidaysShowModal ? (
@@ -53,7 +54,9 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
           }}>
           <Modal
             backdropOpacity={0.2}
-            animationType="slide"
+            // animationType="fade"
+            animationIn={'bounceIn'}
+            animationOut={'jello'}
             transparent={true}
             closeOnClick={true}
             isVisible={holidaysShowModal}
@@ -62,12 +65,7 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
             }}
             onBackButtonPress={() => {
               holidaysSetShowModal(false);
-            }}
-            // onRequestClose={() => {
-            //   Alert.alert('Modal has been closed.');
-            //   setShowModal(false);
-            // }}
-          >
+            }}>
             <View style={styles.container}>
               <ImageBackground
                 source={image}
@@ -129,4 +127,4 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
   },
 });
-export default HolidayModal;
+export default memo(HolidayModal);

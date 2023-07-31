@@ -30,7 +30,7 @@ import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import fingerPrint1 from 'assets/allImage/fingerImage.png';
-import {guestLoginStatus, logInSucess} from './LoginSlice';
+import {guestLoginStatus, logInSucess, renewToken} from './LoginSlice';
 import {loginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
@@ -45,6 +45,7 @@ import {
   FORGOT_PASSWORD,
   GUEST_LOGIN,
   INCORRECT_LOGIN,
+  INVALID_CREDENTIAL,
   REMEMBER_ME,
   SIGN_IN,
   TOUCH_SENSOR,
@@ -58,12 +59,14 @@ const Login = ({navigation}) => {
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
+  const [username, setUserName] = useState('gupta.utkarsh@thinksys.com');
+  const [password, setPassword] = useState('gupta@1234');
+  // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  // const [password, setPassword] = useState('bisht@1234');
   // const [username, setUserName] = useState('pant.amit@thinksys.com');
-  // const [password, setPassword] = useState('pant@1234');
-  // const [username, setUserName] = useState('gupta.utkarsh@thinksys.com');
-  // const [password, setPassword] = useState('gupta@1234');
-  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
-  const [password, setPassword] = useState('bisht@1234');
+  // const [password, setPassword] = useState('thinksys@123');
+  // const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
+  // const [password, setPassword] = useState('roshan@1234');
   const {
     userToken: token,
     formInput,
@@ -145,18 +148,23 @@ const Login = ({navigation}) => {
     try {
       setLoading(true);
       let result = await dispatch(getUserToken({username, password}));
-
       if (result?.error) {
         ShowAlert({
+          messageHeader: INVALID_CREDENTIAL,
           messageSubHeader: INCORRECT_LOGIN,
           buttonText: 'CLOSE',
           dispatch,
           navigation,
         });
       } else {
-        const {token} = result?.payload?.data || {};
+        const {token, refreshToken} = result?.payload?.data || {};
         var decoded = jwt_decode(token);
         const employeeID = decoded?.id;
+        await AsyncStorage.setItem(
+          'refreshToken',
+          JSON.stringify(refreshToken),
+        );
+
         // await dispatch(
         //   getEmployeeProfileData({
         //     token,

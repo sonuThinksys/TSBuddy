@@ -56,6 +56,7 @@ const Policies = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('policiesDetails', item.policy);
+          // navigation.navigate('practice');
         }}>
         <View style={styles.request}>
           <View style={styles.appliedRequestsLeft}>

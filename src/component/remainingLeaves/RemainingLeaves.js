@@ -124,7 +124,6 @@ const RemainingLeaves = () => {
     const allLeaves = await dispatch(
       getLeaveDetails({token, empID: employeeID}),
     );
-    // console.log('allLeaves:', allLeaves)
 
     if (allLeaves?.error) {
       ShowAlert({
@@ -149,7 +148,7 @@ const RemainingLeaves = () => {
   useEffect(() => {
     token && updateData();
     // if (isFocussed) token && updateData();
-  }, [employeeID, token]);
+  }, []);
 
   return (
     <View style={{paddingHorizontal: 20}}>

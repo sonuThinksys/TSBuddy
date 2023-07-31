@@ -1,5 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, SafeAreaView, FlatList, LogBox, Text, Image} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  FlatList,
+  LogBox,
+  Text,
+  Image,
+  Button,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -21,6 +29,8 @@ import ShowAlert from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
+import {renewToken} from 'Auth/LoginSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let data = [
   WelcomeHeader,
@@ -34,7 +44,7 @@ let data = [
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-  const {userToken: token} = useSelector(state => state.auth);
+  const {userToken: token, refreshToken} = useSelector(state => state.auth);
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
@@ -61,17 +71,19 @@ const Home = ({navigation}) => {
           ));
 
         if (empData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: empData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-            isTokenExpired: true,
-          });
-
           if (empData?.error?.message.toLowerCase() === 'token-expired') {
-            return;
+            const result = await dispatch(renewToken({token: refreshToken}));
+
+            if (result?.error) {
+              ShowAlert({
+                messageHeader: ERROR,
+                messageSubHeader: empData?.error?.message,
+                buttonText: 'Close',
+                dispatch,
+                navigation,
+                isTokenExpired: true,
+              });
+            }
           }
         }
       } catch (err) {

@@ -8,10 +8,9 @@ import {
   FlatList,
   Pressable,
   TextInput,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableNativeFeedback,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
@@ -30,6 +29,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {
   applyForWfhLeave,
   cancelSubscribedLunchRequest,
+  getEmployeeShift,
   getLeaveApprovers,
   getLeaveDetails,
 } from 'redux/homeSlice';
@@ -78,7 +78,9 @@ const ApplyWFH = ({navigation}) => {
   const [leaveApprover, setLeaveApprover] = useState('');
   const [selectedLeaveApprover, setSelectedLeaveApprover] = useState('');
   const [reason, setReason] = useState('');
-  const [updateState, setUpdateState] = useState(false);
+  const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
+
+  const {holidayData} = useSelector(state => state.home);
 
   let currentYear = new Date().getFullYear();
   const fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
@@ -111,6 +113,22 @@ const ApplyWFH = ({navigation}) => {
   }, []);
 
   useEffect(() => {
+    (async () => {
+      const employeeShift = await dispatch(
+        getEmployeeShift({token, id: employeeID}),
+      );
+      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const finalWeekOffs = [];
+      daysOfWeek.map((el, index) => {
+        if (weekOffs.includes(el)) finalWeekOffs.push(index);
+      });
+      setEmployeeWeekOffs(finalWeekOffs);
+    })();
+  }, []);
+
+  useEffect(() => {
     if (isFocused) {
       (async () => {
         setLoading(true);
@@ -126,7 +144,6 @@ const ApplyWFH = ({navigation}) => {
           leave => leave.leaveType === 'Work From Home',
         );
 
-        console.log('wfhLeaveList:', wfhLeaveList);
         let sortedWfhData = wfhLeaveList.sort(
           (a, b) =>
             new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
@@ -171,7 +188,36 @@ const ApplyWFH = ({navigation}) => {
     pickerToClose(false);
   };
 
+  const startOnCancel = () => {
+    setStartDatePickerVisible(false);
+  };
+
+  const endOnCancel = () => {
+    setEndDatePickerVisible(false);
+  };
+
   const handleStartConfirm = date => {
+    Keyboard.dismiss;
+    if (employeeWeekOffs.includes(date.getDay())) {
+      // date.setDate(date.getDate() + 1);
+      alert('You already have a weekend holiday on this day.');
+      startOnCancel();
+      return;
+    }
+
+    for (let i = 0; i < holidayData.length; i++) {
+      const holidayObj = new Date(holidayData[i].holidayDate);
+
+      if (
+        holidayObj.getMonth() === date.getMonth() &&
+        date.getDate() === holidayObj.getDate()
+      ) {
+        alert('You can not take a WFH on National holiday.');
+        startOnCancelz();
+        return;
+      }
+    }
+
     const fromDate = date;
     setFromDate(fromDate);
     let selectedDate = date.getDate();
@@ -189,6 +235,26 @@ const ApplyWFH = ({navigation}) => {
   };
 
   const handleEndConfirm = date => {
+    Keyboard.dismiss;
+    if (employeeWeekOffs.includes(date.getDay())) {
+      // date.setDate(date.getDate() + 1);
+      alert('You already have a weekend holiday on this day.');
+      endOnCancel();
+      return;
+    }
+
+    for (let i = 0; i < holidayData.length; i++) {
+      const holidayObj = new Date(holidayData[i].holidayDate);
+
+      if (
+        holidayObj.getMonth() === date.getMonth() &&
+        date.getDate() === holidayObj.getDate()
+      ) {
+        alert('You can not take a WFH on National holiday.');
+        endOnCancel();
+        return;
+      }
+    }
     const toDate = date;
     setToDate(toDate);
     setEndSelected(true);
@@ -216,13 +282,14 @@ const ApplyWFH = ({navigation}) => {
   const startDateCopy = new Date(startDate?.startDateObj);
 
   const onApplyWfh = async () => {
+    setStartDate;
     if (!startDate.startDateStr || !endDate.endDateStr) {
-      alert('Please select dates for which you want to apply a leave.');
+      alert('Please select dates for which you want to apply a WFH.');
       return;
     }
 
     if (!reason) {
-      alert('Please enter a reason for applying a leave.');
+      alert('Please enter a reason for applying a WFH.');
       return;
     }
 
@@ -238,6 +305,42 @@ const ApplyWFH = ({navigation}) => {
     if (totalDaysCount < 0) {
       alert('Difference between the number of leave days must be positive.');
       return;
+    }
+
+    for (let i = 0; i < wfhList?.length; i++) {
+      let {fromDate: startDate1, toDate: endDate1} = wfhList[i];
+      startDate1 = new Date(startDate1);
+      endDate1 = new Date(endDate1);
+      const startDate2 = startDate.startDateObj;
+      const endDate2 = endDate.endDateObj;
+
+      if (
+        (startDate1 >= startDate2 && endDate2 >= startDate1) ||
+        (startDate2 >= startDate1 && startDate2 <= endDate1)
+      ) {
+        if (
+          wfhList[i].status.toLowerCase() === 'open' ||
+          wfhList[i].status.toLowerCase() === 'approved'
+        ) {
+          alert('WFH are already applied to these dates.');
+          return;
+        }
+      }
+
+      if (
+        startDate1.toDateString() === startDate2.toDateString() ||
+        startDate1.toDateString() === endDate2.toDateString() ||
+        startDate2.toDateString() === startDate1.toDateString() ||
+        startDate2.toDateString() === endDate1.toDateString()
+      ) {
+        if (
+          wfhList[i].status.toLowerCase() === 'open' ||
+          wfhList[i].status.toLowerCase() === 'approved'
+        ) {
+          alert('WFH are already applied to these dates.');
+          return;
+        }
+      }
     }
 
     setLoading(true);
@@ -260,17 +363,31 @@ const ApplyWFH = ({navigation}) => {
         }),
       ));
 
-    setWfhList(prevList => [appliedWfh.payload, ...prevList]);
+    const appliedWorkFromHome = appliedWfh?.payload;
+
+    if (!appliedWfh?.error) {
+      setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
+    } else if (appliedWfh?.error) {
+      // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
+    }
+
     setLoading(false);
     if (appliedWfh?.error) {
       alert(appliedWfh.error.message);
     } else {
-      setUpdateState(true);
-      Alert.alert('Success', 'Leave applied successfully!', [
+      Alert.alert('Success', 'WFH applied successfully!', [
         {
           text: 'Ok',
           onPress: () => {
-            // navigation.goBack();
+            setEndSelected(false);
+            setStartSelected(false);
+            setStartDate({
+              startDateStr: 'Select Start Date',
+            });
+            setEndDate({endDateStr: 'Select End Date'});
+            setReason('');
+            setTotalDaysCount(0);
+            setValue(null);
           },
         },
       ]);
@@ -289,222 +406,227 @@ const ApplyWFH = ({navigation}) => {
         showHeaderRight={true}
       />
 
-      <View style={styles.secondView}>
-        <DateTimePickerModal
-          minimumDate={new Date()}
-          maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
-          isVisible={startDatePickerVisible}
-          mode="date"
-          onConfirm={handleStartConfirm}
-          onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
-        />
-        <DateTimePickerModal
-          minimumDate={startSelected ? startDate?.startDateObj : undefined}
-          maximumDate={
-            startSelected
-              ? new Date(
-                  startDate?.startDateObj?.getTime() + 7 * 24 * 60 * 60 * 1000,
-                )
-              : undefined
-          }
-          isVisible={endDatePickerVisible}
-          mode="date"
-          date={startSelected ? startDate?.startDateObj : undefined}
-          onConfirm={handleEndConfirm}
-          onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
-        />
-        <View style={styles.datesContainer}>
-          <View style={styles.thirdView}>
-            <SelectDateModal
-              modalData={modalData}
-              setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.secondView}>
+            <DateTimePickerModal
+              minimumDate={new Date()}
+              maximumDate={
+                new Date(new Date().setMonth(new Date().getMonth() + 1))
+              }
+              isVisible={startDatePickerVisible}
+              mode="date"
+              onConfirm={handleStartConfirm}
+              onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
             />
-            <Text
-              style={{
-                marginBottom: hp(1),
-                fontSize: 18,
-                color: Colors.black,
-              }}>
-              From Date :
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                if (permReq) {
-                  setOpenModal(true);
-                } else {
-                  setStartDatePickerVisible(true);
-                }
-              }}>
-              <View style={styles.fourthView}>
-                <Text style={styles.selectedDated}>
-                  {startDate.startDateStr}
+            <DateTimePickerModal
+              minimumDate={startSelected ? startDate?.startDateObj : undefined}
+              maximumDate={
+                startSelected
+                  ? new Date(
+                      startDate?.startDateObj?.getTime() +
+                        7 * 24 * 60 * 60 * 1000,
+                    )
+                  : undefined
+              }
+              isVisible={endDatePickerVisible}
+              mode="date"
+              date={startSelected ? startDate?.startDateObj : undefined}
+              onConfirm={handleEndConfirm}
+              onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
+            />
+            <View style={styles.datesContainer}>
+              <View style={styles.thirdView}>
+                {/* <SelectDateModal
+                  modalData={modalData}
+                  setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
+                /> */}
+                <Text
+                  style={{
+                    marginBottom: hp(1),
+                    fontSize: 18,
+                    color: Colors.black,
+                  }}>
+                  From Date :
                 </Text>
-                <CalenderIcon
-                  fill={Colors.lightGray1}
-                  height={hp(2)}
-                  width={hp(2)}
-                  marginRight={wp(0.64)}
-                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setStartDatePickerVisible(true);
+                  }}>
+                  <View style={styles.fourthView}>
+                    <Text style={styles.selectedDated}>
+                      {startDate.startDateStr}
+                    </Text>
+                    <CalenderIcon
+                      fill={Colors.lightGray1}
+                      height={hp(2)}
+                      width={hp(2)}
+                      marginRight={wp(0.64)}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.fifthView}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: Colors.black,
-                marginBottom: hp(1),
-              }}>
-              To Date :
-            </Text>
-            <TouchableOpacity
-              disabled={!startSelected}
-              style={{
-                opacity: !startSelected ? 0.6 : 1,
-              }}
-              // disabled={isDaily}
-              onPress={() => {
-                setEndDatePickerVisible(true);
-              }}>
-              <View style={styles.sixthView}>
-                <Text style={styles.selectedDated}>{endDate.endDateStr}</Text>
-                <CalenderIcon
-                  fill={Colors.lightGray1}
-                  height={hp(2)}
-                  width={hp(2)}
-                  marginRight={wp(0.64)}
-                />
+              <View style={styles.fifthView}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: Colors.black,
+                    marginBottom: hp(1),
+                  }}>
+                  To Date :
+                </Text>
+                <TouchableOpacity
+                  disabled={!startSelected}
+                  style={{
+                    opacity: !startSelected ? 0.6 : 1,
+                  }}
+                  onPress={() => {
+                    setEndDatePickerVisible(true);
+                  }}>
+                  <View style={styles.sixthView}>
+                    <Text style={styles.selectedDated}>
+                      {endDate.endDateStr}
+                    </Text>
+                    <CalenderIcon
+                      fill={Colors.lightGray1}
+                      height={hp(2)}
+                      width={hp(2)}
+                      marginRight={wp(0.64)}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
-        </View>
+            </View>
 
-        <View style={styles.dropDownView}>
-          <Text
-            style={{
-              marginBottom: hp(1.6),
-              fontSize: 18,
-              color: Colors.black,
-            }}>
-            Total Days: {!totalDaysCount ? 0 : totalDaysCount}
-          </Text>
-          <View
-            style={{
-              zIndex: 9999,
-            }}>
-            <DropDownPicker
-              open={open}
-              placeholder={'Please Select Leave Approver..'}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-              onSelectItem={onSelectItem}
-              containerStyle={{height: 40}}
-              style={{
-                height: hp(1),
-                height: 10,
-                borderRadius: 50,
-                borderColor: Colors.grey,
-                marginBottom: hp(3),
-              }}
-              dropDownStyle={{
-                backgroundColor: Colors.lightBlue,
-                borderBottomWidth: 1,
-              }}
-              labelStyle={{
-                fontSize: 13,
-                textAlign: 'left',
-                color: Colors.black,
-                alignSelf: 'center',
-              }}
-            />
-          </View>
-        </View>
-        <View style={styles.reasonViewBox}>
-          <TextInput
-            value={reason}
-            placeholder="Reason..."
-            multiline={true}
-            style={styles.reasonInputBox}
-            onChangeText={text => setReason(text)}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: wp(4),
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              setEndSelected(false);
-              setStartSelected(false);
-              setStartDate({
-                startDateStr: 'Select Start Date',
-              });
-              setEndDate({endDateStr: 'Select End Date'});
-              setReason('');
-              setTotalDaysCount(0);
-              setValue(null);
-            }}
-            style={{
-              marginTop: 15,
-              backgroundColor: Colors.grayishWhite,
-              paddingHorizontal: wp(8.6),
-              borderRadius: 200,
-              paddingVertical: hp(1.4),
-            }}>
-            <View>
+            <View style={styles.dropDownView}>
               <Text
                 style={{
+                  marginBottom: hp(1.6),
+                  fontSize: 18,
                   color: Colors.black,
-                  textAlign: 'center',
-                  fontSize: 17,
                 }}>
-                Cancel
+                Total Days: {!totalDaysCount ? 0 : totalDaysCount}
               </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              opacity: opacity,
-              marginTop: 15,
-              backgroundColor: Colors.lovelyPurple,
-              paddingHorizontal: wp(9.2),
-              borderRadius: 200,
-              paddingVertical: hp(1.5),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            disabled={
-              value !== 'monthly'
-                ? !startSelected || !endSelected || !value
-                : !monthlyStartDate
-            }
-            onPress={onApplyWfh}>
-            <View>
-              <Text
+              <View
                 style={{
-                  color: Colors.white,
-                  textAlign: 'center',
-                  fontSize: 17,
+                  zIndex: 9999,
                 }}>
-                Apply
-              </Text>
+                <DropDownPicker
+                  open={open}
+                  placeholder={'Please Select Leave Approver..'}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  onSelectItem={onSelectItem}
+                  containerStyle={{height: 40}}
+                  style={{
+                    height: hp(1),
+                    height: 10,
+                    borderRadius: 50,
+                    borderColor: Colors.grey,
+                    marginBottom: hp(3),
+                  }}
+                  dropDownStyle={{
+                    backgroundColor: Colors.lightBlue,
+                    borderBottomWidth: 1,
+                  }}
+                  labelStyle={{
+                    fontSize: 13,
+                    textAlign: 'left',
+                    color: Colors.black,
+                    alignSelf: 'center',
+                  }}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
+            <View style={styles.reasonViewBox}>
+              <TextInput
+                value={reason}
+                placeholder="Reason..."
+                multiline={true}
+                style={styles.reasonInputBox}
+                onChangeText={text => setReason(text)}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginHorizontal: wp(4),
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setEndSelected(false);
+                  setStartSelected(false);
+                  setStartDate({
+                    startDateStr: 'Select Start Date',
+                  });
+                  setEndDate({endDateStr: 'Select End Date'});
+                  setReason('');
+                  setTotalDaysCount(0);
+                  setValue(null);
+                }}
+                style={{
+                  marginTop: 15,
+                  backgroundColor: Colors.grayishWhite,
+                  paddingHorizontal: wp(8.6),
+                  borderRadius: 200,
+                  paddingVertical: hp(1.4),
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      color: Colors.black,
+                      textAlign: 'center',
+                      fontSize: 17,
+                    }}>
+                    Cancel
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  opacity: opacity,
+                  marginTop: 15,
+                  backgroundColor: Colors.lovelyPurple,
+                  paddingHorizontal: wp(9.2),
+                  borderRadius: 200,
+                  paddingVertical: hp(1.5),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                disabled={
+                  value !== 'monthly'
+                    ? !startSelected || !endSelected || !value
+                    : !monthlyStartDate
+                }
+                onPress={onApplyWfh}>
+                <View>
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      textAlign: 'center',
+                      fontSize: 17,
+                    }}>
+                    Apply
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       <View style={styles.appliedView}>
         <Text style={styles.appliedText}>Work From Home History</Text>
       </View>
       <View style={styles.buttomView}>
-        {wfhList?.length > 0 ? (
-          <View style={{flexBasis: 300}}>
-            {loading && <Loader />}
+        <View style={{flexBasis: 300}}>
+          {loading ? (
+            <Loader />
+          ) : (
             <FlatList
               showsVerticalScrollIndicator={false}
               data={wfhList}
@@ -519,8 +641,10 @@ const ApplyWFH = ({navigation}) => {
               }}
               keyExtractor={item => Math.random() * Math.random()}
             />
-          </View>
-        ) : (
+          )}
+        </View>
+
+        {!loading && wfhList?.length == 0 && (
           <View
             style={{
               justifyContent: 'center',

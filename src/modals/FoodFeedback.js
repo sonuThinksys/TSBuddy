@@ -122,7 +122,7 @@ const FoodFeedback = ({modalData, showModal}) => {
         ]);
       }
     } catch (err) {
-      console.log('err:', err);
+      // console.log('err:', err);
     }
   };
 

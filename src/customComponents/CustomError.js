@@ -2,6 +2,7 @@ import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
 import {logOut} from 'Auth/LoginSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ShowAlert = props => {
   let {

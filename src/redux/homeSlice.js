@@ -94,7 +94,6 @@ const snacks = 'snacks';
 export const getAllResourcesAttendence = createAsyncThunk(
   'getAllResourcesAttendence',
   async ({token, date}) => {
-    console.log('date:', date);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -621,7 +620,6 @@ export const updateLeaveStatus = createAsyncThunk(
 export const applyForWfhLeave = createAsyncThunk(
   'home/applyWfh',
   async function ({token, body}) {
-    console.log('body', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -1282,7 +1280,6 @@ export const getAttendencaeData = createAsyncThunk(
 
     const config = {
       method: 'get',
-
       url: `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`,
       headers: {
         Authorization: `Bearer ${token}`,

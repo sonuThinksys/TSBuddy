@@ -72,7 +72,6 @@ const RequestLunch = ({navigation}) => {
         const lunchPlans = await dispatch(getLunchPlans({token}));
         setLunchPlans(lunchPlans.payload);
       } catch (err) {
-        console.log('lunchPlans:err:', err);
       } finally {
         setIsLoading(false);
       }
