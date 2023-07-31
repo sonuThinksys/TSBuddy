@@ -70,11 +70,23 @@ const Home = ({navigation}) => {
             }),
           ));
 
-        if (empData?.error) {
+        const events = await dispatch(getCalendereventData(token));
+        console.log('events', events);
+
+        setLoading(false);
+
+        console.log('empData?.error?.message.', empData?.error?.message);
+        console.log('refresh Token', refreshToken);
+
+        if (empData?.error || events?.error) {
           if (empData?.error?.message.toLowerCase() === 'token-expired') {
+            console.log('Entering refresh token');
             const result = await dispatch(renewToken({token: refreshToken}));
 
+            console.log('result', result.payloadz);
+
             if (result?.error) {
+              console.log('result', result);
               ShowAlert({
                 messageHeader: ERROR,
                 messageSubHeader: empData?.error?.message,
@@ -90,21 +102,23 @@ const Home = ({navigation}) => {
         setLoading(false);
       }
 
-      try {
-        const events = await dispatch(getCalendereventData(token));
-        if (events?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: events?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
-        }
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-      }
+      // try {
+      // const events = await dispatch(getCalendereventData(token));
+      //   console.log('events', events);
+
+      //   if (events?.error) {
+      //     ShowAlert({
+      //       messageHeader: ERROR,
+      //       messageSubHeader: events?.error?.message,
+      //       buttonText: 'Close',
+      //       dispatch,
+      //       navigation,
+      //     });
+      //   }
+      //   setLoading(false);
+      // } catch (err) {
+      //   setLoading(false);
+      // }
     })();
   }, []);
 

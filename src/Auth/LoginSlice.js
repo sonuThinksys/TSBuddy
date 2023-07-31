@@ -174,7 +174,7 @@ const loginSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(renewToken.fulfilled, (state, action) => {
-      state.userToken = action?.payload?.data?.token;
+      state.userToken = action?.payload?.token;
       const decodedData = jwtDecode(state?.userToken);
       state.employeeDetails = decodedData;
       state.isLoading = false;

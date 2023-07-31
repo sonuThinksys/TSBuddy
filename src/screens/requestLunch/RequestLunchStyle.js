@@ -38,6 +38,7 @@ export default StyleSheet.create({
     display: 'flex',
     borderRadius: 12,
     marginBottom: hp(7),
+    elevation: 1,
   },
   dropDownView: {
     paddingVertical: hp(1),
