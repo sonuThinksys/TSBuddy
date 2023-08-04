@@ -17,9 +17,9 @@ const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
+  console.log('employeeID:', employeeID);
 
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);

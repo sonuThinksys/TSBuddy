@@ -1602,6 +1602,7 @@ const homeSlice = createSlice({
       state.calendereventDataLoading = true;
     });
     builder.addCase(getCalendereventData.fulfilled, (state, action) => {
+      console.log('action:', action);
       state.calendereventDataLoading = false;
       state.calendereventData = action.payload;
       state.calendereventDataError = undefined;
