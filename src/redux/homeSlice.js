@@ -4,6 +4,7 @@ import endPoints from '../config';
 
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import {centralizeApi} from 'utils/utils';
 
 const initialState = {
   isShowModal: false,
@@ -1207,70 +1208,30 @@ export const getLeaveDetails = createAsyncThunk(
 
 export const getEmployeeProfileData = createAsyncThunk(
   'home/employeeProfile',
-  async ({token, employeeID}) => {
-    var config = {
+  async ({token, employeeID, refreshToken, dispatch}) => {
+    const output = await centralizeApi({
       method: 'get',
       url: `${endPoints.employeeProfileAPI}${employeeID}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-
-    return axios(config)
-      .then(async response => {
-        const {data, status} = response;
-        if (status === 200) {
-          return Promise.resolve(data);
-        } else {
-          return Promise.reject(new Error('Something Went Wrong3!'));
-        }
-      })
-      .catch(err => {
-        let statusCode = 500;
-        if (err?.response) {
-          statusCode = err?.response.status;
-        }
-        if (statusCode == 401) {
-          return Promise.reject(err?.response?.data?.message);
-        } else {
-          return Promise.reject(new Error(err));
-        }
-      });
+      token,
+      refreshToken,
+      dispatch,
+    });
+    return output;
   },
 );
 
 export const getCalendereventData = createAsyncThunk(
   'home/getCalendereventData',
-  async token => {
-    var config = {
+  async ({token, refreshToken, dispatch}) => {
+    const output = await centralizeApi({
       method: 'get',
       url: endPoints.calenderEventAPI,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-    return axios(config)
-      .then(async response => {
-        const {data, status} = response;
-        if (status === 200) {
-          return Promise.resolve(data);
-        } else {
-          return Promise.reject(new Error('Something Went Wrong1!'));
-        }
-      })
-      .catch(err => {
-        let statusCode = 500;
-        if (err?.response) {
-          statusCode = err?.response.status;
-        }
-        if (statusCode == 401) {
-          return Promise.reject(err?.response?.data?.message);
-        } else {
-          return Promise.reject(new Error(err));
-        }
-      });
+      token,
+      refreshToken,
+      dispatch,
+    });
+    console.log('output:', output);
+    return output;
   },
 );
 export const getAttendencaeData = createAsyncThunk(
@@ -1609,6 +1570,7 @@ const homeSlice = createSlice({
       state.calendereventDataLoading = true;
     });
     builder.addCase(getCalendereventData.fulfilled, (state, action) => {
+      console.log('action:', action);
       state.calendereventDataLoading = false;
       state.calendereventData = action.payload;
       state.calendereventDataError = undefined;

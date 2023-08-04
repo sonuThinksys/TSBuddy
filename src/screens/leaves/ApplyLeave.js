@@ -30,6 +30,8 @@ import {
   newDropDownOptions,
   approver,
   none,
+  firstFalf,
+  secondHalf,
 } from 'utils/defaultData';
 
 import {
@@ -46,6 +48,7 @@ import {guestProfileData} from 'guestData';
 import CustomHeader from 'navigation/CustomHeader';
 
 const ApplyLeave = ({navigation, route}) => {
+  console.log('routeee:', route.params);
   const {employeeProfile: empProfileData = {}} = useSelector(
     state => state.home,
   );
@@ -69,7 +72,7 @@ const ApplyLeave = ({navigation, route}) => {
     ];
     const index =
       months.findIndex(
-        month => month.toLowerCase() === shortForm.toLowerCase(),
+        month => month.toLowerCase() === shortForm?.toLowerCase(),
       ) + 1;
     return index;
   }
@@ -83,6 +86,8 @@ const ApplyLeave = ({navigation, route}) => {
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
+  const fromWfh = route?.params?.fromWfh;
+
   const fromOpenLeave = route?.params?.fromOpenLeave || false;
   const resourceEmployeeID = route?.params?.resourceEmployeeID || false;
   const [isEditOpenleave, setIsEditOpenleave] = useState(false);
@@ -194,9 +199,8 @@ const ApplyLeave = ({navigation, route}) => {
   // }, [navigation]);
 
   useEffect(() => {
-    if (fromResource) {
+    if (fromResource || fromWfh) {
       (async () => {
-        console.log('resourceEmployeeID:', resourceEmployeeID);
         const empId = +resourceEmployeeID.match(/\d+/g)[0];
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
@@ -205,36 +209,50 @@ const ApplyLeave = ({navigation, route}) => {
       })();
     }
 
-    (async () => {
-      const leaveApprovers = token
-        ? await dispatch(getLeaveApprovers({token, employeeID}))
-        : [];
-
-      setLeaveApprovers(leaveApprovers?.payload);
-      const listOfLeaveApprovers = leaveApprovers?.payload?.map(approver => {
-        return {
-          value: approver.leaveApprover,
-          label: approver.leaveApproverName,
-        };
-      });
-      setLeaveApproversList(listOfLeaveApprovers);
-    })();
+    if (!isGuestLogin) {
+      (async () => {
+        try {
+          const leaveApprovers = token
+            ? await dispatch(getLeaveApprovers({token, employeeID}))
+            : [];
+          setLeaveApprovers(leaveApprovers?.payload);
+          if (!leaveApprovers.payload) {
+            alert('Cannot fetch Leave Approvers. Kindly try later.');
+          }
+          const listOfLeaveApprovers = leaveApprovers.payload.map(approver => {
+            return {
+              value: approver.leaveApprover,
+              label: approver.leaveApproverName,
+            };
+          });
+          setLeaveApproversList(listOfLeaveApprovers);
+        } catch (err) {
+          console.log('errMap:', err);
+        }
+      })();
+    }
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const employeeShift = await dispatch(
-        getEmployeeShift({token, id: employeeID}),
-      );
-      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+    if (!isGuestLogin) {
+      (async () => {
+        try {
+          const employeeShift = await dispatch(
+            getEmployeeShift({token, id: employeeID}),
+          );
+          const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
 
-      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const finalWeekOffs = [];
-      daysOfWeek.map((el, index) => {
-        if (weekOffs?.includes(el)) finalWeekOffs?.push(index);
-      });
-      setEmployeeWeekOffs(finalWeekOffs);
-    })();
+          const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const finalWeekOffs = [];
+          daysOfWeek.map((el, index) => {
+            if (weekOffs.includes(el)) finalWeekOffs.push(index);
+          });
+          setEmployeeWeekOffs(finalWeekOffs);
+        } catch (err) {
+          alert('Cannot fetch weekoffs for you. Kindly try later.');
+        }
+      })();
+    }
   }, []);
 
   const leaves = [
@@ -242,17 +260,17 @@ const ApplyLeave = ({navigation, route}) => {
       leaveType: allRemainingLeaves[0]?.leaveType || 'Earned Leave',
       allocated: isGuestLogin
         ? 15
-        : fromResource
+        : fromResource || fromWfh
         ? resourceLeaves[0]?.totalLeavesAllocated
         : allRemainingLeaves[0]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 7
-        : fromResource
+        : fromResource || fromWfh
         ? resourceLeaves[0]?.currentLeaveApplied
         : allRemainingLeaves[0]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 8
-        : fromResource
+        : fromResource || fromWfh
         ? resourceLeaves[0]?.currentLeaveBalance
         : allRemainingLeaves[0]?.currentLeaveBalance || 0,
     },
@@ -260,54 +278,54 @@ const ApplyLeave = ({navigation, route}) => {
       leaveType: allRemainingLeaves[1]?.leaveType || 'Restricted Holiday',
       allocated: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[1]?.totalLeavesAllocated
+        : fromResource || fromWfh
+        ? resourceLeaves[1]?.totalLeavesAllocated || 0
         : allRemainingLeaves[1]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 0
-        : fromResource
-        ? resourceLeaves[1]?.currentLeaveApplied
+        : fromResource || fromWfh
+        ? resourceLeaves[1]?.currentLeaveApplied || 0
         : allRemainingLeaves[1]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[1]?.currentLeaveBalance
+        : fromResource || fromWfh
+        ? resourceLeaves[1]?.currentLeaveBalance || 0
         : allRemainingLeaves[1]?.currentLeaveBalance || 0,
     },
     {
       leaveType: allRemainingLeaves[2]?.leaveType || 'Compensatory Off',
       allocated: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[2]?.totalLeavesAllocated
+        : fromResource || fromWfh
+        ? resourceLeaves[2]?.totalLeavesAllocated || 0
         : allRemainingLeaves[2]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 0
-        : fromResource
-        ? resourceLeaves[2]?.currentLeaveApplied
+        : fromResource || fromWfh
+        ? resourceLeaves[2]?.currentLeaveApplied || 0
         : allRemainingLeaves[2]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[2]?.currentLeaveBalance
+        : fromResource || fromWfh
+        ? resourceLeaves[2]?.currentLeaveBalance || 0
         : allRemainingLeaves[2]?.currentLeaveBalance || 0,
     },
     {
       leaveType: allRemainingLeaves[3]?.leaveType || 'Bereavement Leave',
       allocated: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[3]?.totalLeavesAllocated
+        : fromResource || fromWfh
+        ? resourceLeaves[3]?.totalLeavesAllocated || 0
         : allRemainingLeaves[3]?.totalLeavesAllocated || 0,
       taken: isGuestLogin
         ? 0
-        : fromResource
-        ? resourceLeaves[3]?.currentLeaveApplied
+        : fromResource || fromWfh
+        ? resourceLeaves[3]?.currentLeaveApplied || 0
         : allRemainingLeaves[3]?.currentLeaveApplied || 0,
       remaining: isGuestLogin
         ? 1
-        : fromResource
-        ? resourceLeaves[3]?.currentLeaveBalance
+        : fromResource || fromWfh
+        ? resourceLeaves[3]?.currentLeaveBalance || 0
         : allRemainingLeaves[3]?.currentLeaveBalance || 0,
     },
     // {
@@ -355,7 +373,9 @@ const ApplyLeave = ({navigation, route}) => {
 
     let genderLeave;
     let leaveTypeAccordingToGender;
-    if (userGender.toLowerCase() === 'male') {
+    const userGenderLowerCase = userGender?.toLowerCase();
+
+    if (userGenderLowerCase === 'male') {
       genderLeave = {
         leaveType: 'Paternity Leave',
         allocated: genderSpecificLeave?.totalLeavesAllocated || 0,
@@ -927,7 +947,11 @@ const ApplyLeave = ({navigation, route}) => {
             toDate: toDate.toDateObj,
             totalLeaveDays: totalNumberOfLeaveDays,
             description: reason,
-            halfDay: 0,
+            halfDay:
+              (halfDay === firstFalf || halfDay === secondHalf) &&
+              totalNumberOfLeaveDays === 0.5
+                ? 1
+                : 0,
             postingDate: new Date(),
             leaveType: leaveType,
             leaveApprover: leaveApproverMailID,
@@ -1072,7 +1096,11 @@ const ApplyLeave = ({navigation, route}) => {
     <>
       <CustomHeader
         showDrawerMenu={false}
-        title="Apply Leave"
+        title={
+          route?.params?.fromWfh || fromResource
+            ? 'Leave Details'
+            : 'Apply Leave'
+        }
         navigation={navigation}
         isHome={false}
         showHeaderRight={false}
@@ -1147,6 +1175,14 @@ const ApplyLeave = ({navigation, route}) => {
                           borderRadius: 3,
                           paddingVertical: 5,
                           height: 32,
+                          backgroundColor:
+                            !fromDate.fromDateObj ||
+                            !toDate.toDateObj ||
+                            totalNumberOfLeaveDays > 1 ||
+                            fromResource ||
+                            (!isEditOpenleave && fromOpenLeave)
+                              ? Colors.lightGray
+                              : Colors.white,
                         }}
                         isFullWidth={true}
                         showsVerticalScrollIndicator={false}
@@ -1154,16 +1190,13 @@ const ApplyLeave = ({navigation, route}) => {
                           !fromResource
                             ? 'Select'
                             : resourceHalfDay === 0
-                            ? 'None'
+                            ? none
                             : resourceHalfDay === 1
-                            ? 'First Half'
-                            : 'Second Half'
+                            ? firstFalf
+                            : secondHalf
                         }
-                        options={
-                          totalNumberOfLeaveDays > 1
-                            ? ['None']
-                            : newDropDownOptions
-                        }
+                        // defaultIndex={0}
+                        options={newDropDownOptions}
                         dropdownStyle={{
                           width: '45%',
                           paddingLeft: 10,

@@ -37,6 +37,8 @@ import {lunchChargeMessage} from 'utils/utils';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
+
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const {employeeProfile, dateData} = useSelector(state => state.home);
@@ -54,6 +56,7 @@ const RequestLunch = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [satrtDate1, setStartDate1] = useState('');
+  const [monthStartDateStr, setMonthStartDateStr] = useState('Select..');
   const [items, setItems] = useState(RequestLunchLabel);
   const [isLoading, setIsLoading] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
@@ -66,16 +69,23 @@ const RequestLunch = ({navigation}) => {
   const refAnimationSuccess = useRef(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const lunchPlans = await dispatch(getLunchPlans({token}));
-        setLunchPlans(lunchPlans.payload);
-      } catch (err) {
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+    if (!isGuestLogin) {
+      (async () => {
+        try {
+          setIsLoading(true);
+          let lunchPlans = await dispatch(getLunchPlans({token}));
+          if (!lunchPlans.error) {
+            setLunchPlans(lunchPlans.payload);
+          } else {
+            alert('could not fetch lunch plans.');
+          }
+        } catch (err) {
+          console.log('errIs:', err);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+    }
   }, []);
 
   const setUpcomingMonthlyStartDate = ({date}) => {
@@ -85,24 +95,30 @@ const RequestLunch = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      const subscribedLunchRequests =
-        token &&
-        (await dispatch(getSubscribedLunchRequests({token, employeeID})));
+    if (!isGuestLogin) {
+      (async () => {
+        const subscribedLunchRequests =
+          token &&
+          (await dispatch(getSubscribedLunchRequests({token, employeeID})));
 
-      let lunchRequestsList = subscribedLunchRequests?.payload;
-      const sortedLunchRequestList = lunchRequestsList.sort(
-        (a, b) =>
-          new Date(a?.requestStartDate).getTime() -
-          new Date(b?.requestStartDate).getTime(),
-      );
+        if (!subscribedLunchRequests.error) {
+          let lunchRequestsList = subscribedLunchRequests?.payload;
+          const sortedLunchRequestList = lunchRequestsList.sort(
+            (a, b) =>
+              new Date(a?.requestStartDate).getTime() -
+              new Date(b?.requestStartDate).getTime(),
+          );
 
-      setLunchRequests(subscribedLunchRequests?.payload);
-    })();
+          setLunchRequests(subscribedLunchRequests?.payload);
+        } else {
+          alert('Unable to fetch lunch requests.');
+        }
+      })();
+    }
   }, [lunchRequests?.length]);
 
   const onSelectItem = item => {
-    const selectedPlanByUser = lunchPlans.find(
+    const selectedPlanByUser = lunchPlans?.find(
       plan =>
         plan?.requestType?.toLowerCase() === item.value.toLowerCase() ||
         plan?.requestType?.toLowerCase() === item.label.toLowerCase(),
@@ -123,12 +139,16 @@ const RequestLunch = ({navigation}) => {
     let month = monthsName[todayDate.getMonth()];
     let year = new Date().getFullYear();
     if (item.value === 'daily') {
+      const monthNameInStr = todayDate.toLocaleString('en-US', {
+        month: 'short',
+      });
+
       setStartDate({
-        startDateStr: date + '-' + month + '-' + year,
+        startDateStr: date + '-' + monthNameInStr + '-' + year,
         startDateObj: todayDate,
       });
       setEndDate({
-        endDateStr: date + '-' + month + '-' + year,
+        endDateStr: date + '-' + monthNameInStr + '-' + year,
         endDateObj: todayDate,
       });
       setIsDaily(true);
@@ -149,20 +169,23 @@ const RequestLunch = ({navigation}) => {
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
       setIsDaily(false);
       setPermReq(true);
-      if (date === 1) {
+      const hours = new Date().getHours();
+      const minutes = new Date().getMinutes();
+      if (date === 1 && hours < 11 && minutes < 30) {
         month = monthsName[todayDate.getMonth()];
+        const monthNameInStr = new Date().toLocaleString('en-US', {
+          month: 'short',
+        });
         setStartDate1(date + '-' + month + '-' + year);
+
+        setMonthStartDateStr(date + '-' + monthNameInStr + '-' + year);
+
         // setEndDate1(16 + '-' + month + '-' + year);
-      }
-      // else if (date > 1 && date < 16) {
-      //   month = monthsName[todayDate.getMonth()];
-      //   setStartDate1(16 + '-' + month + '-' + year);
-      //   month = monthsName[todayDate.getMonth() + 1];
-      //   setEndDate1(1 + '-' + month + '-' + year);
-      // }
-      else {
+      } else {
+        2;
         // else if (date >= 16 && date < 31) {
         month = monthsName[todayDate.getMonth() + 1];
+
         setStartDate1(1 + '-' + month + '-' + year);
         // setEndDate1(16 + '-' + month + '-' + year);
       }
@@ -180,13 +203,12 @@ const RequestLunch = ({navigation}) => {
   };
 
   const handleStartConfirm = date => {
-    let selectedDate = date.getDate();
-
-    let selectedMonth = monthsName[date.getMonth()];
-    let selectedYear = date.getFullYear();
+    const selectedDate = date.getDate();
+    const monthNameInStr = date.toLocaleString('en-US', {month: 'short'});
+    const selectedYear = date.getFullYear();
     hideDatePicker(setStartDatePickerVisible);
     setStartDate({
-      startDateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      startDateStr: selectedDate + '-' + monthNameInStr + '-' + selectedYear,
       startDateObj: date,
     });
     setStartSelected(true);
@@ -196,12 +218,12 @@ const RequestLunch = ({navigation}) => {
 
   const handleEndConfirm = date => {
     setEndSelected(true);
-    let selectedDate = date.getDate();
+    const selectedDate = date.getDate();
 
-    let selectedMonth = monthsName[date.getMonth()];
+    const monthNameInStr = date.toLocaleString('en-US', {month: 'short'});
     let selectedYear = date.getFullYear();
     setEndDate({
-      endDateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      endDateStr: selectedDate + '-' + monthNameInStr + '-' + selectedYear,
       endDateObj: date,
     });
     hideDatePicker(setEndDatePickerVisible);
@@ -213,7 +235,11 @@ const RequestLunch = ({navigation}) => {
     // else if (value === 'duration') requestType = selectedPlan.id;
     // else requestType = 3;
 
-    const requestType = selectedPlan.id;
+    if (isGuestLogin) {
+      alert("Guests aren't allowed to Request for lunch.");
+      return;
+    }
+    const requestType = selectedPlan?.id;
 
     let dateObj = {};
     if (value === 'monthly') {
@@ -271,12 +297,14 @@ const RequestLunch = ({navigation}) => {
     }
     const todayDateObj = new Date();
     const todayDate = todayDateObj.getDate();
+    const todayDateMonth = todayDateObj.getMonth() + 1;
     const currentHour = todayDateObj.getHours();
     const currentMinutes = todayDateObj.getMinutes();
     const appliedDate = new Date(dateObj.requestStartDate).getDate();
-
+    const appliedMonth = new Date(dateObj.requestStartDate).getMonth() + 1;
     if (
       appliedDate === todayDate &&
+      appliedMonth === todayDateMonth &&
       (currentHour > 10 || (currentHour === 10 && currentMinutes > 29))
     ) {
       alert('You can not apply for the lunch request after 10:30.');

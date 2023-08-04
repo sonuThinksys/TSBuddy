@@ -44,7 +44,6 @@ const HolidayModal = ({HolidaysData, holidaysShowModal}) => {
         }
       });
   }, []);
-
   return (
     <>
       {holidaysShowModal ? (

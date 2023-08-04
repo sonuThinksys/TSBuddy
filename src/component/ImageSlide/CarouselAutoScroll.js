@@ -20,6 +20,7 @@ import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIc
 import {widthPercentageToDP as wp} from 'utils/Responsive';
 import BriefCase from 'assets/newDashboardIcons/briefcase.svg';
 import HappyBirthday from 'assets/newDashboardIcons/cake-candles.svg';
+import {FontFamily} from 'constants/fonts';
 
 const CarouselAutoScroll = ({navigation}) => {
   const [CalaenderEventData, setCalenderEventData] = useState([]);
@@ -27,7 +28,7 @@ const CarouselAutoScroll = ({navigation}) => {
   const {calendereventData: calenderData} = useSelector(state => state.home);
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
-  const keyOfObject = Object.keys(calenderData);
+  const keyOfObject = Object?.keys(calenderData);
 
   useEffect(() => {
     let arr = [];
@@ -192,7 +193,26 @@ const CarouselAutoScroll = ({navigation}) => {
             );
           }}
         />
-      ) : null}
+      ) : (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: Colors.white,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+          }}>
+          <Text
+            style={{
+              fontFamily: FontFamily.RobotoMedium,
+              fontSize: 16,
+              color: Colors.lightBlue,
+              marginVertical: 4,
+            }}>
+            No Events found for this Month.
+          </Text>
+        </View>
+      )}
 
       {/* {CalaenderEventData?.length ? (
         <FlashList

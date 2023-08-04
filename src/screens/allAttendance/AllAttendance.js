@@ -12,12 +12,16 @@ import {Colors} from 'colors/Colors';
 import DayWiseCard from './DayWiseCard';
 import MonthWiseCalnder from './MonthWise';
 import Loader from 'component/loader/Loader';
+import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
+import {renewToken} from 'Auth/LoginSlice';
 
 const DAY_WISE = 'day wise';
 const MONTH_WISE = 'month wise';
 
 const AllAttendance = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
+  const refreshToken = useSelector(state => state?.auth?.refreshToken);
   const dispatch = useDispatch();
   const todayDateObj = new Date(); // Current date and time
   const yesterdayDateObj = new Date(todayDateObj);
@@ -37,7 +41,6 @@ const AllAttendance = ({navigation}) => {
   const [isDateSelecting, setIsDateSelecting] = useState(false);
   const [dayWiseData, setDayWiseData] = useState([]);
 
-  const [monthWiseData, setMonthWiseData] = useState([]);
   const [isFetchingData, setIsFetchingData] = useState(false);
 
   const fetchDayWiseData = async dayWiseDate => {
@@ -51,15 +54,31 @@ const AllAttendance = ({navigation}) => {
     try {
       setIsFetchingData(true);
 
-      const {payload: dayWise} = await dispatch(
+      const result = await dispatch(
         getAllResourcesAttendence({
           token,
-          // date: '2023-7-21',
           date: dayWiseDate ? dayWiseDate : yesterdayDateStr,
         }),
       );
 
-      setDayWiseData(dayWise);
+      if (result?.error?.message?.toLowerCase() === 'token-expired') {
+        const date = selectedDate?.selectedDateObj.getDate();
+        const month = selectedDate?.selectedDateObj?.getMonth() + 1;
+        const year = selectedDate?.selectedDateObj?.getFullYear();
+        const dateStr = `${year}-${month}-${date}`;
+
+        const newFetchedData = await renewCurrentToken({
+          dispatch,
+          renewToken,
+          refreshToken,
+          data: {date: dateStr},
+          apiCallAgain: getAllResourcesAttendence,
+        });
+
+        setDayWiseData(newFetchedData);
+      } else {
+        setDayWiseData(result.payload);
+      }
     } catch (err) {
       console.error('err:', err);
     } finally {

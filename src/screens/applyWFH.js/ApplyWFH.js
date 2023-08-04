@@ -123,7 +123,7 @@ const ApplyWFH = ({navigation}) => {
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const finalWeekOffs = [];
       daysOfWeek.map((el, index) => {
-        if (weekOffs.includes(el)) finalWeekOffs.push(index);
+        if (weekOffs?.includes(el)) finalWeekOffs.push(index);
       });
       setEmployeeWeekOffs(finalWeekOffs);
     })();
@@ -141,7 +141,7 @@ const ApplyWFH = ({navigation}) => {
         );
         setLoading(false);
 
-        let wfhLeaveList = leavesData.payload.filter(
+        let wfhLeaveList = leavesData.payload?.filter(
           leave => leave.leaveType === 'Work From Home',
         );
 
@@ -200,7 +200,7 @@ const ApplyWFH = ({navigation}) => {
 
   const handleStartConfirm = date => {
     Keyboard.dismiss;
-    if (employeeWeekOffs.includes(date.getDay())) {
+    if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
       startOnCancel();
@@ -238,7 +238,7 @@ const ApplyWFH = ({navigation}) => {
 
   const handleEndConfirm = date => {
     Keyboard.dismiss;
-    if (employeeWeekOffs.includes(date.getDay())) {
+    if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
       endOnCancel();

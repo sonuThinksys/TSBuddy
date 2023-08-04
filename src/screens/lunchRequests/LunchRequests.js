@@ -8,39 +8,63 @@ import Loader from 'component/loader/Loader';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import MailIcon from 'assets/newDashboardIcons/mail.svg';
 import {Colors} from 'colors/Colors';
+import {renewCurrentToken} from 'customComponents/CustomError';
+import {renewToken} from 'Auth/LoginSlice';
+import {useIsFocused} from '@react-navigation/native';
 
 const LunchRequests = ({navigation}) => {
+  const isFocussed = useIsFocused();
   const dispatch = useDispatch();
   const [lunchRequests, setLunchRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const refreshToken = useSelector(state => state?.auth?.refreshToken);
 
   const {userToken: token} = useSelector(state => state.auth);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const todayDateObj = new Date();
-        const todayDate = todayDateObj.getDate();
-        const currentMonth =
-          todayDateObj.getMonth() + 1 < 10
-            ? `0${todayDateObj.getMonth() + 1}`
-            : todayDateObj.getMonth() + 1;
-        const currentYear = todayDateObj.getFullYear();
-        const todayDateStr = `${currentYear}-${currentMonth}-${todayDate}`;
-        setIsLoading(true);
+    if (isFocussed) {
+      (async () => {
+        try {
+          const todayDateObj = new Date();
+          const todayDate = todayDateObj.getDate();
+          const currentMonth =
+            todayDateObj.getMonth() + 1 < 10
+              ? `0${todayDateObj.getMonth() + 1}`
+              : todayDateObj.getMonth() + 1;
+          const currentYear = todayDateObj.getFullYear();
+          const todayDateStr = `${currentYear}-${currentMonth}-${todayDate}`;
+          setIsLoading(true);
 
-        const allLunchRequests = await dispatch(
-          getTodayLunchRequests({token, date: todayDateStr}),
-        );
+          const allLunchRequests = await dispatch(
+            getTodayLunchRequests({token, date: todayDateStr}),
+          );
 
-        setLunchRequests(allLunchRequests.payload);
-      } catch (err) {
-        console.error('errorIs:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
+          // ===================================================================
+          if (
+            allLunchRequests?.error?.message?.toLowerCase() === 'token-expired'
+          ) {
+            const newFetchedData = await renewCurrentToken({
+              dispatch,
+              renewToken,
+              refreshToken,
+              data: {date: todayDateStr},
+              apiCallAgain: getTodayLunchRequests,
+            });
+
+            setLunchRequests(newFetchedData);
+          }
+          // ===================================================================
+          else {
+            setLunchRequests(allLunchRequests.payload);
+          }
+        } catch (err) {
+          console.error('error:', err);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+    }
+  }, [isFocussed]);
 
   const mailPressHandler = () => {};
 

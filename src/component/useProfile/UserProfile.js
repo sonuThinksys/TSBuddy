@@ -443,7 +443,7 @@ const UserProfile = ({route}) => {
                 isSearching: true,
               });
 
-              flatListRef.current.scrollToOffset({animated: true, offset: 0});
+              flatListRef?.current?.scrollToOffset({animated: true, offset: 0});
             }}>
             <Image
               source={MonthImages.searchIconwhite}

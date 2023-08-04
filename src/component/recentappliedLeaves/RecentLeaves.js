@@ -21,7 +21,6 @@ const RecentLeaves = ({navigation}) => {
   const [showLeaveType, setShowLeaveType] = useState('leaves');
   const [recent3Leaves, setRecent3Leaves] = useState([]);
   const [recent3WFH, setRecent3WFH] = useState([]);
-
   const dispatch = useDispatch();
 
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
@@ -117,18 +116,14 @@ const RecentLeaves = ({navigation}) => {
       {isGuestLogin ? (
         <FlatList
           data={guestLeavesData}
-          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
         />
       ) : (showLeaveType === 'leaves' && recent3Leaves?.length) > 0 ? (
-        // ) : recent3Leaves?.length > 0 ? (
         <FlatList
           data={recent3Leaves}
-          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
-          // style={{marginHorizontal: 4}}
         />
       ) : (showLeaveType === 'wfh' && recent3WFH?.length) > 0 ? (
         <FlatList
@@ -180,7 +175,7 @@ const renderItem = ({item, index}) => {
                     : Colors.darkLovelyGreen,
               },
             ]}>
-            {item?.leaveType}
+            {item?.leaveType || 'Earned Leave'}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <CalenderIcon height={11} width={11} marginRight={8} />
@@ -234,7 +229,7 @@ const renderItem = ({item, index}) => {
               marginBottom={4}
             />
             <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
-              {item.status}
+              {item.status || 'Approved'}
             </Text>
           </View>
         )}

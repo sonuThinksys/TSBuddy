@@ -599,19 +599,21 @@ function DrawerNavigator({navigation}) {
         />
       ) : null}
 
-      {/* <Drawer.Screen name="CheckInOut" component={CheckInOutStackScreen} /> */}
-
       <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
       <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
 
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
-      <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
-      <Drawer.Screen
-        name="employeeHandbook"
-        component={EmploeeHandbookStackScreen}
-      />
+      {token ? (
+        <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
+      ) : null}
+      {token ? (
+        <Drawer.Screen
+          name="employeeHandbook"
+          component={EmploeeHandbookStackScreen}
+        />
+      ) : null}
       <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>
   );
