@@ -1,13 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  View,
-  SafeAreaView,
-  FlatList,
-  LogBox,
-  Text,
-  Image,
-  Button,
-} from 'react-native';
+import {View, SafeAreaView, FlatList, Text} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -25,12 +17,11 @@ import jwt_decode from 'jwt-decode';
 import Loader from 'component/loader/Loader';
 import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
-import ShowAlert from 'customComponents/CustomError';
+import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
 import {renewToken} from 'Auth/LoginSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let data = [
   WelcomeHeader,
@@ -57,62 +48,52 @@ const Home = ({navigation}) => {
     }
   }, [isFocussed]);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const empData =
-          token &&
-          (await dispatch(
-            getEmployeeProfileData({
-              token,
-              employeeID,
-            }),
-          ));
-
-        if (empData?.error) {
-          if (empData?.error?.message.toLowerCase() === 'token-expired') {
-            const result = await dispatch(renewToken({token: refreshToken}));
-
-            if (result?.error) {
-              ShowAlert({
-                messageHeader: ERROR,
-                messageSubHeader: empData?.error?.message,
-                buttonText: 'Close',
+    if (isFocussed) {
+      console.log('Insideuse', 'Effect:');
+      (async () => {
+        try {
+          setLoading(true);
+          const empData =
+            token &&
+            (await dispatch(
+              getEmployeeProfileData({
+                token,
+                employeeID,
+                refreshToken,
                 dispatch,
-                navigation,
-                isTokenExpired: true,
-              });
-            }
-          }
+              }),
+            ));
+        } catch (err) {
+          console.log('err:', err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setLoading(false);
-      }
 
-      try {
-        const events = await dispatch(getCalendereventData(token));
-        if (events?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: events?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
+        try {
+          setLoading(true);
+          const events = await dispatch(
+            getCalendereventData({token, dispatch, refreshToken}),
+          );
+
+          // if (events?.error?.message?.toLowerCase() === 'token-expired') {
+          //   const newFetchedData = await renewCurrentToken({
+          //     dispatch,
+          //     renewToken,
+          //     refreshToken,
+          //     data: {},
+          //     apiCallAgain: getCalendereventData,
+          //   });
+          //   console.log('newFetchedData:', newFetchedData);
+          // }
+        } catch (err) {
+          console.log('err:', err);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
+      })();
+    }
+  }, [isFocussed, token]);
 
   return (
     <View

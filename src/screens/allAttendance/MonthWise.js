@@ -47,11 +47,8 @@ const MonthWiseCalnder = ({navigation}) => {
       try {
         setIsLoading(true);
         const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
-        // const dummyData = [{employeeName: 'utkarsh', employeeId: 10859}];
-        // setEmployeesData(dummyData);
 
         if (employeeData?.error) {
-          console.log('employeeData:', employeeData);
           const {payload} = await getTokenIfExpires(employeeData);
           const employeeData1 = await dispatch(
             getEmployeesByLeaveApprover(payload?.token),
@@ -63,31 +60,17 @@ const MonthWiseCalnder = ({navigation}) => {
         }
       } catch (err) {
         console.log('err:', err);
-        // console.error('err:', err);
       } finally {
         setIsLoading(false);
       }
     })();
   }, []);
 
-  const getMonthWiseData = async () => {
-    const monthWiseData = await dispatch(
-      incomingAttendanceData({
-        token,
-        employeeID: 10859,
-        visisbleMonth: 4,
-        visibleYear: 2023,
-      }),
-    );
-  };
-
   const getTokenIfExpires = async ({error}) => {
-    console.log('error:', error);
     try {
       let result;
       if (error?.message.toLowerCase() === 'token-expired') {
         result = await dispatch(renewToken({token: refreshToken}));
-        console.log('error:result:', result);
 
         if (result?.error) {
           ShowAlert({

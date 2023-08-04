@@ -11,60 +11,109 @@ import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
-// import ShowAlert from 'customComponents/CustomError';
-// import {ERROR} from 'constants/strings';
+import {useIsFocused} from '@react-navigation/native';
+import {getLeaveDetails} from 'redux/homeSlice';
+import jwt_decode from 'jwt-decode';
 
 const RecentLeaves = ({navigation}) => {
   const [showLeaveType, setShowLeaveType] = useState('leaves');
+  const [recent3Leaves, setRecent3Leaves] = useState([]);
+  const [recent3WFH, setRecent3WFH] = useState([]);
+  const dispatch = useDispatch();
 
   const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
     state => state.auth,
   );
 
-  const {
-    leaveMenuDetails: {recentAppliedLeaves = []},
-  } = useSelector(state => state.home);
-  const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+  const decoded = token && jwt_decode(token);
+  const employeeID = decoded?.id;
 
-  let leavesCount = 0;
-  let wfhCount = 0;
+  const isFocussed = useIsFocused();
 
-  const sortedLeaves = [...recentAppliedLeaves]?.sort(
-    (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-  );
-  console.log('sortedLeaves:', sortedLeaves);
-  const recent3Leaves = sortedLeaves?.filter(leave => {
-    if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
-      leavesCount++;
-      return true;
+  useEffect(() => {
+    if (!isGuestLogin) {
+      if (isFocussed) {
+        (async () => {
+          let leavesCount = 0;
+          let wfhCount = 0;
+
+          const leavesData = await dispatch(
+            getLeaveDetails({
+              token,
+              empID: employeeID,
+            }),
+          );
+
+          const leavesList = [];
+          const wfhList = [];
+
+          leavesData.payload.map(leave => {
+            if (leave.leaveType.toLowerCase() === 'work from home') {
+              wfhList.push(leave);
+            } else {
+              leavesList.push(leave);
+            }
+          });
+
+          const sortedWfhList = wfhList?.sort(
+            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+          );
+
+          const sortedLeaveList = leavesList?.sort(
+            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+          );
+
+          const recent3Leaves = sortedLeaveList?.filter(leave => {
+            if (
+              leave.leaveType.toLowerCase() !== 'work from home' &&
+              leavesCount < 3
+            ) {
+              leavesCount++;
+              return true;
+            }
+          });
+
+          setRecent3Leaves(recent3Leaves);
+          const recent3WFH = sortedWfhList?.filter(leave => {
+            if (
+              leave.leaveType.toLowerCase() === 'work from home' &&
+              wfhCount < 3
+            ) {
+              wfhCount++;
+              return true;
+            }
+          });
+
+          setRecent3WFH(recent3WFH);
+        })();
+      }
     }
-  });
-  const recent3WFH = sortedLeaves?.filter(leave => {
-    if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
-      wfhCount++;
-      return true;
-    }
-  });
+  }, [isFocussed]);
 
-  // const dispatch = useDispatch();
+  // const {
+  //   leaveMenuDetails: {recentAppliedLeaves = []},
+  // } = useSelector(state => state.home);
+  // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const leaves = await dispatch(getLeaveDetails({token, employeeID}));
+  // let leavesCount = 0;
+  // let wfhCount = 0;
 
-  //     if (leaves?.error) {
-  //       ShowAlert({
-  //         messageHeader: ERROR,
-  //         messageSubHeader: leaves?.error?.message,
-  //         buttonText: 'Close',
-  //         dispatch,
-  //         navigation,
-  //       });
-  //     }
-  //   })();
-  // }, [employeeID, token]);
-
-  // =================================================================================
+  // const sortedLeaves = [...recentAppliedLeaves]?.sort(
+  //   (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+  // );
+  // console.log('sortedLeaves:', sortedLeaves);
+  // const recent3Leaves = sortedLeaves?.filter(leave => {
+  //   if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
+  //     leavesCount++;
+  //     return true;
+  //   }
+  // });
+  // const recent3WFH = sortedLeaves?.filter(leave => {
+  //   if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
+  //     wfhCount++;
+  //     return true;
+  //   }
+  // });
 
   return (
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
@@ -87,18 +136,14 @@ const RecentLeaves = ({navigation}) => {
       {isGuestLogin ? (
         <FlatList
           data={guestLeavesData}
-          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
         />
       ) : (showLeaveType === 'leaves' && recent3Leaves?.length) > 0 ? (
-        // ) : recent3Leaves?.length > 0 ? (
         <FlatList
           data={recent3Leaves}
-          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
           renderItem={renderItem}
           keyExtractor={(item, index) => index}
-          // style={{marginHorizontal: 4}}
         />
       ) : (showLeaveType === 'wfh' && recent3WFH?.length) > 0 ? (
         <FlatList
@@ -150,7 +195,7 @@ const renderItem = ({item, index}) => {
                     : Colors.darkLovelyGreen,
               },
             ]}>
-            {item?.leaveType}
+            {item?.leaveType || 'Earned Leave'}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <CalenderIcon height={11} width={11} marginRight={8} />
@@ -204,7 +249,7 @@ const renderItem = ({item, index}) => {
               marginBottom={4}
             />
             <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
-              {item.status}
+              {item.status || 'Approved'}
             </Text>
           </View>
         )}

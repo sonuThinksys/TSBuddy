@@ -30,7 +30,7 @@ import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
 import fingerPrint from 'assets/allImage/fingerPrint.png';
 import fingerPrint1 from 'assets/allImage/fingerImage.png';
-import {guestLoginStatus, logInSucess, renewToken} from './LoginSlice';
+import {guestLoginStatus, logInSucess} from './LoginSlice';
 import {loginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
@@ -62,7 +62,7 @@ const Login = ({navigation}) => {
   const [username, setUserName] = useState('gupta.utkarsh@thinksys.com');
   const [password, setPassword] = useState('gupta@1234');
   // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
-  // const [password, setPassword] = useState('bisht@1234');
+  // const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('pant.amit@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
@@ -150,8 +150,8 @@ const Login = ({navigation}) => {
       let result = await dispatch(getUserToken({username, password}));
       if (result?.error) {
         ShowAlert({
-          messageHeader: INVALID_CREDENTIAL,
-          messageSubHeader: INCORRECT_LOGIN,
+          messageHeader: ERROR,
+          messageSubHeader: INVALID_CREDENTIAL,
           buttonText: 'CLOSE',
           dispatch,
           navigation,
@@ -196,7 +196,8 @@ const Login = ({navigation}) => {
           <ActivityIndicator size="large" />
         </View>
       ) : null} */}
-      {showBiomatricModal && Platform.OS === 'android' ? (
+
+      {/* {showBiomatricModal && Platform.OS === 'android' ? (
         <Modal
           backdropColor={Colors.smokeyGrey}
           isVisible={showBiomatricModal}
@@ -223,7 +224,7 @@ const Login = ({navigation}) => {
             </View>
           </View>
         </Modal>
-      ) : null}
+      ) : null} */}
       <View style={{flex: 1}}>
         <Video
           source={LoginVideo}
@@ -338,14 +339,14 @@ const Login = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {Platform.OS === 'android' && bioMetricEnable ? (
+        {/* {Platform.OS === 'android' && bioMetricEnable ? (
           <TouchableOpacity onPress={enableTouchId}>
             <View style={styles.bioMetricView}>
               <Image source={fingerPrint} style={{height: 30, width: 35}} />
               <Text style={styles.bioMetricText}>{BIOMETRIC_LOGIN}</Text>
             </View>
           </TouchableOpacity>
-        ) : null}
+        ) : null} */}
       </View>
       <View style={styles.copyRightContainer}>
         <Text style={styles.copyRightStyle}>{COPY_RIGHT}</Text>

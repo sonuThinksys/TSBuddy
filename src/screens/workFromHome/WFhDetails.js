@@ -1,11 +1,17 @@
 import {useIsFocused} from '@react-navigation/native';
+import CommunicationModal from 'modals/CommunicationModal';
 import CustomHeader from 'navigation/CustomHeader';
+import {useState} from 'react';
 import {View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {modalStatus} from 'redux/homeSlice';
 import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import WorkFromHomeList from 'reusableComponents/WorkFromHomeList';
 
 const WFHDetails = ({route, navigation}) => {
+  console.log('route:', route.params);
+
+  const dispatch = useDispatch();
   const {
     designation,
     employeeName,
@@ -15,6 +21,46 @@ const WFHDetails = ({route, navigation}) => {
     cellNumber,
     companyEmail,
   } = route.params;
+
+  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
+
+  const [empDetail, setClickData] = useState({});
+
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendWhatsAppMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send WhatsApp to',
+    });
+    dispatch(modalStatus(true));
+  };
 
   const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
     useSelector(state => state.home);
@@ -37,6 +83,10 @@ const WFHDetails = ({route, navigation}) => {
       ) : null}
       <View style={{flex: 1}}>
         <ResourceProfileDetails
+          dialCall={dialCall}
+          sendMail={sendMail}
+          sendMessage={sendMessage}
+          sendWhatsApp={sendWhatsAppMessage}
           empDetails={{
             employeeName,
             image,
@@ -52,7 +102,8 @@ const WFHDetails = ({route, navigation}) => {
           workFromHomeLeaveDetailsScreen={workFromHomeLeaveDetailsScreen}
           employeeId={employeeId}
           isFromWFHDetails={true}
-          fromResource={true}
+          resourceEmployeeID={employeeId}
+          // fromResource={true}
         />
       </View>
     </>

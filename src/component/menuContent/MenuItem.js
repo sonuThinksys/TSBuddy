@@ -44,7 +44,7 @@ const MenuItem = ({navigation}) => {
   const [modalData, setModalData] = useState({});
   const {userToken: token} = useSelector(state => state.auth);
 
-  var decoded = jwt_decode(token);
+  var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
   useEffect(() => {

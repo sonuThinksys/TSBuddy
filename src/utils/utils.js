@@ -1,3 +1,6 @@
+import {renewToken} from 'Auth/LoginSlice';
+import axios from 'axios';
+import {ERROR} from 'constants/strings';
 import {days} from 'defaultData';
 
 export const attendanceDate = val => {
@@ -56,4 +59,66 @@ export const lunchChargeMessage = function (amount, type) {
   return `You will be charged ₹${amount}/${
     type === 'monthly' ? 'Month' : 'Day'
   }.`;
+};
+
+export const centralizeApi = ({
+  method = '',
+  url,
+  data,
+  token,
+  sendResp,
+  refreshToken,
+  dispatch,
+}) => {
+  let config = {
+    method,
+    url,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+  if (method.toLocaleLowerCase() == 'post') {
+    config = {
+      ...config,
+      data,
+    };
+  } else if (method.toLocaleLowerCase() == 'get') {
+    config = {
+      ...config,
+    };
+  }
+  return axios(config)
+    .then(async response => {
+      const {data, status} = response;
+      if (status === 200) {
+        if (sendResp) {
+          return Promise.resolve(data);
+        }
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error(ERROR));
+      }
+    })
+    .catch(err => {
+      const errorMessage = err?.response?.data?.message;
+      if (errorMessage.toLowerCase() === 'token-expired') {
+        dispatch(renewToken({token: refreshToken}));
+        return Promise.reject(errorMessage);
+      } else {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401 || err?.response) {
+          let message =
+            err?.response?.data?.message ||
+            err?.response?.data?.Message ||
+            err?.response?.data?.title;
+          return Promise.reject(message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      }
+    });
 };

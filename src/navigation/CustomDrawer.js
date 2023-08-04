@@ -130,20 +130,7 @@ export default ({navigation}) => {
       key: 7,
       icon: MonthImages.salarySlipIcon,
     },
-    {
-      screen: 'policiesScreen',
-      label: 'Policies',
-      navigation,
-      key: 8,
-      icon: MonthImages.salarySlipIcon,
-    },
-    {
-      screen: 'employeeHandbook',
-      label: 'Employee Handbook',
-      navigation,
-      key: 9,
-      icon: MonthImages.info_scopy,
-    },
+
     {
       screen: 'logout',
       label: 'Logout',
@@ -153,6 +140,30 @@ export default ({navigation}) => {
       icon: MonthImages.logoutmenuS,
     },
   ];
+
+  const policy = {
+    screen: 'policiesScreen',
+    label: 'Policies',
+    navigation,
+    key: 8,
+    icon: MonthImages.salarySlipIcon,
+  };
+
+  const empHandbook = {
+    screen: 'employeeHandbook',
+    label: 'Employee Handbook',
+    navigation,
+    key: 9,
+    icon: MonthImages.info_scopy,
+  };
+
+  if (token) {
+    drawerList.splice(7, 0, policy);
+    drawerList.splice(8, 0, empHandbook);
+    drawerList.forEach((el, index) => {
+      el.key = index + 1;
+    });
+  }
 
   if (isAdmin) {
     drawerList.splice(2, 0, lunchRequests);

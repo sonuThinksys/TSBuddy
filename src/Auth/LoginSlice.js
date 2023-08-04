@@ -23,38 +23,35 @@ const initialState = {
 export const getUserToken = createAsyncThunk(
   'auth/getuserToken',
   async formInput => {
-    try {
-      const LoginUrl = endPoints.authTokenAPI;
+    const LoginUrl = endPoints.authTokenAPI;
 
-      const config = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        url: LoginUrl,
-        data: formInput,
-      };
-      return axios(config)
-        .then(async result => {
-          let data = result.data;
+    const config = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      url: LoginUrl,
+      data: formInput,
+    };
+    return axios(config)
+      .then(async result => {
+        let data = result.data;
+        console.log('data:', data, result);
 
-          const {response = {}, status} = result || {};
-          if (status === 200) {
-            return Promise.resolve({data, formInput});
-          } else if (status === 500) {
-            return Promise.reject(INVALID_CREDENTIAL);
-          } else {
-            return Promise.reject(result.response);
-            // return Promise.reject(data);
-          }
-        })
-        .catch(err => {
-          return Promise.reject({err, status: err?.response?.status});
-        });
-    } catch (err) {
-      return Promise.reject(new Error(err));
-    }
+        const {response = {}, status} = result || {};
+        if (status === 200) {
+          return Promise.resolve({data, formInput});
+        } else if (status === 401) {
+          return Promise.reject(INVALID_CREDENTIAL);
+        } else {
+          return Promise.reject(result.response);
+          // return Promise.reject(data);
+        }
+      })
+      .catch(err => {
+        return Promise.reject(err?.response);
+      });
   },
 );
 
@@ -166,6 +163,7 @@ const loginSlice = createSlice({
     });
 
     builder.addCase(getUserToken.rejected, (state, action) => {
+      console.log('action:', action, action.error.message);
       state.isLoggedIn = false;
       state.error = action.error.message;
     });

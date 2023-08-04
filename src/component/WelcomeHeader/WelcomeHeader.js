@@ -10,7 +10,9 @@ import jwt_decode from 'jwt-decode';
 const WelcomeHeader = () => {
   const dispatch = useDispatch();
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
-  const {userToken: token} = useSelector(state => state.auth);
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
 
   const [checkInDetails, setCheckInDetails] = useState({});
   const [todayStatus, setTodayStatus] = useState(null);
@@ -18,107 +20,109 @@ const WelcomeHeader = () => {
   const employeeID = decoded?.id || '';
 
   useEffect(() => {
-    (async () => {
-      try {
-        const checkIn = await dispatch(getTodayCheckInTime({token}));
+    if (!isGuestLogin) {
+      (async () => {
+        try {
+          const checkIn = await dispatch(getTodayCheckInTime({token}));
 
-        const employeeShift = await dispatch(
-          getEmployeeShift({token, id: employeeID}),
-        );
+          const employeeShift = await dispatch(
+            getEmployeeShift({token, id: employeeID}),
+          );
 
-        const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
-        const properInTime = employeeShift?.payload?.startTime;
+          const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
+          const properInTime = employeeShift?.payload?.startTime;
 
-        const [properInHours, properInMinutes, properInSeconds] =
-          properInTime.split(':');
+          const [properInHours, properInMinutes, properInSeconds] =
+            properInTime.split(':');
 
-        const properCheckInTimeStamp = new Date().setHours(
-          properInHours,
-          properInMinutes,
-          properInSeconds,
-        );
+          const properCheckInTimeStamp = new Date().setHours(
+            properInHours,
+            properInMinutes,
+            properInSeconds,
+          );
 
-        const checkedInTimeStamp = checkedInTimeObj.getTime();
-        const differenceInTime = checkedInTimeStamp - properCheckInTimeStamp;
+          const checkedInTimeStamp = checkedInTimeObj.getTime();
+          const differenceInTime = checkedInTimeStamp - properCheckInTimeStamp;
 
-        const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
-        const lateMinutes = Math.floor(
-          (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const lateSeconds = Math.floor((differenceInTime % (1000 * 60)) / 1000);
+          const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
+          const lateMinutes = Math.floor(
+            (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
+          );
+          const lateSeconds = Math.floor(
+            (differenceInTime % (1000 * 60)) / 1000,
+          );
 
-        setTodayStatus({
-          lateHours,
-          lateMinutes,
-          lateSeconds,
-          isLate: differenceInTime > 0,
-        });
-        console.log('checkedInTimeStamp:', differenceInTime, {
-          lateHours,
-          lateMinutes,
-          lateSeconds,
-        });
+          setTodayStatus({
+            lateHours,
+            lateMinutes,
+            lateSeconds,
+            isLate: differenceInTime > 0,
+          });
 
-        if (checkIn.error) {
-          throw new Error('Time not found.');
+          if (checkIn.error) {
+            throw new Error('Time not found.');
+          }
+          const checkInDateObj = new Date(checkIn?.payload[0]?.time);
+          const totalSpentTime = +(new Date() - checkInDateObj);
+
+          const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
+          const minutes = +Math.floor(
+            (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
+          );
+          const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
+
+          setCheckInDetails({
+            hours,
+            minutes,
+            seconds,
+            empMachineCode: +checkIn?.payload[0].employeeMachineCode,
+          });
+        } catch (err) {
+          // console.log('err:', err);
         }
-        const checkInDateObj = new Date(checkIn?.payload[0]?.time);
-        const totalSpentTime = +(new Date() - checkInDateObj);
-
-        const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
-        const minutes = +Math.floor(
-          (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
-
-        setCheckInDetails({
-          hours,
-          minutes,
-          seconds,
-          empMachineCode: +checkIn?.payload[0].employeeMachineCode,
-        });
-      } catch (err) {
-        // console.log('err:', err);
-      }
-    })();
+      })();
+    }
   }, []);
 
   useEffect(() => {
-    if (checkInDetails.hours !== undefined) {
-      const timer = setInterval(() => {
-        let currentSeconds = checkInDetails.seconds;
-        let currentMinutes = checkInDetails.minutes;
-        let currentHours = checkInDetails.hours;
-        if (currentSeconds === 59 && currentMinutes !== 59) {
-          currentSeconds = 0;
-          currentMinutes += 1;
-        } else if (currentSeconds === 59 && currentMinutes === 59) {
-          currentSeconds = 0;
-          currentMinutes = 0;
-          currentHours += 1;
-        } else {
-          currentSeconds += 1;
-        }
+    if (!isGuestLogin) {
+      if (checkInDetails.hours !== undefined) {
+        const timer = setInterval(() => {
+          let currentSeconds = checkInDetails.seconds;
+          let currentMinutes = checkInDetails.minutes;
+          let currentHours = checkInDetails.hours;
+          if (currentSeconds === 59 && currentMinutes !== 59) {
+            currentSeconds = 0;
+            currentMinutes += 1;
+          } else if (currentSeconds === 59 && currentMinutes === 59) {
+            currentSeconds = 0;
+            currentMinutes = 0;
+            currentHours += 1;
+          } else {
+            currentSeconds += 1;
+          }
 
-        // setCheckInDetails({
-        //   hours: currentHours,
-        //   minutes: currentMinutes,
-        //   seconds: currentSeconds,
-        // });
+          // setCheckInDetails({
+          //   hours: currentHours,
+          //   minutes: currentMinutes,
+          //   seconds: currentSeconds,
+          // });
 
-        setCheckInDetails(currentCheckInDetails => ({
-          ...currentCheckInDetails,
-          hours: currentHours,
-          minutes: currentMinutes,
-          seconds: currentSeconds,
-        }));
-      }, 1000);
+          setCheckInDetails(currentCheckInDetails => ({
+            ...currentCheckInDetails,
+            hours: currentHours,
+            minutes: currentMinutes,
+            seconds: currentSeconds,
+          }));
+        }, 1000);
 
-      return () => {
-        clearInterval(timer);
-      };
+        return () => {
+          clearInterval(timer);
+        };
+      }
     }
   }, [checkInDetails.seconds]);
+
   const userName = profileData?.employeeName;
 
   const todayDateObject = new Date();
@@ -136,7 +140,10 @@ const WelcomeHeader = () => {
     <View style={styles.mainContainer}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome, </Text>
-        <Text style={styles.nameText}> {userName || 'N/A'}</Text>
+        <Text style={styles.nameText}>
+          {' '}
+          {isGuestLogin ? 'Guest' : userName || 'N/A'}
+        </Text>
         {/* <Text style={styles.nameText}> {userName || 'N/A'}</Text> */}
       </View>
       <View style={styles.infoContainer}>
@@ -179,8 +186,8 @@ const WelcomeHeader = () => {
         <View style={styles.lateContainer}>
           <Text style={styles.lateText}>
             {todayStatus?.isLate ? 'Late' : 'Early'} by{' '}
-            {`${todayStatus?.lateHours || '00'}:${
-              todayStatus?.lateMinutes || '00'
+            {`${!isGuestLogin ? todayStatus?.lateHours || '00' : '00'}:${
+              !isGuestLogin ? todayStatus?.lateMinutes || '00' : '00'
             }:${todayStatus?.lateSeconds || '00'}`}{' '}
             hours
           </Text>

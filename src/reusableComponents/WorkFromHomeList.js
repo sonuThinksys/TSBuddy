@@ -16,7 +16,7 @@ import {
 } from 'utils/Responsive';
 import {memo, useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {getResourcesEmployeesLeaves, modalStatus} from 'redux/homeSlice';
+import {getResourcesEmployeesLeaves} from 'redux/homeSlice';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {FontFamily} from 'constants/fonts';
 import ShowAlert from 'customComponents/CustomError';
@@ -26,7 +26,7 @@ import Loader from 'component/LoadingScreen/LoadingScreen';
 const screenWidth = Dimensions.get('window').width;
 
 const WorkFromHomeList = props => {
-  const {getWfhCount, fromResource, resourceEmployeeID} = props;
+  const {fromResource, resourceEmployeeID} = props;
   const isFocused = useIsFocused();
   const [isRefresh, setRefresh] = useState(false);
   const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
@@ -105,6 +105,7 @@ const WorkFromHomeList = props => {
                 employeeID,
                 fromResource,
                 resourceEmployeeID,
+                fromResource: true,
               });
 
           // item.status !== 'Open'

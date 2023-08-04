@@ -100,6 +100,7 @@ const Regularization = ({navigation, route}) => {
     (async () => {
       const workMode =
         token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
+      console.log('workMode:', workMode);
       setWorkMode(workMode.payload.workMode);
     })();
   }, []);
@@ -182,6 +183,23 @@ const Regularization = ({navigation, route}) => {
   };
 
   const handleSubmit = async () => {
+    if (!selectReasons) {
+      alert('Please select a reason.');
+      return;
+    }
+    if (!commentText) {
+      alert('Please enter a comment.');
+      return;
+    }
+    if (!selectApprover) {
+      alert('Please select Leave Approver.');
+      return;
+    }
+
+    if (!selectDay) {
+      alert('Please select is this regularization for half or full day.');
+      return;
+    }
     const requestRegularsation =
       token &&
       (await dispatch(
