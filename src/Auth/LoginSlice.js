@@ -163,6 +163,7 @@ const loginSlice = createSlice({
     });
 
     builder.addCase(getUserToken.rejected, (state, action) => {
+      console.log('action:', action, action.error.message);
       state.isLoggedIn = false;
       state.error = action.error.message;
     });

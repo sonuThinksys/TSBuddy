@@ -11,10 +11,8 @@ import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
-import {getLeaveDetails, getTodayMenuDetails} from 'redux/homeSlice';
 import {useIsFocused} from '@react-navigation/native';
+import {getLeaveDetails} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
 
 const RecentLeaves = ({navigation}) => {
@@ -30,128 +28,92 @@ const RecentLeaves = ({navigation}) => {
   const decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
-  // const {
-  //   leaveMenuDetails: {recentAppliedLeaves = []},
-  // } = useSelector(state => state.home);
-  // // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
-
   const isFocussed = useIsFocused();
 
   useEffect(() => {
-    if (isFocussed) {
-      (async () => {
-        let leavesCount = 0;
-        let wfhCount = 0;
+    if (!isGuestLogin) {
+      if (isFocussed) {
+        (async () => {
+          let leavesCount = 0;
+          let wfhCount = 0;
 
-        const leavesData = await dispatch(
-          getLeaveDetails({
-            token,
-            empID: employeeID,
-          }),
-        );
+          const leavesData = await dispatch(
+            getLeaveDetails({
+              token,
+              empID: employeeID,
+            }),
+          );
 
-        const leavesList = [];
-        const wfhList = [];
+          const leavesList = [];
+          const wfhList = [];
 
-        leavesData.payload.map(leave => {
-          if (leave.leaveType.toLowerCase() === 'work from home') {
-            wfhList.push(leave);
-          } else {
-            leavesList.push(leave);
-          }
-        });
+          leavesData.payload.map(leave => {
+            if (leave.leaveType.toLowerCase() === 'work from home') {
+              wfhList.push(leave);
+            } else {
+              leavesList.push(leave);
+            }
+          });
 
-        const sortedWfhList = wfhList?.sort(
-          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-        );
+          const sortedWfhList = wfhList?.sort(
+            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+          );
 
-        const sortedLeaveList = leavesList?.sort(
-          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-        );
+          const sortedLeaveList = leavesList?.sort(
+            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+          );
 
-        const recent3Leaves = sortedLeaveList?.filter(leave => {
-          if (
-            leave.leaveType.toLowerCase() !== 'work from home' &&
-            leavesCount < 3
-          ) {
-            leavesCount++;
-            return true;
-          }
-        });
+          const recent3Leaves = sortedLeaveList?.filter(leave => {
+            if (
+              leave.leaveType.toLowerCase() !== 'work from home' &&
+              leavesCount < 3
+            ) {
+              leavesCount++;
+              return true;
+            }
+          });
 
-        setRecent3Leaves(recent3Leaves);
-        const recent3WFH = sortedWfhList?.filter(leave => {
-          if (
-            leave.leaveType.toLowerCase() === 'work from home' &&
-            wfhCount < 3
-          ) {
-            wfhCount++;
-            return true;
-          }
-        });
+          setRecent3Leaves(recent3Leaves);
+          const recent3WFH = sortedWfhList?.filter(leave => {
+            if (
+              leave.leaveType.toLowerCase() === 'work from home' &&
+              wfhCount < 3
+            ) {
+              wfhCount++;
+              return true;
+            }
+          });
 
-        setRecent3WFH(recent3WFH);
-      })();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isFocussed) {
-      (async () => {
-        let leavesCount = 0;
-        let wfhCount = 0;
-
-        const leavesData = await dispatch(
-          getLeaveDetails({
-            token,
-            empID: employeeID,
-          }),
-        );
-
-        const leavesList = [];
-        const wfhList = [];
-
-        leavesData.payload.map(leave => {
-          if (leave.leaveType.toLowerCase() === 'work from home') {
-            wfhList.push(leave);
-          } else {
-            leavesList.push(leave);
-          }
-        });
-
-        const sortedWfhList = wfhList?.sort(
-          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-        );
-
-        const sortedLeaveList = leavesList?.sort(
-          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-        );
-
-        const recent3Leaves = sortedLeaveList?.filter(leave => {
-          if (
-            leave.leaveType.toLowerCase() !== 'work from home' &&
-            leavesCount < 3
-          ) {
-            leavesCount++;
-            return true;
-          }
-        });
-
-        setRecent3Leaves(recent3Leaves);
-        const recent3WFH = sortedWfhList?.filter(leave => {
-          if (
-            leave.leaveType.toLowerCase() === 'work from home' &&
-            wfhCount < 3
-          ) {
-            wfhCount++;
-            return true;
-          }
-        });
-
-        setRecent3WFH(recent3WFH);
-      })();
+          setRecent3WFH(recent3WFH);
+        })();
+      }
     }
   }, [isFocussed]);
+
+  // const {
+  //   leaveMenuDetails: {recentAppliedLeaves = []},
+  // } = useSelector(state => state.home);
+  // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
+
+  // let leavesCount = 0;
+  // let wfhCount = 0;
+
+  // const sortedLeaves = [...recentAppliedLeaves]?.sort(
+  //   (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+  // );
+  // console.log('sortedLeaves:', sortedLeaves);
+  // const recent3Leaves = sortedLeaves?.filter(leave => {
+  //   if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
+  //     leavesCount++;
+  //     return true;
+  //   }
+  // });
+  // const recent3WFH = sortedLeaves?.filter(leave => {
+  //   if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
+  //     wfhCount++;
+  //     return true;
+  //   }
+  // });
 
   return (
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
