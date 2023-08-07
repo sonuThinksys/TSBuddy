@@ -209,48 +209,36 @@ const ApplyLeave = ({navigation, route}) => {
       })();
     }
 
-    if (!isGuestLogin) {
-      (async () => {
-        try {
-          const leaveApprovers = token
-            ? await dispatch(getLeaveApprovers({token, employeeID}))
-            : [];
-          setLeaveApprovers(leaveApprovers?.payload);
-          if (!leaveApprovers.payload) {
-            alert('Cannot fetch Leave Approvers. Kindly try later.');
-          }
-          const listOfLeaveApprovers = leaveApprovers.payload.map(approver => {
-            return {
-              value: approver.leaveApprover,
-              label: approver.leaveApproverName,
-            };
-          });
-          setLeaveApproversList(listOfLeaveApprovers);
-        } catch (err) {
-          console.log('errMap:', err);
-        }
-      })();
-    }
+    (async () => {
+      const leaveApprovers = token
+        ? await dispatch(getLeaveApprovers({token, employeeID}))
+        : [];
+
+      setLeaveApprovers(leaveApprovers?.payload);
+      const listOfLeaveApprovers = leaveApprovers?.payload?.map(approver => {
+        return {
+          value: approver.leaveApprover,
+          label: approver.leaveApproverName,
+        };
+      });
+      setLeaveApproversList(listOfLeaveApprovers);
+    })();
   }, []);
 
   useEffect(() => {
     if (!isGuestLogin) {
       (async () => {
-        try {
-          const employeeShift = await dispatch(
-            getEmployeeShift({token, id: employeeID}),
-          );
-          const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+        const employeeShift = await dispatch(
+          getEmployeeShift({token, id: employeeID}),
+        );
+        const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
 
-          const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-          const finalWeekOffs = [];
-          daysOfWeek.map((el, index) => {
-            if (weekOffs.includes(el)) finalWeekOffs.push(index);
-          });
-          setEmployeeWeekOffs(finalWeekOffs);
-        } catch (err) {
-          alert('Cannot fetch weekoffs for you. Kindly try later.');
-        }
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const finalWeekOffs = [];
+        daysOfWeek.map((el, index) => {
+          if (weekOffs?.includes(el)) finalWeekOffs?.push(index);
+        });
+        setEmployeeWeekOffs(finalWeekOffs);
       })();
     }
   }, []);
@@ -1195,8 +1183,11 @@ const ApplyLeave = ({navigation, route}) => {
                             ? firstFalf
                             : secondHalf
                         }
-                        // defaultIndex={0}
-                        options={newDropDownOptions}
+                        options={
+                          totalNumberOfLeaveDays > 1
+                            ? ['None']
+                            : newDropDownOptions
+                        }
                         dropdownStyle={{
                           width: '45%',
                           paddingLeft: 10,
