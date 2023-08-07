@@ -61,22 +61,34 @@ const AllAttendance = ({navigation}) => {
         }),
       );
 
-      if (result?.error?.message?.toLowerCase() === 'token-expired') {
-        const date = selectedDate?.selectedDateObj.getDate();
-        const month = selectedDate?.selectedDateObj?.getMonth() + 1;
-        const year = selectedDate?.selectedDateObj?.getFullYear();
-        const dateStr = `${year}-${month}-${date}`;
-
-        const newFetchedData = await renewCurrentToken({
+      if (result?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: result?.error?.message,
+          buttonText: 'Close',
           dispatch,
-          renewToken,
-          refreshToken,
-          data: {date: dateStr},
-          apiCallAgain: getAllResourcesAttendence,
+          navigation,
         });
+      }
 
-        setDayWiseData(newFetchedData);
-      } else {
+      // if (result?.error?.message?.toLowerCase() === 'token-expired') {
+
+      //   const date = selectedDate?.selectedDateObj.getDate();
+      //   const month = selectedDate?.selectedDateObj?.getMonth() + 1;
+      //   const year = selectedDate?.selectedDateObj?.getFullYear();
+      //   const dateStr = `${year}-${month}-${date}`;
+
+      //   const newFetchedData = await renewCurrentToken({
+      //     dispatch,
+      //     renewToken,
+      //     refreshToken,
+      //     data: {date: dateStr},
+      //     apiCallAgain: getAllResourcesAttendence,
+      //   });
+
+      //   setDayWiseData(newFetchedData);
+      // }
+      else {
         setDayWiseData(result.payload);
       }
     } catch (err) {

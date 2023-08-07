@@ -40,19 +40,29 @@ const LunchRequests = ({navigation}) => {
           );
 
           // ===================================================================
-          if (
-            allLunchRequests?.error?.message?.toLowerCase() === 'token-expired'
-          ) {
-            const newFetchedData = await renewCurrentToken({
-              dispatch,
-              renewToken,
-              refreshToken,
-              data: {date: todayDateStr},
-              apiCallAgain: getTodayLunchRequests,
-            });
 
-            setLunchRequests(newFetchedData);
+          if (allLunchRequests?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: allLunchRequests?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
           }
+          // if (
+          //   allLunchRequests?.error?.message?.toLowerCase() === 'token-expired'
+          // ) {
+          //   const newFetchedData = await renewCurrentToken({
+          //     dispatch,
+          //     renewToken,
+          //     refreshToken,
+          //     data: {date: todayDateStr},
+          //     apiCallAgain: getTodayLunchRequests,
+          //   });
+
+          //   setLunchRequests(newFetchedData);
+          // }
           // ===================================================================
           else {
             setLunchRequests(allLunchRequests.payload);

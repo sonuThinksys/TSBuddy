@@ -76,6 +76,16 @@ const Home = ({navigation}) => {
             getCalendereventData({token, dispatch, refreshToken}),
           );
 
+          if (result?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: events?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+
           // if (events?.error?.message?.toLowerCase() === 'token-expired') {
           //   const newFetchedData = await renewCurrentToken({
           //     dispatch,
