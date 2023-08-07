@@ -208,8 +208,9 @@ const ApplyLeave = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
+
       setLeaveApprovers(leaveApprovers?.payload);
-      const listOfLeaveApprovers = leaveApprovers.payload.map(approver => {
+      const listOfLeaveApprovers = leaveApprovers?.payload?.map(approver => {
         return {
           value: approver.leaveApprover,
           label: approver.leaveApproverName,
@@ -229,7 +230,7 @@ const ApplyLeave = ({navigation, route}) => {
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const finalWeekOffs = [];
       daysOfWeek.map((el, index) => {
-        if (weekOffs.includes(el)) finalWeekOffs.push(index);
+        if (weekOffs?.includes(el)) finalWeekOffs?.push(index);
       });
       setEmployeeWeekOffs(finalWeekOffs);
     })();
@@ -418,7 +419,7 @@ const ApplyLeave = ({navigation, route}) => {
   const fromCalenderConfirm = async date => {
     fromOnCancel();
 
-    if (employeeWeekOffs.includes(date.getDay())) {
+    if (employeeWeekOffs?.includes(date.getDay())) {
       alert('You already have a weekend holiday on this day.');
       fromOnCancel();
       return;
@@ -496,6 +497,10 @@ const ApplyLeave = ({navigation, route}) => {
   const toCalenderConfirm = async date => {
     toOnCancel();
 
+    if (totalNumberOfLeaveDays > 1) {
+      setHalfDay('None');
+    }
+
     // if (date.getDay() === 0 || date.getDay() === 6) {
     //   // date.setDate(date.getDate() + 1);
     //   alert(
@@ -505,7 +510,7 @@ const ApplyLeave = ({navigation, route}) => {
     //   return;
     // }
 
-    if (employeeWeekOffs.includes(date.getDay())) {
+    if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
       toOnCancel();
@@ -765,7 +770,6 @@ const ApplyLeave = ({navigation, route}) => {
         style={[
           styles.row,
           {borderBottomColor: Colors.lightGray, borderBottomWidth: 1},
-          highlighted && styles.highlighted,
         ]}>
         <Text style={[styles.rowText]}>{rowData}</Text>
       </View>
@@ -799,13 +803,16 @@ const ApplyLeave = ({navigation, route}) => {
   );
 
   const renderButtonText = option => {
+    console.log('totalNumberOfLeaveDays', totalNumberOfLeaveDays);
     return (
       <View
         style={{
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{fontSize: 16}}>{option}</Text>
+        <Text style={{fontSize: 16}}>
+          {totalNumberOfLeaveDays > 1 ? 'None' : option}
+        </Text>
       </View>
     );
   };
@@ -847,8 +854,8 @@ const ApplyLeave = ({navigation, route}) => {
         (startDate2 >= startDate1 && startDate2 <= endDate1)
       ) {
         if (
-          leavesData[i].status.toLowerCase() === 'open' ||
-          leavesData[i].status.toLowerCase() === 'approved'
+          leavesData[i]?.status?.toLowerCase() === 'open' ||
+          leavesData[i]?.status?.toLowerCase() === 'approved'
         ) {
           alert('Leaves are already applied to these dates.');
           return;
@@ -862,8 +869,8 @@ const ApplyLeave = ({navigation, route}) => {
         startDate2.toDateString() === endDate1.toDateString()
       ) {
         if (
-          leavesData[i].status.toLowerCase() === 'open' ||
-          leavesData[i].status.toLowerCase() === 'approved'
+          leavesData[i]?.status?.toLowerCase() === 'open' ||
+          leavesData[i]?.status?.toLowerCase() === 'approved'
         ) {
           alert('Leaves are already applied to these dates.');
           return;
@@ -871,7 +878,7 @@ const ApplyLeave = ({navigation, route}) => {
       }
     }
 
-    if (leaveType.toLowerCase() === 'earned leave') {
+    if (leaveType?.toLowerCase() === 'earned leave') {
       const positiveDays = openLeavesCount?.earnedOpen + totalNumberOfLeaveDays;
 
       if (positiveDays > earnedLeaves?.currentLeaveBalance) {
@@ -882,7 +889,7 @@ const ApplyLeave = ({navigation, route}) => {
       }
     }
 
-    if (leaveType.toLowerCase() === 'restricted holiday') {
+    if (leaveType?.toLowerCase() === 'restricted holiday') {
       const positiveDays = openLeavesCount?.rhOpen + totalNumberOfLeaveDays;
       if (positiveDays > restrictedLeaves?.currentLeaveBalance) {
         alert(
@@ -929,6 +936,7 @@ const ApplyLeave = ({navigation, route}) => {
       ));
 
     setLoading(false);
+    console.log('appliedLeave: ', appliedLeave);
     if (appliedLeave?.error) {
       alert(appliedLeave.error.message);
     } else {
@@ -974,7 +982,7 @@ const ApplyLeave = ({navigation, route}) => {
             employeeId: employeeID,
             fromDate: fromDate.fromDateObj,
             toDate: toDate.toDateObj,
-            halfDay: 0,
+            halfDay: halfDay,
             leaveType: openLeaveType,
             totalLeaveDays: openLeaveNumberOfDays,
             description: openLeaveReason,
@@ -1131,7 +1139,10 @@ const ApplyLeave = ({navigation, route}) => {
                         renderButtonText={renderButtonText}
                         style={{
                           borderWidth: 1,
-                          backgroundColor: Colors.white,
+                          backgroundColor:
+                            totalNumberOfLeaveDays > 1
+                              ? Colors.lightGray1
+                              : Colors.white,
                           borderRadius: 3,
                           paddingVertical: 5,
                           height: 32,
@@ -1147,7 +1158,11 @@ const ApplyLeave = ({navigation, route}) => {
                             ? 'First Half'
                             : 'Second Half'
                         }
-                        options={newDropDownOptions}
+                        options={
+                          totalNumberOfLeaveDays > 1
+                            ? ['None']
+                            : newDropDownOptions
+                        }
                         dropdownStyle={{
                           width: '45%',
                           paddingLeft: 10,
@@ -1161,6 +1176,7 @@ const ApplyLeave = ({navigation, route}) => {
                             setTotalNumberOfLeaveDays(1);
                           }
                           setHalfDay(itemName);
+                          totalNumberOfLeaveDays > 1 && setHalfDay(' None');
                         }}
                         renderRightComponent={
                           !fromResource

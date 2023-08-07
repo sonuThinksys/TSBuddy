@@ -71,22 +71,14 @@ const Home = ({navigation}) => {
           ));
 
         const events = await dispatch(getCalendereventData(token));
-        console.log('events', events);
 
         setLoading(false);
 
-        console.log('empData?.error?.message.', empData?.error?.message);
-        console.log('refresh Token', refreshToken);
-
         if (empData?.error || events?.error) {
           if (empData?.error?.message.toLowerCase() === 'token-expired') {
-            console.log('Entering refresh token');
             const result = await dispatch(renewToken({token: refreshToken}));
 
-            console.log('result', result.payloadz);
-
             if (result?.error) {
-              console.log('result', result);
               ShowAlert({
                 messageHeader: ERROR,
                 messageSubHeader: empData?.error?.message,

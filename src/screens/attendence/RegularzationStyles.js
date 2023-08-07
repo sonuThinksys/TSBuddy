@@ -53,4 +53,7 @@ export default StyleSheet.create({
     borderRadius: 10,
     borderColor: Colors.red,
   },
+  highlighted: {
+    backgroundColor: Colors.lightGray,
+  },
 });

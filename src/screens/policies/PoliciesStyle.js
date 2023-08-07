@@ -13,7 +13,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.white,
     marginHorizontal: 10,
     marginVertical: 3,
-    elevation: 1,
+    // elevation: 1,
   },
   appliedRequestsLeft: {
     flexDirection: 'row',

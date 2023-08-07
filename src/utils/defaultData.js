@@ -108,18 +108,18 @@ export const newDropDownOptions = [firstFalf, secondHalf, none];
 export const approver = 'Sandhya Sharma';
 
 export const monthsName = [
-  'January',
-  'February',
+  'Jan',
+  'Feb',
   'March',
   'April',
   'May',
   'June',
   'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 export const RequestLunchLabel = [

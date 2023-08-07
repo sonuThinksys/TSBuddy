@@ -124,7 +124,7 @@ const Attendence = ({navigation}) => {
     if (employeeID && token) {
       try {
         if (visisbleMonth > 0 || visibleYear > 0) {
-          // setLoading(true);
+          setLoading(true);
           const attendence = await dispatch(
             getAttendencaeData({
               token,
@@ -134,6 +134,7 @@ const Attendence = ({navigation}) => {
             }),
           );
           if (attendence?.error) {
+            setLoading(false);
             ShowAlert({
               messageHeader: ERROR,
               messageSubHeader: attendence?.error?.message,
@@ -364,7 +365,7 @@ const Attendence = ({navigation}) => {
         </Text>
       </View>
     );
-  });
+  }, []);
 
   return (
     <>
@@ -478,6 +479,7 @@ const Attendence = ({navigation}) => {
             setModalDate={setModalDate}
             navigation={navigation}
             dailyAttendance={dailyAttendance}
+            isLoading={isLoading}
           />
         </View>
       </SafeAreaView>
@@ -493,6 +495,7 @@ const RenderCalender = ({
   setModalDate,
   navigation,
   dailyAttendance,
+  isLoading,
 }) => {
   return (
     <CalendarList
@@ -517,6 +520,7 @@ const RenderCalender = ({
           setModalDate(day);
         }
       }}
+      displayLoadingIndicator={true}
       horizontal={true}
       markingType={'custom'}
       scrollEnabled={true}

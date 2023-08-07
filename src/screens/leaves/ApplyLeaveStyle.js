@@ -224,7 +224,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.white,
   },
   highlighted: {
-    // backgroundColor: 'lightgrey',
+    // backgroundColor: 'red',
   },
   rowText: {
     fontSize: 16,
