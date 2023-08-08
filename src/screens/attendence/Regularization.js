@@ -123,7 +123,6 @@ const Regularization = ({navigation, route}) => {
     (async () => {
       const workMode =
         token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
-      console.log('workMode:', workMode);
       setWorkMode(workMode.payload.workMode);
     })();
   }, []);
@@ -244,7 +243,6 @@ const Regularization = ({navigation, route}) => {
               comment: commentText,
               mode: workMode,
               approverId: approoverId,
-              status: 'Open',
             },
           }),
         ));

@@ -10,6 +10,9 @@ import jwt_decode from 'jwt-decode';
 const WelcomeHeader = () => {
   const dispatch = useDispatch();
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  const firstName = profileData?.firstName;
+  const middleName = profileData?.middleName;
+  const lastName = profileData?.lastName;
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
