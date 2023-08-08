@@ -9,6 +9,7 @@ import {
   Image,
   FlatList,
   Alert,
+  Pressable,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -32,18 +33,21 @@ import {ERROR} from 'utils/string';
 import jwt_decode from 'jwt-decode';
 import {Value} from 'react-native-reanimated';
 import CustomHeader from 'navigation/CustomHeader';
+import Loader from 'component/loader/Loader';
 
 const Regularization = ({navigation, route}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState('fullDay');
   const [checkBox, setCheckBox] = useState(false);
   const [regularizationReason, setRegularzitionReason] = useState([]);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
+  // console.log('leaveApproversList:', leaveApproversList);
   const [selectDay, setSelectDay] = useState('');
   const [selectApprover, setSelectApprover] = useState('');
   const [selectReasons, setSelectReasons] = useState('');
   const [commentText, setCommentText] = useState('');
   const [workMode, setWorkMode] = useState('');
   const [approoverId, setApproveId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [dayData, setDayData] = useState([
     {
@@ -89,9 +93,18 @@ const Regularization = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-      leaveApprovers?.payload?.map(el =>
-        listOfLeaveApprover?.push(el?.leaveApproverName),
-      );
+      leaveApprovers?.payload?.map(el => {
+        console.log('el:', el);
+        const firstName = el?.leaveApproverFirstName;
+        const middleName = el?.leaveApproverMiddleName;
+        const lastName = el?.leaveApproverLastName;
+
+        const userName = `${firstName ? firstName : ''} ${
+          middleName ? middleName + ' ' : ''
+        }${lastName ? lastName : ''}`;
+        listOfLeaveApprover?.push(userName);
+      });
+      console.log('listOfLeaveApprover:', listOfLeaveApprover);
 
       setApproveId(leaveApprovers?.payload?.employeeId);
       setLeaveApproversList(listOfLeaveApprover);
@@ -100,7 +113,6 @@ const Regularization = ({navigation, route}) => {
     (async () => {
       const workMode =
         token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
-      console.log('workMode:', workMode);
       setWorkMode(workMode.payload.workMode);
     })();
   }, []);
@@ -153,7 +165,7 @@ const Regularization = ({navigation, route}) => {
   const renderItem = ({item, index}) => {
     return (
       <View style={{paddingHorizontal: wp(2)}} key={index}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             onSelectItem(item, index);
           }}>
@@ -180,7 +192,7 @@ const Regularization = ({navigation, route}) => {
               {item.type}
             </Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   };
@@ -203,36 +215,44 @@ const Regularization = ({navigation, route}) => {
       alert('Please select is this regularization for half or full day.');
       return;
     }
-    const requestRegularsation =
-      token &&
-      (await dispatch(
-        requestForAttendanceRegularization({
-          token,
-          body: {
-            attendanceId: attendanceId,
-            employeeId: employeeID,
-            attendanceDate: attendanceDate,
-            reasonId: selectReasons,
-            attendanceType: selectDay,
-            halfDayInfo: null,
-            comment: commentText,
-            mode: workMode,
-            approverId: approoverId,
-          },
-        }),
-      ));
 
-    if (requestRegularsation?.error) {
-      alert(requestRegularsation.error.message);
-    } else {
-      Alert.alert('Success', 'Regularisation form submitted successfully!', [
-        {
-          text: 'Ok',
-          onPress: () => {
-            navigation.goBack();
+    try {
+      setIsLoading(true);
+      const requestRegularsation =
+        token &&
+        (await dispatch(
+          requestForAttendanceRegularization({
+            token,
+            body: {
+              attendanceId: attendanceId,
+              employeeId: employeeID,
+              attendanceDate: attendanceDate,
+              reasonId: selectReasons,
+              attendanceType: selectDay,
+              halfDayInfo: null,
+              comment: commentText,
+              mode: workMode,
+              approverId: approoverId,
+            },
+          }),
+        ));
+
+      if (requestRegularsation?.error) {
+        alert(requestRegularsation.error.message);
+      } else {
+        Alert.alert('Success', 'Regularisation form submitted successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.goBack();
+            },
           },
-        },
-      ]);
+        ]);
+      }
+    } catch (err) {
+      console.log('errorRegularization:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -370,6 +390,7 @@ const Regularization = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       </View>
+      {isLoading ? <Loader /> : null}
     </>
   );
 };

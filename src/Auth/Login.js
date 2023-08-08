@@ -74,31 +74,7 @@ const Login = ({navigation}) => {
     bioMetricEnable,
   } = useSelector(state => state.auth);
   useEffect(() => {
-    // (async () => {
-    //   if (isRemember) {
-    //     let userDetailsRemeber = await AsyncStorage.getItem(
-    //       'userDetailsRemeber',
-    //     );
-    //     userDetailsRemeber = JSON.parse(userDetailsRemeber);
-
-    //     if (userDetailsRemeber && Object.keys(userDetailsRemeber).length) {
-
-    //       // setLoading(true);
-    //       // await dispatch(getUserToken({username, password}));
-    //       // setLoading(false);
-    //     }
-    //   }
-    // })();
     if (Platform.OS === 'android') {
-      // Alert.alert('Alert Title', 'Enable BioMetric Authentication', [
-      //   {
-      //     text: 'Cancel',
-      //     onPress: () => setBiometricEnable(false),
-      //     style: 'cancel',
-      //   },
-      //   {text: 'OK', onPress: () => setBiometricEnable(true)},
-      // ]);
-      // setBiometricEnable(true);
       dispatch(setBiometricEnable(true));
     }
   }, [formInput, token]);
@@ -121,7 +97,6 @@ const Login = ({navigation}) => {
         if (biometryType === 'FaceID') {
         } else {
           if (isAuth) {
-            // dispatch(loginStatus(true));
             return null;
           }
           TouchID.authenticate('Authentication', optionalConfigObject)

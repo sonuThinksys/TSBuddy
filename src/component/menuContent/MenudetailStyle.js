@@ -47,4 +47,53 @@ export default StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
   },
+  modalBackground: {
+    backgroundColor: Colors.white,
+    borderRadius: 14,
+  },
+  newDailyMenuHeading: {
+    padding: 13,
+    backgroundColor: Colors.lovelyBlue,
+    color: Colors.white,
+    fontSize: 20,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  modal: {
+    paddingTop: 32,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  foodTypeText: {
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoLight,
+    color: Colors.dune,
+    marginBottom: 7,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: Colors.lightGray2,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    fontSize: 18,
+    borderRadius: 8,
+  },
+  foodContainer: {
+    marginBottom: 20,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    marginTop: 20,
+  },
+  buttonContainer: {
+    borderRadius: 7,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+  },
+  buttonText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 18,
+    color: Colors.white,
+  },
 });

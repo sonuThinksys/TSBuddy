@@ -92,6 +92,40 @@ const snacks = 'snacks';
 //   },
 // );
 
+export const addDailyMenuDetails = createAsyncThunk(
+  'addDailyMenuDetails',
+  async ({token, body}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.addMenuDetails;
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+      console.log('dataAdded:', data);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const getAllResourcesAttendence = createAsyncThunk(
   'getAllResourcesAttendence',
   async ({token, date}) => {

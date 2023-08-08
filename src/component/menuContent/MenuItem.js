@@ -34,7 +34,6 @@ import FoodFeedback from 'modals/FoodFeedback';
 import EditIcon from 'assets/newDashboardIcons/edit.svg';
 
 const MenuItem = ({navigation}) => {
-  const isFocussed = useIsFocused();
   const dispatch = useDispatch();
 
   let {userFeedback, dailyMenuID} = useSelector(state => state.home);
@@ -57,21 +56,24 @@ const MenuItem = ({navigation}) => {
       (async () => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
+          const totalMenusLength = menuDetails.payload?.foodMenus?.length;
           // const menuDetails = await dispatch(getTodayMenuDetails(token));
           setTodayMenu([
             {
               type: breakfast,
-              food: menuDetails.payload?.foodMenus[0]?.breakfast,
+              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
+                ?.breakfast,
               img_url: MonthImages.breakfastImgS,
             },
             {
               type: lunch,
-              food: menuDetails.payload?.foodMenus[0]?.lunch,
+              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]?.lunch,
               img_url: MonthImages.Lunch,
             },
             {
               type: snacks,
-              food: menuDetails.payload?.foodMenus[0]?.eveningSnack,
+              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
+                ?.eveningSnack,
               img_url: MonthImages.snacksS,
             },
           ]);
@@ -109,15 +111,6 @@ const MenuItem = ({navigation}) => {
     }
   };
 
-  const userData = {
-    employee: 'EMP/10352',
-    employeeName: 'Amit Kumar Pant',
-    creation: new Date(),
-    breakfast: userFeedback[0]?.feedback,
-    lunch: userFeedback[1]?.feedback,
-    meal: userFeedback[2]?.feedback,
-  };
-
   return (
     <View style={{paddingLeft: 20}}>
       <FoodFeedback modalData={modalData} showModal={showModal} />
@@ -150,60 +143,6 @@ const MenuItem = ({navigation}) => {
                     {item.food ? item.food : 'N/A'}
                   </Text>
                 </ScrollView>
-                {/* <Text style={{paddingVertical: hp(1), paddingHorizontal: wp(4)}}>
-                {item?.type}fffff
-              </Text>
-              <View>
-                <ImageBackground
-                  source={item.img_url}
-                  resizeMode="stretch"
-                  style={styles.imagebackground}>
-                  <View style={styles.menuView}>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        paddingVertical: hp(0.6),
-                        fontFamily: FontFamily.RobotoBold,
-                      }}>
-                      Menu
-                    </Text>
-                    <ScrollView nestedScrollEnabled={true}>
-                      <Text
-                        style={{
-                          color: Colors.white,
-                          fontSize: 12,
-                        }}>
-                        {item.food ? item.food : 'N/A'}
-                      </Text>
-                    </ScrollView>
-                  </View>
-                </ImageBackground>
-              </View>
-              <View style={styles.likeView} key={index}>
-                <LinearGradient
-                  // start={{x: 0.1, y: 0.1}}
-                  //  end={{x: 0.1, y: 1.0}}
-                  locations={[0.1, 1, 0.01]}
-                  colors={[Colors.bluishGreen, Colors.green, Colors.grey]}
-                  style={[
-                    styles.feedbackBtn,
-                    {opacity: dailyMenuID ? 1 : 0.5},
-                  ]}>
-                  <TouchableOpacity
-                    disabled={dailyMenuID ? false : true}
-                    onPress={() => {
-                      setShowModal(true);
-                      setModalData({
-                        setShowModal: setShowModal,
-                        type: item?.type,
-                        dailyMenuID: dailyMenuID,
-                        employeeID: employeeID,
-                      });
-                    }}>
-                    <Text style={styles.textStyle}> Feedback </Text>
-                  </TouchableOpacity>
-                </LinearGradient>
-              </View> */}
               </View>
               <Pressable
                 disabled={!dailyMenuID}

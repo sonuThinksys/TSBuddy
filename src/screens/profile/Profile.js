@@ -29,6 +29,7 @@ import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import CustomHeader from 'navigation/CustomHeader';
+import {FontFamily} from 'constants/fonts';
 
 const Profile = ({navigation}) => {
   const isFocussed = useIsFocused();
@@ -45,6 +46,22 @@ const Profile = ({navigation}) => {
     isShowModal: isShowModal,
     employeeProfileLoading: isLoading,
   } = useSelector(state => state.home);
+
+  const firstName = profileData?.firstName;
+  const middleName = profileData?.middleName;
+  const lastName = profileData?.lastName;
+
+  const managerFirstName = profileData?.managerInfoDto?.firstName;
+  const managerMiddleName = profileData?.managerInfoDto?.middleName;
+  const managerLastName = profileData?.managerInfoDto?.lastName;
+
+  const userName = `${firstName ? firstName : ''} ${
+    middleName ? middleName + ' ' : ''
+  }${lastName ? lastName : ''}`;
+
+  const managerUserName = `${managerFirstName ? managerFirstName : ''} ${
+    managerMiddleName ? managerMiddleName + ' ' : ''
+  }${managerLastName ? managerLastName : ''}`;
 
   const data = [
     {
@@ -242,9 +259,7 @@ const Profile = ({navigation}) => {
                 </View>
                 <View>
                   <Text style={styles.managerNameText}>
-                    {isGuestLogin
-                      ? 'Guest Manager'
-                      : profileData.managerInfoDto.employeeName}
+                    {isGuestLogin ? 'Guest Manager' : managerUserName}
                   </Text>
                   <Text style={styles.emailText}>
                     {isGuestLogin
@@ -276,7 +291,13 @@ const Profile = ({navigation}) => {
             </View>
           </ImageBackground>
         </SafeAreaView>
-      ) : null}
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <Text style={{fontFamily: FontFamily.RobotoMedium, fontSize: 17}}>
+            No Employee Data Found.
+          </Text>
+        </View>
+      )}
     </>
   );
 };

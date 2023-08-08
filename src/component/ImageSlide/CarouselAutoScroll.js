@@ -23,11 +23,12 @@ import HappyBirthday from 'assets/newDashboardIcons/cake-candles.svg';
 import {FontFamily} from 'constants/fonts';
 
 const CarouselAutoScroll = ({navigation}) => {
-  const [CalaenderEventData, setCalenderEventData] = useState([]);
-
+  const [calenderEventData, setCalenderEventData] = useState([]);
   const {calendereventData: calenderData} = useSelector(state => state.home);
+
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
+
   const keyOfObject = Object?.keys(calenderData);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const CarouselAutoScroll = ({navigation}) => {
       newBirthday.isBirthday = true;
       events.push(newBirthday);
     });
+
     anniversaries?.forEach(anniversary => {
       const newAnniversary = {...anniversary};
       newAnniversary.isBirthday = false;
@@ -67,12 +69,12 @@ const CarouselAutoScroll = ({navigation}) => {
   indexRef.current = active;
   useInterval(() => {
     if (
-      CalaenderEventData &&
-      CalaenderEventData.length > 0 &&
+      calenderEventData &&
+      calenderEventData.length > 0 &&
       !scrolled.scrollStop &&
       !scrolled.scrollStart
     ) {
-      if (active < Number(CalaenderEventData?.length) - 1) {
+      if (active < Number(calenderEventData?.length) - 1) {
         setActive(active + 1);
       } else {
         setActive(0);
@@ -97,7 +99,7 @@ const CarouselAutoScroll = ({navigation}) => {
   }, [scrolled.scrollStop]);
 
   useEffect(() => {
-    if (CalaenderEventData && CalaenderEventData.length > 0) {
+    if (calenderEventData && calenderEventData.length > 0) {
       imageRef?.current?.scrollToIndex({index: active, animated: true});
     }
   }, [active]);
@@ -120,8 +122,8 @@ const CarouselAutoScroll = ({navigation}) => {
       {showModal ? (
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
-      {CalaenderEventData?.length ? (
-        <FlashList
+      {calenderEventData?.length ? (
+        <FlatList
           onScrollBeginDrag={handleScrollBeginDrag}
           onScrollEndDrag={handleScrollEndDrag}
           showsHorizontalScrollIndicator={false}
@@ -129,7 +131,7 @@ const CarouselAutoScroll = ({navigation}) => {
           ref={imageRef}
           // pagingEnabled
           estimatedItemSize={200}
-          data={CalaenderEventData}
+          data={calenderEventData}
           horizontal
           onScrollToIndexFailed={info => {
             const wait = new Promise(resolve => setTimeout(resolve, 500));
@@ -154,12 +156,25 @@ const CarouselAutoScroll = ({navigation}) => {
                   marginRight: wp(5),
                 }}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source={MonthImages.Balloons}
-                    style={{height: 40, width: 40, marginRight: 24}}
-                  />
-                  <Text style={styles.happyText}>Happy </Text>
-                  <Text style={styles.wishText}>Birthday</Text>
+                  {item.isBirthday ? (
+                    <>
+                      <Image
+                        source={MonthImages.Balloons}
+                        style={{height: 40, width: 40, marginRight: 24}}
+                      />
+                      <Text style={styles.happyText}>Happy </Text>
+                      <Text style={styles.wishText}>Birthday</Text>
+                    </>
+                  ) : (
+                    <>
+                      <Image
+                        source={MonthImages.AnniversaryIcon}
+                        style={{height: 40, width: 40, marginRight: 24}}
+                      />
+                      <Text style={styles.happyText}>Happy </Text>
+                      <Text style={styles.wishText}>Anniversary</Text>
+                    </>
+                  )}
                 </View>
 
                 <Pressable
@@ -218,11 +233,11 @@ const CarouselAutoScroll = ({navigation}) => {
         </View>
       )}
 
-      {/* {CalaenderEventData?.length ? (
+      {/* {calenderEventData?.length ? (
         <FlashList
           ref={imageRef}
           estimatedItemSize={200}
-          data={CalaenderEventData}
+          data={calenderEventData}
           horizontal
           renderItem={({item, index}) => {
             return (

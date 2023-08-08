@@ -54,17 +54,17 @@ const AllAttendance = ({navigation}) => {
     try {
       setIsFetchingData(true);
 
-      const result = await dispatch(
+      const resourceAttendance = await dispatch(
         getAllResourcesAttendence({
           token,
           date: dayWiseDate ? dayWiseDate : yesterdayDateStr,
         }),
       );
 
-      if (result?.error) {
+      if (resourceAttendance?.error) {
         ShowAlert({
           messageHeader: ERROR,
-          messageSubHeader: result?.error?.message,
+          messageSubHeader: resourceAttendance?.error?.message,
           buttonText: 'Close',
           dispatch,
           navigation,
@@ -89,7 +89,7 @@ const AllAttendance = ({navigation}) => {
       //   setDayWiseData(newFetchedData);
       // }
       else {
-        setDayWiseData(result.payload);
+        setDayWiseData(resourceAttendance.payload);
       }
     } catch (err) {
       console.error('err:', err);
