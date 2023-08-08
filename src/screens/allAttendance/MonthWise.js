@@ -178,6 +178,12 @@ const MonthWiseCalnder = ({navigation}) => {
     }
   };
   const commonItem = ({item, index}) => {
+    const firstName = item?.firstName;
+    const middleName = item?.middleName;
+    const lastName = item?.lastName;
+    const userName = `${firstName ? firstName : ''} ${
+      middleName ? middleName : ''
+    } ${lastName ? lastName : ''}`;
     const {image} = item;
     return (
       <>
@@ -193,7 +199,7 @@ const MonthWiseCalnder = ({navigation}) => {
           ) : (
             <Image style={styles.imageStyle} source={MonthImages.ProfileIcon} />
           )}
-          <Text style={{paddingLeft: wp(1.5)}}>{item.employeeName}</Text>
+          <Text style={{paddingLeft: wp(1.5)}}>{userName}</Text>
         </View>
         <View style={styles.arrowButtonStyle}>
           <Text style={styles.empTextStyle}>{`#${item.employeeId}`}</Text>

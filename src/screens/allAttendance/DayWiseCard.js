@@ -14,6 +14,13 @@ const DayWiseCard = ({item}) => {
     outTime,
   } = item;
 
+  const firstName = item?.firstName;
+  const middleName = item?.middleName;
+  const lastName = item?.lastName;
+  const userName = `${firstName ? firstName : ''} ${
+    middleName ? middleName : ''
+  } ${lastName ? lastName : ''}`;
+
   const inHours =
     new Date(inTime).getHours() > 9
       ? new Date(inTime).getHours()
@@ -71,7 +78,7 @@ const DayWiseCard = ({item}) => {
           </View>
           <View style={styles.mainDetailsContainer}>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameText}>{employeeName}</Text>
+              <Text style={styles.nameText}>{userName}</Text>
             </View>
             <View style={styles.empIdRegularizeContainer}>
               <Text style={styles.employeeIdText}>#{employeeId}</Text>
