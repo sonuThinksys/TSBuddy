@@ -37,7 +37,7 @@ const WorkFromHomeList = props => {
 
   let employeeID;
   if (props.isFromWFHDetails) {
-    employeeID = props.employeeId?.split('/')[1];
+    employeeID = props.employeeId;
   }
 
   const dispatch = useDispatch();
@@ -107,6 +107,13 @@ const WorkFromHomeList = props => {
                 resourceEmployeeID,
                 fromResource: true,
               });
+
+          console.log(
+            'employeeID, resourceEmployeeID',
+            employeeID,
+            resourceEmployeeID,
+          );
+          return;
 
           // item.status !== 'Open'
           //   ? navigation.navigate('Leaves', {

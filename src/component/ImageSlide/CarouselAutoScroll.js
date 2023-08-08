@@ -144,6 +144,12 @@ const CarouselAutoScroll = ({navigation}) => {
           }}
           keyExtractor={(item, index) => index}
           renderItem={({item, index}) => {
+            const name =
+              item.firstName && item.lastName
+                ? `${item.firstName} ${item.lastName}`
+                : item.firstName && item.middleName
+                ? `${item.firstName} ${item.middleName}`
+                : item.firstName;
             return (
               <View
                 style={{
@@ -178,7 +184,7 @@ const CarouselAutoScroll = ({navigation}) => {
                     setModalData({
                       startsOn: item.startsOn,
                       dateOfJoining: item.dateOfJoining,
-                      name: item.employeeName,
+                      name,
                       description: item.description,
                       isBirthday: item.isBirthday,
 
@@ -187,9 +193,7 @@ const CarouselAutoScroll = ({navigation}) => {
                     setShowModal(true);
                   }}>
                   <Image source={defaultUserIcon} style={styles.image} />
-                  <Text style={styles.birthdayBoyOrGirl}>
-                    {item.employeeName}
-                  </Text>
+                  <Text style={styles.birthdayBoyOrGirl}>{name}</Text>
                   <Text style={styles.designation}>{item?.designation}</Text>
                 </Pressable>
                 <View style={styles.eventDate}>

@@ -28,16 +28,22 @@ const RegularisationFormDetails = ({navigation, route}) => {
     image,
     employeeName,
     managerInfoDto,
-    name,
+    employeeId,
     cellNumber,
     companyEmail,
+    firstName,
+    lastName,
   } = route.params;
-  const empId = name.split('/')[1];
+  console.log('route.params', route.params);
+  // const empId = name.split('/')[1];
+
+  const empName =
+    firstName && lastName ? `${firstName} ${lastName}` : firstName || 'NA';
 
   const dialCall = () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -46,7 +52,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
   const sendMail = () => {
     setClickData({
       medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -55,7 +61,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
   const sendMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest manager' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest manager' : empName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -64,11 +70,14 @@ const RegularisationFormDetails = ({navigation, route}) => {
   const sendWhatsAppMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empName,
       text: 'Send WhatsApp to',
     });
     dispatch(modalStatus(true));
   };
+
+  const empFullName =
+    firstName && lastName ? `${firstName}  ${lastName}` : firstName;
 
   return (
     <>
@@ -85,6 +94,9 @@ const RegularisationFormDetails = ({navigation, route}) => {
       <ResourceProfileDetails
         empDetails={{
           employeeName,
+          empFullName,
+          firstName,
+          lastName,
           image,
           companyEmail,
           cellNumber,
@@ -97,7 +109,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
         sendWhatsApp={sendWhatsAppMessage}
       />
       <RegularisationList
-        employeeID={empId}
+        employeeID={employeeId}
         navigateTo={'regularisationTabDetailsScreen'}
         employeeName={employeeName}
       />

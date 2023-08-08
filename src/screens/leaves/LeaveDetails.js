@@ -19,6 +19,33 @@ const LeaveDetails = ({route, navigation}) => {
 
   const {params: data} = route;
 
+  const {
+    firstName,
+    middleName,
+    lastName,
+    leaveApproverFirstName,
+    leaveApproverMiddleName,
+    leaveApproverLastName,
+  } = route.params;
+
+  const empFullName =
+    firstName && middleName && lastName
+      ? `${firstName} ${middleName} ${lastName}`
+      : firstName && lastName
+      ? `${firstName} ${lastName}`
+      : firstName && middleName
+      ? `${firstName} ${middleName}`
+      : firstName;
+
+  const approverFullName =
+    leaveApproverFirstName && leaveApproverMiddleName && leaveApproverLastName
+      ? `${leaveApproverFirstName} ${leaveApproverMiddleName} ${leaveApproverLastName}`
+      : leaveApproverFirstName && leaveApproverLastName
+      ? `${leaveApproverFirstName} ${leaveApproverLastName}`
+      : leaveApproverFirstName && leaveApproverMiddleName
+      ? `${leaveApproverFirstName} ${leaveApproverMiddleName}`
+      : leaveApproverFirstName;
+
   const applyingDate = `${new Date(data?.postingDate).getDate()}-${new Date(
     data.postingDate,
   ).toLocaleString('default', {month: 'short'})}-${new Date(
@@ -37,8 +64,8 @@ const LeaveDetails = ({route, navigation}) => {
     ).getFullYear()}`;
 
   const details = [
-    ['Employee Name', data?.employeeName],
-    ['Leave Approver', data?.leaveApproverName],
+    ['Employee Name', empFullName],
+    ['Leave Approver', approverFullName],
     ['Leave Type', data?.leaveType],
     ['Leave Time Period', rangeOfdate(data)],
     ['Leave Status', data?.status],

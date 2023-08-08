@@ -26,6 +26,7 @@ const SelectDateModal = forwardRef(
 
     useImperativeHandle(ref, () => ({
       resetSelected() {
+        console.log('INSIDE', 'CHILD!');
         setSelected(false);
       },
     }));
