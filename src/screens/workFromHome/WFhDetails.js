@@ -9,8 +9,6 @@ import ResourceProfileDetails from 'reusableComponents/ResourceProfileDetails';
 import WorkFromHomeList from 'reusableComponents/WorkFromHomeList';
 
 const WFHDetails = ({route, navigation}) => {
-  console.log('route:', route.params);
-
   const dispatch = useDispatch();
   const {
     designation,

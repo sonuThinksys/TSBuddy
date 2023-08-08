@@ -59,7 +59,7 @@ const MonthWiseCalnder = ({navigation}) => {
           setEmployeesData(employeeData?.payload);
         }
       } catch (err) {
-        console.log('err:', err);
+        console.log('erroorr:', err);
       } finally {
         setIsLoading(false);
       }
@@ -119,8 +119,6 @@ const MonthWiseCalnder = ({navigation}) => {
           visibleYear: selectedYear,
         }),
       );
-
-      console.log('result:', result);
 
       if (result?.error) {
         console.log('result?.error:', result.error);

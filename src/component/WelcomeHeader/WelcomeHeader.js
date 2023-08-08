@@ -10,6 +10,9 @@ import jwt_decode from 'jwt-decode';
 const WelcomeHeader = () => {
   const dispatch = useDispatch();
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  const firstName = profileData?.firstName;
+  const middleName = profileData?.middleName;
+  const lastName = profileData?.lastName;
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
@@ -78,7 +81,7 @@ const WelcomeHeader = () => {
             empMachineCode: +checkIn?.payload[0].employeeMachineCode,
           });
         } catch (err) {
-          // console.log('err:', err);
+          console.log('erroor:', err);
         }
       })();
     }
@@ -123,7 +126,9 @@ const WelcomeHeader = () => {
     }
   }, [checkInDetails.seconds]);
 
-  const userName = profileData?.employeeName;
+  const userName = `${firstName ? firstName : ''} ${
+    middleName ? middleName : ''
+  } ${lastName ? lastName : ''}`;
 
   const todayDateObject = new Date();
   const daysOfWeek = [

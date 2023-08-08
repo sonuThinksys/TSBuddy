@@ -7,7 +7,7 @@ export default {
   authTokenAPI: `${API_URL}/Account/login`,
   holidaysAPI: `${API_URL}/Holiday?year=${year}`,
   leaveDetails: `${API_URL}/Leave/AppliedLeaves?empId=`,
-  employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=EMP/`,
+  employeeProfileAPI: `${API_URL}/EmployeeProfile/GetEmployeeByName?name=`,
   calenderEventAPI: `${API_URL}/Event/GetEvents?month=${month + 1}`,
   attendenceAPI: `${API_URL}/Attendance/GetDailyAttendanceByEmpId?empId=`,
   getUserFeedback: `${API_URL}/FoodRequest?dailyMenuId=`,
@@ -43,7 +43,7 @@ export default {
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
   WfhApplication: `${API_URL}/Leave/WfhApplication`,
   getPolicies: `${API_URL}/Policy/GetPolicies`,
-  getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
-
+  getDailyLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
+  addMenuDetails: `${API_URL}/FoodRequest/AddToday'sMenu`,
   renewToken: `${API_URL}/Account/RenewToken`,
 };

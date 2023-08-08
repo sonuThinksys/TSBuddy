@@ -50,7 +50,6 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     if (isFocussed) {
-      console.log('Insideuse', 'Effect:');
       (async () => {
         try {
           setLoading(true);
@@ -76,7 +75,7 @@ const Home = ({navigation}) => {
             getCalendereventData({token, dispatch, refreshToken}),
           );
 
-          if (result?.error) {
+          if (events?.error) {
             ShowAlert({
               messageHeader: ERROR,
               messageSubHeader: events?.error?.message,
@@ -97,7 +96,7 @@ const Home = ({navigation}) => {
           //   console.log('newFetchedData:', newFetchedData);
           // }
         } catch (err) {
-          console.log('err:', err);
+          console.log('errEvents:', err);
         } finally {
           setLoading(false);
         }

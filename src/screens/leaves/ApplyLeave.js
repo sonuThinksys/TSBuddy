@@ -950,6 +950,7 @@ const ApplyLeave = ({navigation, route}) => {
             leaveType: leaveType,
             leaveApprover: leaveApproverMailID,
             fiscalYear: fiscalYear,
+            userId: decoded?.emailId,
           },
         }),
       ));
