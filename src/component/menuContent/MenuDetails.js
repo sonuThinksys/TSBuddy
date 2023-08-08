@@ -16,7 +16,7 @@ import RequestLunch from 'screens/requestLunch/RequestLunch';
 import {RequestLunchScreen} from 'navigation/Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 const MenuDetails = () => {
   const navigation = useNavigation();
   return (

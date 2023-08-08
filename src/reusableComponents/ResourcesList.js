@@ -47,7 +47,7 @@ const ResourcesList = props => {
         setIsLoading(true);
         const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
         setResourcesEmpiolyeeData(employeeData?.payload);
-
+        console.log('employeeData?.payload', employeeData?.payload);
         if (employeeData?.error) {
           ShowAlert({
             messageHeader: ERROR,
@@ -69,15 +69,24 @@ const ResourcesList = props => {
       {
         designation,
         image,
-        employeeName,
+        firstName,
+        lastName,
+        middleName,
         managerInfoDto,
         name,
         cellNumber,
         companyEmail,
+        employeeId,
       },
       index,
       navigation,
     ) => {
+      const empName =
+        firstName && lastName
+          ? `${firstName}  ${lastName}`
+          : firstName && middleName
+          ? `${firstName} ${middleName}`
+          : firstName;
       return (
         <View key={index} style={{backgroundColor: Colors.whitishBlue}}>
           <TouchableOpacity
@@ -85,11 +94,13 @@ const ResourcesList = props => {
               navigation.navigate(props.navigateToScreen, {
                 designation,
                 image,
-                employeeName,
+                firstName,
+                lastName,
                 managerInfoDto,
                 name,
                 cellNumber,
                 companyEmail,
+                employeeId,
               });
             }}>
             <View style={style.container}>
@@ -125,7 +136,7 @@ const ResourcesList = props => {
               </View>
               <View style={{flex: 0.7, marginLeft: 15}}>
                 <Text numberOfLines={1} style={style.nameText}>
-                  {employeeName}
+                  {empName}
                 </Text>
                 <Text style={style.desniationText}>{designation}</Text>
               </View>

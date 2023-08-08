@@ -15,52 +15,26 @@ const WFHDetails = ({route, navigation}) => {
   const {
     designation,
     employeeName,
+    firstName,
+    lastName,
+    middleName,
     image,
     managerInfoDto,
-    name: employeeId,
+    employeeId,
     cellNumber,
     companyEmail,
   } = route.params;
 
+  const empFullName =
+    firstName && lastName
+      ? `${firstName}  ${lastName}`
+      : firstName && middleName
+      ? `${firstName} ${middleName}`
+      : firstName;
+
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
 
   const [empDetail, setClickData] = useState({});
-
-  const dialCall = () => {
-    setClickData({
-      medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Call',
-    });
-    dispatch(modalStatus(true));
-  };
-
-  const sendMail = () => {
-    setClickData({
-      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Send Mail to',
-    });
-    dispatch(modalStatus(true));
-  };
-
-  const sendMessage = async () => {
-    setClickData({
-      medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Send SMS to',
-    });
-    dispatch(modalStatus(true));
-  };
-
-  const sendWhatsAppMessage = async () => {
-    setClickData({
-      medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
-      text: 'Send WhatsApp to',
-    });
-    dispatch(modalStatus(true));
-  };
 
   const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
     useSelector(state => state.home);
@@ -72,7 +46,7 @@ const WFHDetails = ({route, navigation}) => {
   const dialCall = () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -81,7 +55,7 @@ const WFHDetails = ({route, navigation}) => {
   const sendMail = () => {
     setClickData({
       medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -90,7 +64,7 @@ const WFHDetails = ({route, navigation}) => {
   const sendMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -99,7 +73,7 @@ const WFHDetails = ({route, navigation}) => {
   const sendWhatsAppMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send WhatsApp to',
     });
     dispatch(modalStatus(true));
@@ -125,6 +99,7 @@ const WFHDetails = ({route, navigation}) => {
           sendWhatsApp={sendWhatsAppMessage}
           empDetails={{
             employeeName,
+            empFullName,
             image,
             companyEmail,
             cellNumber,

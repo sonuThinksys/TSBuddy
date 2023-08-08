@@ -192,7 +192,9 @@ const Profile = ({navigation}) => {
                 )}
               </View>
               <Text style={styles.text}>
-                {isGuestLogin ? 'guest user' : profileData.employeeName}
+                {isGuestLogin
+                  ? 'guest user'
+                  : `${profileData.firstName} ${profileData.lastName}` || 'NA'}
               </Text>
             </View>
             <View style={styles.detailsView}>

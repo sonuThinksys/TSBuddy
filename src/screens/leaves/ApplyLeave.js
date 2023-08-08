@@ -53,6 +53,8 @@ const ApplyLeave = ({navigation, route}) => {
     state => state.home,
   );
 
+  // console.log("employeeProfile",)
+
   const userGender = empProfileData.gender;
 
   function getMonthIndex(shortForm) {
@@ -156,6 +158,8 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
+  console.log('allRemainingLeaves = ', allRemainingLeaves);
+
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -183,20 +187,14 @@ const ApplyLeave = ({navigation, route}) => {
     return date1.toDateString() === date2.toDateString();
   };
 
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerLeft: () => (
-  //       <TouchableOpacity
-  //         onPress={() => {
-  //           navigation.goBack();
-  //         }}>
-  //         <View>
-  //           <Image style={styles.downloadBTN} source={MonthImages.backArrowS} />
-  //         </View>
-  //       </TouchableOpacity>
-  //     ),
-  //   });
-  // }, [navigation]);
+  const leaveApproverFullName =
+    leaveApprovers[0]?.leaveApproverFirstName &&
+    leaveApprovers[0]?.leaveApproverLastName
+      ? `${leaveApprovers[0]?.leaveApproverFirstName} ${leaveApprovers[0]?.leaveApproverLastName} `
+      : leaveApprovers[0]?.leaveApproverFirstName &&
+        leaveApprovers[0]?.leaveApproverMiddleName
+      ? `${leaveApprovers[0]?.leaveApproverFirstName}  ${leaveApprovers[0]?.leaveApproverMiddleName}`
+      : leaveApprovers[0]?.leaveApproverFirstName;
 
   useEffect(() => {
     if (fromResource || fromWfh) {
@@ -217,8 +215,8 @@ const ApplyLeave = ({navigation, route}) => {
       setLeaveApprovers(leaveApprovers?.payload);
       const listOfLeaveApprovers = leaveApprovers?.payload?.map(approver => {
         return {
-          value: approver.leaveApprover,
-          label: approver.leaveApproverName,
+          value: `${approver.leaveApproverFirstName} ${approver.leaveApproverLastName}`,
+          label: `${approver.leaveApproverFirstName} ${approver.leaveApproverLastName}`,
         };
       });
       setLeaveApproversList(listOfLeaveApprovers);
@@ -1322,12 +1320,13 @@ const ApplyLeave = ({navigation, route}) => {
                   )}
                 </View>
               </ScrollView>
+
               <View style={styles.leaveApproverContainer}>
                 <Text style={styles.leaveApproverText}>Leave Approver:</Text>
                 {isEditOpenleave ? (
                   leaveApprovers?.length === 1 ? (
                     <Text style={styles.leaveApproverName}>
-                      {leaveApprovers[0]?.leaveApproverName}
+                      {leaveApproverFullName[0].firstName}88
                     </Text>
                   ) : (
                     <View>
@@ -1349,11 +1348,11 @@ const ApplyLeave = ({navigation, route}) => {
                   )
                 ) : fromResource ? (
                   <Text style={styles.leaveApproverName}>
-                    {resourceData.leaveApproverName}
+                    {`${resourceData?.leaveApproverFirstName} ${resourceData?.leaveApproverLastName}`}
                   </Text>
                 ) : fromOpenLeave ? (
                   <Text style={styles.leaveApproverName}>
-                    {openLeaveData?.leaveApproverName}
+                    {`${openLeaveData?.leaveApproverFirstName} ${openLeaveData?.leaveApproverLastName}`}
                   </Text>
                 ) : isGuestLogin ? (
                   <Text style={styles.leaveApproverName}>
@@ -1361,7 +1360,7 @@ const ApplyLeave = ({navigation, route}) => {
                   </Text>
                 ) : leaveApprovers?.length === 1 ? (
                   <Text style={styles.leaveApproverName}>
-                    {leaveApprovers[0]?.leaveApproverName}
+                    {leaveApproverFullName && leaveApproverFullName}
                   </Text>
                 ) : (
                   <View>

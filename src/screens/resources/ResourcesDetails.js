@@ -35,15 +35,27 @@ const screenWidth = Dimensions.get('window').width;
 const ResourcesDetails = ({route, navigation}) => {
   const {
     designation,
-    employeeName,
+
+    firstName,
+    lastName,
+    middleName,
     image,
     managerInfoDto,
-    name: employeeId,
+    employeeId,
     companyEmail,
     cellNumber,
   } = route.params;
 
-  const employeeID = employeeId?.split('/')[1];
+  console.log('route.params', route.params);
+
+  const empFullName =
+    firstName && lastName
+      ? `${firstName}  ${lastName}`
+      : firstName && middleName
+      ? `${firstName} ${middleName}`
+      : firstName;
+
+  const employeeID = employeeId;
 
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
@@ -118,7 +130,7 @@ const ResourcesDetails = ({route, navigation}) => {
   const dialCall = () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Call',
     });
     dispatch(modalStatus(true));
@@ -127,7 +139,7 @@ const ResourcesDetails = ({route, navigation}) => {
   const sendMail = () => {
     setClickData({
       medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send Mail to',
     });
     dispatch(modalStatus(true));
@@ -136,7 +148,7 @@ const ResourcesDetails = ({route, navigation}) => {
   const sendMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send SMS to',
     });
     dispatch(modalStatus(true));
@@ -145,7 +157,7 @@ const ResourcesDetails = ({route, navigation}) => {
   const sendWhatsAppMessage = async () => {
     setClickData({
       medium: isGuestLogin ? '9801296234' : cellNumber,
-      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      nameOfEmployee: isGuestLogin ? 'guest' : empFullName,
       text: 'Send WhatsApp to',
     });
     dispatch(modalStatus(true));
@@ -175,7 +187,7 @@ const ResourcesDetails = ({route, navigation}) => {
             sendMessage={sendMessage}
             sendWhatsApp={sendWhatsAppMessage}
             empDetails={{
-              employeeName,
+              empFullName,
               image,
               companyEmail,
               cellNumber,
@@ -296,20 +308,17 @@ const ResourcesDetails = ({route, navigation}) => {
               resourceEmployeeID={employeeID}
             />
           ) : selectedTab == 'attendence' ? (
-            <AttendenceTab
-              employeeName={employeeName}
-              employeeID={employeeID}
-            />
+            <AttendenceTab employeeName={empFullName} employeeID={employeeID} />
           ) : selectedTab == 'wfh' ? (
             <WfhTab
-              employeeName={employeeName}
+              employeeName={empFullName}
               employeeID={employeeID}
               fromResource={true}
               resourceEmployeeID={employeeID}
             />
           ) : (
             <RegularisationTab
-              employeeName={employeeName}
+              employeeName={empFullName}
               employeeID={employeeID}
             />
           )}

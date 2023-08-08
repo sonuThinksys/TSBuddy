@@ -22,6 +22,7 @@ const screenWidth = Dimensions.get('window').width;
 const ResourceProfileDetails = props => {
   const {
     employeeName,
+    empFullName,
     image,
     companyEmail,
     cellNumber,
@@ -50,7 +51,7 @@ const ResourceProfileDetails = props => {
           )}
         </View>
         <View style={style.name_cont}>
-          <Text style={style.name_txt}>{employeeName}</Text>
+          <Text style={style.name_txt}>{empFullName}</Text>
           <Text style={style.designation_txt}>{designation}</Text>
         </View>
       </View>

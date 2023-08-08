@@ -29,7 +29,7 @@ const snacks = 'Snacks';
 
 import {getTodayMenuDetails} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 import FoodFeedback from 'modals/FoodFeedback';
 import EditIcon from 'assets/newDashboardIcons/edit.svg';
 

@@ -102,6 +102,7 @@ export const centralizeApi = ({
     })
     .catch(err => {
       const errorMessage = err?.response?.data?.message;
+
       if (errorMessage.toLowerCase() === 'token-expired') {
         dispatch(renewToken({token: refreshToken}));
         return Promise.reject(errorMessage);

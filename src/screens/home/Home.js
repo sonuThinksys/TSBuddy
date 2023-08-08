@@ -64,6 +64,8 @@ const Home = ({navigation}) => {
                 dispatch,
               }),
             ));
+
+          console.log('empData--empData--empData', empData);
         } catch (err) {
           console.log('err:', err);
         } finally {
