@@ -145,6 +145,7 @@ const LeavesList = props => {
           <View
             style={{
               flex: 1,
+
               backgroundColor:
                 item.status === 'Rejected' || item.status === 'Dismissed'
                   ? Colors.grey

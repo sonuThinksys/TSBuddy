@@ -67,6 +67,42 @@ const WFHDetails = ({route, navigation}) => {
   const workFromHomeLeaveApplyScreenOpen = 'workFromHomeLeaveApplyScreenOpen';
   const workFromHomeLeaveDetailsScreen = 'workFromHomeLeaveDetailsScreen';
 
+  const dialCall = () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Call',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMail = () => {
+    setClickData({
+      medium: isGuestLogin ? 'guest@thinksys.com' : companyEmail,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send Mail to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send SMS to',
+    });
+    dispatch(modalStatus(true));
+  };
+
+  const sendWhatsAppMessage = async () => {
+    setClickData({
+      medium: isGuestLogin ? '9801296234' : cellNumber,
+      nameOfEmployee: isGuestLogin ? 'guest' : employeeName,
+      text: 'Send WhatsApp to',
+    });
+    dispatch(modalStatus(true));
+  };
+
   return (
     <>
       <CustomHeader

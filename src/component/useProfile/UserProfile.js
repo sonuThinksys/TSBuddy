@@ -28,9 +28,6 @@ import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import CrossIcon from 'assets/allImage/cross.imageset/cross.png';
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
-import Loader from 'component/loader/Loader';
-import {FlashList} from '@shopify/flash-list';
-import {employeeData} from '../../../db';
 
 const UserProfile = ({route}) => {
   const flatListRef = useRef(null);

@@ -54,6 +54,7 @@ const Policies = ({navigation}) => {
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
+        style={{marginTop: 10}}
         onPress={() => {
           navigation.navigate('policiesDetails', item.policy);
           // navigation.navigate('practice');

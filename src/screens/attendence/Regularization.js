@@ -120,8 +120,11 @@ const Regularization = ({navigation, route}) => {
   const renderRow = (rowData, rowID, highlighted) => {
     return (
       <View
-        style={[{borderBottomColor: Colors.lightGray, borderBottomWidth: 1}]}>
-        <Text style={{fontSize: 16}}>{rowData}</Text>
+        style={[
+          {borderBottomColor: Colors.lightGray, borderBottomWidth: 1},
+          highlighted && style.highlighted,
+        ]}>
+        <Text style={{fontSize: 16, backgroundColor: 'white'}}>{rowData}</Text>
       </View>
     );
   };
@@ -279,7 +282,10 @@ const Regularization = ({navigation, route}) => {
             onSelect={itemName => {
               setSelectApprover(itemName);
             }}
-            dropdownTextHighlightStyle={{color: Colors.white}}
+            dropdownTextHighlightStyle={{
+              color: Colors.white,
+              backgroundColor: Colors.white,
+            }}
             isFullWidth={true}
             showsVerticalScrollIndicator={false}
             options={leaveApproversList}
