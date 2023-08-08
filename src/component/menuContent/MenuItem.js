@@ -56,7 +56,6 @@ const MenuItem = ({navigation}) => {
       (async () => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
-
           const totalMenusLength = menuDetails.payload?.foodMenus?.length;
           // const menuDetails = await dispatch(getTodayMenuDetails(token));
 

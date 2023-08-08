@@ -93,7 +93,6 @@ const Regularization = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-      console.log('leaveApprovers 123', leaveApprovers.payload);
       leaveApprovers?.payload?.map(el => {
         console.log('el:', el);
         const firstName = el?.leaveApproverFirstName;
@@ -114,7 +113,6 @@ const Regularization = ({navigation, route}) => {
     (async () => {
       const workMode =
         token && (await dispatch(getWorkModeOfEmployee({token, employeeID})));
-      console.log('workMode:', workMode);
       setWorkMode(workMode.payload.workMode);
     })();
   }, []);
@@ -164,40 +162,40 @@ const Regularization = ({navigation, route}) => {
   //   setSelectDay(item.type);
   // };
 
-  // const renderItem = ({item, index}) => {
-  //   return (
-  //     <View style={{paddingHorizontal: wp(2)}} key={index}>
-  //       <Pressable
-  //         onPress={() => {
-  //           onSelectItem(item, index);
-  //         }}>
-  //         <View
-  //           style={{
-  //             flexDirection: 'row',
-  //             justifyContent: 'space-around',
-  //             width: widthPercentageToDP(25),
-  //           }}>
-  //           <View
-  //             style={[
-  //               style.checkbox,
-  //               {
-  //                 backgroundColor: item.isSelected
-  //                   ? Colors.reddishTint
-  //                   : Colors.white,
-  //               },
-  //             ]}></View>
-  //           <Text
-  //             style={{
-  //               fontSize: 16,
-  //               color: 'black',
-  //             }}>
-  //             {item.type}
-  //           </Text>
-  //         </View>
-  //       </Pressable>
-  //     </View>
-  //   );
-  // };
+  const renderItem = ({item, index}) => {
+    return (
+      <View style={{paddingHorizontal: wp(2)}} key={index}>
+        <Pressable
+          onPress={() => {
+            onSelectItem(item, index);
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: widthPercentageToDP(25),
+            }}>
+            <View
+              style={[
+                style.checkbox,
+                {
+                  backgroundColor: item.isSelected
+                    ? Colors.reddishTint
+                    : Colors.white,
+                },
+              ]}></View>
+            <Text
+              style={{
+                fontSize: 16,
+                color: 'black',
+              }}>
+              {item.type}
+            </Text>
+          </View>
+        </Pressable>
+      </View>
+    );
+  };
 
   const handleSubmit = async () => {
     if (!selectReasons) {
@@ -213,10 +211,10 @@ const Regularization = ({navigation, route}) => {
       return;
     }
 
-    // if (!selectDay) {
-    //   alert('Please select is this regularization for half or full day.');
-    //   return;
-    // }
+    if (!selectDay) {
+      alert('Please select is this regularization for half or full day.');
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -230,12 +228,11 @@ const Regularization = ({navigation, route}) => {
               employeeId: employeeID,
               attendanceDate: attendanceDate,
               reasonId: selectReasons,
-              attendanceType: 'Full Day',
-              // halfDayInfo: null,
+              attendanceType: selectDay,
+              halfDayInfo: null,
               comment: commentText,
               mode: workMode,
               approverId: approoverId,
-              status: 'Open',
             },
           }),
         ));
