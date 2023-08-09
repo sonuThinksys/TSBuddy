@@ -1326,7 +1326,7 @@ const ApplyLeave = ({navigation, route}) => {
                 {isEditOpenleave ? (
                   leaveApprovers?.length === 1 ? (
                     <Text style={styles.leaveApproverName}>
-                      {leaveApproverFullName[0].firstName}88
+                      {leaveApproverFullName[0].firstName}
                     </Text>
                   ) : (
                     <View>
