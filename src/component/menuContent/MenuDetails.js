@@ -18,12 +18,9 @@ import RequestLunch from 'screens/requestLunch/RequestLunch';
 import {RequestLunchScreen} from 'navigation/Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
-import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {addDailyMenuDetails} from 'redux/homeSlice';
-import Loader from 'component/loader/Loader';
-
+// import LinearGradient from 'react-native-linear-gradient';
 const MenuDetails = () => {
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);

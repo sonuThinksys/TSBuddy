@@ -233,6 +233,7 @@ const Regularization = ({navigation, route}) => {
               comment: commentText,
               mode: workMode,
               approverId: approoverId,
+              status: 'Open',
             },
           }),
         ));
