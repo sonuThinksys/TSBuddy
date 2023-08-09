@@ -40,7 +40,7 @@ const DayWiseCard = ({item}) => {
 
   function getFirstLetters(inputString) {
     const wordsArray = inputString.split(' ');
-    const firstLettersArray = wordsArray.map(word =>
+    const firstLettersArray = wordsArray?.map(word =>
       word.charAt(0).toUpperCase(),
     );
     const outputString = firstLettersArray.join('');

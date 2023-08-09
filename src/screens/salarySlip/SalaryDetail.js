@@ -82,7 +82,7 @@ const SalaryDetail = ({route, navigation}) => {
           style={{flex: 1, marginBottom: hp(2)}}
           contentContainerStyle={{flexGrow: 1}}>
           <View style={{paddingHorizontal: wp(1)}}>
-            {renderData.map((element, index) => {
+            {renderData?.map((element, index) => {
               return (
                 <View key={index} style={styles.labelView}>
                   <Text style={{flex: 0.6}}>{element.lable}</Text>

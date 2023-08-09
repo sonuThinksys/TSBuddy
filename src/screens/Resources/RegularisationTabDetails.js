@@ -144,7 +144,7 @@ const RegularisationTabDetails = ({navigation, route}) => {
     ['Mode', mode],
     ['Attendance Date', attDate],
     ['Attendance Type', attendanceType],
-    ['Status', status],
+    ['Status', status || 'N/A'],
     ['Reason', reason[reasonId - 1]],
   ];
   return (
@@ -161,7 +161,7 @@ const RegularisationTabDetails = ({navigation, route}) => {
           <Text style={styles.headerText}>{route?.params?.employeeName}</Text>
         </View>
         <View>
-          {details.map((item, index) => card(item[0], item[1], index))}
+          {details?.map((item, index) => card(item[0], item[1], index))}
         </View>
       </View>
       {status == 'Open' && (
