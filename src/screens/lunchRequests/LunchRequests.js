@@ -111,11 +111,15 @@ const LunchRequests = ({navigation}) => {
             </Text>
           </View>
           {lunchRequests?.map(request => {
+            const fullName = `${request.firstName} ${
+              request.middleName ? request.middleName + ' ' : ''
+            }${request.lastName ? request.lastName : ''}`;
+
             return (
               <View key={request.employeeId} style={styles.cardContainer}>
                 <View style={styles.leftContainer}>
                   <Text style={styles.empID}>{request.employeeId}</Text>
-                  <Text style={styles.name}>{request.employeeName}</Text>
+                  <Text style={styles.name}>{fullName}</Text>
                 </View>
                 <View>
                   <Text style={styles.requestType}>{request.requestType}</Text>

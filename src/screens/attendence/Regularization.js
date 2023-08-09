@@ -49,13 +49,13 @@ const Regularization = ({navigation, route}) => {
   const [approoverId, setApproveId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [dayData, setDayData] = useState([
-    {
-      isSelected: false,
-      type: 'Half day',
-    },
-    {isSelected: false, type: 'Full day'},
-  ]);
+  // const [dayData, setDayData] = useState([
+  //   {
+  //     isSelected: false,
+  //     type: 'Half day',
+  //   },
+  //   {isSelected: false, type: 'Full day'},
+  // ]);
 
   const attendanceId = route?.params?.attendanceId;
   const attendanceDate = route?.params?.attendanceDate;
@@ -93,6 +93,7 @@ const Regularization = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
+      console.log('leaveApprovers 123', leaveApprovers.payload);
       leaveApprovers?.payload?.map(el => {
         console.log('el:', el);
         const firstName = el?.leaveApproverFirstName;
@@ -150,53 +151,53 @@ const Regularization = ({navigation, route}) => {
     </View>
   );
 
-  const onSelectItem = (item, index) => {
-    let tempArr = [];
-    dayData &&
-      dayData?.map((item, ind) => {
-        if (index === ind) {
-          tempArr.push((item.isSelected = true));
-        } else {
-          tempArr.push((item.isSelected = false));
-        }
-      });
-    setSelectDay(item.type);
-  };
+  // const onSelectItem = (item, index) => {
+  //   let tempArr = [];
+  //   dayData &&
+  //     dayData?.map((item, ind) => {
+  //       if (index === ind) {
+  //         tempArr.push((item.isSelected = true));
+  //       } else {
+  //         tempArr.push((item.isSelected = false));
+  //       }
+  //     });
+  //   setSelectDay(item.type);
+  // };
 
-  const renderItem = ({item, index}) => {
-    return (
-      <View style={{paddingHorizontal: wp(2)}} key={index}>
-        <Pressable
-          onPress={() => {
-            onSelectItem(item, index);
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: widthPercentageToDP(25),
-            }}>
-            <View
-              style={[
-                style.checkbox,
-                {
-                  backgroundColor: item.isSelected
-                    ? Colors.reddishTint
-                    : Colors.white,
-                },
-              ]}></View>
-            <Text
-              style={{
-                fontSize: 16,
-                color: 'black',
-              }}>
-              {item.type}
-            </Text>
-          </View>
-        </Pressable>
-      </View>
-    );
-  };
+  // const renderItem = ({item, index}) => {
+  //   return (
+  //     <View style={{paddingHorizontal: wp(2)}} key={index}>
+  //       <Pressable
+  //         onPress={() => {
+  //           onSelectItem(item, index);
+  //         }}>
+  //         <View
+  //           style={{
+  //             flexDirection: 'row',
+  //             justifyContent: 'space-around',
+  //             width: widthPercentageToDP(25),
+  //           }}>
+  //           <View
+  //             style={[
+  //               style.checkbox,
+  //               {
+  //                 backgroundColor: item.isSelected
+  //                   ? Colors.reddishTint
+  //                   : Colors.white,
+  //               },
+  //             ]}></View>
+  //           <Text
+  //             style={{
+  //               fontSize: 16,
+  //               color: 'black',
+  //             }}>
+  //             {item.type}
+  //           </Text>
+  //         </View>
+  //       </Pressable>
+  //     </View>
+  //   );
+  // };
 
   const handleSubmit = async () => {
     if (!selectReasons) {
@@ -212,10 +213,10 @@ const Regularization = ({navigation, route}) => {
       return;
     }
 
-    if (!selectDay) {
-      alert('Please select is this regularization for half or full day.');
-      return;
-    }
+    // if (!selectDay) {
+    //   alert('Please select is this regularization for half or full day.');
+    //   return;
+    // }
 
     try {
       setIsLoading(true);
@@ -229,11 +230,12 @@ const Regularization = ({navigation, route}) => {
               employeeId: employeeID,
               attendanceDate: attendanceDate,
               reasonId: selectReasons,
-              attendanceType: selectDay,
-              halfDayInfo: null,
+              attendanceType: 'Full Day',
+              // halfDayInfo: null,
               comment: commentText,
               mode: workMode,
               approverId: approoverId,
+              status: 'Open',
             },
           }),
         ));
@@ -281,7 +283,7 @@ const Regularization = ({navigation, route}) => {
               paddingLeft: 15,
             }}
             onSelect={itemName => {
-              setSelectApprover(itemName);
+              setSelectApprover(leaveApproversList[itemName]);
             }}
             dropdownTextHighlightStyle={{
               color: Colors.white,
@@ -341,12 +343,12 @@ const Regularization = ({navigation, route}) => {
           />
         </View>
         <View style={style.halfFullCont}>
-          <FlatList
+          {/* <FlatList
             data={dayData}
             renderItem={renderItem}
             keyExtractor={item => item.type}
             horizontal={true}
-          />
+          /> */}
         </View>
         <View style={style.textHeader}>
           <Text style={style.text}>Comment</Text>

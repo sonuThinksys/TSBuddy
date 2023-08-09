@@ -169,14 +169,7 @@ const UserProfile = ({route}) => {
 
   const renderItem = useCallback(
     (
-      {
-        designation,
-        companyEmail,
-        image,
-        cellNumber,
-        employeeName,
-        managerInfoDto,
-      },
+      item,
       index,
       navigation,
       isShowModall,
@@ -185,6 +178,33 @@ const UserProfile = ({route}) => {
       empDetail,
       showHoriZontal,
     ) => {
+      let {
+        designation,
+        companyEmail,
+        image,
+        cellNumber,
+        employeeName,
+        managerInfoDto,
+        firstName,
+        middleName,
+        lastName,
+      } = item;
+
+      const managerInfo = {...managerInfoDto};
+
+      const managerEmployeeName = `${managerInfoDto.firstName} ${
+        managerInfoDto.middleName ? managerInfoDto.middleName + ' ' : ''
+      }${managerInfoDto.lastName ? managerInfoDto.lastName : ''}`;
+      managerInfo.employeeName = managerEmployeeName;
+      // console.log('managerInfoDto:', managerInfoDto);
+      managerInfoDto = managerInfo;
+
+      // console.log('managerEmployeeName:', managerEmployeeName, managerInfo);
+      const name = `${firstName} ${middleName ? middleName + ' ' : ''}${
+        lastName ? lastName : ''
+      }`;
+      employeeName = name;
+
       return (
         <View
           key={index}

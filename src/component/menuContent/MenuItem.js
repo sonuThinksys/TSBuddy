@@ -56,8 +56,15 @@ const MenuItem = ({navigation}) => {
       (async () => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
+
           const totalMenusLength = menuDetails.payload?.foodMenus?.length;
           // const menuDetails = await dispatch(getTodayMenuDetails(token));
+
+          // console.log(
+          //   'menuDetails:',
+          //   menuDetails,
+          //   menuDetails.payload?.foodMenus[totalMenusLength - 1]?.breakfast,
+          // );
           setTodayMenu([
             {
               type: breakfast,

@@ -54,7 +54,13 @@ const RegularisationTabDetails = ({navigation, route}) => {
           attendanceDate: attendanceDate,
           employeeId: employeeId,
           status: 'Approved',
-          attendanceType: attendanceType,
+          attendanceType: 'Full Day',
+          // attendanceType: attendanceType,
+          // regularizationId: 237,
+          // attendanceDate: '2023-08-04T07:09:20.756Z',
+          // employeeId: 10727,
+          // status: 'Approved',
+          // attendanceType: 'Full Day',
         },
       }),
     );
@@ -152,7 +158,7 @@ const RegularisationTabDetails = ({navigation, route}) => {
           {details?.map((item, index) => card(item[0], item[1], index))}
         </View>
       </View>
-      {status == 'Open' && (
+      {status?.toLowerCase() == 'open' && (
         <View
           style={{
             flexDirection: 'row',
