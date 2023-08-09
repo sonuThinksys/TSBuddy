@@ -45,7 +45,7 @@ const AttaindanceDetails = route => {
           <Text style={styles.headerText}>{data.attDate}</Text>
         </View>
         <View>
-          {details.map((item, index) => card(item[0], item[1], index))}
+          {details?.map((item, index) => card(item[0], item[1], index))}
         </View>
       </View>
     </>

@@ -158,8 +158,6 @@ const ApplyLeave = ({navigation, route}) => {
     leaveMenuDetails: {remainingLeaves: allRemainingLeaves},
   } = useSelector(state => state.home);
 
-  console.log('allRemainingLeaves = ', allRemainingLeaves);
-
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -199,7 +197,8 @@ const ApplyLeave = ({navigation, route}) => {
   useEffect(() => {
     if (fromResource || fromWfh) {
       (async () => {
-        const empId = +resourceEmployeeID.match(/\d+/g)[0];
+        // const empId = +resourceEmployeeID.match(/\d+/g)[0];
+        const empId = +resourceEmployeeID;
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
         );
@@ -242,7 +241,7 @@ const ApplyLeave = ({navigation, route}) => {
 
           const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
           const finalWeekOffs = [];
-          daysOfWeek.map((el, index) => {
+          daysOfWeek?.map((el, index) => {
             if (weekOffs.includes(el)) finalWeekOffs.push(index);
           });
           setEmployeeWeekOffs(finalWeekOffs);
@@ -351,6 +350,8 @@ const ApplyLeave = ({navigation, route}) => {
     {leaveType: 'Leave Without Pay', allocated: 0, taken: 0, remaining: 0},
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
+
+  console.log('leaves=leaves', leaves);
 
   const leaveTypes = [
     'Earned Leave',

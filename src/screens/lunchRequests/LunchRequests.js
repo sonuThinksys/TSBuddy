@@ -110,7 +110,7 @@ const LunchRequests = ({navigation}) => {
               Total Count: {lunchRequests.length}
             </Text>
           </View>
-          {lunchRequests.map(request => {
+          {lunchRequests?.map(request => {
             return (
               <View key={request.employeeId} style={styles.cardContainer}>
                 <View style={styles.leftContainer}>

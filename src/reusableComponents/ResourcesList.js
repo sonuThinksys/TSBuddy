@@ -83,7 +83,7 @@ const ResourcesList = props => {
     ) => {
       const empName =
         firstName && lastName
-          ? `${firstName}  ${lastName}`
+          ? `${firstName} ${lastName}`
           : firstName && middleName
           ? `${firstName} ${middleName}`
           : firstName;

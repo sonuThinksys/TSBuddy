@@ -122,7 +122,7 @@ const ApplyWFH = ({navigation}) => {
 
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const finalWeekOffs = [];
-      daysOfWeek.map((el, index) => {
+      daysOfWeek?.map((el, index) => {
         if (weekOffs?.includes(el)) finalWeekOffs.push(index);
       });
       setEmployeeWeekOffs(finalWeekOffs);

@@ -153,7 +153,7 @@ const Regularization = ({navigation, route}) => {
   const onSelectItem = (item, index) => {
     let tempArr = [];
     dayData &&
-      dayData.map((item, ind) => {
+      dayData?.map((item, ind) => {
         if (index === ind) {
           tempArr.push((item.isSelected = true));
         } else {

@@ -23,6 +23,13 @@ const WFHDetails = ({route, navigation}) => {
     companyEmail,
   } = route.params;
 
+  const empFullName =
+    firstName && lastName
+      ? `${firstName}  ${lastName}`
+      : firstName && middleName
+      ? `${firstName} ${middleName}`
+      : firstName;
+
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
 
   const [empDetail, setClickData] = useState({});
