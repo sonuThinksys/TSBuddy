@@ -47,7 +47,6 @@ const LeavesList = props => {
     state => state.auth,
   );
 
-  console.log('propsList:', props);
   const dispatch = useDispatch();
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
