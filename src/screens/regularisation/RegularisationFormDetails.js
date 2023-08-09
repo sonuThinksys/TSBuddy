@@ -111,7 +111,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
       <RegularisationList
         employeeID={employeeId}
         navigateTo={'regularisationTabDetailsScreen'}
-        employeeName={empName}
+        employeeName={empFullName}
       />
     </>
   );
