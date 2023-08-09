@@ -25,7 +25,6 @@ import {FontFamily} from 'constants/fonts';
 const CarouselAutoScroll = ({navigation}) => {
   const [calenderEventData, setCalenderEventData] = useState([]);
   const {calendereventData: calenderData} = useSelector(state => state.home);
-
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
 

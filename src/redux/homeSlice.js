@@ -692,7 +692,6 @@ export const applyForWfhLeave = createAsyncThunk(
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {
-    console.log('body:', body);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -1264,7 +1263,7 @@ export const getCalendereventData = createAsyncThunk(
       refreshToken,
       dispatch,
     });
-    console.log('output:', output);
+
     return output;
   },
 );
@@ -1603,7 +1602,6 @@ const homeSlice = createSlice({
       state.calendereventDataLoading = true;
     });
     builder.addCase(getCalendereventData.fulfilled, (state, action) => {
-      console.log('action:', action);
       state.calendereventDataLoading = false;
       state.calendereventData = action.payload;
       state.calendereventDataError = undefined;

@@ -823,7 +823,6 @@ const ApplyLeave = ({navigation, route}) => {
   );
 
   const renderButtonText = option => {
-    console.log('totalNumberOfLeaveDays', totalNumberOfLeaveDays);
     return (
       <View
         style={{
@@ -961,7 +960,7 @@ const ApplyLeave = ({navigation, route}) => {
       ));
 
     setLoading(false);
-    console.log('appliedLeave: ', appliedLeave);
+
     if (appliedLeave?.error) {
       alert(appliedLeave.error.message);
     } else {
