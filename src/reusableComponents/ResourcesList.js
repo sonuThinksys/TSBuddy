@@ -47,7 +47,7 @@ const ResourcesList = props => {
         setIsLoading(true);
         const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
         setResourcesEmpiolyeeData(employeeData?.payload);
-        console.log('employeeData?.payload', employeeData?.payload);
+
         if (employeeData?.error) {
           ShowAlert({
             messageHeader: ERROR,

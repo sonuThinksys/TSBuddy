@@ -50,7 +50,6 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     if (isFocussed) {
-      console.log('Insideuse', 'Effect:');
       (async () => {
         try {
           setLoading(true);
@@ -64,8 +63,6 @@ const Home = ({navigation}) => {
                 dispatch,
               }),
             ));
-
-          console.log('empData--empData--empData', empData);
         } catch (err) {
           console.log('err:', err);
         } finally {

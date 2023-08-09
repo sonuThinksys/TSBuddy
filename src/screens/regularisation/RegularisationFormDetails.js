@@ -34,7 +34,7 @@ const RegularisationFormDetails = ({navigation, route}) => {
     firstName,
     lastName,
   } = route.params;
-  console.log('route.params', route.params);
+
   // const empId = name.split('/')[1];
 
   const empName =

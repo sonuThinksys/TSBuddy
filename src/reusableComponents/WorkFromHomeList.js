@@ -108,11 +108,6 @@ const WorkFromHomeList = props => {
                 fromResource: true,
               });
 
-          console.log(
-            'employeeID, resourceEmployeeID',
-            employeeID,
-            resourceEmployeeID,
-          );
           return;
 
           // item.status !== 'Open'

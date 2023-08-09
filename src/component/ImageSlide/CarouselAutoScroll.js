@@ -26,7 +26,6 @@ const CarouselAutoScroll = ({navigation}) => {
   const [CalaenderEventData, setCalenderEventData] = useState([]);
 
   const {calendereventData: calenderData} = useSelector(state => state.home);
-  console.log('calenderData', calenderData);
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
   const keyOfObject = Object?.keys(calenderData);

@@ -59,7 +59,7 @@ const MonthWiseCalnder = ({navigation}) => {
           setEmployeesData(employeeData?.payload);
         }
       } catch (err) {
-        console.log('err:', err);
+        // console.log('err:', err);
       } finally {
         setIsLoading(false);
       }
@@ -120,12 +120,9 @@ const MonthWiseCalnder = ({navigation}) => {
         }),
       );
 
-      console.log('result:', result);
-
       if (result?.error) {
-        console.log('result?.error:', result.error);
         const newResult = await getTokenIfExpires(result);
-        console.log('newResult:', newResult);
+
         // setState({
         //   ...state,
         //   attendanceData: [],
