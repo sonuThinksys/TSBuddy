@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginLeft: 4,
     marginBottom: 22,
   },

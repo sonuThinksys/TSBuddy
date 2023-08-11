@@ -17,7 +17,7 @@ const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-  z;
+
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
