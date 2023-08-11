@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginLeft: 4,
     marginBottom: 22,
+    flexWrap: 'wrap',
   },
   welcomeText: {
     fontFamily: FontFamily.RobotoMedium,

@@ -46,8 +46,8 @@ const CarouselAutoScroll = ({navigation}) => {
       events.push(newAnniversary);
     });
 
-    keyOfObject.map(el => {
-      calenderData[el].map(element => {
+    keyOfObject?.map(el => {
+      calenderData[el]?.map(element => {
         arr.push(element);
       });
     });
@@ -143,12 +143,10 @@ const CarouselAutoScroll = ({navigation}) => {
           }}
           keyExtractor={(item, index) => index}
           renderItem={({item, index}) => {
-            const name =
-              item.firstName && item.lastName
-                ? `${item.firstName} ${item.lastName}`
-                : item.firstName && item.middleName
-                ? `${item.firstName} ${item.middleName}`
-                : item.firstName;
+            const name = `${item.firstName ? item.firstName : ''} ${
+              item.middleName ? item.middleName + ' ' : ''
+            }${item.lastName ? item.lastName : ''}`;
+
             return (
               <View
                 style={{

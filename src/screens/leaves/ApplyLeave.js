@@ -48,12 +48,9 @@ import {guestProfileData} from 'guestData';
 import CustomHeader from 'navigation/CustomHeader';
 
 const ApplyLeave = ({navigation, route}) => {
-  console.log('routeee:', route.params);
   const {employeeProfile: empProfileData = {}} = useSelector(
     state => state.home,
   );
-
-  // console.log("employeeProfile",)
 
   const userGender = empProfileData.gender;
 
@@ -85,6 +82,7 @@ const ApplyLeave = ({navigation, route}) => {
   } = useSelector(state => state.home);
 
   const {openLeavesCount} = route?.params || {};
+  console.log('openLeavesCount:', openLeavesCount);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -351,8 +349,6 @@ const ApplyLeave = ({navigation, route}) => {
     // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
-  console.log('leaves=leaves', leaves);
-
   const leaveTypes = [
     'Earned Leave',
     'Restricted Holiday',
@@ -463,7 +459,7 @@ const ApplyLeave = ({navigation, route}) => {
 
     if (toDate.toDateObj) {
       if (date > toDate.toDateObj) {
-        alert('Please select From date which is not less than To date.');
+        alert('Please select From date which is less than To date.');
         fromOnCancel();
         return;
       }
@@ -900,6 +896,7 @@ const ApplyLeave = ({navigation, route}) => {
       const positiveDays = openLeavesCount?.earnedOpen + totalNumberOfLeaveDays;
 
       if (positiveDays > earnedLeaves?.currentLeaveBalance) {
+        console.log('positiveDays:', positiveDays);
         alert(
           'You either run out of leave balance or you already have opened remaining leaves.',
         );
@@ -907,15 +904,20 @@ const ApplyLeave = ({navigation, route}) => {
       }
     }
 
+    // return;
+
     if (leaveType?.toLowerCase() === 'restricted holiday') {
       const positiveDays = openLeavesCount?.rhOpen + totalNumberOfLeaveDays;
       if (positiveDays > restrictedLeaves?.currentLeaveBalance) {
+        console.log('positiveDays:2', positiveDays);
         alert(
           'You either run out of leave balance or you already opened remaining leaves.',
         );
         return;
       }
     }
+
+    // return;
 
     // =========================================================================
 
@@ -959,7 +961,6 @@ const ApplyLeave = ({navigation, route}) => {
       ));
 
     setLoading(false);
-
     if (appliedLeave?.error) {
       alert(appliedLeave.error.message);
     } else {

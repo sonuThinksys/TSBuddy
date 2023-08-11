@@ -118,49 +118,41 @@ const RemainingLeaves = () => {
   //   );
   // }
 
-  const updateData = async () => {
-    // try {
-    setLoading(true);
-    const allLeaves = await dispatch(
-      getLeaveDetails({token, empID: employeeID}),
-    );
-    // console.log('allLeaves:', allLeaves)
-
-    if (allLeaves?.error) {
-      ShowAlert({
-        messageHeader: ERROR,
-        messageSubHeader: allLeaves?.error?.message,
-        buttonText: 'Close',
-        dispatch,
-        navigation,
-        isTokenExpired: false,
-      });
-    }
-
-    // const openCount = openLeavesCount({leaves: allLeaves?.payload});
-    // setOpenLeaves(openCount);
-    // } catch (err) {
-    //   console.log('errAaGayi:', err);
-    // } finally {
-    setLoading(false);
-    // }
-  };
-
-  useEffect(() => {
-    token && updateData();
-    // if (isFocussed) token && updateData();
-  }, []);
-
   return (
     <View style={{paddingHorizontal: 20}}>
       <View style={styles.container}>
         <Text style={styles.remainingText}>Manage Leaves</Text>
         <Pressable
           onPress={() => {
+            ////////////////////////////////////////////////////////////////
+            const openLeaves = {rhOpen: 0, earnedOpen: 0};
+
+            console.log('leavesData:', leavesData);
+            for (const leave of leavesData) {
+              console.log('leaveData:', leave);
+
+              if (
+                leave?.leaveType?.toLowerCase() === 'earned leave' &&
+                leave.status?.toLowerCase() === 'open'
+              ) {
+                const totalDays = leave?.totalLeaveDays;
+                openLeaves.earnedOpen += totalDays;
+              }
+              if (
+                leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
+                leave.status?.toLowerCase() === 'open'
+              ) {
+                const totalDays = leave?.totalLeaveDays;
+                openLeaves.rhOpen += totalDays;
+              }
+            }
+
+            ////////////////////////////////////////////////////////////////
+
             navigation.navigate('Leaves', {
               screen: 'LeaveApplyScreen',
               initial: false,
-              params: {leavesData},
+              params: {leavesData, openLeavesCount: openLeaves},
             });
           }}
           style={styles.buttonContainer}>

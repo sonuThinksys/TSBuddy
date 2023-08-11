@@ -105,7 +105,11 @@ const Leaves = ({navigation}) => {
           </Text>
           <View />
         </Pressable>
-        <LeavesList fromOpenLeave={true} employeeId={employeeID} />
+        <LeavesList
+          fromOpenLeave={true}
+          employeeId={employeeID}
+          fromLeaveDetails={setOpenLeaves}
+        />
       </SafeAreaView>
     </>
   );

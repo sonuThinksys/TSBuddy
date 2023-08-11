@@ -41,6 +41,7 @@ const LeavesList = props => {
     fromOpenLeave,
     resourceEmployeeID,
     employeeId,
+    fromLeaveDetails,
   } = props;
 
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
@@ -95,6 +96,28 @@ const LeavesList = props => {
               );
             });
 
+        const openLeaves = {rhOpen: 0, earnedOpen: 0};
+
+        for (const leave of sortLeaveData) {
+          console.log('leave:', leave);
+
+          if (
+            leave?.leaveType?.toLowerCase() === 'earned leave' &&
+            leave.status.toLowerCase() === 'open'
+          ) {
+            const totalDays = leave?.totalLeaveDays;
+            openLeaves.earnedOpen += totalDays;
+          }
+          if (
+            leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
+            leave.status.toLowerCase() === 'open'
+          ) {
+            const totalDays = leave?.totalLeaveDays;
+            openLeaves.rhOpen += totalDays;
+          }
+        }
+
+        fromLeaveDetails && fromLeaveDetails(openLeaves);
         setEmployeesLeaves(sortLeaveData);
 
         setLoading(false);

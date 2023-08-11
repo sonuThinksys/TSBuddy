@@ -47,46 +47,45 @@ const RecentLeaves = ({navigation}) => {
           const leavesList = [];
           const wfhList = [];
 
-          leavesData.payload.map(leave => {
-            if (leave.leaveType.toLowerCase() === 'work from home') {
-              wfhList.push(leave);
-            } else {
-              leavesList.push(leave);
-            }
-          });
+        leavesData.payload?.map(leave => {
+          if (leave.leaveType.toLowerCase() === 'work from home') {
+            wfhList.push(leave);
+          } else {
+            leavesList.push(leave);
+          }
+        });
 
-          const sortedWfhList = wfhList?.sort(
-            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-          );
+        const sortedWfhList = wfhList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-          const sortedLeaveList = leavesList?.sort(
-            (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-          );
+        const sortedLeaveList = leavesList?.sort(
+          (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
+        );
 
-          const recent3Leaves = sortedLeaveList?.filter(leave => {
-            if (
-              leave.leaveType.toLowerCase() !== 'work from home' &&
-              leavesCount < 3
-            ) {
-              leavesCount++;
-              return true;
-            }
-          });
+        const recent3Leaves = sortedLeaveList?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() !== 'work from home' &&
+            leavesCount < 3
+          ) {
+            leavesCount++;
+            return true;
+          }
+        });
 
-          setRecent3Leaves(recent3Leaves);
-          const recent3WFH = sortedWfhList?.filter(leave => {
-            if (
-              leave.leaveType.toLowerCase() === 'work from home' &&
-              wfhCount < 3
-            ) {
-              wfhCount++;
-              return true;
-            }
-          });
+        setRecent3Leaves(recent3Leaves);
+        const recent3WFH = sortedWfhList?.filter(leave => {
+          if (
+            leave.leaveType.toLowerCase() === 'work from home' &&
+            wfhCount < 3
+          ) {
+            wfhCount++;
+            return true;
+          }
+        });
 
-          setRecent3WFH(recent3WFH);
-        })();
-      }
+        setRecent3WFH(recent3WFH);
+      })();
     }
   }, [isFocussed]);
 

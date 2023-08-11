@@ -102,10 +102,20 @@ const ApplyWFH = ({navigation}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-      const listOfLeaveApprovers = leaveApprovers.payload.map(approver => {
+
+      console.log('leaveApprovers:', leaveApprovers.payload);
+      const listOfLeaveApprovers = leaveApprovers.payload?.map(approver => {
+        const approverName = `${approver?.leaveApproverFirstName} ${
+          approver.leaveApproverMiddleName
+            ? approver.leaveApproverMiddleName + ' '
+            : ''
+        }${
+          approver.leaveApproverLastName ? approver.leaveApproverLastName : ''
+        }`;
+
         return {
           value: approver.leaveApprover,
-          label: approver.leaveApproverName,
+          label: approverName,
         };
       });
       setLeaveApprover(listOfLeaveApprovers);
@@ -132,34 +142,38 @@ const ApplyWFH = ({navigation}) => {
   useEffect(() => {
     if (isFocused) {
       (async () => {
-        setLoading(true);
-        const leavesData = await dispatch(
-          getLeaveDetails({
-            token,
-            empID: employeeID,
-          }),
-        );
-        setLoading(false);
+        try {
+          setLoading(true);
+          const leavesData = await dispatch(
+            getLeaveDetails({
+              token,
+              empID: employeeID,
+            }),
+          );
 
-        let wfhLeaveList = leavesData.payload?.filter(
-          leave => leave.leaveType === 'Work From Home',
-        );
+          let wfhLeaveList = leavesData.payload?.filter(
+            leave => leave.leaveType === 'Work From Home',
+          );
 
-        console.log('wfhLeaveList:', wfhLeaveList);
-        let sortedWfhData = wfhLeaveList.sort(
-          (a, b) =>
-            new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
-        );
+          let sortedWfhData = wfhLeaveList?.sort(
+            (a, b) =>
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
+          );
 
-        setWfhList(sortedWfhData);
+          setWfhList(sortedWfhData);
 
-        if (leavesData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: leavesData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-          });
+          if (leavesData?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: leavesData?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+            });
+          }
+        } catch (err) {
+          console.log('errWFH:', err);
+        } finally {
+          setLoading(false);
         }
       })();
     }
@@ -345,56 +359,61 @@ const ApplyWFH = ({navigation}) => {
       }
     }
 
-    setLoading(true);
-    const appliedWfh =
-      token &&
-      (await dispatch(
-        applyForWfhLeave({
-          token,
-          body: {
-            employeeId: employeeID,
-            fromDate: fromDate,
-            toDate: toDate,
-            totalLeaveDays: totalDaysCount,
-            description: reason,
-            leaveType: 'Work From Home',
-            leaveApprover: selectedLeaveApprover,
-            fiscalYear: fiscalYear,
-            postingDate: new Date(),
+    try {
+      setLoading(true);
+      const appliedWfh =
+        token &&
+        (await dispatch(
+          applyForWfhLeave({
+            token,
+            body: {
+              employeeId: employeeID,
+              fromDate: fromDate,
+              toDate: toDate,
+              totalLeaveDays: totalDaysCount,
+              description: reason,
+              leaveType: 'Work From Home',
+              leaveApprover: selectedLeaveApprover,
+              fiscalYear: fiscalYear,
+              postingDate: new Date(),
+            },
+          }),
+        ));
+
+      const appliedWorkFromHome = appliedWfh?.payload;
+
+      if (!appliedWfh?.error) {
+        setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
+      } else if (appliedWfh?.error) {
+        // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
+      }
+
+      if (appliedWfh?.error) {
+        alert(appliedWfh.error.message);
+      } else {
+        Alert.alert('Success', 'WFH applied successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              setEndSelected(false);
+              setStartSelected(false);
+              setStartDate({
+                startDateStr: 'Select Start Date',
+              });
+              setEndDate({endDateStr: 'Select End Date'});
+              setReason('');
+              setTotalDaysCount(0);
+              setValue(null);
+            },
           },
-        }),
-      ));
+        ]);
 
-    const appliedWorkFromHome = appliedWfh?.payload;
-
-    if (!appliedWfh?.error) {
-      setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
-    } else if (appliedWfh?.error) {
-      // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
-    }
-
-    setLoading(false);
-    if (appliedWfh?.error) {
-      alert(appliedWfh.error.message);
-    } else {
-      Alert.alert('Success', 'WFH applied successfully!', [
-        {
-          text: 'Ok',
-          onPress: () => {
-            setEndSelected(false);
-            setStartSelected(false);
-            setStartDate({
-              startDateStr: 'Select Start Date',
-            });
-            setEndDate({endDateStr: 'Select End Date'});
-            setReason('');
-            setTotalDaysCount(0);
-            setValue(null);
-          },
-        },
-      ]);
-
-      setTotalDaysCount(0);
+        setTotalDaysCount(0);
+      }
+    } catch (err) {
+      console.log('errWFH2:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
