@@ -64,11 +64,13 @@ const Login = ({navigation}) => {
   // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('pant.amit@thinksys.com');
+  // const [password, setPassword] = useState('pant@1234');
+  const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
+  const [password, setPassword] = useState('roshan@1234');
+  // const [username, setUserName] = useState('bhandari.tribhuwan@thinksys.com');
+  // const [password, setPassword] = useState('bhandari@1234');
+  // const [username, setUserName] = useState('singh.vivek@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
-  // const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
-  // const [password, setPassword] = useState('roshan@1234');
-  const [username, setUserName] = useState('bhandari.tribhuwan@thinksys.com');
-  const [password, setPassword] = useState('thinksys@123');
   const {
     userToken: token,
     formInput,
@@ -128,7 +130,7 @@ const Login = ({navigation}) => {
       if (result?.error) {
         ShowAlert({
           messageHeader: ERROR,
-          messageSubHeader: INVALID_CREDENTIAL,
+          messageSubHeader: ERROR,
           buttonText: 'CLOSE',
           dispatch,
           navigation,

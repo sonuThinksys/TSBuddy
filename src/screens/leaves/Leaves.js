@@ -17,10 +17,9 @@ const Leaves = ({navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
+
   var decoded = token && jwt_decode(token);
-  console.log('decoded:', decoded, token);
   const employeeID = decoded?.id;
-  console.log('employeeID:', employeeID);
 
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
@@ -106,7 +105,11 @@ const Leaves = ({navigation}) => {
           </Text>
           <View />
         </Pressable>
-        <LeavesList fromOpenLeave={true} employeeId={employeeID} />
+        <LeavesList
+          fromOpenLeave={true}
+          employeeId={employeeID}
+          fromLeaveDetails={setOpenLeaves}
+        />
       </SafeAreaView>
     </>
   );

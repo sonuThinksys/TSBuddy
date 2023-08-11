@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {
   View,
@@ -32,12 +32,24 @@ const MenuDetails = () => {
   const [openAddMenuModal, setOpenAddMenuModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const {
+    leaveMenuDetails: {foodMenus},
+  } = useSelector(state => state.home);
 
-  const [menu, setMenu] = useState({
-    breakfast: '',
-    lunch: '',
-    eveningSnack: '',
-  });
+  console.log('foodMenus:', foodMenus);
+  const [menu, setMenu] = useState({});
+
+  useEffect(() => {
+    if (foodMenus?.length) {
+      const data = {
+        breakfast: foodMenus?.length === 0 ? '' : foodMenus[0]?.food,
+        lunch: foodMenus?.length === 0 ? '' : foodMenus[1]?.food,
+        eveningSnack: foodMenus?.length === 0 ? '' : foodMenus[2]?.food,
+      };
+
+      setMenu(data);
+    }
+  }, [foodMenus]);
 
   const openAddMenu = () => {
     setOpenAddMenuModal(true);
@@ -56,11 +68,11 @@ const MenuDetails = () => {
     } catch (err) {
       console.log('err:', err);
     } finally {
-      setMenu({
-        breakfast: '',
-        lunch: '',
-        eveningSnack: '',
-      });
+      // setMenu({
+      //   breakfast: '',
+      //   lunch: '',
+      //   eveningSnack: '',
+      // });
       setIsLoading(false);
       setOpenAddMenuModal(false);
     }
@@ -94,6 +106,7 @@ const MenuDetails = () => {
                   setMenu(menu => ({...menu, breakfast: enteredInput}));
                 }}
                 style={styles.textInput}
+                value={menu.breakfast}
               />
             </View>
             <View style={styles.foodContainer}>
@@ -103,6 +116,7 @@ const MenuDetails = () => {
                   setMenu(menu => ({...menu, lunch: enteredInput}));
                 }}
                 style={styles.textInput}
+                value={menu.lunch}
               />
             </View>
             <View style={styles.foodContainer}>
@@ -114,6 +128,7 @@ const MenuDetails = () => {
                   setMenu(menu => ({...menu, eveningSnack: enteredInput}));
                 }}
                 style={styles.textInput}
+                value={menu.eveningSnack}
               />
             </View>
             <View style={styles.buttonsContainer}>
@@ -124,9 +139,9 @@ const MenuDetails = () => {
               </Pressable>
               <Pressable
                 disabled={
-                  !menu.breakfast.trim() ||
-                  !menu.lunch.trim() ||
-                  !menu.eveningSnack.trim()
+                  !menu?.breakfast?.trim() ||
+                  !menu?.lunch?.trim() ||
+                  !menu?.eveningSnack?.trim()
                 }
                 onPress={submitHandler}
                 style={[
@@ -134,9 +149,9 @@ const MenuDetails = () => {
                   {
                     backgroundColor: Colors.green,
                     opacity:
-                      !menu.breakfast.trim() ||
-                      !menu.lunch.trim() ||
-                      !menu.eveningSnack.trim()
+                      !menu?.breakfast?.trim() ||
+                      !menu?.lunch?.trim() ||
+                      !menu?.eveningSnack?.trim()
                         ? 0.4
                         : 1,
                   },

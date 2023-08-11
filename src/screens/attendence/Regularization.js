@@ -34,6 +34,7 @@ import jwt_decode from 'jwt-decode';
 import {Value} from 'react-native-reanimated';
 import CustomHeader from 'navigation/CustomHeader';
 import Loader from 'component/loader/Loader';
+import {FontFamily} from 'constants/fonts';
 
 const Regularization = ({navigation, route}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState('fullDay');
@@ -58,7 +59,17 @@ const Regularization = ({navigation, route}) => {
   // ]);
 
   const attendanceId = route?.params?.attendanceId;
-  const attendanceDate = route?.params?.attendanceDate;
+  const attDate = route?.params?.attendanceDate;
+  const attendanceDate = new Date(route?.params?.attendanceDate);
+  const date = `${
+    attendanceDate.getDate() < 10
+      ? '0' + attendanceDate.getDate()
+      : attendanceDate.getDate()
+  }-${
+    +attendanceDate.getMonth() + 1 < 10
+      ? '0' + (+attendanceDate.getMonth() + 1)
+      : +attendanceDate.getMonth() + 1
+  }-${attendanceDate.getFullYear()}`;
 
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
@@ -93,7 +104,6 @@ const Regularization = ({navigation, route}) => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
-      console.log('leaveApprovers 123', leaveApprovers.payload);
       leaveApprovers?.payload?.map(el => {
         console.log('el:', el);
         const firstName = el?.leaveApproverFirstName;
@@ -105,7 +115,6 @@ const Regularization = ({navigation, route}) => {
         }${lastName ? lastName : ''}`;
         listOfLeaveApprover?.push(userName);
       });
-      console.log('listOfLeaveApprover:', listOfLeaveApprover);
 
       setApproveId(leaveApprovers?.payload?.employeeId);
       setLeaveApproversList(listOfLeaveApprover);
@@ -228,7 +237,7 @@ const Regularization = ({navigation, route}) => {
             body: {
               attendanceId: attendanceId,
               employeeId: employeeID,
-              attendanceDate: attendanceDate,
+              attendanceDate: attDate,
               reasonId: selectReasons,
               attendanceType: 'Full Day',
               // halfDayInfo: null,
@@ -269,9 +278,30 @@ const Regularization = ({navigation, route}) => {
         showHeaderRight={false}
       />
       <View style={style.container}>
+        <View
+          style={{
+            // borderWidth: 1,
+
+            paddingVertical: 14,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: Colors.black,
+            borderRadius: 50,
+            marginBottom: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontFamily: FontFamily.RobotoMedium,
+              color: Colors.white,
+            }}>
+            Date: {date}
+          </Text>
+        </View>
         <View style={style.textHeader}>
           <Text style={style.text}>Leave Approver</Text>
         </View>
+
         <View style={style.dropdownCont}>
           <ModalDropdown
             style={{
