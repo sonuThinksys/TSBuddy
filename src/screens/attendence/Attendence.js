@@ -500,6 +500,17 @@ const RenderCalender = ({
   return (
     <CalendarList
       onDayPress={day => {
+        const isCurrentDatePressed =
+          day.year === new Date().getFullYear() &&
+          day.month === new Date().getMonth() + 1 &&
+          day.day === new Date().getDate();
+
+        const dateObj = new Date(day?.dateString);
+        const dayIndex = dateObj.getDay();
+        const isWeekend = dayIndex === 0 || dayIndex === 6;
+
+        if (Date.now() < day.timestamp || isCurrentDatePressed || isWeekend)
+          return;
         let filterData = dailyAttendance?.filter(element => {
           let date = element?.attendanceDate?.split('T')[0];
           return date == day.dateString;

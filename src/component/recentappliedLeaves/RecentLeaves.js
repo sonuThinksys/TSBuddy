@@ -47,7 +47,7 @@ const RecentLeaves = ({navigation}) => {
           const leavesList = [];
           const wfhList = [];
 
-          leavesData.payload.map(leave => {
+          leavesData.payload?.map(leave => {
             if (leave.leaveType.toLowerCase() === 'work from home') {
               wfhList.push(leave);
             } else {
