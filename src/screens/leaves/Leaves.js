@@ -19,7 +19,6 @@ const Leaves = ({navigation}) => {
   );
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
-  console.log('employeeID:', employeeID);
 
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
