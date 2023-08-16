@@ -45,7 +45,9 @@ const WelcomeHeader = () => {
           );
 
           const checkedInTimeStamp = checkedInTimeObj.getTime();
-          const differenceInTime = checkedInTimeStamp - properCheckInTimeStamp;
+          const differenceInTime = Math.abs(
+            checkedInTimeStamp - properCheckInTimeStamp,
+          );
 
           const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
           const lateMinutes = Math.floor(
@@ -59,7 +61,7 @@ const WelcomeHeader = () => {
             lateHours,
             lateMinutes,
             lateSeconds,
-            isLate: differenceInTime > 0,
+            isLate: checkedInTimeStamp - properCheckInTimeStamp > 0,
           });
 
           if (checkIn.error) {
@@ -189,7 +191,11 @@ const WelcomeHeader = () => {
           </View>
         ) : null}
         <View style={styles.lateContainer}>
-          <Text style={styles.lateText}>
+          <Text
+            style={[
+              styles.lateText,
+              {color: todayStatus?.isLate ? Colors.gold : Colors.green},
+            ]}>
             {todayStatus?.isLate ? 'Late' : 'Early'} by{' '}
             {`${!isGuestLogin ? todayStatus?.lateHours || '00' : '00'}:${
               !isGuestLogin ? todayStatus?.lateMinutes || '00' : '00'

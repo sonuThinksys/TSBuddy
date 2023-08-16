@@ -19,12 +19,30 @@ import {modalStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 const BirthdayAnniV = ({modalData, showModal}) => {
-  const {startsOn, dateOfJoining, name, description, setShowModal, isBirthday} =
-    modalData || {};
+  const {
+    startsOn,
+    dateOfJoining,
+    name,
+    description,
+    setShowModal,
+    isBirthday,
+    dateOfBirth,
+  } = modalData || {};
+
+  const displayDate = new Date(
+    isBirthday ? dateOfBirth : dateOfJoining,
+  ).getDate();
+
+  const displayMonth = new Date(
+    isBirthday ? dateOfBirth : dateOfJoining,
+  ).toLocaleString('default', {month: 'short'});
+
+  const displayYear = new Date().getFullYear();
 
   const date = moment(description === null ? dateOfJoining : startsOn).format(
     'DD',
   );
+
   const Month = moment(description === null ? dateOfJoining : startsOn).format(
     ' MMM ',
   );
@@ -63,7 +81,7 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                   fontSize: FontSize.h22,
                   color: Colors.green,
                 }}>
-                {date}
+                {displayDate}
               </Text>
               <Text
                 style={{
@@ -71,8 +89,7 @@ const BirthdayAnniV = ({modalData, showModal}) => {
                   color: 'green',
                   fontFamily: FontFamily.RobotoBold,
                 }}>
-                {Month}
-                {currentYear}
+                {displayMonth} {displayYear}
               </Text>
               <View style={styles.textView}>
                 <Text

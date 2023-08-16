@@ -18,8 +18,6 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
-import LinearGradient from 'react-native-linear-gradient';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import {useSelector, useDispatch} from 'react-redux';
 import {addMealFeedback} from 'redux/homeSlice';
 import {styles} from './FoodFeedbackStyles';
@@ -92,6 +90,12 @@ const FoodFeedback = ({modalData, showModal}) => {
     );
   };
 
+  const onCancelModal = () => {
+    setReaction(0);
+    setText('');
+    setShowModal(false);
+  };
+
   const handleSubmit = async () => {
     const bodyToSend = {
       dailyMenuId: dailyMenuID,
@@ -123,6 +127,8 @@ const FoodFeedback = ({modalData, showModal}) => {
       }
     } catch (err) {
       // console.log('err:', err);
+    } finally {
+      onCancelModal();
     }
   };
 
@@ -136,13 +142,13 @@ const FoodFeedback = ({modalData, showModal}) => {
             closeOnClick={true}
             isVisible={showModal}
             onBackdropPress={() => {
-              setShowModal(false);
+              onCancelModal();
             }}
             onBackButtonPress={() => {
-              setShowModal(false);
+              onCancelModal();
             }}
             onRequestClose={() => {
-              setShowModal(false);
+              onCancelModal();
             }}>
             <View style={styles.modalBackground}>
               <Text style={styles.foodTypeText}>{type}</Text>
@@ -165,7 +171,7 @@ const FoodFeedback = ({modalData, showModal}) => {
                 <TouchableOpacity
                   style={styles.buttonCancel}
                   onPress={() => {
-                    setShowModal(false);
+                    onCancelModal(false);
                   }}>
                   <Text style={[styles.textStyle, {color: Colors.dune}]}>
                     Cancel
@@ -173,7 +179,12 @@ const FoodFeedback = ({modalData, showModal}) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.buttonCancel, styles.buttonSubmit]}
+                  disabled={reaction === 0 || text === ''}
+                  style={[
+                    styles.buttonCancel,
+                    styles.buttonSubmit,
+                    {opacity: reaction === 0 || text === '' ? 0.5 : 1},
+                  ]}
                   onPress={() => {
                     handleSubmit();
                   }}>
