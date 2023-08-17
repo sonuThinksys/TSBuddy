@@ -50,13 +50,13 @@ const Regularization = ({navigation, route}) => {
   const [approoverId, setApproveId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // const [dayData, setDayData] = useState([
-  //   {
-  //     isSelected: false,
-  //     type: 'Half day',
-  //   },
-  //   {isSelected: false, type: 'Full day'},
-  // ]);
+  const [dayData, setDayData] = useState([
+    {
+      isSelected: false,
+      type: 'Half day',
+    },
+    {isSelected: false, type: 'Full day'},
+  ]);
 
   const attendanceId = route?.params?.attendanceId;
   const attDate = route?.params?.attendanceDate;
@@ -221,10 +221,10 @@ const Regularization = ({navigation, route}) => {
       return;
     }
 
-    if (!selectDay) {
-      alert('Please select is this regularization for half or full day.');
-      return;
-    }
+    // if (!selectDay) {
+    //   alert('Please select is this regularization for half or full day.');
+    //   return;
+    // }
 
     try {
       setIsLoading(true);
@@ -238,7 +238,7 @@ const Regularization = ({navigation, route}) => {
               employeeId: employeeID,
               attendanceDate: attDate,
               reasonId: selectReasons,
-              attendanceType: selectDay,
+              attendanceType: 'Full day',
               halfDayInfo: null,
               comment: commentText,
               mode: workMode,

@@ -1,17 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  View,
-  SafeAreaView,
-  FlatList,
-  Text,
-  TextInput,
-  Pressable,
-  ScrollView,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {View, ScrollView} from 'react-native';
+
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import MenuItem from 'component/menuContent/MenuItem';
@@ -21,7 +10,6 @@ import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import {Colors} from 'colors/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import Modal from 'react-native-modal';
 
 import Loader from 'component/loader/Loader';
 import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';

@@ -552,9 +552,7 @@ const ApplyWFH = ({navigation}) => {
                   onSelectItem={onSelectItem}
                   containerStyle={{height: 40}}
                   style={{
-                    height: hp(1),
-                    height: 10,
-                    borderRadius: 50,
+                    borderRadius: open ? 5 : 50,
                     borderColor: Colors.grey,
                     marginBottom: hp(3),
                   }}

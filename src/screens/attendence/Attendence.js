@@ -530,10 +530,6 @@ const RenderCalender = ({
           setShowDailyStatusModal(true);
           setModalDate(day);
         }
-        navigation.navigate(RegularzitionScreen, {
-          attendanceId,
-          attendanceDate,
-        });
       }}
       displayLoadingIndicator={true}
       horizontal={true}
