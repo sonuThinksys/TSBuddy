@@ -1,5 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, SafeAreaView, FlatList, Text} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  FlatList,
+  Text,
+  TextInput,
+  Pressable,
+  ScrollView,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -13,6 +21,7 @@ import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
 import {Colors} from 'colors/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import Modal from 'react-native-modal';
 
 import Loader from 'component/loader/Loader';
 import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';
@@ -119,7 +128,7 @@ const Home = ({navigation}) => {
       />
       {loading ? <Loader /> : null}
 
-      <FlatList
+      {/* <FlatList
         ref={flatListRef}
         showsVerticalScrollIndicator={false}
         data={data}
@@ -129,7 +138,19 @@ const Home = ({navigation}) => {
           let Component = item;
           return <Component isTokenExpired={index === 0 ? true : false} />;
         }}
-      />
+      /> */}
+
+      <ScrollView nestedScrollEnabled={true}>
+        {data.map((item, index) => {
+          let Component = item;
+          return (
+            <Component
+              key={index}
+              isTokenExpired={index === 0 ? true : false}
+            />
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };

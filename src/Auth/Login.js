@@ -55,7 +55,7 @@ const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
 
-  const [showBiomatricModal, setshowBiomatricModal] = useState(true);
+  // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');

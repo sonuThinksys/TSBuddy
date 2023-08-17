@@ -71,12 +71,15 @@ const UpComingHolidays = ({navigation}) => {
         <Text style={styles.upcomingText}>Holidays {fiscalYear}</Text>
       </View>
       {duplicateHolidays?.length > 0 ? (
-        <FlatList
-          data={duplicateHolidays}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          style={{marginRight: wp(1)}}
-        />
+        // <FlatList
+        //   data={duplicateHolidays}
+        //   renderItem={renderItem}
+        //   keyExtractor={(item, index) => index}
+        //   style={{marginRight: wp(1)}}
+        // />
+        duplicateHolidays.map((item, index) => {
+          return renderItem({item, index});
+        })
       ) : (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text

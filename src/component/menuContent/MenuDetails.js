@@ -7,6 +7,9 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  Platform,
+  // Modal,
+  SafeAreaView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -18,7 +21,6 @@ import RequestLunch from 'screens/requestLunch/RequestLunch';
 import {RequestLunchScreen} from 'navigation/Route';
 import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
-import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {addDailyMenuDetails} from 'redux/homeSlice';
@@ -36,7 +38,6 @@ const MenuDetails = () => {
     leaveMenuDetails: {foodMenus},
   } = useSelector(state => state.home);
 
-  console.log('foodMenus:', foodMenus);
   const [menu, setMenu] = useState({});
 
   useEffect(() => {
@@ -82,87 +83,97 @@ const MenuDetails = () => {
     <View style={styles.container}>
       <Text style={styles.text1}>Today's Menu</Text>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        closeOnClick={true}
-        isVisible={openAddMenuModal}
-        onBackdropPress={() => {
-          setOpenAddMenuModal(false);
-        }}
-        onBackButtonPress={() => {
-          setOpenAddMenuModal(false);
-        }}
-        onRequestClose={() => {
-          setOpenAddMenuModal(false);
-        }}>
-        <View style={styles.modalBackground}>
-          <Text style={styles.newDailyMenuHeading}>New Daily Menu</Text>
-          <View style={styles.modal}>
-            <View style={styles.foodContainer}>
-              <Text style={styles.foodTypeText}>Enter today Breakfast :</Text>
-              <TextInput
-                onChangeText={enteredInput => {
-                  setMenu(menu => ({...menu, breakfast: enteredInput}));
-                }}
-                style={styles.textInput}
-                value={menu.breakfast}
-              />
+      {openAddMenuModal ? (
+        <Modal
+          avoidKeyboard={false}
+          onRequestClose={() => {
+            console.log('It', 'Is', 'Closed!');
+            setOpenAddMenuModal(false);
+          }}
+          keyboardAvoidingBehavior={
+            Platform.OS == 'android' ? 'height' : 'padding'
+          }
+          animationType="slide"
+          transparent={true}
+          closeOnClick={true}
+          isVisible={openAddMenuModal}
+          onBackdropPress={() => {
+            setOpenAddMenuModal(false);
+          }}
+          onBackButtonPress={() => {
+            setOpenAddMenuModal(false);
+          }}>
+          <SafeAreaView style={styles.modalBackground}>
+            <Text style={styles.newDailyMenuHeading}>New Daily Menu</Text>
+            <View style={styles.modal}>
+              <View style={styles.foodContainer}>
+                <Text style={styles.foodTypeText}>Enter today Breakfast :</Text>
+                <TextInput
+                  onChangeText={enteredInput => {
+                    setMenu(menu => ({...menu, breakfast: enteredInput}));
+                  }}
+                  style={styles.textInput}
+                  value={menu.breakfast}
+                />
+              </View>
+              <View style={styles.foodContainer}>
+                <Text style={styles.foodTypeText}>Enter today Lunch :</Text>
+                <TextInput
+                  onChangeText={enteredInput => {
+                    setMenu(menu => ({...menu, lunch: enteredInput}));
+                  }}
+                  style={styles.textInput}
+                  value={menu.lunch}
+                />
+              </View>
+              <View style={styles.foodContainer}>
+                <Text style={styles.foodTypeText}>
+                  Enter today Evening Snack :
+                </Text>
+                <TextInput
+                  onChangeText={enteredInput => {
+                    setMenu(menu => ({...menu, eveningSnack: enteredInput}));
+                  }}
+                  style={styles.textInput}
+                  value={menu.eveningSnack}
+                />
+              </View>
+              <View style={styles.buttonsContainer}>
+                <Pressable
+                  style={[
+                    styles.buttonContainer,
+                    {backgroundColor: Colors.red},
+                  ]}
+                  onPress={() => setOpenAddMenuModal(false)}>
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  disabled={
+                    !menu?.breakfast?.trim() ||
+                    !menu?.lunch?.trim() ||
+                    !menu?.eveningSnack?.trim()
+                  }
+                  onPress={submitHandler}
+                  style={[
+                    styles.buttonContainer,
+                    {
+                      backgroundColor: Colors.green,
+                      opacity:
+                        !menu?.breakfast?.trim() ||
+                        !menu?.lunch?.trim() ||
+                        !menu?.eveningSnack?.trim()
+                          ? 0.4
+                          : 1,
+                    },
+                  ]}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </Pressable>
+              </View>
             </View>
-            <View style={styles.foodContainer}>
-              <Text style={styles.foodTypeText}>Enter today Lunch :</Text>
-              <TextInput
-                onChangeText={enteredInput => {
-                  setMenu(menu => ({...menu, lunch: enteredInput}));
-                }}
-                style={styles.textInput}
-                value={menu.lunch}
-              />
-            </View>
-            <View style={styles.foodContainer}>
-              <Text style={styles.foodTypeText}>
-                Enter today Evening Snack :
-              </Text>
-              <TextInput
-                onChangeText={enteredInput => {
-                  setMenu(menu => ({...menu, eveningSnack: enteredInput}));
-                }}
-                style={styles.textInput}
-                value={menu.eveningSnack}
-              />
-            </View>
-            <View style={styles.buttonsContainer}>
-              <Pressable
-                style={[styles.buttonContainer, {backgroundColor: Colors.red}]}
-                onPress={() => setOpenAddMenuModal(false)}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-              <Pressable
-                disabled={
-                  !menu?.breakfast?.trim() ||
-                  !menu?.lunch?.trim() ||
-                  !menu?.eveningSnack?.trim()
-                }
-                onPress={submitHandler}
-                style={[
-                  styles.buttonContainer,
-                  {
-                    backgroundColor: Colors.green,
-                    opacity:
-                      !menu?.breakfast?.trim() ||
-                      !menu?.lunch?.trim() ||
-                      !menu?.eveningSnack?.trim()
-                        ? 0.4
-                        : 1,
-                  },
-                ]}>
-                <Text style={styles.buttonText}>Submit</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-        {isLoading ? <Loader /> : null}
-      </Modal>
+          </SafeAreaView>
+          {isLoading ? <Loader /> : null}
+        </Modal>
+      ) : null}
 
       <Pressable
         style={styles.button}

@@ -1,6 +1,6 @@
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
-import {StyleSheet, Text, View} from 'react-native';
+import {AppState, StyleSheet, Text, View} from 'react-native';
 import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
@@ -22,70 +22,85 @@ const WelcomeHeader = () => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
+  const handleAppStateChange = async nextState => {
+    console.log('props:', nextState);
+    if (nextState === 'active' || nextState === true) {
+      try {
+        const checkIn = await dispatch(getTodayCheckInTime({token}));
+
+        const employeeShift = await dispatch(
+          getEmployeeShift({token, id: employeeID}),
+        );
+
+        const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
+        const properInTime = employeeShift?.payload?.startTime;
+
+        const [properInHours, properInMinutes, properInSeconds] =
+          properInTime.split(':');
+
+        const properCheckInTimeStamp = new Date().setHours(
+          properInHours,
+          properInMinutes,
+          properInSeconds,
+        );
+        // 2023-08-16T10:04:43
+
+        const checkedInTimeStamp = checkedInTimeObj.getTime();
+        const differenceInTime = Math.abs(
+          checkedInTimeStamp - properCheckInTimeStamp,
+        );
+
+        const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
+        const lateMinutes = Math.floor(
+          (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const lateSeconds = Math.floor((differenceInTime % (1000 * 60)) / 1000);
+
+        setTodayStatus({
+          lateHours,
+          lateMinutes,
+          lateSeconds,
+          isLate: checkedInTimeStamp - properCheckInTimeStamp > 0,
+        });
+
+        if (checkIn.error) {
+          throw new Error('Time not found.');
+        }
+        const checkInDateObj = new Date(checkIn?.payload[0]?.time);
+        const totalSpentTime = +(new Date() - checkInDateObj);
+
+        const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
+        const minutes = +Math.floor(
+          (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
+
+        setCheckInDetails({
+          hours,
+          minutes,
+          seconds,
+          empMachineCode: +checkIn?.payload[0].employeeMachineCode,
+        });
+      } catch (err) {
+        console.log('erroor:', err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    AppState &&
+      AppState?.addEventListener &&
+      AppState?.addEventListener('change', handleAppStateChange);
+    return () => {
+      AppState &&
+        AppState.removeEventListener &&
+        AppState?.removeEventListener('change', handleAppStateChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (!isGuestLogin) {
-      (async () => {
-        try {
-          const checkIn = await dispatch(getTodayCheckInTime({token}));
-
-          const employeeShift = await dispatch(
-            getEmployeeShift({token, id: employeeID}),
-          );
-
-          const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
-          const properInTime = employeeShift?.payload?.startTime;
-
-          const [properInHours, properInMinutes, properInSeconds] =
-            properInTime.split(':');
-
-          const properCheckInTimeStamp = new Date().setHours(
-            properInHours,
-            properInMinutes,
-            properInSeconds,
-          );
-
-          const checkedInTimeStamp = checkedInTimeObj.getTime();
-          const differenceInTime = Math.abs(
-            checkedInTimeStamp - properCheckInTimeStamp,
-          );
-
-          const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
-          const lateMinutes = Math.floor(
-            (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
-          );
-          const lateSeconds = Math.floor(
-            (differenceInTime % (1000 * 60)) / 1000,
-          );
-
-          setTodayStatus({
-            lateHours,
-            lateMinutes,
-            lateSeconds,
-            isLate: checkedInTimeStamp - properCheckInTimeStamp > 0,
-          });
-
-          if (checkIn.error) {
-            throw new Error('Time not found.');
-          }
-          const checkInDateObj = new Date(checkIn?.payload[0]?.time);
-          const totalSpentTime = +(new Date() - checkInDateObj);
-
-          const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
-          const minutes = +Math.floor(
-            (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
-          );
-          const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
-
-          setCheckInDetails({
-            hours,
-            minutes,
-            seconds,
-            empMachineCode: +checkIn?.payload[0].employeeMachineCode,
-          });
-        } catch (err) {
-          console.log('erroor:', err);
-        }
-      })();
+      handleAppStateChange(true);
     }
   }, []);
 
@@ -106,12 +121,6 @@ const WelcomeHeader = () => {
           } else {
             currentSeconds += 1;
           }
-
-          // setCheckInDetails({
-          //   hours: currentHours,
-          //   minutes: currentMinutes,
-          //   seconds: currentSeconds,
-          // });
 
           setCheckInDetails(currentCheckInDetails => ({
             ...currentCheckInDetails,
