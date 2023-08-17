@@ -1264,7 +1264,6 @@ export const getCalendereventData = createAsyncThunk(
       refreshToken,
       dispatch,
     });
-    console.log('output:', output);
     return output;
   },
 );

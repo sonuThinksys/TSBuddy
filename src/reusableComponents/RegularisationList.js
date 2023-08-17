@@ -14,6 +14,7 @@ import {ERROR} from 'utils/string';
 
 const RegularisationList = props => {
   const {employeeID, employeeName, navigateTo, fromRegularisation} = props;
+
   const [isRefresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
   const [regularisationRequestsList, setRegularisationReuestsList] = useState(

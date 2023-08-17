@@ -11,7 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		5F007C3E71C57423C58F801B /* libPods-TSBuddy-TSBuddyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F1427A8E43303AC43A91832 /* libPods-TSBuddy-TSBuddyTests.a */; };
+		645BAB9BE97FB42308124913 /* libPods-TSBuddy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 182F866C209D158D3D0308AA /* libPods-TSBuddy.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		89D3B00329D2C9EB00E668CD /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3AFF729D2C9EA00E668CD /* Roboto-Thin.ttf */; };
 		89D3B00429D2C9EB00E668CD /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3AFF829D2C9EA00E668CD /* Roboto-Italic.ttf */; };
@@ -25,7 +25,7 @@
 		89D3B00C29D2C9EB00E668CD /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B00029D2C9EB00E668CD /* Roboto-LightItalic.ttf */; };
 		89D3B00D29D2C9EB00E668CD /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B00129D2C9EB00E668CD /* Roboto-Medium.ttf */; };
 		89D3B00E29D2C9EB00E668CD /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 89D3B00229D2C9EB00E668CD /* Roboto-ThinItalic.ttf */; };
-		AD2B816776A419A293DB007D /* libPods-TSBuddy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58C11B04D602C66FAA9A070C /* libPods-TSBuddy.a */; };
+		C52D47CBB65D1BD619F6845E /* libPods-TSBuddy-TSBuddyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FB4FAEAAD31ABF6BC8BE9D /* libPods-TSBuddy-TSBuddyTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,9 +48,10 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TSBuddy/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TSBuddy/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TSBuddy/main.m; sourceTree = "<group>"; };
-		1F1427A8E43303AC43A91832 /* libPods-TSBuddy-TSBuddyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSBuddy-TSBuddyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2780149D2D9A5AF7DF7D3259 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy-TSBuddyTests.debug.xcconfig"; path = "Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests.debug.xcconfig"; sourceTree = "<group>"; };
-		58C11B04D602C66FAA9A070C /* libPods-TSBuddy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSBuddy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		182F866C209D158D3D0308AA /* libPods-TSBuddy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSBuddy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		317FD050E4F2C886597813E4 /* Pods-TSBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy.release.xcconfig"; path = "Target Support Files/Pods-TSBuddy/Pods-TSBuddy.release.xcconfig"; sourceTree = "<group>"; };
+		57065A19A3C1992BE3E07661 /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy-TSBuddyTests.release.xcconfig"; path = "Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
+		6BF1B05990554F511E284745 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy-TSBuddyTests.debug.xcconfig"; path = "Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TSBuddy/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89D3AFF729D2C9EA00E668CD /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		89D3AFF829D2C9EA00E668CD /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -64,10 +65,9 @@
 		89D3B00029D2C9EB00E668CD /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
 		89D3B00129D2C9EB00E668CD /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		89D3B00229D2C9EB00E668CD /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
-		CB41674D137C722192C89DA6 /* Pods-TSBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy.release.xcconfig"; path = "Target Support Files/Pods-TSBuddy/Pods-TSBuddy.release.xcconfig"; sourceTree = "<group>"; };
-		DA4A807E2C476AF7795D0D03 /* Pods-TSBuddy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy.debug.xcconfig"; path = "Target Support Files/Pods-TSBuddy/Pods-TSBuddy.debug.xcconfig"; sourceTree = "<group>"; };
+		9806EA809AED28DBE3727BFD /* Pods-TSBuddy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy.debug.xcconfig"; path = "Target Support Files/Pods-TSBuddy/Pods-TSBuddy.debug.xcconfig"; sourceTree = "<group>"; };
+		C4FB4FAEAAD31ABF6BC8BE9D /* libPods-TSBuddy-TSBuddyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TSBuddy-TSBuddyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EEE1673953546D4A5476876B /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TSBuddy-TSBuddyTests.release.xcconfig"; path = "Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F007C3E71C57423C58F801B /* libPods-TSBuddy-TSBuddyTests.a in Frameworks */,
+				C52D47CBB65D1BD619F6845E /* libPods-TSBuddy-TSBuddyTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD2B816776A419A293DB007D /* libPods-TSBuddy.a in Frameworks */,
+				645BAB9BE97FB42308124913 /* libPods-TSBuddy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,8 +124,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				58C11B04D602C66FAA9A070C /* libPods-TSBuddy.a */,
-				1F1427A8E43303AC43A91832 /* libPods-TSBuddy-TSBuddyTests.a */,
+				182F866C209D158D3D0308AA /* libPods-TSBuddy.a */,
+				C4FB4FAEAAD31ABF6BC8BE9D /* libPods-TSBuddy-TSBuddyTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -184,10 +184,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DA4A807E2C476AF7795D0D03 /* Pods-TSBuddy.debug.xcconfig */,
-				CB41674D137C722192C89DA6 /* Pods-TSBuddy.release.xcconfig */,
-				2780149D2D9A5AF7DF7D3259 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */,
-				EEE1673953546D4A5476876B /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */,
+				9806EA809AED28DBE3727BFD /* Pods-TSBuddy.debug.xcconfig */,
+				317FD050E4F2C886597813E4 /* Pods-TSBuddy.release.xcconfig */,
+				6BF1B05990554F511E284745 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */,
+				57065A19A3C1992BE3E07661 /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -199,12 +199,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "TSBuddyTests" */;
 			buildPhases = (
-				AC0BE0DDA61B36B13E57E90F /* [CP] Check Pods Manifest.lock */,
+				15B52FA3E77467E9DDE21688 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				DEAA7793F6EF69ADE3370AB6 /* [CP] Embed Pods Frameworks */,
-				38C46DF0DFD2DD1734548763 /* [CP] Copy Pods Resources */,
+				DA6E976951F68F53E70696CA /* [CP] Embed Pods Frameworks */,
+				A0064C1F2B30620FD6CA6583 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -220,14 +220,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TSBuddy" */;
 			buildPhases = (
-				62205703853539226477CECE /* [CP] Check Pods Manifest.lock */,
+				766FC22D44081B3E828BD14E /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				68BF6F927B10FE9C83EF878A /* [CP] Embed Pods Frameworks */,
-				723515BFBAF9F46A17377553 /* [CP] Copy Pods Resources */,
+				697E1733F363F7DC0041E57E /* [CP] Embed Pods Frameworks */,
+				007EBFDA6813CAB46887E40C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -306,79 +306,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/.xcode.env",
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
-		};
-		38C46DF0DFD2DD1734548763 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		62205703853539226477CECE /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TSBuddy-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		68BF6F927B10FE9C83EF878A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		723515BFBAF9F46A17377553 /* [CP] Copy Pods Resources */ = {
+		007EBFDA6813CAB46887E40C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -395,7 +323,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AC0BE0DDA61B36B13E57E90F /* [CP] Check Pods Manifest.lock */ = {
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		15B52FA3E77467E9DDE21688 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -417,7 +361,63 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DEAA7793F6EF69ADE3370AB6 /* [CP] Embed Pods Frameworks */ = {
+		697E1733F363F7DC0041E57E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TSBuddy/Pods-TSBuddy-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		766FC22D44081B3E828BD14E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TSBuddy-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0064C1F2B30620FD6CA6583 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TSBuddy-TSBuddyTests/Pods-TSBuddy-TSBuddyTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DA6E976951F68F53E70696CA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -486,7 +486,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2780149D2D9A5AF7DF7D3259 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */;
+			baseConfigurationReference = 6BF1B05990554F511E284745 /* Pods-TSBuddy-TSBuddyTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -513,7 +513,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EEE1673953546D4A5476876B /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */;
+			baseConfigurationReference = 57065A19A3C1992BE3E07661 /* Pods-TSBuddy-TSBuddyTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -537,7 +537,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA4A807E2C476AF7795D0D03 /* Pods-TSBuddy.debug.xcconfig */;
+			baseConfigurationReference = 9806EA809AED28DBE3727BFD /* Pods-TSBuddy.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -563,7 +563,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CB41674D137C722192C89DA6 /* Pods-TSBuddy.release.xcconfig */;
+			baseConfigurationReference = 317FD050E4F2C886597813E4 /* Pods-TSBuddy.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

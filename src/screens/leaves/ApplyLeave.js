@@ -195,8 +195,7 @@ const ApplyLeave = ({navigation, route}) => {
   useEffect(() => {
     if (fromResource || fromWfh) {
       (async () => {
-        // const empId = +resourceEmployeeID.match(/\d+/g)[0];
-        const empId = +resourceEmployeeID;
+        const empId = +resourceEmployeeID.match(/\d+/g)[0];
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
         );
@@ -365,7 +364,6 @@ const ApplyLeave = ({navigation, route}) => {
         leave.leaveType === 'Maternity Leave' ||
         leave.leaveType === 'Paternity Leave',
     );
-
     let genderLeave;
     let leaveTypeAccordingToGender;
     const userGenderLowerCase = userGender?.toLowerCase();

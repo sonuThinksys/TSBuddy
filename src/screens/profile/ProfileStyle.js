@@ -22,6 +22,8 @@ export default StyleSheet.create({
     color: Colors.bluishGreen,
     fontWeight: 'bold',
     fontSize: 18,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
   },
   detailsView: {
     borderWidth: 0.3,

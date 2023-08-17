@@ -53,7 +53,6 @@ const ApplyWFH = ({navigation}) => {
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
   });
-
   const [endDate, setEndDate] = useState({endDateStr: 'Select End Date'});
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
@@ -95,6 +94,15 @@ const ApplyWFH = ({navigation}) => {
   useEffect(() => {
     if (drawerStatus === 'open') {
       Keyboard.dismiss();
+      setEndSelected(false);
+      setStartSelected(false);
+      setStartDate({
+        startDateStr: 'Select Start Date',
+      });
+      setEndDate({endDateStr: 'Select End Date'});
+      setReason('');
+      setTotalDaysCount(0);
+      setValue(null);
     }
   }, [drawerStatus]);
   useEffect(() => {
@@ -288,7 +296,7 @@ const ApplyWFH = ({navigation}) => {
   let opacity = 1;
 
   if (value !== 'monthly') {
-    if (!startSelected || !endSelected || !value) opacity = 0.5;
+    if (!startSelected || !endSelected || !value || !reason) opacity = 0.5;
   } else {
     if (!monthlyStartDate) opacity = 0.5;
   }
@@ -579,6 +587,7 @@ const ApplyWFH = ({navigation}) => {
                 marginHorizontal: wp(4),
               }}>
               <TouchableOpacity
+                disabled={!startDate || !endDate || !reason || !value}
                 onPress={() => {
                   setEndSelected(false);
                   setStartSelected(false);
@@ -596,6 +605,8 @@ const ApplyWFH = ({navigation}) => {
                   paddingHorizontal: wp(8.6),
                   borderRadius: 200,
                   paddingVertical: hp(1.4),
+                  opacity:
+                    !startDate || !endDate || !reason || !value ? 0.5 : 1,
                 }}>
                 <View>
                   <Text
@@ -604,7 +615,7 @@ const ApplyWFH = ({navigation}) => {
                       textAlign: 'center',
                       fontSize: 17,
                     }}>
-                    Cancel
+                    Clear
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -619,11 +630,7 @@ const ApplyWFH = ({navigation}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
-                disabled={
-                  value !== 'monthly'
-                    ? !startSelected || !endSelected || !value
-                    : !monthlyStartDate
-                }
+                disabled={!startSelected || !endSelected || !value || !reason}
                 onPress={onApplyWfh}>
                 <View>
                   <Text
