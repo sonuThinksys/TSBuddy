@@ -58,6 +58,7 @@ const UserProfile = ({route}) => {
   }, [showTextInput]);
 
   const fetchInitialData = useCallback(async () => {
+    setSearchedName('');
     await fetchEmployeesData({
       isInitial: true,
       currentEmployees: {
@@ -66,7 +67,7 @@ const UserProfile = ({route}) => {
         take: 18,
       },
     });
-  });
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -493,6 +494,7 @@ const UserProfile = ({route}) => {
           <Pressable
             onPress={() => {
               setSearchedName('');
+              fetchInitialData();
             }}
             style={styles.clearButton}>
             <Image

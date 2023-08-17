@@ -120,8 +120,8 @@ const RequestLunch = ({navigation}) => {
   const onSelectItem = item => {
     const selectedPlanByUser = lunchPlans?.find(
       plan =>
-        plan?.requestType?.toLowerCase() === item.value.toLowerCase() ||
-        plan?.requestType?.toLowerCase() === item.label.toLowerCase(),
+        plan?.requestType?.toLowerCase() === item?.value?.toLowerCase() ||
+        plan?.requestType?.toLowerCase() === item?.label?.toLowerCase(),
     );
 
     setSelectedPlan(selectedPlanByUser);
@@ -212,8 +212,8 @@ const RequestLunch = ({navigation}) => {
       startDateObj: date,
     });
     setStartSelected(true);
-    setEndSelected(false);
-    setEndDate({endDateStr: 'Select End Date'});
+    // setEndSelected(true);
+    // setEndDate({endDateStr: 'Select End Date'});
   };
 
   const handleEndConfirm = date => {
@@ -549,12 +549,12 @@ const RequestLunch = ({navigation}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              console.log('INSIDE', 'PARENT!');
               setEndSelected(false);
               setStartSelected(false);
               setStartDate({
                 startDateStr: 'Select Start Date',
               });
+
               setEndDate({endDateStr: 'Select End Date'});
               setMonthlyStartDate(null);
               setValue(null);

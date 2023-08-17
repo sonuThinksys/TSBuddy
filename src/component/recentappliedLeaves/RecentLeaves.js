@@ -48,7 +48,7 @@ const RecentLeaves = ({navigation}) => {
           const wfhList = [];
 
           leavesData.payload?.map(leave => {
-            if (leave.leaveType.toLowerCase() === 'work from home') {
+            if (leave?.leaveType?.toLowerCase() === 'work from home') {
               wfhList.push(leave);
             } else {
               leavesList.push(leave);
@@ -65,7 +65,7 @@ const RecentLeaves = ({navigation}) => {
 
           const recent3Leaves = sortedLeaveList?.filter(leave => {
             if (
-              leave.leaveType.toLowerCase() !== 'work from home' &&
+              leave?.leaveType?.toLowerCase() !== 'work from home' &&
               leavesCount < 3
             ) {
               leavesCount++;
@@ -76,7 +76,7 @@ const RecentLeaves = ({navigation}) => {
           setRecent3Leaves(recent3Leaves);
           const recent3WFH = sortedWfhList?.filter(leave => {
             if (
-              leave.leaveType.toLowerCase() === 'work from home' &&
+              leave?.leaveType?.toLowerCase() === 'work from home' &&
               wfhCount < 3
             ) {
               wfhCount++;
