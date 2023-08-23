@@ -12,6 +12,7 @@ export const attendanceDate = val => {
     today.getDate() - dayOfWeek + val,
   );
 };
+
 export const startEndDateFormat = date => {
   return date.toLocaleDateString('en-US', {
     month: 'short',
@@ -43,10 +44,10 @@ export const openLeavesCount = function ({leaves}) {
     for (let leaveData of leaves) {
       const {status, leaveType, totalLeaveDays} = leaveData || {};
       if (status?.toLowerCase() === 'open') {
-        if (leaveType.toLowerCase() === 'earned leave') {
+        if (leaveType?.toLowerCase() === 'earned leave') {
           openCount.earnedOpen = openCount.earnedOpen + totalLeaveDays;
         }
-        if (leaveType.toLowerCase() === 'restricted holiday') {
+        if (leaveType?.toLowerCase() === 'restricted holiday') {
           openCount.rhOpen = openCount.rhOpen + totalLeaveDays;
         }
       }
@@ -102,7 +103,7 @@ export const centralizeApi = ({
     })
     .catch(err => {
       const errorMessage = err?.response?.data?.message;
-      if (errorMessage.toLowerCase() === 'token-expired') {
+      if (errorMessage?.toLowerCase() === 'token-expired') {
         dispatch(renewToken({token: refreshToken}));
         return Promise.reject(errorMessage);
       } else {

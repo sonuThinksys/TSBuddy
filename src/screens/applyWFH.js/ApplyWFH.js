@@ -94,24 +94,24 @@ const ApplyWFH = ({navigation}) => {
   useEffect(() => {
     if (drawerStatus === 'open') {
       Keyboard.dismiss();
-      setEndSelected(false);
-      setStartSelected(false);
-      setStartDate({
-        startDateStr: 'Select Start Date',
-      });
-      setEndDate({endDateStr: 'Select End Date'});
-      setReason('');
-      setTotalDaysCount(0);
-      setValue(null);
+      // setEndSelected(false);
+      // setStartSelected(false);
+      // setStartDate({
+      //   startDateStr: 'Select Start Date',
+      // });
+      // setEndDate({endDateStr: 'Select End Date'});
+      // setReason('');
+      // setTotalDaysCount(0);
+      // setValue(null);
     }
   }, [drawerStatus]);
+
   useEffect(() => {
     (async () => {
       const leaveApprovers = token
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
 
-      console.log('leaveApprovers:', leaveApprovers.payload);
       const listOfLeaveApprovers = leaveApprovers.payload?.map(approver => {
         const approverName = `${approver?.leaveApproverFirstName} ${
           approver.leaveApproverMiddleName
@@ -237,7 +237,7 @@ const ApplyWFH = ({navigation}) => {
         date.getDate() === holidayObj.getDate()
       ) {
         alert('You can not take a WFH on National holiday.');
-        startOnCancelz();
+        startOnCancel();
         return;
       }
     }
@@ -296,7 +296,8 @@ const ApplyWFH = ({navigation}) => {
   let opacity = 1;
 
   if (value !== 'monthly') {
-    if (!startSelected || !endSelected || !value || !reason) opacity = 0.5;
+    if (!startSelected || !endSelected || !value || reason?.trim().length === 0)
+      opacity = 0.5;
   } else {
     if (!monthlyStartDate) opacity = 0.5;
   }
@@ -306,14 +307,13 @@ const ApplyWFH = ({navigation}) => {
   const startDateCopy = new Date(startDate?.startDateObj);
 
   const onApplyWfh = async () => {
-    setStartDate;
     if (!startDate.startDateStr || !endDate.endDateStr) {
       alert('Please select dates for which you want to apply a WFH.');
       return;
     }
 
-    if (!reason) {
-      alert('Please enter a reason for applying a WFH.');
+    if (totalDaysCount < 0) {
+      alert('Difference between the number of leave days must be positive.');
       return;
     }
 
@@ -326,8 +326,8 @@ const ApplyWFH = ({navigation}) => {
     //   return;
     // }
 
-    if (totalDaysCount < 0) {
-      alert('Difference between the number of leave days must be positive.');
+    if (reason?.trim().length === 0) {
+      alert('Please enter a reason for applying a WFH.');
       return;
     }
 
@@ -441,9 +441,9 @@ const ApplyWFH = ({navigation}) => {
           <View style={styles.secondView}>
             <DateTimePickerModal
               minimumDate={new Date()}
-              maximumDate={
-                new Date(new Date().setMonth(new Date().getMonth() + 1))
-              }
+              // maximumDate={
+              //   new Date(new Date().setMonth(new Date().getMonth() + 1))
+              // }
               isVisible={startDatePickerVisible}
               mode="date"
               onConfirm={handleStartConfirm}
@@ -451,14 +451,14 @@ const ApplyWFH = ({navigation}) => {
             />
             <DateTimePickerModal
               minimumDate={startSelected ? startDate?.startDateObj : undefined}
-              maximumDate={
-                startSelected
-                  ? new Date(
-                      startDate?.startDateObj?.getTime() +
-                        7 * 24 * 60 * 60 * 1000,
-                    )
-                  : undefined
-              }
+              // maximumDate={
+              //   startSelected
+              //     ? new Date(
+              //         startDate?.startDateObj?.getTime() +
+              //           7 * 24 * 60 * 60 * 1000,
+              //       )
+              //     : undefined
+              // }
               isVisible={endDatePickerVisible}
               mode="date"
               date={startSelected ? startDate?.startDateObj : undefined}
@@ -552,9 +552,7 @@ const ApplyWFH = ({navigation}) => {
                   onSelectItem={onSelectItem}
                   containerStyle={{height: 40}}
                   style={{
-                    height: hp(1),
-                    height: 10,
-                    borderRadius: 50,
+                    borderRadius: open ? 5 : 50,
                     borderColor: Colors.grey,
                     marginBottom: hp(3),
                   }}
@@ -587,7 +585,12 @@ const ApplyWFH = ({navigation}) => {
                 marginHorizontal: wp(4),
               }}>
               <TouchableOpacity
-                disabled={!startDate || !endDate || !reason || !value}
+                disabled={
+                  !startDate.startDateObj &&
+                  !endDate.endDateObj &&
+                  !reason &&
+                  !value
+                }
                 onPress={() => {
                   setEndSelected(false);
                   setStartSelected(false);
@@ -606,7 +609,12 @@ const ApplyWFH = ({navigation}) => {
                   borderRadius: 200,
                   paddingVertical: hp(1.4),
                   opacity:
-                    !startDate || !endDate || !reason || !value ? 0.5 : 1,
+                    !startDate.startDateObj &&
+                    !endDate.endDateObj &&
+                    reason?.trim().length === 0 &&
+                    !value
+                      ? 0.5
+                      : 1,
                 }}>
                 <View>
                   <Text
@@ -630,7 +638,12 @@ const ApplyWFH = ({navigation}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
-                disabled={!startSelected || !endSelected || !value || !reason}
+                disabled={
+                  !startSelected ||
+                  !endSelected ||
+                  !value ||
+                  reason?.trim().length === 0
+                }
                 onPress={onApplyWfh}>
                 <View>
                   <Text
@@ -766,4 +779,3 @@ const renderListOfAppliedRequests = ({
 };
 
 export default ApplyWFH;
-``;

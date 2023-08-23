@@ -82,7 +82,6 @@ const ApplyLeave = ({navigation, route}) => {
   } = useSelector(state => state.home);
 
   const {openLeavesCount} = route?.params || {};
-  console.log('openLeavesCount:', openLeavesCount);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -172,30 +171,41 @@ const ApplyLeave = ({navigation, route}) => {
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState(openLeaveReason || '');
-  const [leaveApprovers, setLeaveApprovers] = useState('');
+  const [leaveApprovers, setLeaveApprovers] = useState([]);
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   const [resourceLeaves, setResourceLeaves] = useState([]);
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
 
-  const sameDateOrNot = (date1, date2) => {
-    return date1.toDateString() === date2.toDateString();
-  };
+  // const leaveApproverFullName =
+  //   leaveApprovers[0]?.leaveApproverFirstName &&
+  //   leaveApprovers[0]?.leaveApproverLastName
+  //     ? `${leaveApprovers[0]?.leaveApproverFirstName} ${leaveApprovers[0]?.leaveApproverLastName} `
+  //     : leaveApprovers[0]?.leaveApproverFirstName &&
+  //       leaveApprovers[0]?.leaveApproverMiddleName
+  //     ? `${leaveApprovers[0]?.leaveApproverFirstName}  ${leaveApprovers[0]?.leaveApproverMiddleName}`
+  //     : leaveApprovers[0]?.leaveApproverFirstName;
 
-  const leaveApproverFullName =
-    leaveApprovers[0]?.leaveApproverFirstName &&
+  const leaveApproverFullName = `${
+    leaveApprovers[0]?.leaveApproverFirstName
+      ? leaveApprovers[0]?.leaveApproverFirstName
+      : ''
+  } ${
+    leaveApprovers[0]?.leaveApproverMiddleName
+      ? leaveApprovers[0]?.leaveApproverMiddleName + ' '
+      : ''
+  }${
     leaveApprovers[0]?.leaveApproverLastName
-      ? `${leaveApprovers[0]?.leaveApproverFirstName} ${leaveApprovers[0]?.leaveApproverLastName} `
-      : leaveApprovers[0]?.leaveApproverFirstName &&
-        leaveApprovers[0]?.leaveApproverMiddleName
-      ? `${leaveApprovers[0]?.leaveApproverFirstName}  ${leaveApprovers[0]?.leaveApproverMiddleName}`
-      : leaveApprovers[0]?.leaveApproverFirstName;
+      ? leaveApprovers[0]?.leaveApproverLastName
+      : ''
+  }`;
 
   useEffect(() => {
     if (fromResource || fromWfh) {
       (async () => {
-        const empId = +resourceEmployeeID.match(/\d+/g)[0];
+        // const empId = +resourceEmployeeID.match(/\d+/g)[0];
+        const empId = resourceEmployeeID;
         const remainingLeaves = await dispatch(
           getResourseLeaveDetails({token, id: empId}),
         );
@@ -432,6 +442,10 @@ const ApplyLeave = ({navigation, route}) => {
 
   const fromCalenderConfirm = async date => {
     fromOnCancel();
+    setToDate({
+      toDateStr:
+        openLeaveTooDatestr == 'Invalid Date' ? '' : openLeaveTooDatestr,
+    });
 
     if (employeeWeekOffs?.includes(date.getDay())) {
       alert('You already have a weekend holiday on this day.');
@@ -456,56 +470,56 @@ const ApplyLeave = ({navigation, route}) => {
     const presentYear = date.getFullYear();
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    if (toDate.toDateObj) {
-      if (date > toDate.toDateObj) {
-        alert('Please select From date which is less than To date.');
-        fromOnCancel();
-        return;
-      }
+    // if (toDate.toDateObj) {
+    //   if (date > toDate.toDateObj) {
+    //     alert('Please select From date which is less than To date.');
+    //     fromOnCancel();
+    //     return;
+    //   }
 
-      const toDateMS = toDate.toDateObj.getTime();
-      const fromDateMS = date.getTime();
+    //   const toDateMS = toDate.toDateObj.getTime();
+    //   const fromDateMS = date.getTime();
 
-      const toMonthIndex =
-        getMonthIndex(toDate?.toDateStr?.split('-')[1]) < 10
-          ? `0${getMonthIndex(toDate?.toDateStr?.split('-')[1])}`
-          : getMonthIndex(toDate?.toDateStr?.split('-')[1]);
+    //   const toMonthIndex =
+    //     getMonthIndex(toDate?.toDateStr?.split('-')[1]) < 10
+    //       ? `0${getMonthIndex(toDate?.toDateStr?.split('-')[1])}`
+    //       : getMonthIndex(toDate?.toDateStr?.split('-')[1]);
 
-      const fromMonthIndex =
-        getMonthIndex(finalTodayDate.split('-')[1]) < 10
-          ? `0${getMonthIndex(finalTodayDate.split('-')[1])}`
-          : getMonthIndex(finalTodayDate.split('-')[1]);
+    //   const fromMonthIndex =
+    //     getMonthIndex(finalTodayDate.split('-')[1]) < 10
+    //       ? `0${getMonthIndex(finalTodayDate.split('-')[1])}`
+    //       : getMonthIndex(finalTodayDate.split('-')[1]);
 
-      let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
-      toDateStr[1] = toMonthIndex;
-      toDateStr = toDateStr.join('-');
+    //   let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
+    //   toDateStr[1] = toMonthIndex;
+    //   toDateStr = toDateStr.join('-');
 
-      let fromDateStr = `${presentYear}-${fromMonthIndex}-${presentDate}`;
+    //   let fromDateStr = `${presentYear}-${fromMonthIndex}-${presentDate}`;
 
-      try {
-        setLoading(true);
-        const totalOutputDays = await dispatch(
-          getFinalizedLeaveDays({
-            token,
-            employeeId: employeeID,
-            fromDate: fromDateStr,
-            toDate: toDateStr,
-          }),
-        );
+    //   try {
+    //     setLoading(true);
+    //     const totalOutputDays = await dispatch(
+    //       getFinalizedLeaveDays({
+    //         token,
+    //         employeeId: employeeID,
+    //         fromDate: fromDateStr,
+    //         toDate: toDateStr,
+    //       }),
+    //     );
 
-        const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
-        const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
+    //     const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
+    //     const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
 
-        setTotalNumberOfLeaveDays(finalizedLeaveDays);
-        setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
-      } catch (err) {
-        console.log('err:', err);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
-    }
+    //     setTotalNumberOfLeaveDays(finalizedLeaveDays);
+    //     setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
+    //   } catch (err) {
+    //     console.log('err:', err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
+    setTotalNumberOfLeaveDays('');
+    setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
   };
 
   const toCalenderConfirm = async date => {
@@ -1166,10 +1180,8 @@ const ApplyLeave = ({navigation, route}) => {
                         renderButtonText={renderButtonText}
                         style={{
                           borderWidth: 1,
-                          backgroundColor:
-                            totalNumberOfLeaveDays > 1
-                              ? Colors.lightGray1
-                              : Colors.white,
+
+                          opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
                           borderRadius: 3,
                           paddingVertical: 5,
                           height: 32,
@@ -1295,7 +1307,9 @@ const ApplyLeave = ({navigation, route}) => {
                   onCancel={fromOnCancel}
                 />
                 <DateTimePickerModal
-                  minimumDate={minimumDateLeaveApplication}
+                  minimumDate={fromDate?.fromDateObj}
+                  // minimumDate={minimumDateLeaveApplication}
+                  date={fromDate?.fromDateObj}
                   maximumDate={dateAfter6Months}
                   isVisible={toCalenderVisible}
                   mode="date"

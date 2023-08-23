@@ -7,7 +7,6 @@ import {
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
-    backgroundColor: '#E9F4FC',
     flexDirection: 'row',
     marginVertical: hp(0.8),
     shadowOpacity: 0.2,

@@ -34,11 +34,16 @@ const CarouselAutoScroll = ({navigation}) => {
   useEffect(() => {
     let arr = [];
     const events = [];
+    const futureBirthdays = [];
 
     birthdays?.forEach(birthday => {
-      const newBirthday = {...birthday};
-      newBirthday.isBirthday = true;
-      events.push(newBirthday);
+      const isBirthdayTodayOrFuture =
+        new Date(birthday.dateOfBirth).getDate() >= new Date().getDate();
+      if (isBirthdayTodayOrFuture) {
+        const newBirthday = {...birthday};
+        newBirthday.isBirthday = true;
+        events.push(newBirthday);
+      }
     });
 
     anniversaries?.forEach(anniversary => {
@@ -232,66 +237,6 @@ const CarouselAutoScroll = ({navigation}) => {
           </Text>
         </View>
       )}
-
-      {/* {calenderEventData?.length ? (
-        <FlashList
-          ref={imageRef}
-          estimatedItemSize={200}
-          data={calenderEventData}
-          horizontal
-          renderItem={({item, index}) => {
-            return (
-              <View
-                style={{
-                  marginRight: wp(5),
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source={MonthImages.Balloons}
-                    style={{height: 40, width: 40, marginRight: 24}}
-                  />
-                  <Text style={styles.happyText}>Happy </Text>
-                  <Text style={styles.wishText}>Birthday</Text>
-                </View>
-
-                <Pressable
-                  style={styles.container}
-                  key={index}
-                  onPress={() => {
-                    setModalData({
-                      startsOn: item.startsOn,
-                      dateOfJoining: item.dateOfJoining,
-                      name: item.employeeName,
-                      description: item.description,
-                      isBirthday: item.isBirthday,
-
-                      setShowModal: setShowModal,
-                    });
-                    setShowModal(true);
-                  }}>
-                  <Image source={defaultUserIcon} style={styles.image} />
-                  <Text style={styles.birthdayBoyOrGirl}>
-                    {item.employeeName}
-                  </Text>
-                  <Text style={styles.designation}>{item?.designation}</Text>
-                </Pressable>
-                <View style={styles.eventDate}>
-                  {item.isBirthday ? (
-                    <HappyBirthday height={16} width={16} marginRight={10} />
-                  ) : (
-                    <BriefCase height={16} width={16} marginRight={10} />
-                  )}
-                  <Text style={styles.eventDateText}>
-                    {item?.isBirthday
-                      ? moment(item?.dateOfBirth).format('DD MMM')
-                      : moment(item?.dateOfJoining).format('DD MMM')}
-                  </Text>
-                </View>
-              </View>
-            );
-          }}
-        />
-      ) : null} */}
     </View>
   );
 };

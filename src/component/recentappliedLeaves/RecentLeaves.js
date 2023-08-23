@@ -134,25 +134,36 @@ const RecentLeaves = ({navigation}) => {
         </Pressable>
       </View>
       {isGuestLogin ? (
-        <FlatList
-          data={guestLeavesData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-        />
+        // <FlatList
+        //   data={guestLeavesData}
+        //   renderItem={renderItem}
+        //   keyExtractor={(item, index) => index}
+        //   nestedScrollEnabled
+        // />
+        guestLeavesData.map((item, index) => {
+          return renderItem({item, index});
+        })
       ) : (showLeaveType === 'leaves' && recent3Leaves?.length) > 0 ? (
-        <FlatList
-          data={recent3Leaves}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-        />
+        // <FlatList
+        //   data={recent3Leaves}
+        //   renderItem={renderItem}
+        //   keyExtractor={(item, index) => index}
+        //   nestedScrollEnabled
+        // />
+        recent3Leaves.map((item, index) => {
+          return renderItem({item, index});
+        })
       ) : (showLeaveType === 'wfh' && recent3WFH?.length) > 0 ? (
-        <FlatList
-          data={recent3WFH}
-          // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index}
-          // style={{marginHorizontal: 4}}
-        />
+        //   data={recent3WFH} // <FlatList
+        //   // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
+        //   renderItem={renderItem}
+        //   keyExtractor={(item, index) => index}
+        //   nestedScrollEnabled
+        //   // style={{marginHorizontal: 4}}
+        // />
+        recent3WFH.map((item, index) => {
+          return renderItem({item, index});
+        })
       ) : (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Text

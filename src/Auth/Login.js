@@ -55,7 +55,7 @@ const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [isAuth, setIsAuth] = useState(false);
 
-  const [showBiomatricModal, setshowBiomatricModal] = useState(true);
+  // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
   // const [username, setUserName] = useState('gupta.radhika');
   // const [password, setPassword] = useState('radhikathinksys@123');
@@ -69,6 +69,8 @@ const Login = ({navigation}) => {
   // const [password, setPassword] = useState('roshan@1234');
   // const [username, setUserName] = useState('bhandari.tribhuwan@thinksys.com');
   // const [password, setPassword] = useState('bhandari@1234');
+  // const [username, setUserName] = useState('kumar.jitender@thinksys.com');
+  // const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('singh.vivek@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
   const {

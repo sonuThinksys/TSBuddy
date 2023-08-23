@@ -1,9 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, SafeAreaView, FlatList, Text} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {View, ScrollView} from 'react-native';
+
 import CarouselAutoScroll from 'component/ImageSlide/CarouselAutoScroll';
 import MenuDetails from 'component/menuContent/MenuDetails';
 import MenuItem from 'component/menuContent/MenuItem';
@@ -68,41 +65,35 @@ const Home = ({navigation}) => {
         } finally {
           setLoading(false);
         }
-
-        try {
-          setLoading(true);
-          const events = await dispatch(
-            getCalendereventData({token, dispatch, refreshToken}),
-          );
-
-          if (events?.error) {
-            ShowAlert({
-              messageHeader: ERROR,
-              messageSubHeader: events?.error?.message,
-              buttonText: 'Close',
-              dispatch,
-              navigation,
-            });
-          }
-
-          // if (events?.error?.message?.toLowerCase() === 'token-expired') {
-          //   const newFetchedData = await renewCurrentToken({
-          //     dispatch,
-          //     renewToken,
-          //     refreshToken,
-          //     data: {},
-          //     apiCallAgain: getCalendereventData,
-          //   });
-          //   console.log('newFetchedData:', newFetchedData);
-          // }
-        } catch (err) {
-          console.log('errEvents:', err);
-        } finally {
-          setLoading(false);
-        }
       })();
     }
-  }, [isFocussed, token]);
+  }, [token]);
+  // }, [isFocussed, token]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const events = await dispatch(
+          getCalendereventData({token, dispatch, refreshToken}),
+        );
+
+        if (events?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: events?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        console.log('errEvents:', err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   return (
     <View
@@ -119,7 +110,7 @@ const Home = ({navigation}) => {
       />
       {loading ? <Loader /> : null}
 
-      <FlatList
+      {/* <FlatList
         ref={flatListRef}
         showsVerticalScrollIndicator={false}
         data={data}
@@ -129,7 +120,19 @@ const Home = ({navigation}) => {
           let Component = item;
           return <Component isTokenExpired={index === 0 ? true : false} />;
         }}
-      />
+      /> */}
+
+      <ScrollView nestedScrollEnabled={true}>
+        {data.map((item, index) => {
+          let Component = item;
+          return (
+            <Component
+              key={index}
+              isTokenExpired={index === 0 ? true : false}
+            />
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };
