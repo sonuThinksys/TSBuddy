@@ -1,43 +1,24 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import {FontFamily} from 'constants/fonts';
+const windowHeight = Dimensions.get('window').height;
 export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.whitishBlue,
-  },
-  container: {
-    backgroundColor: Colors.lighterBlue,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
-    alignItems: 'center',
-  },
-  lunchTextView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingTop: hp(0.5),
-  },
-  text1: {
-    color: Colors.white,
-    // marginRight: wp(2),
-    fontSize: 18,
-    fontFamily: FontFamily.RobotoMedium,
+    flexDirection: 'column',
   },
   secondView: {
     backgroundColor: Colors.white,
-    top: hp(1),
     marginHorizontal: wp(4),
-    marginVertical: wp(4),
+    marginVertical: hp(2),
     paddingHorizontal: wp(2),
     paddingVertical: hp(2),
-    display: 'flex',
     borderRadius: 12,
-    marginBottom: hp(2),
+    marginBottom: hp(1),
   },
   dropDownView: {
     paddingVertical: hp(1),
@@ -46,13 +27,11 @@ export default StyleSheet.create({
   thirdView: {
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(2),
-    // marginTop: hp(2),
   },
   fourthView: {
     borderRadius: wp(25),
     borderWidth: 1,
     width: wp(40),
-    // justifyContent: 'center',
     alignItems: 'center',
     borderColor: Colors.grey,
     flexDirection: 'row',
@@ -64,7 +43,6 @@ export default StyleSheet.create({
   fifthView: {
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(2),
-    // marginTop: hp(2),
   },
   sixthView: {
     borderRadius: wp(25),
@@ -77,72 +55,27 @@ export default StyleSheet.create({
     paddingVertical: hp(1.2),
     justifyContent: 'space-between',
   },
-  submitView: {
-    backgroundColor: Colors.darkBlue,
-    paddingVertical: hp(1.5),
-    width: wp(50),
-    marginHorizontal: wp(20),
-  },
   buttomView: {
+    height: windowHeight >= 700 ? hp(35) : hp(28),
+    marginBottom: 20,
     shadowOpacity: 0.1,
-    // top: hp(2),
     marginHorizontal: wp(2),
     paddingHorizontal: wp(2),
-    paddingVertical: hp(1),
-    // height: hp(52),
+    flexGrow: 1,
   },
   appliedView: {
     marginHorizontal: wp(4),
-    // backgroundColor: Colors.lightGray,
-    // paddingVertical: hp(1.5),
-    // borderBottomWidth: 1,
   },
-  appliedText: {
+  wfhHistoryText: {
     color: Colors.lovelyPurple,
     fontWeight: 'bold',
     fontSize: 18,
-  },
-  monthlyRequestView: {
-    marginTop: hp(1),
-    shadowOpacity: 0.4,
-    borderRadius: 2,
-    backgroundColor: Colors.lightGray,
-  },
-  monthlyView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    paddingVertical: hp(2),
-    paddingHorizontal: wp(4),
-  },
-  cancelView: {
-    backgroundColor: Colors.red,
-    paddingVertical: hp(0.5),
-    paddingHorizontal: wp(1),
-    borderRadius: 4,
-  },
-  buttomTextView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: wp(20),
-    paddingVertical: hp(3),
   },
   buttomText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: Colors.lightBlue,
     marginRight: wp(5),
-  },
-  loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 9999,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderBackground: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.black,
-    opacity: 0.5,
   },
   selectedDated: {
     fontSize: 14,
@@ -159,16 +92,12 @@ export default StyleSheet.create({
   },
   appliedRequestsLeft: {
     flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'space-between',
-    flex: 1,
-    marginRight: 10,
 
+    marginRight: 10,
     marginLeft: 0,
   },
   requestText: {
     fontSize: 11.5,
-    // marginRight: 14,
   },
   requestType: {
     paddingHorizontal: 7,

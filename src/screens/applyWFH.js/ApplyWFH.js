@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
+  Dimensions,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
@@ -36,14 +37,15 @@ import {
 } from 'redux/homeSlice';
 import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
-import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 import Loader from 'component/loader/Loader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {ScrollView} from 'react-native-gesture-handler';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
+import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
+import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 
 const ApplyWFH = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -92,6 +94,7 @@ const ApplyWFH = ({navigation}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    const windowHeight = Dimensions.get('window').height;
     if (drawerStatus === 'open') {
       Keyboard.dismiss();
       // setEndSelected(false);
@@ -435,287 +438,279 @@ const ApplyWFH = ({navigation}) => {
         showHeaderRight={true}
       />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.secondView}>
-            <DateTimePickerModal
-              minimumDate={new Date()}
-              // maximumDate={
-              //   new Date(new Date().setMonth(new Date().getMonth() + 1))
-              // }
-              isVisible={startDatePickerVisible}
-              mode="date"
-              onConfirm={handleStartConfirm}
-              onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
-            />
-            <DateTimePickerModal
-              minimumDate={startSelected ? startDate?.startDateObj : undefined}
-              // maximumDate={
-              //   startSelected
-              //     ? new Date(
-              //         startDate?.startDateObj?.getTime() +
-              //           7 * 24 * 60 * 60 * 1000,
-              //       )
-              //     : undefined
-              // }
-              isVisible={endDatePickerVisible}
-              mode="date"
-              date={startSelected ? startDate?.startDateObj : undefined}
-              onConfirm={handleEndConfirm}
-              onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
-            />
-            <View style={styles.datesContainer}>
-              <View style={styles.thirdView}>
-                {/* <SelectDateModal
+      <View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.secondView}>
+              <DateTimePickerModal
+                minimumDate={new Date()}
+                // maximumDate={
+                //   new Date(new Date().setMonth(new Date().getMonth() + 1))
+                // }
+                isVisible={startDatePickerVisible}
+                mode="date"
+                onConfirm={handleStartConfirm}
+                onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
+              />
+              <DateTimePickerModal
+                minimumDate={
+                  startSelected ? startDate?.startDateObj : undefined
+                }
+                // maximumDate={
+                //   startSelected
+                //     ? new Date(
+                //         startDate?.startDateObj?.getTime() +
+                //           7 * 24 * 60 * 60 * 1000,
+                //       )
+                //     : undefined
+                // }
+                isVisible={endDatePickerVisible}
+                mode="date"
+                date={startSelected ? startDate?.startDateObj : undefined}
+                onConfirm={handleEndConfirm}
+                onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
+              />
+              <View style={styles.datesContainer}>
+                <View style={styles.thirdView}>
+                  {/* <SelectDateModal
                   modalData={modalData}
                   setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
                 /> */}
-                <Text
-                  style={{
-                    marginBottom: hp(1),
-                    fontSize: 18,
-                    color: Colors.black,
-                  }}>
-                  From Date :
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setStartDatePickerVisible(true);
-                  }}>
-                  <View style={styles.fourthView}>
-                    <Text style={styles.selectedDated}>
-                      {startDate.startDateStr}
-                    </Text>
-                    <CalenderIcon
-                      fill={Colors.lightGray1}
-                      height={hp(2)}
-                      width={hp(2)}
-                      marginRight={wp(0.64)}
-                    />
-                  </View>
-                </TouchableOpacity>
+                  <Text
+                    style={{
+                      marginBottom: hp(1),
+                      fontSize: 18,
+                      color: Colors.black,
+                    }}>
+                    From Date :
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setStartDatePickerVisible(true);
+                    }}>
+                    <View style={styles.fourthView}>
+                      <Text style={styles.selectedDated}>
+                        {startDate.startDateStr}
+                      </Text>
+                      <CalenderIcon
+                        fill={Colors.lightGray1}
+                        height={hp(2)}
+                        width={hp(2)}
+                        marginRight={wp(0.64)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.fifthView}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: Colors.black,
+                      marginBottom: hp(1),
+                    }}>
+                    To Date :
+                  </Text>
+                  <TouchableOpacity
+                    disabled={!startSelected}
+                    style={{
+                      opacity: !startSelected ? 0.6 : 1,
+                    }}
+                    onPress={() => {
+                      setEndDatePickerVisible(true);
+                    }}>
+                    <View style={styles.sixthView}>
+                      <Text style={styles.selectedDated}>
+                        {endDate.endDateStr}
+                      </Text>
+                      <CalenderIcon
+                        fill={Colors.lightGray1}
+                        height={hp(2)}
+                        width={hp(2)}
+                        marginRight={wp(0.64)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.fifthView}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: Colors.black,
-                    marginBottom: hp(1),
-                  }}>
-                  To Date :
-                </Text>
-                <TouchableOpacity
-                  disabled={!startSelected}
-                  style={{
-                    opacity: !startSelected ? 0.6 : 1,
-                  }}
-                  onPress={() => {
-                    setEndDatePickerVisible(true);
-                  }}>
-                  <View style={styles.sixthView}>
-                    <Text style={styles.selectedDated}>
-                      {endDate.endDateStr}
-                    </Text>
-                    <CalenderIcon
-                      fill={Colors.lightGray1}
-                      height={hp(2)}
-                      width={hp(2)}
-                      marginRight={wp(0.64)}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
 
-            <View style={styles.dropDownView}>
-              <Text
-                style={{
-                  marginBottom: hp(1.6),
-                  fontSize: 18,
-                  color: Colors.black,
-                }}>
-                Total Days: {!totalDaysCount ? 0 : totalDaysCount}
-              </Text>
-              <View
-                style={{
-                  zIndex: 9999,
-                }}>
-                <DropDownPicker
-                  open={open}
-                  placeholder={'Please Select Leave Approver..'}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  onSelectItem={onSelectItem}
-                  containerStyle={{height: 40}}
+              <View style={styles.dropDownView}>
+                <Text
                   style={{
-                    borderRadius: open ? 5 : 50,
-                    borderColor: Colors.grey,
-                    marginBottom: hp(3),
-                  }}
-                  dropDownStyle={{
-                    backgroundColor: Colors.lightBlue,
-                    borderBottomWidth: 1,
-                  }}
-                  labelStyle={{
-                    fontSize: 13,
-                    textAlign: 'left',
+                    marginBottom: hp(1.6),
+                    fontSize: 18,
                     color: Colors.black,
-                    alignSelf: 'center',
-                  }}
+                  }}>
+                  Total Days: {!totalDaysCount ? 0 : totalDaysCount}
+                </Text>
+                <View
+                  style={{
+                    zIndex: 9999,
+                  }}>
+                  <DropDownPicker
+                    open={open}
+                    placeholder={'Please Select Leave Approver..'}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                    onSelectItem={onSelectItem}
+                    containerStyle={{height: 40}}
+                    style={{
+                      borderRadius: open ? 5 : 50,
+                      borderColor: Colors.grey,
+                      marginBottom: hp(3),
+                    }}
+                    dropDownStyle={{
+                      backgroundColor: Colors.lightBlue,
+                      borderBottomWidth: 1,
+                    }}
+                    labelStyle={{
+                      fontSize: 13,
+                      textAlign: 'left',
+                      color: Colors.black,
+                      alignSelf: 'center',
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={styles.reasonViewBox}>
+                <TextInput
+                  value={reason}
+                  placeholder="Reason..."
+                  multiline={true}
+                  style={styles.reasonInputBox}
+                  onChangeText={text => setReason(text)}
                 />
               </View>
-            </View>
-            <View style={styles.reasonViewBox}>
-              <TextInput
-                value={reason}
-                placeholder="Reason..."
-                multiline={true}
-                style={styles.reasonInputBox}
-                onChangeText={text => setReason(text)}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginHorizontal: wp(4),
-              }}>
-              <TouchableOpacity
-                disabled={
-                  !startDate.startDateObj &&
-                  !endDate.endDateObj &&
-                  !reason &&
-                  !value
-                }
-                onPress={() => {
-                  setEndSelected(false);
-                  setStartSelected(false);
-                  setStartDate({
-                    startDateStr: 'Select Start Date',
-                  });
-                  setEndDate({endDateStr: 'Select End Date'});
-                  setReason('');
-                  setTotalDaysCount(0);
-                  setValue(null);
-                }}
+              <View
                 style={{
-                  marginTop: 15,
-                  backgroundColor: Colors.grayishWhite,
-                  paddingHorizontal: wp(8.6),
-                  borderRadius: 200,
-                  paddingVertical: hp(1.4),
-                  opacity:
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginHorizontal: wp(4),
+                }}>
+                <TouchableOpacity
+                  disabled={
                     !startDate.startDateObj &&
                     !endDate.endDateObj &&
-                    reason?.trim().length === 0 &&
+                    !reason &&
                     !value
-                      ? 0.5
-                      : 1,
-                }}>
-                <View>
-                  <Text
-                    style={{
-                      color: Colors.black,
-                      textAlign: 'center',
-                      fontSize: 17,
-                    }}>
-                    Clear
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  opacity: opacity,
-                  marginTop: 15,
-                  backgroundColor: Colors.lovelyPurple,
-                  paddingHorizontal: wp(9.2),
-                  borderRadius: 200,
-                  paddingVertical: hp(1.5),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                disabled={
-                  !startSelected ||
-                  !endSelected ||
-                  !value ||
-                  reason?.trim().length === 0
-                }
-                onPress={onApplyWfh}>
-                <View>
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      textAlign: 'center',
-                      fontSize: 17,
-                    }}>
-                    Apply
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                  }
+                  onPress={() => {
+                    setEndSelected(false);
+                    setStartSelected(false);
+                    setStartDate({
+                      startDateStr: 'Select Start Date',
+                    });
+                    setEndDate({endDateStr: 'Select End Date'});
+                    setReason('');
+                    setTotalDaysCount(0);
+                    setValue(null);
+                  }}
+                  style={{
+                    marginTop: 15,
+                    backgroundColor: Colors.grayishWhite,
+                    paddingHorizontal: wp(8.6),
+                    borderRadius: 200,
+                    paddingVertical: hp(1.4),
+                    opacity:
+                      !startDate.startDateObj &&
+                      !endDate.endDateObj &&
+                      reason?.trim().length === 0 &&
+                      !value
+                        ? 0.5
+                        : 1,
+                  }}>
+                  <View>
+                    <Text
+                      style={{
+                        color: Colors.black,
+                        textAlign: 'center',
+                        fontSize: 17,
+                      }}>
+                      Clear
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    opacity: opacity,
+                    marginTop: 15,
+                    backgroundColor: Colors.lovelyPurple,
+                    paddingHorizontal: wp(9.2),
+                    borderRadius: 200,
+                    paddingVertical: hp(1.5),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  disabled={
+                    !startSelected ||
+                    !endSelected ||
+                    !value ||
+                    reason?.trim().length === 0
+                  }
+                  onPress={onApplyWfh}>
+                  <View>
+                    <Text
+                      style={{
+                        color: Colors.white,
+                        textAlign: 'center',
+                        fontSize: 17,
+                      }}>
+                      Apply
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        <View style={styles.appliedView}>
+          <Text style={styles.wfhHistoryText}>Work From Home History</Text>
+        </View>
+        <View style={styles.buttomView}>
+          <View>
+            {loading ? (
+              <Loader />
+            ) : (
+              <FlatList
+                style={{height: '100%'}}
+                showsVerticalScrollIndicator={false}
+                data={wfhList}
+                renderItem={renderListOfAppliedRequests}
+                keyExtractor={keyExtractor}
+              />
+              // <Text>hh</Text>
+            )}
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-      <View style={styles.appliedView}>
-        <Text style={styles.appliedText}>Work From Home History</Text>
-      </View>
-      <View style={styles.buttomView}>
-        <View style={{flexBasis: 300}}>
-          {loading ? (
-            <Loader />
-          ) : (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={wfhList}
-              renderItem={({item}) => {
-                return renderListOfAppliedRequests({
-                  item,
-                  dispatch,
-                  token,
-                  onCancel: cancelSubscribedLunchRequest,
-                  setIsLoading,
-                });
-              }}
-              keyExtractor={item => Math.random() * Math.random()}
-            />
+
+          {!loading && wfhList?.length == 0 && (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: FontFamily.RobotoLight,
+                  position: 'absolute',
+                  top: hp(10),
+                }}>
+                You don't have any wfh.
+              </Text>
+            </View>
           )}
         </View>
-
-        {!loading && wfhList?.length == 0 && (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: FontFamily.RobotoLight,
-                position: 'absolute',
-                top: hp(10),
-              }}>
-              You don't have any wfh.
-            </Text>
-          </View>
-        )}
       </View>
     </View>
   );
 };
 
-const renderListOfAppliedRequests = ({
-  item,
-  dispatch,
-  onCancel,
-  token,
-  setIsLoading,
-  lunchRequests,
-  setLunchRequests,
-}) => {
+const keyExtractor = item => Math.random() * Math.random();
+
+const renderListOfAppliedRequests = ({item}) => {
   const options = {month: 'short', day: '2-digit', year: 'numeric'};
 
   const formattedStartDate = new Date(item?.fromDate)?.toLocaleDateString(
@@ -749,7 +744,7 @@ const renderListOfAppliedRequests = ({
             {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
           </Text>
         </View>
-        <View style={{}}>
+        <View style={{marginLeft: 20, marginTop: 4}}>
           <Text
             style={{
               fontSize: 15,
@@ -773,6 +768,44 @@ const renderListOfAppliedRequests = ({
             </Text>
           </View>
         </View>
+      </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        {item.status?.toLowerCase() === 'open' ? (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <PendingIcon
+              fill={Colors.gold}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
+          </View>
+        ) : item.status?.toLowerCase() === 'dismissed' ||
+          item.status?.toLowerCase() === 'rejected' ? (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <RejectedIcon
+              fill={Colors.darkBrown}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.darkBrown}}>
+              {item.status}
+            </Text>
+          </View>
+        ) : (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <ApprovedIcon
+              fill={Colors.darkLovelyGreen}
+              height={20}
+              width={20}
+              marginBottom={4}
+            />
+            <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
+              {item.status || 'Approved'}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
