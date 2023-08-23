@@ -84,41 +84,44 @@ const LeavesList = props => {
               }),
             );
 
-        const sortLeaveData = !fromResource
-          ? leavesData?.payload?.sort((a, b) => {
-              return (
-                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-              );
-            })
-          : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
-              return (
-                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-              );
-            });
+        // const sortLeaveData = !fromResource
+        //   ? leavesData?.payload?.sort((a, b) => {
+        //       return (
+        //         new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+        //       );
+        //     })
+        //   : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+        //       return (
+        //         new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+        //       );
+        //     });
 
-        const openLeaves = {rhOpen: 0, earnedOpen: 0};
+        // const openLeaves = {rhOpen: 0, earnedOpen: 0};
 
-        for (const leave of sortLeaveData) {
-          console.log('leave:', leave);
+        const empLeaves = leavesData?.payload;
+        const resourceLeaves = leavesData?.payload?.employeeLeaves;
 
-          if (
-            leave?.leaveType?.toLowerCase() === 'earned leave' &&
-            leave.status.toLowerCase() === 'open'
-          ) {
-            const totalDays = leave?.totalLeaveDays;
-            openLeaves.earnedOpen += totalDays;
-          }
-          if (
-            leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
-            leave.status.toLowerCase() === 'open'
-          ) {
-            const totalDays = leave?.totalLeaveDays;
-            openLeaves.rhOpen += totalDays;
+        if (!fromResource) {
+          for (const leave of empLeaves) {
+            if (
+              leave?.leaveType?.toLowerCase() === 'earned leave' &&
+              leave.status.toLowerCase() === 'open'
+            ) {
+              const totalDays = leave?.totalLeaveDays;
+              openLeaves.earnedOpen += totalDays;
+            }
+            if (
+              leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
+              leave.status.toLowerCase() === 'open'
+            ) {
+              const totalDays = leave?.totalLeaveDays;
+              openLeaves.rhOpen += totalDays;
+            }
           }
         }
 
         fromLeaveDetails && fromLeaveDetails(openLeaves);
-        setEmployeesLeaves(sortLeaveData);
+        setEmployeesLeaves(fromResource ? resourceLeaves : empLeaves);
 
         setLoading(false);
         let count = 0;

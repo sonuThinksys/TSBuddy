@@ -212,6 +212,8 @@ const RequestLunch = ({navigation}) => {
       startDateObj: date,
     });
     setStartSelected(true);
+    setEndDate({endDateStr: 'Select End Date'});
+    setEndSelected(false);
     // setEndSelected(true);
     // setEndDate({endDateStr: 'Select End Date'});
   };
@@ -255,7 +257,7 @@ const RequestLunch = ({navigation}) => {
       let numberOfDaysInThisMonth;
 
       for (let i = 0; i < monthsName.length; i++) {
-        if (monthsName[i].toLowerCase() === month.toLowerCase()) {
+        if (monthsName[i]?.toLowerCase() === month?.toLowerCase()) {
           monthNumber = i + 1 + '';
           numberOfDaysInThisMonth = new Date(year, i + 1, 0).getDate();
           if (monthNumber.length === 1) monthNumber = 0 + monthNumber;
@@ -359,6 +361,7 @@ const RequestLunch = ({navigation}) => {
       setEndSelected(false);
       setValue('');
     }
+    refAnimationSuccess.current.resetSelected(false);
 
     // monthly , duration
   };
@@ -385,6 +388,7 @@ const RequestLunch = ({navigation}) => {
           <TouchableOpacity
             onPress={() => {
               navigation.pop();
+              // navigation.openDrawer();
             }}>
             <Image
               source={MonthImages.backArrowS}

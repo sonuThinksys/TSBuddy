@@ -82,7 +82,6 @@ const ApplyLeave = ({navigation, route}) => {
   } = useSelector(state => state.home);
 
   const {openLeavesCount} = route?.params || {};
-  console.log('openLeavesCount:', openLeavesCount);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
@@ -172,21 +171,35 @@ const ApplyLeave = ({navigation, route}) => {
   const [halfDay, setHalfDay] = useState('');
   const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState(openLeaveReason || '');
-  const [leaveApprovers, setLeaveApprovers] = useState('');
+  const [leaveApprovers, setLeaveApprovers] = useState([]);
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   const [resourceLeaves, setResourceLeaves] = useState([]);
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
 
-  const leaveApproverFullName =
-    leaveApprovers[0]?.leaveApproverFirstName &&
+  // const leaveApproverFullName =
+  //   leaveApprovers[0]?.leaveApproverFirstName &&
+  //   leaveApprovers[0]?.leaveApproverLastName
+  //     ? `${leaveApprovers[0]?.leaveApproverFirstName} ${leaveApprovers[0]?.leaveApproverLastName} `
+  //     : leaveApprovers[0]?.leaveApproverFirstName &&
+  //       leaveApprovers[0]?.leaveApproverMiddleName
+  //     ? `${leaveApprovers[0]?.leaveApproverFirstName}  ${leaveApprovers[0]?.leaveApproverMiddleName}`
+  //     : leaveApprovers[0]?.leaveApproverFirstName;
+
+  const leaveApproverFullName = `${
+    leaveApprovers[0]?.leaveApproverFirstName
+      ? leaveApprovers[0]?.leaveApproverFirstName
+      : ''
+  } ${
+    leaveApprovers[0]?.leaveApproverMiddleName
+      ? leaveApprovers[0]?.leaveApproverMiddleName + ' '
+      : ''
+  }${
     leaveApprovers[0]?.leaveApproverLastName
-      ? `${leaveApprovers[0]?.leaveApproverFirstName} ${leaveApprovers[0]?.leaveApproverLastName} `
-      : leaveApprovers[0]?.leaveApproverFirstName &&
-        leaveApprovers[0]?.leaveApproverMiddleName
-      ? `${leaveApprovers[0]?.leaveApproverFirstName}  ${leaveApprovers[0]?.leaveApproverMiddleName}`
-      : leaveApprovers[0]?.leaveApproverFirstName;
+      ? leaveApprovers[0]?.leaveApproverLastName
+      : ''
+  }`;
 
   useEffect(() => {
     if (fromResource || fromWfh) {
@@ -505,6 +518,7 @@ const ApplyLeave = ({navigation, route}) => {
     //     setLoading(false);
     //   }
     // }
+    setTotalNumberOfLeaveDays('');
     setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
   };
 
@@ -1295,6 +1309,7 @@ const ApplyLeave = ({navigation, route}) => {
                 <DateTimePickerModal
                   minimumDate={fromDate?.fromDateObj}
                   // minimumDate={minimumDateLeaveApplication}
+                  date={fromDate?.fromDateObj}
                   maximumDate={dateAfter6Months}
                   isVisible={toCalenderVisible}
                   mode="date"

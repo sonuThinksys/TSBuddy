@@ -49,6 +49,7 @@ const Regularization = ({navigation, route}) => {
   const [workMode, setWorkMode] = useState('');
   const [approoverId, setApproveId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [approvers, setApprovers] = useState([]);
 
   const [dayData, setDayData] = useState([
     {
@@ -105,7 +106,6 @@ const Regularization = ({navigation, route}) => {
         ? await dispatch(getLeaveApprovers({token, employeeID}))
         : [];
       leaveApprovers?.payload?.map(el => {
-        console.log('el:', el);
         const firstName = el?.leaveApproverFirstName;
         const middleName = el?.leaveApproverMiddleName;
         const lastName = el?.leaveApproverLastName;
@@ -116,7 +116,7 @@ const Regularization = ({navigation, route}) => {
         listOfLeaveApprover?.push(userName);
       });
 
-      setApproveId(leaveApprovers?.payload?.employeeId);
+      setApprovers(leaveApprovers?.payload);
       setLeaveApproversList(listOfLeaveApprover);
     })();
 
@@ -208,16 +208,17 @@ const Regularization = ({navigation, route}) => {
   };
 
   const handleSubmit = async () => {
+    if (!selectApprover) {
+      alert('Please select Leave Approver.');
+      return;
+    }
+
     if (!selectReasons) {
       alert('Please select a reason.');
       return;
     }
     if (!commentText) {
       alert('Please enter a comment.');
-      return;
-    }
-    if (!selectApprover) {
-      alert('Please select Leave Approver.');
       return;
     }
 
@@ -243,6 +244,7 @@ const Regularization = ({navigation, route}) => {
               comment: commentText,
               mode: workMode,
               approverId: approoverId,
+              status: 'Open',
             },
           }),
         ));
@@ -310,8 +312,10 @@ const Regularization = ({navigation, route}) => {
               height: 38,
               paddingLeft: 15,
             }}
-            onSelect={itemName => {
-              setSelectApprover(leaveApproversList[itemName]);
+            onSelect={index => {
+              setSelectApprover(leaveApproversList[index]);
+              const selectedLeaveApprover = approvers[index];
+              setApproveId(selectedLeaveApprover?.employeeId);
             }}
             dropdownTextHighlightStyle={{
               color: Colors.white,

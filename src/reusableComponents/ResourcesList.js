@@ -35,11 +35,11 @@ const ResourcesList = props => {
   const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
 
-  useEffect(() => {
-    if (isFocussed && flatListRef.current) {
-      flatListRef.current.scrollToOffset({offset: 0, animated: true});
-    }
-  }, [isFocussed]);
+  // useEffect(() => {
+  //   if (isFocussed && flatListRef.current) {
+  //     flatListRef.current.scrollToOffset({offset: 0, animated: true});
+  //   }
+  // }, [isFocussed]);
 
   useEffect(() => {
     (async () => {

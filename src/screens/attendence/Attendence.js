@@ -66,7 +66,7 @@ const Attendence = ({navigation}) => {
   const {holidayData: holidaysData = []} = useSelector(state => state.home);
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
-  const [remainingHours, setRemainingHours] = useState(0.0);
+  const [remainingHours, setRemainingHours] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [isImageLoading, setImageLoading] = useState(false);
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
@@ -134,7 +134,6 @@ const Attendence = ({navigation}) => {
             }),
           );
           if (attendence?.error) {
-            setLoading(false);
             ShowAlert({
               messageHeader: ERROR,
               messageSubHeader: attendence?.error?.message,
@@ -145,7 +144,7 @@ const Attendence = ({navigation}) => {
           }
         }
       } catch (err) {
-        setLoading(false);
+        console.log('errAttendance:', err);
       } finally {
         setLoading(false);
       }
@@ -161,11 +160,11 @@ const Attendence = ({navigation}) => {
     };
   }, [visisbleMonth]);
 
-  const startEndDate = useCallback(() => {
+  const startEndDate = () => {
     let startDate = attendanceDate(1);
     let endDate = attendanceDate(7);
     return {startDate, endDate};
-  }, []);
+  };
 
   useEffect(() => {
     const {currentDay, finalTodayDate} = finalCurrentDate();
@@ -480,6 +479,7 @@ const Attendence = ({navigation}) => {
             navigation={navigation}
             dailyAttendance={dailyAttendance}
             isLoading={isLoading}
+            holidaysData={holidaysData}
           />
         </View>
       </SafeAreaView>
@@ -496,120 +496,144 @@ const RenderCalender = ({
   navigation,
   dailyAttendance,
   isLoading,
+  holidaysData,
 }) => {
   return (
-    <CalendarList
-      onDayPress={day => {
-        const isCurrentDatePressed =
-          day.year === new Date().getFullYear() &&
-          day.month === new Date().getMonth() + 1 &&
-          day.day === new Date().getDate();
+    <>
+      <CalendarList
+        onDayPress={day => {
+          const isCurrentDatePressed =
+            day.year === new Date().getFullYear() &&
+            day.month === new Date().getMonth() + 1 &&
+            day.day === new Date().getDate();
 
-        const dateObj = new Date(day?.dateString);
-        const dayIndex = dateObj.getDay();
-        const isWeekend = dayIndex === 0 || dayIndex === 6;
+          const dateObj = new Date(day?.dateString);
+          const dayIndex = dateObj.getDay();
+          const isWeekend = dayIndex === 0 || dayIndex === 6;
+          const pressedDate = day.day;
+          const pressedMonth = day.month;
+          const pressedYear = day.year;
 
-        if (Date.now() < day.timestamp || isCurrentDatePressed || isWeekend)
-          return;
-        let filterData = dailyAttendance?.filter(element => {
-          let date = element?.attendanceDate?.split('T')[0];
-          return date == day.dateString;
-        });
-        let attendanceId = filterData[0]?.attendanceId;
-        let attendanceDate = filterData[0]?.attendanceDate;
-
-        if (
-          filterData[0]?.attendanceType == 'H' ||
-          filterData[0]?.attendanceType == 'A'
-        ) {
-          navigation.navigate(RegularzitionScreen, {
-            attendanceId,
-            attendanceDate,
+          let isHoliday = false;
+          holidaysData.forEach(holiday => {
+            const {holidayDate} = holiday;
+            const holidayDateObj = new Date(holidayDate);
+            const holidayMonth = holidayDateObj.getMonth() + 1;
+            const holidayYear = holidayDateObj.getFullYear();
+            const holidayDateNum = holidayDateObj.getDate();
+            if (
+              holidayMonth === pressedMonth &&
+              holidayDateNum === pressedDate &&
+              holidayYear === pressedYear
+            ) {
+              isHoliday = true;
+            }
           });
-        } else {
-          setShowDailyStatusModal(true);
-          setModalDate(day);
-        }
-      }}
-      displayLoadingIndicator={true}
-      horizontal={true}
-      markingType={'custom'}
-      scrollEnabled={true}
-      animateScroll={true}
-      showScrollIndicator={false}
-      pagingEnabled={true}
-      onVisibleMonthsChange={months => {
-        setVisibleMonth(months[0]?.month);
-        setVisibleYear(months[0]?.year);
-      }}
-      pastScrollRange={100}
-      markedDates={mark}
-      calendarStyle={{
-        flex: 1,
-        backgroundColor: Colors.white,
-      }}
-      theme={{
-        'stylesheet.calendar-list.main': {
-          calendar: {
+
+          if (isHoliday) return;
+          if (Date.now() < day.timestamp || isCurrentDatePressed || isWeekend)
+            return;
+          let filterData = dailyAttendance?.filter(element => {
+            let date = element?.attendanceDate?.split('T')[0];
+            return date == day.dateString;
+          });
+          let attendanceId = filterData[0]?.attendanceId;
+          let attendanceDate = filterData[0]?.attendanceDate;
+
+          if (
+            filterData[0]?.attendanceType == 'H' ||
+            filterData[0]?.attendanceType == 'A'
+          ) {
+            navigation.navigate(RegularzitionScreen, {
+              attendanceId,
+              attendanceDate,
+            });
+          } else {
+            setShowDailyStatusModal(true);
+            setModalDate(day);
+          }
+        }}
+        // displayLoadingIndicator={true}
+        horizontal={true}
+        markingType={'custom'}
+        scrollEnabled={true}
+        animateScroll={true}
+        showScrollIndicator={false}
+        pagingEnabled={true}
+        onVisibleMonthsChange={months => {
+          setVisibleMonth(months[0]?.month);
+          setVisibleYear(months[0]?.year);
+        }}
+        pastScrollRange={100}
+        markedDates={mark}
+        calendarStyle={{
+          flex: 1,
+          backgroundColor: Colors.white,
+        }}
+        theme={{
+          'stylesheet.calendar-list.main': {
+            calendar: {
+              paddingLeft: 0,
+              paddingRight: 0,
+            },
+          },
+          'stylesheet.calendar.header': {
+            partialHeader: {
+              paddingHorizontal: 1,
+              backgroundColor: Colors.blue,
+            },
+
+            headerContainer: {
+              flexDirection: 'row',
+              width: '100%',
+              backgroundColor: Colors.green,
+              justifyContent: 'center',
+            },
+            week: {
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              backgroundColor: Colors.green,
+              fontWeight: 'bold',
+              fontSize: 16,
+              color: Colors.white,
+            },
+            header: {
+              width: '100%',
+              backgroundColor: Colors.green,
+              color: Colors.white,
+              alignItems: 'center',
+            },
+            partialHeader: {
+              paddingHorizontal: 15,
+            },
+            monthText: {
+              color: Colors.white,
+              fontWeight: 'bold',
+              fontSize: 18,
+              marginVertical: 10,
+              // marginHorizontal: 100,
+              textAlign: 'center',
+            },
+            monthHeader: {
+              // width: '120%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          },
+        }}
+        style={{
+          container: {
             paddingLeft: 0,
             paddingRight: 0,
           },
-        },
-        'stylesheet.calendar.header': {
-          partialHeader: {
-            paddingHorizontal: 1,
-            backgroundColor: Colors.blue,
-          },
-
-          headerContainer: {
-            flexDirection: 'row',
-            width: '100%',
-            backgroundColor: Colors.green,
-            justifyContent: 'center',
-          },
-          week: {
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            backgroundColor: Colors.green,
-            fontWeight: 'bold',
-            fontSize: 16,
-            color: Colors.white,
-          },
-          header: {
-            width: '100%',
-            backgroundColor: Colors.green,
-            color: Colors.white,
-            alignItems: 'center',
-          },
-          partialHeader: {
-            paddingHorizontal: 15,
-          },
-          monthText: {
-            color: Colors.white,
-            fontWeight: 'bold',
-            fontSize: 18,
-            marginVertical: 10,
-            // marginHorizontal: 100,
-            textAlign: 'center',
-          },
-          monthHeader: {
-            // width: '120%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          },
-        },
-      }}
-      style={{
-        container: {
-          paddingLeft: 0,
-          paddingRight: 0,
-        },
-      }}
-    />
+        }}
+      />
+      {isLoading ? <Loader /> : null}
+    </>
   );
 };
 
-const RenderCalender1 = React.memo(RenderCalender);
+const RenderCalender1 = RenderCalender;
 
 export default Attendence;

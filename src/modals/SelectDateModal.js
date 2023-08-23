@@ -14,7 +14,6 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 
-import Ripple from 'react-native-material-ripple';
 const SelectDateModal = forwardRef(
   ({modalData, setUpcomingMonthlyStartDate}, ref) => {
     const {openModal, setOpenModal, satrtDate1} = modalData;
@@ -26,7 +25,7 @@ const SelectDateModal = forwardRef(
 
     useImperativeHandle(ref, () => ({
       resetSelected() {
-        console.log('INSIDE', 'CHILD!');
+        console.log('useImperativeHandle:', useImperativeHandle);
         setSelected(false);
       },
     }));

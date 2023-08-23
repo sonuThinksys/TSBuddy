@@ -61,16 +61,16 @@ const Login = ({navigation}) => {
   // const [password, setPassword] = useState('radhikathinksys@123');
   // const [username, setUserName] = useState('gupta.utkarsh@thinksys.com');
   // const [password, setPassword] = useState('gupta@1234');
-  // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
-  // const [password, setPassword] = useState('thinksys@123');
+  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('pant.amit@thinksys.com');
   // const [password, setPassword] = useState('pant@1234');
   // const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
   // const [password, setPassword] = useState('roshan@1234');
   // const [username, setUserName] = useState('bhandari.tribhuwan@thinksys.com');
   // const [password, setPassword] = useState('bhandari@1234');
-  const [username, setUserName] = useState('kumar.jitender@thinksys.com');
-  const [password, setPassword] = useState('thinksys@123');
+  // const [username, setUserName] = useState('kumar.jitender@thinksys.com');
+  // const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('singh.vivek@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
   const {

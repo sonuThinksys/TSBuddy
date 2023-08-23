@@ -89,7 +89,6 @@ export default StyleSheet.create({
     marginHorizontal: wp(2),
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
-    marginBottom: hp(5),
     // height: hp(52),
   },
   appliedView: {

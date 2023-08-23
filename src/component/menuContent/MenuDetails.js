@@ -23,6 +23,8 @@ import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
+import {addDailyMenuDetails} from 'redux/homeSlice';
+import Loader from 'component/loader/Loader';
 // import LinearGradient from 'react-native-linear-gradient';
 const MenuDetails = () => {
   const {userToken: token} = useSelector(state => state.auth);
@@ -85,7 +87,6 @@ const MenuDetails = () => {
         <Modal
           avoidKeyboard={false}
           onRequestClose={() => {
-            console.log('It', 'Is', 'Closed!');
             setOpenAddMenuModal(false);
           }}
           keyboardAvoidingBehavior={

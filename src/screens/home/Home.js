@@ -65,41 +65,35 @@ const Home = ({navigation}) => {
         } finally {
           setLoading(false);
         }
-
-        try {
-          setLoading(true);
-          const events = await dispatch(
-            getCalendereventData({token, dispatch, refreshToken}),
-          );
-
-          if (events?.error) {
-            ShowAlert({
-              messageHeader: ERROR,
-              messageSubHeader: events?.error?.message,
-              buttonText: 'Close',
-              dispatch,
-              navigation,
-            });
-          }
-
-          // if (events?.error?.message?.toLowerCase() === 'token-expired') {
-          //   const newFetchedData = await renewCurrentToken({
-          //     dispatch,
-          //     renewToken,
-          //     refreshToken,
-          //     data: {},
-          //     apiCallAgain: getCalendereventData,
-          //   });
-          //   console.log('newFetchedData:', newFetchedData);
-          // }
-        } catch (err) {
-          console.log('errEvents:', err);
-        } finally {
-          setLoading(false);
-        }
       })();
     }
-  }, [isFocussed, token]);
+  }, [token]);
+  // }, [isFocussed, token]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const events = await dispatch(
+          getCalendereventData({token, dispatch, refreshToken}),
+        );
+
+        if (events?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: events?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        console.log('errEvents:', err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   return (
     <View

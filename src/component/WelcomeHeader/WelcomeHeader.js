@@ -50,11 +50,25 @@ const WelcomeHeader = () => {
           checkedInTimeStamp - properCheckInTimeStamp,
         );
 
-        const lateHours = Math.floor(differenceInTime / (1000 * 60 * 60));
-        const lateMinutes = Math.floor(
-          (differenceInTime % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const lateSeconds = Math.floor((differenceInTime % (1000 * 60)) / 1000);
+        const lateHours =
+          Math.floor(differenceInTime / (1000 * 60 * 60)) > 9
+            ? Math.floor(differenceInTime / (1000 * 60 * 60))
+            : Math.floor(differenceInTime / (1000 * 60 * 60))
+            ? '0' + Math.floor(differenceInTime / (1000 * 60 * 60))
+            : '00';
+        const lateMinutes =
+          Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60)) > 9
+            ? Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+            : Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+            ? '0' +
+              Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+            : '00';
+        const lateSeconds =
+          Math.floor((differenceInTime % (1000 * 60)) / 1000) > 9
+            ? Math.floor((differenceInTime % (1000 * 60)) / 1000)
+            : Math.floor((differenceInTime % (1000 * 60)) / 1000)
+            ? '0' + Math.floor((differenceInTime % (1000 * 60)) / 1000)
+            : '00';
 
         setTodayStatus({
           lateHours,

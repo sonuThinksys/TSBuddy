@@ -209,9 +209,11 @@ const UserProfile = ({route}) => {
       return (
         <View
           key={index}
-          style={{
-            backgroundColor: Colors.white,
-          }}>
+          style={
+            {
+              // backgroundColor: Colors.white,
+            }
+          }>
           {showHoriZontal ? (
             <TouchableOpacity
               onPress={() => {
