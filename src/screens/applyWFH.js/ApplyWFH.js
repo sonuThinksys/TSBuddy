@@ -10,7 +10,6 @@ import {
   TextInput,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableNativeFeedback,
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
@@ -445,6 +444,7 @@ const ApplyWFH = ({navigation}) => {
             <View style={styles.secondView}>
               <DateTimePickerModal
                 minimumDate={new Date()}
+                date={startSelected ? startDate?.startDateObj : undefined}
                 // maximumDate={
                 //   new Date(new Date().setMonth(new Date().getMonth() + 1))
                 // }

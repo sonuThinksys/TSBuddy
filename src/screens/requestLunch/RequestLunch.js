@@ -451,6 +451,7 @@ const RequestLunch = ({navigation}) => {
         </View>
         <DateTimePickerModal
           minimumDate={new Date()}
+          date={startSelected ? startDate?.startDateObj : undefined}
           maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
           isVisible={startDatePickerVisible}
           mode="date"

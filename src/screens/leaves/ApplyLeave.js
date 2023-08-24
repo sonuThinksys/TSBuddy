@@ -1181,7 +1181,7 @@ const ApplyLeave = ({navigation, route}) => {
                         style={{
                           borderWidth: 1,
 
-                          opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
+                          opacity: totalNumberOfLeaveDays <= 1 ? 1 : 0.5,
                           borderRadius: 3,
                           paddingVertical: 5,
                           height: 32,
@@ -1300,6 +1300,7 @@ const ApplyLeave = ({navigation, route}) => {
 
                 <DateTimePickerModal
                   minimumDate={minimumDateLeaveApplication}
+                  date={fromDate?.fromDateObj}
                   maximumDate={dateAfter6Months}
                   isVisible={fromCalenderVisible}
                   mode="date"
