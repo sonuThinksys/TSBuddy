@@ -1299,6 +1299,7 @@ const ApplyLeave = ({navigation, route}) => {
 
                 <DateTimePickerModal
                   minimumDate={minimumDateLeaveApplication}
+                  date={fromDate?.fromDateObj}
                   maximumDate={dateAfter6Months}
                   isVisible={fromCalenderVisible}
                   mode="date"

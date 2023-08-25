@@ -84,25 +84,25 @@ const LeavesList = props => {
               }),
             );
 
-        // const sortLeaveData = !fromResource
-        //   ? leavesData?.payload?.sort((a, b) => {
-        //       return (
-        //         new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-        //       );
-        //     })
-        //   : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
-        //       return (
-        //         new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-        //       );
-        //     });
+        const sortLeaveData = !fromResource
+          ? leavesData?.payload?.sort((a, b) => {
+              return (
+                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+              );
+            })
+          : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+              return (
+                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+              );
+            });
 
-        // const openLeaves = {rhOpen: 0, earnedOpen: 0};
+        const openLeaves = {rhOpen: 0, earnedOpen: 0};
 
-        const empLeaves = leavesData?.payload;
-        const resourceLeaves = leavesData?.payload?.employeeLeaves;
+        // const empLeaves = leavesData?.payload;
+        // const resourceLeaves = leavesData?.payload?.employeeLeaves;
 
         if (!fromResource) {
-          for (const leave of empLeaves) {
+          for (const leave of sortLeaveData) {
             if (
               leave?.leaveType?.toLowerCase() === 'earned leave' &&
               leave.status.toLowerCase() === 'open'
@@ -121,7 +121,8 @@ const LeavesList = props => {
         }
 
         fromLeaveDetails && fromLeaveDetails(openLeaves);
-        setEmployeesLeaves(fromResource ? resourceLeaves : empLeaves);
+        // setEmployeesLeaves(fromResource ? resourceLeaves : empLeaves);
+        setEmployeesLeaves(sortLeaveData);
 
         setLoading(false);
         let count = 0;
