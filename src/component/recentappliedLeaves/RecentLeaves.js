@@ -214,14 +214,14 @@ const renderItem = ({item, index}) => {
               {`${new Date(item.fromDate).toLocaleString('default', {
                 month: 'short',
               })} ${new Date(item.fromDate).getDate()}, ${new Date(
-                item.fromDate,
+                item?.fromDate,
               ).getFullYear()}`}
               {'  '}
               to{'  '}
-              {`${new Date(item.fromDate).toLocaleString('default', {
+              {`${new Date(item.toDate).toLocaleString('default', {
                 month: 'short',
-              })} ${new Date(item.fromDate).getDate()}, ${new Date(
-                item.fromDate,
+              })} ${new Date(item.toDate).getDate()}, ${new Date(
+                item?.toDate,
               ).getFullYear()}`}
             </Text>
           </View>

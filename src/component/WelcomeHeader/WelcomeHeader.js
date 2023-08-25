@@ -93,7 +93,7 @@ const WelcomeHeader = () => {
           hours,
           minutes,
           seconds,
-          empMachineCode: +checkIn?.payload[0].employeeMachineCode,
+          empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
         });
       } catch (err) {
         console.log('erroor:', err);

@@ -127,10 +127,7 @@ const RemainingLeaves = () => {
             ////////////////////////////////////////////////////////////////
             const openLeaves = {rhOpen: 0, earnedOpen: 0};
 
-            console.log('leavesData:', leavesData);
             for (const leave of leavesData) {
-              console.log('leaveData:', leave);
-
               if (
                 leave?.leaveType?.toLowerCase() === 'earned leave' &&
                 leave.status?.toLowerCase() === 'open'
@@ -152,7 +149,11 @@ const RemainingLeaves = () => {
             navigation.navigate('Leaves', {
               screen: 'LeaveApplyScreen',
               initial: false,
-              params: {leavesData, openLeavesCount: openLeaves},
+              params: {
+                leavesData,
+                openLeavesCount: openLeaves,
+                applyLeave: true,
+              },
             });
           }}
           style={styles.buttonContainer}>

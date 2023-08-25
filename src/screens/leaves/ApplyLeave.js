@@ -881,8 +881,9 @@ const ApplyLeave = ({navigation, route}) => {
         (startDate2 >= startDate1 && startDate2 <= endDate1)
       ) {
         if (
-          leavesData[i]?.status?.toLowerCase() === 'open' ||
-          leavesData[i]?.status?.toLowerCase() === 'approved'
+          (leavesData[i]?.status?.toLowerCase() === 'open' ||
+            leavesData[i]?.status?.toLowerCase() === 'approved') &&
+          leavesData[i]?.leaveType?.toLowerCase() !== 'work from home'
         ) {
           alert('Leaves are already applied to these dates.');
           return;
@@ -896,8 +897,9 @@ const ApplyLeave = ({navigation, route}) => {
         startDate2.toDateString() === endDate1.toDateString()
       ) {
         if (
-          leavesData[i]?.status?.toLowerCase() === 'open' ||
-          leavesData[i]?.status?.toLowerCase() === 'approved'
+          (leavesData[i]?.status?.toLowerCase() === 'open' ||
+            leavesData[i]?.status?.toLowerCase() === 'approved') &&
+          leavesData[i]?.leaveType?.toLowerCase() !== 'work from home'
         ) {
           alert('Leaves are already applied to these dates.');
           return;
@@ -1180,19 +1182,16 @@ const ApplyLeave = ({navigation, route}) => {
                         renderButtonText={renderButtonText}
                         style={{
                           borderWidth: 1,
-
-                          opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
+                          backgroundColor: Colors.white,
+                          opacity:
+                            route.params.applyLeave &&
+                            totalNumberOfLeaveDays > 1
+                              ? 0.5
+                              : 1,
+                          // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
                           borderRadius: 3,
                           paddingVertical: 5,
                           height: 32,
-                          backgroundColor:
-                            !fromDate.fromDateObj ||
-                            !toDate.toDateObj ||
-                            totalNumberOfLeaveDays > 1 ||
-                            fromResource ||
-                            (!isEditOpenleave && fromOpenLeave)
-                              ? Colors.lightGray
-                              : Colors.white,
                         }}
                         isFullWidth={true}
                         showsVerticalScrollIndicator={false}

@@ -1,10 +1,11 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import {FontFamily} from 'constants/fonts';
+const windowHeight = Dimensions.get('window').height;
 export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.whitishBlue,
@@ -14,7 +15,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
+    // paddingVertical: hp(2),
     alignItems: 'center',
   },
   lunchTextView: {
@@ -84,12 +85,12 @@ export default StyleSheet.create({
     marginHorizontal: wp(20),
   },
   buttomView: {
+    height: windowHeight >= 700 ? hp(35) : hp(28),
     shadowOpacity: 0.1,
     // top: hp(2),
     marginHorizontal: wp(2),
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
-    // height: hp(52),
   },
   appliedView: {
     marginHorizontal: wp(4),

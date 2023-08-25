@@ -454,6 +454,7 @@ const RequestLunch = ({navigation}) => {
           maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
           isVisible={startDatePickerVisible}
           mode="date"
+          date={startSelected ? startDate?.startDateObj : undefined}
           onConfirm={handleStartConfirm}
           onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
         />
@@ -468,7 +469,13 @@ const RequestLunch = ({navigation}) => {
           }
           isVisible={endDatePickerVisible}
           mode="date"
-          date={startSelected ? startDate?.startDateObj : undefined}
+          date={
+            endSelected
+              ? endDate?.endDateObj
+              : startSelected
+              ? startDate.startDateObj
+              : undefined
+          }
           onConfirm={handleEndConfirm}
           onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
         />

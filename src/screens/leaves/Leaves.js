@@ -34,6 +34,7 @@ const Leaves = ({navigation}) => {
   const applyForLeave = () => {
     navigation.navigate(LeaveApplyScreen, {
       openLeavesCount: openLeaves,
+      applyLeave: true,
     });
   };
 

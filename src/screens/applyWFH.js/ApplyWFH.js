@@ -3,14 +3,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   Alert,
   FlatList,
-  Pressable,
   TextInput,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableNativeFeedback,
   TouchableWithoutFeedback,
 } from 'react-native';
 
@@ -24,7 +21,6 @@ import {
 import jwt_decode from 'jwt-decode';
 
 import DropDownPicker from 'react-native-dropdown-picker';
-import SelectDateModal from 'modals/SelectDateModal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {
@@ -36,13 +32,11 @@ import {
 } from 'redux/homeSlice';
 import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
-import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 import Loader from 'component/loader/Loader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {ScrollView} from 'react-native-gesture-handler';
 import {useDrawerStatus} from '@react-navigation/drawer';
 
 const ApplyWFH = ({navigation}) => {
@@ -307,29 +301,24 @@ const ApplyWFH = ({navigation}) => {
   const startDateCopy = new Date(startDate?.startDateObj);
 
   const onApplyWfh = async () => {
-    if (!startDate.startDateStr || !endDate.endDateStr) {
-      alert('Please select dates for which you want to apply a WFH.');
-      return;
-    }
+    // if (!startDate.startDateStr || !endDate.endDateStr) {
+    //   alert('Please select dates for which you want to apply a WFH.');
+    //   return;
+    // }
 
-    if (totalDaysCount < 0) {
-      alert('Difference between the number of leave days must be positive.');
-      return;
-    }
-
-    if (selectedLeaveApprover === '') {
-      alert('Please select a leave approver.');
-      return;
-    }
+    // if (selectedLeaveApprover === '') {
+    //   alert('Please select a leave approver.');
+    //   return;
+    // }
     // if (totalDaysCount === 0) {
     //   alert('You can not apply leave on Weekends.');
     //   return;
     // }
 
-    if (reason?.trim().length === 0) {
-      alert('Please enter a reason for applying a WFH.');
-      return;
-    }
+    // if (reason?.trim().length === 0) {
+    //   alert('Please enter a reason for applying a WFH.');
+    //   return;
+    // }
 
     for (let i = 0; i < wfhList?.length; i++) {
       let {fromDate: startDate1, toDate: endDate1} = wfhList[i];
@@ -346,7 +335,7 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('WFH are already applied to these dates.');
+          alert('WFH are already applied for these dates.');
           return;
         }
       }
@@ -361,7 +350,7 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('WFH are already applied to these dates.');
+          alert('WFH are already applied for these dates.');
           return;
         }
       }
@@ -435,15 +424,16 @@ const ApplyWFH = ({navigation}) => {
         showHeaderRight={true}
       />
 
+      {/* <ScrollView style={{marginBottom: 50}}> */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.secondView}>
             <DateTimePickerModal
               minimumDate={new Date()}
-              // maximumDate={
-              //   new Date(new Date().setMonth(new Date().getMonth() + 1))
-              // }
+              maximumDate={
+                new Date(new Date().setMonth(new Date().getMonth() + 1))
+              }
               isVisible={startDatePickerVisible}
               mode="date"
               onConfirm={handleStartConfirm}
@@ -451,14 +441,14 @@ const ApplyWFH = ({navigation}) => {
             />
             <DateTimePickerModal
               minimumDate={startSelected ? startDate?.startDateObj : undefined}
-              // maximumDate={
-              //   startSelected
-              //     ? new Date(
-              //         startDate?.startDateObj?.getTime() +
-              //           7 * 24 * 60 * 60 * 1000,
-              //       )
-              //     : undefined
-              // }
+              maximumDate={
+                startSelected
+                  ? new Date(
+                      startDate?.startDateObj?.getTime() +
+                        7 * 24 * 60 * 60 * 1000,
+                    )
+                  : undefined
+              }
               isVisible={endDatePickerVisible}
               mode="date"
               date={startSelected ? startDate?.startDateObj : undefined}
@@ -664,10 +654,21 @@ const ApplyWFH = ({navigation}) => {
         <Text style={styles.appliedText}>Work From Home History</Text>
       </View>
       <View style={styles.buttomView}>
-        <View style={{flexBasis: 300}}>
+        <View>
           {loading ? (
             <Loader />
           ) : (
+            // Flatlist is to be implemented instead of map but for now i did it because list is cutting from bottom if i use Flatlist. Will look a solution later.
+            // wfhList.map(wfh =>
+            //   renderListOfAppliedRequests({
+            //     item: wfh,
+            //     dispatch,
+            //     token,
+            //     onCancel: cancelSubscribedLunchRequest,
+            //     setIsLoading,
+            //   }),
+            // )
+
             <FlatList
               showsVerticalScrollIndicator={false}
               data={wfhList}
@@ -703,6 +704,7 @@ const ApplyWFH = ({navigation}) => {
           </View>
         )}
       </View>
+      {/* </ScrollView> */}
     </View>
   );
 };
@@ -734,7 +736,7 @@ const renderListOfAppliedRequests = ({
   );
 
   return (
-    <View style={styles.request}>
+    <View style={styles.request} key={item.leaveApplicationId}>
       <View style={styles.appliedRequestsLeft}>
         <View
           style={{
