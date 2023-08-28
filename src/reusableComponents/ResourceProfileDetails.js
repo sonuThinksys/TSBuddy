@@ -39,7 +39,7 @@ const ResourceProfileDetails = props => {
           {image ? (
             <Image
               resizeMode="stretch"
-              source={{uri: `data:image/jpeg;base64,${image}`}}
+              source={{uri: image}}
               style={style.image}
             />
           ) : (
@@ -171,8 +171,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: 72,
+    height: 72,
     borderRadius: 50,
   },
   listOfLeaves: {

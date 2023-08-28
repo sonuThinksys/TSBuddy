@@ -141,29 +141,11 @@ const UserDetail = ({navigation, route}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {/* {image ? (
-          <Image
-            source={{uri: `${baseUrl}${image}`}}
-            style={{
-              height: hp(14),
-              width: hp(14),
-              borderRadius: 55,
-            }}
-          />
-        ) : null} */}
         {image ? (
-          // <Image
-          //   source={{uri: `${baseUrl}${image}`}}
-          //   style={{
-          //     height: hp(14),
-          //     width: hp(14),
-          //     borderRadius: 55,
-          //   }}
-          // />
           <Image
-            resizeMode="stretch"
+            resizeMode="cover"
             // source={{uri: `${baseUrl}${image}`}}
-            source={{uri: `data:image/jpeg;base64,${image}`}}
+            source={{uri: image}}
             style={{
               height: 120,
               width: 120,

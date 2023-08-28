@@ -23,7 +23,6 @@ const WelcomeHeader = () => {
   const employeeID = decoded?.id || '';
 
   const handleAppStateChange = async nextState => {
-    console.log('props:', nextState);
     if (nextState === 'active' || nextState === true) {
       try {
         const checkIn = await dispatch(getTodayCheckInTime({token}));

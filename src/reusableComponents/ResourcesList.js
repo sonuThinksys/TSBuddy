@@ -113,7 +113,7 @@ const ResourcesList = props => {
                 {image ? (
                   <Image
                     resizeMode="stretch"
-                    source={{uri: `data:image/jpeg;base64,${image}`}}
+                    source={{uri: image}}
                     style={style.image}
                   />
                 ) : (

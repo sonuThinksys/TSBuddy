@@ -174,9 +174,7 @@ const Profile = ({navigation}) => {
             resizeMode="cover"
             style={{height: '60%', width: '100%'}}
             source={
-              profileData?.image
-                ? {uri: `data:image/jpeg;base64,${profileData?.image}`}
-                : defaultUserIcon
+              profileData?.image ? {uri: profileData?.image} : defaultUserIcon
             }
             // source={
             //   profileData?.image
@@ -194,12 +192,16 @@ const Profile = ({navigation}) => {
                 /> */}
 
                 {profileData?.image ? (
+                  // <Image
+                  //   resizeMode="stretch"
+                  //   source={{
+                  //     uri: `data:image/jpeg;base64,${profileData?.image}`,
+                  //   }}
+                  //   style={{height: '100%', width: '100%', borderRadius: 60}}
+                  // />
                   <Image
-                    resizeMode="stretch"
-                    source={{
-                      uri: `data:image/jpeg;base64,${profileData?.image}`,
-                    }}
-                    style={{height: '100%', width: '100%', borderRadius: 60}}
+                    source={{uri: profileData?.image}}
+                    style={{height: '100%', width: '100%', borderRadius: 60}} // Define the width and height as needed
                   />
                 ) : (
                   <Image
@@ -243,14 +245,17 @@ const Profile = ({navigation}) => {
                   {profileData?.managerInfoDto?.image ? (
                     <Image
                       resizeMode="stretch"
-                      source={{
-                        uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
-                      }}
+                      // source={{
+                      //   uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
+
+                      // }}
+                      source={{uri: profileData?.managerInfoDto?.image}}
                       style={{height: 90, width: 90, borderRadius: 50}}
                     />
                   ) : (
                     <Image
-                      source={defaultUserIcon}
+                      // source={defaultUserIcon}
+                      source={{uri: defaultUserIcon}}
                       style={{height: 80, width: 80, borderRadius: 20}}
                     />
                   )}

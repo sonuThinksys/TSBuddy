@@ -91,7 +91,7 @@ export default ({navigation}) => {
       key: 2,
       icon: profileData?.image
         ? (source = {
-            uri: `data:image/jpeg;base64,${profileData?.image}`,
+            uri: profileData?.image,
           })
         : MonthImages.ProfileIcon,
     },
@@ -259,14 +259,6 @@ const renderDrawerItem = (
           );
           navigation.closeDrawer();
         } else {
-          // if (label === 'Leaves') {
-          //   navigation.navigate(screen, {
-          //     screen: 'LeavesScreeen',
-          //   });
-          // } else {
-          //   navigation.navigate(screen);
-          //   navigation.closeDrawer();
-          // }
           navigation.navigate(screen);
           navigation.closeDrawer();
         }

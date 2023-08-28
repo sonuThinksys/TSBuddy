@@ -45,6 +45,7 @@ const initialState = {
   resourcesEmployeeData: [],
   resourcesEmployeeDataError: null,
   fromNavigatedScreen: '',
+  configData: [],
 };
 
 const breakfast = 'breakfast';
@@ -117,6 +118,40 @@ export const addDailyMenuDetails = createAsyncThunk(
         statusCode = err?.response?.status;
       }
       if (statusCode == 401 || statusCode == 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getConfigData = createAsyncThunk(
+  'getConfigData',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getConfigData;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error());
+      }
+    } catch (err) {
+      let statusCode = 500;
+
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+
+      if (statusCode === 400 || statusCode === 401) {
         return Promise.reject(err?.response?.data);
       } else {
         return Promise.reject(new Error(err));
@@ -1583,6 +1618,9 @@ const homeSlice = createSlice({
     // });
 
     //fgfgfg
+    builder.addCase(getConfigData.fulfilled, (state, action) => {
+      state.configData = action.payload;
+    });
     builder.addCase(getEmployeeProfileData.pending, state => {
       state.employeeProfileLoading = true;
     });

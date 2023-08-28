@@ -569,13 +569,10 @@ function DrawerNavigator({navigation}) {
         }}
         component={HomeStackScreen}
       />
-
       <Drawer.Screen name="Profile" component={ProfileStackScreen} />
-
       {isAdmin ? (
         <Drawer.Screen name="Lunch" component={LunchRequestsNavigator} />
       ) : null}
-
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
@@ -585,26 +582,26 @@ function DrawerNavigator({navigation}) {
           component={AllAttendanceNavigator}
         />
       ) : null}
-
       {isLeaveApprover ? (
         <Drawer.Screen
           name="WorkFromHome"
           component={WorkFromHomeStackScreen}
         />
       ) : null}
-
       {isLeaveApprover ? (
         <Drawer.Screen
           name="RegularisationFormScreen"
           component={RegularisationStackScreen}
         />
       ) : null}
-
-      <Drawer.Screen name="Attendence" component={AttendenceStackScreen} />
+      <Drawer.Screen
+        options={{unmountOnBlur: true}}
+        name="Attendence"
+        component={AttendenceStackScreen}
+      />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
       <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
-
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
       {token ? (
         <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />

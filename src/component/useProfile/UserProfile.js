@@ -238,8 +238,7 @@ const UserProfile = ({route}) => {
                   {image ? (
                     <Image
                       resizeMode="stretch"
-                      // source={{uri: `${baseUrl}${image}`}}
-                      source={{uri: `data:image/jpeg;base64,${image}`}}
+                      source={{uri: image}}
                       style={styles.image}
                     />
                   ) : (
@@ -282,10 +281,8 @@ const UserProfile = ({route}) => {
                 }}>
                 {image ? (
                   <Image
-                    resizeMode="stretch"
-                    // source={{uri: `${baseUrl}${image}`}}
-                    source={{uri: `data:image/jpeg;base64,${image}`}}
-                    style={styles.image}
+                    source={{uri: image}}
+                    style={styles.image} // Define the width and height as needed
                   />
                 ) : (
                   <Image source={defaultUserIcon} style={styles.image} />

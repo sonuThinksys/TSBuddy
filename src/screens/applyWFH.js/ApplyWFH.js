@@ -186,12 +186,6 @@ const ApplyWFH = ({navigation}) => {
     }
   }, [isFocused]);
 
-  useEffect(() => {
-    const diffTime = toDate?.getTime() - fromDate?.getTime();
-    const diffInDays = diffTime / (1000 * 60 * 60 * 24) + 1;
-    setTotalDaysCount(diffInDays);
-  }, [endDate.endDateStr]);
-
   const dispatch = useDispatch();
 
   const onSelectItem = item => {
@@ -255,6 +249,7 @@ const ApplyWFH = ({navigation}) => {
     setStartSelected(true);
     setEndSelected(false);
     setEndDate({endDateStr: 'Select End Date'});
+    setTotalDaysCount(0);
   };
 
   const handleEndConfirm = date => {
@@ -290,6 +285,9 @@ const ApplyWFH = ({navigation}) => {
       endDateObj: date,
     });
     hideDatePicker(setEndDatePickerVisible);
+    const diffTime = toDate?.getTime() - fromDate?.getTime();
+    const diffInDays = diffTime / (1000 * 60 * 60 * 24) + 1;
+    setTotalDaysCount(Math.round(diffInDays));
   };
 
   let opacity = 1;

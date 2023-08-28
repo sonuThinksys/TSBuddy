@@ -105,18 +105,6 @@ const RegularisationTabDetails = ({navigation, route}) => {
     }
   };
 
-  console.log(
-    'Body',
-    'regularizationId',
-    regularizationId,
-    'attendanceDate = ',
-    attendanceDate,
-    'employeeId=',
-    employeeId,
-    'attendanceType=',
-    attendanceType,
-  );
-
   const handleDismiss = async () => {
     const updateAttRegularize = await dispatch(
       updateAttRegularizeStatus({

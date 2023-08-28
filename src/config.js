@@ -48,4 +48,5 @@ export default {
   renewToken: `${API_URL}/Account/RenewToken`,
   getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
+  getConfigData: `${API_URL}/FoodRequest/GetConfigDetails`,
 };

@@ -76,7 +76,6 @@ export const renewCurrentToken = async ({
     );
     // console.log('newResult:', newResult);
     const newData = newResult.payload;
-    console.log('new::::Data:', newData);
     return newData;
   } else {
     Alert.alert('Login expired.', 'Kindly login again!!', [

@@ -90,36 +90,13 @@ const RecentLeaves = ({navigation}) => {
     }
   }, [isFocussed]);
 
-  // const {
-  //   leaveMenuDetails: {recentAppliedLeaves = []},
-  // } = useSelector(state => state.home);
-  // const recent3AppliedLeaves = recentAppliedLeaves?.slice(-3)?.reverse();
-
-  // let leavesCount = 0;
-  // let wfhCount = 0;
-
-  // const sortedLeaves = [...recentAppliedLeaves]?.sort(
-  //   (a, b) => new Date(b?.postingDate) - new Date(a?.postingDate),
-  // );
-  // console.log('sortedLeaves:', sortedLeaves);
-  // const recent3Leaves = sortedLeaves?.filter(leave => {
-  //   if (leave.leaveType.toLowerCase() !== 'work from home' && leavesCount < 3) {
-  //     leavesCount++;
-  //     return true;
-  //   }
-  // });
-  // const recent3WFH = sortedLeaves?.filter(leave => {
-  //   if (leave.leaveType.toLowerCase() === 'work from home' && wfhCount < 3) {
-  //     wfhCount++;
-  //     return true;
-  //   }
-  // });
-
   return (
     <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
       <View style={styles.container}>
         <Text style={styles.recentText}>
-          {showLeaveType === 'leaves' ? 'Leaves Applied' : 'WFH Applied'}
+          {showLeaveType === 'leaves'
+            ? 'Recent Leaves Applied'
+            : 'Recent WFH Applied'}
         </Text>
         <Pressable
           onPress={() => {
@@ -134,33 +111,14 @@ const RecentLeaves = ({navigation}) => {
         </Pressable>
       </View>
       {isGuestLogin ? (
-        // <FlatList
-        //   data={guestLeavesData}
-        //   renderItem={renderItem}
-        //   keyExtractor={(item, index) => index}
-        //   nestedScrollEnabled
-        // />
         guestLeavesData.map((item, index) => {
           return renderItem({item, index});
         })
       ) : (showLeaveType === 'leaves' && recent3Leaves?.length) > 0 ? (
-        // <FlatList
-        //   data={recent3Leaves}
-        //   renderItem={renderItem}
-        //   keyExtractor={(item, index) => index}
-        //   nestedScrollEnabled
-        // />
         recent3Leaves.map((item, index) => {
           return renderItem({item, index});
         })
       ) : (showLeaveType === 'wfh' && recent3WFH?.length) > 0 ? (
-        //   data={recent3WFH} // <FlatList
-        //   // data={isGuestLogin ? guestLeavesData : recent3AppliedLeaves}
-        //   renderItem={renderItem}
-        //   keyExtractor={(item, index) => index}
-        //   nestedScrollEnabled
-        //   // style={{marginHorizontal: 4}}
-        // />
         recent3WFH.map((item, index) => {
           return renderItem({item, index});
         })
@@ -265,28 +223,6 @@ const renderItem = ({item, index}) => {
           </View>
         )}
       </View>
-      {/* <Image
-        resizeMode="contain"
-        source={
-          item.status !== 'Approved'
-            ? MonthImages.absentEmpl
-            : MonthImages.presentEmpS
-        }
-        style={styles.image}
-      /> */}
-
-      {/* <Text style={{flex: 0.6}}>
-        {item.totalLeaveDays} {item.totalLeaveDays === 1 ? 'Day' : 'Days'}
-      </Text>
-      <View style={styles.itemView}>
-        <Text style={styles.dateText}>
-          {`${new Date(item.fromDate).getDate()} ${new Date(
-            item.fromDate,
-          ).toLocaleString('default', {month: 'short'})} ${new Date(
-            item.fromDate,
-          ).getFullYear()}`}
-        </Text>
-      </View> */}
     </View>
   );
 };

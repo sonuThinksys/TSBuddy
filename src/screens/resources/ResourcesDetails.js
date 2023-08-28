@@ -46,8 +46,6 @@ const ResourcesDetails = ({route, navigation}) => {
     cellNumber,
   } = route.params;
 
-  console.log('route.params', route.params);
-
   const empFullName =
     firstName && lastName
       ? `${firstName}  ${lastName}`

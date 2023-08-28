@@ -184,7 +184,6 @@ const CarouselAutoScroll = ({navigation}) => {
                   style={styles.container}
                   key={index}
                   onPress={() => {
-                    console.log('itemm:', item);
                     setModalData({
                       startsOn: item.startsOn,
                       dateOfJoining: item.dateOfJoining,

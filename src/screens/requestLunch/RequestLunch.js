@@ -32,16 +32,18 @@ import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 import Loader from 'component/loader/Loader';
-import CustomHeader from 'navigation/CustomHeader';
-import {lunchChargeMessage} from 'utils/utils';
 
 const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
+  const {configData} = useSelector(state => state.home);
+  console.log('configData:', configData);
+  const [{value: deadlineToRequestForLunch}] = configData;
 
+  const [deadlineHours, deadlineMinutes] = deadlineToRequestForLunch.split(':');
+  console.log('deadlineHours:', +deadlineHours, +deadlineMinutes);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
-  const {employeeProfile, dateData} = useSelector(state => state.home);
 
   const [startDate, setStartDate] = useState({
     startDateStr: 'Select Start Date',
@@ -307,9 +309,12 @@ const RequestLunch = ({navigation}) => {
     if (
       appliedDate === todayDate &&
       appliedMonth === todayDateMonth &&
-      (currentHour > 10 || (currentHour === 10 && currentMinutes > 29))
+      (currentHour > +deadlineHours ||
+        (currentHour === deadlineHours && +deadlineMinutes > minutes))
     ) {
-      alert('You can not apply for the lunch request after 10:30.');
+      alert(
+        `You can not apply for the lunch request after ${deadlineHours}:${deadlineMinutes}.`,
+      );
       return;
     }
 
@@ -455,7 +460,6 @@ const RequestLunch = ({navigation}) => {
           maximumDate={new Date(new Date().setMonth(new Date().getMonth() + 1))}
           isVisible={startDatePickerVisible}
           mode="date"
-          date={startSelected ? startDate?.startDateObj : undefined}
           onConfirm={handleStartConfirm}
           onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
         />

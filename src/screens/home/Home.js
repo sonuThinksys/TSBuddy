@@ -12,7 +12,11 @@ import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
 import Loader from 'component/loader/Loader';
-import {getCalendereventData, getEmployeeProfileData} from 'redux/homeSlice';
+import {
+  getCalendereventData,
+  getConfigData as getConfigDataHandler,
+  getEmployeeProfileData,
+} from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
 import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
@@ -92,6 +96,12 @@ const Home = ({navigation}) => {
       } finally {
         setLoading(false);
       }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const configData = await dispatch(getConfigDataHandler({token}));
     })();
   }, []);
 

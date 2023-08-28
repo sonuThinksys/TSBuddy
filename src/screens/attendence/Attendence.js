@@ -5,7 +5,6 @@ import {
   ImageBackground,
   FlatList,
   SafeAreaView,
-  ActivityIndicator,
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -106,6 +105,10 @@ const Attendence = ({navigation}) => {
       totalHours: pressedDate?.totalHours,
     };
     setPressedDayDate(pressedDateObj);
+
+    return () => {
+      console.log('Unmounting', 'yes');
+    };
   }, [showDailyStatusModal]);
 
   const dispatch = useDispatch();
@@ -376,12 +379,6 @@ const Attendence = ({navigation}) => {
         showHeaderRight={true}
       />
       <SafeAreaView style={styles.container}>
-        {/* {isLoading ? (
-        <View style={styles.loaderContainer}>
-          <View style={styles.loaderBackground} />
-          <ActivityIndicator size="large" />
-        </View>
-      ) : null} */}
         <ImageBackground
           resizeMode="stretch"
           // onLoadStart={() => setImageLoading(true)}
@@ -470,7 +467,7 @@ const Attendence = ({navigation}) => {
           </View>
         </ImageBackground>
         <View style={{flex: 1.2, position: 'relative'}}>
-          <RenderCalender1
+          <RenderCalender
             setVisibleMonth={setVisibleMonth}
             setVisibleYear={setVisibleYear}
             mark={mark}
@@ -480,6 +477,8 @@ const Attendence = ({navigation}) => {
             dailyAttendance={dailyAttendance}
             isLoading={isLoading}
             holidaysData={holidaysData}
+            visibleYear={visibleYear}
+            visisbleMonth={visisbleMonth}
           />
         </View>
       </SafeAreaView>
@@ -497,7 +496,10 @@ const RenderCalender = ({
   dailyAttendance,
   isLoading,
   holidaysData,
+  visisbleMonth,
+  visibleYear,
 }) => {
+  console.log('visibleYear:', visibleYear, visisbleMonth);
   return (
     <>
       <CalendarList
@@ -633,7 +635,5 @@ const RenderCalender = ({
     </>
   );
 };
-
-const RenderCalender1 = RenderCalender;
 
 export default Attendence;
