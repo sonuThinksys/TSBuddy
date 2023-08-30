@@ -49,4 +49,5 @@ export default {
   getTodayLunchRequests: `${API_URL}/FoodRequest/GetLunchRequestByDate?date=`,
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
   getConfigData: `${API_URL}/FoodRequest/GetConfigDetails`,
+  createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
 };

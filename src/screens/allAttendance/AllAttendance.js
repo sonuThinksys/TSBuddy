@@ -1,5 +1,12 @@
 import {useEffect, useState} from 'react';
-import {FlatList, Image, Pressable, Text, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 // import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomHeader from 'navigation/CustomHeader';
@@ -16,7 +23,18 @@ import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {renewToken} from 'Auth/LoginSlice';
 import Modal from 'react-native-modal';
+import ModalDropdown from 'react-native-modal-dropdown';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {newDropDownOptions} from 'utils/defaultData';
+import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
+import Clock from 'assets/clock/clock.svg';
+import CheckIcon from 'assets/checkIcon/checkIcon.svg';
+
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'utils/Responsive';
+import {FontFamily, FontSize} from 'constants/fonts';
 
 const DAY_WISE = 'day wise';
 const MONTH_WISE = 'month wise';
@@ -44,6 +62,10 @@ const AllAttendance = ({navigation}) => {
   const [dayWiseData, setDayWiseData] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isFetchingData, setIsFetchingData] = useState(false);
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [inTimePickerVisible, setInTimePickerVisible] = useState(false);
+  const [outTimePickerVisible, setOutTimePickerVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   const fetchDayWiseData = async dayWiseDate => {
     const today = new Date();
@@ -125,6 +147,40 @@ const AllAttendance = ({navigation}) => {
     setIsDateSelecting(false);
   };
 
+  const renderRow = (rowData, rowID, highlighted) => {
+    return (
+      <View
+        style={[
+          styles.row,
+          {borderBottomColor: Colors.lightGray, borderBottomWidth: 1},
+        ]}>
+        <Text>ABC</Text>
+      </View>
+    );
+  };
+
+  const renderRightComponent = () => (
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 10,
+        paddingTop: 4,
+        position: 'absolute',
+        right: 0,
+      }}>
+      <Image
+        source={MonthImages.DropDownIcon}
+        style={{
+          height: 20,
+          width: 20,
+        }}
+      />
+    </View>
+  );
+
+  const handleSubmitNewAttendance = () => {};
+
   return (
     <>
       <CustomHeader
@@ -192,9 +248,8 @@ const AllAttendance = ({navigation}) => {
             }}>
             <Modal
               backdropOpacity={0.2}
-              // animationType="fade"
-              animationIn={'bounceIn'}
-              animationOut={'jello'}
+              animationIn={'slideInUp'}
+              animationOut={'bounce'}
               transparent={true}
               closeOnClick={true}
               isVisible={showModal}
@@ -207,40 +262,21 @@ const AllAttendance = ({navigation}) => {
               <View style={styles.modalContainer}>
                 <Text style={styles.newAttendanceTitle}>New Attendance</Text>
                 <Text style={styles.headerText}>Employee:</Text>
-                <View>
+                <View style={{marginBottom: 10}}>
                   <ModalDropdown
-                    disabled={
-                      !fromDate.fromDateObj ||
-                      !toDate.toDateObj ||
-                      totalNumberOfLeaveDays > 1 ||
-                      fromResource ||
-                      (!isEditOpenleave && fromOpenLeave)
-                    }
-                    renderButtonText={renderButtonText}
+                    // renderButtonText={renderButtonText}
                     style={{
                       borderWidth: 1,
+                      borderColor: Colors.grey,
                       backgroundColor: Colors.white,
-                      opacity:
-                        route.params.applyLeave && totalNumberOfLeaveDays > 1
-                          ? 0.5
-                          : 1,
-                      // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
                       borderRadius: 3,
                       paddingVertical: 5,
-                      height: 32,
+                      height: hp(4.3),
+                      paddingLeft: 10,
+                      paddingTop: 8,
                     }}
                     isFullWidth={true}
                     showsVerticalScrollIndicator={false}
-                    defaultValue={
-                      !fromResource
-                        ? 'Select'
-                        : resourceHalfDay === 0
-                        ? none
-                        : resourceHalfDay === 1
-                        ? firstFalf
-                        : secondHalf
-                    }
-                    // defaultIndex={0}
                     options={newDropDownOptions}
                     dropdownStyle={{
                       width: '45%',
@@ -248,21 +284,138 @@ const AllAttendance = ({navigation}) => {
                       height: 100,
                     }}
                     renderRow={renderRow}
-                    onSelect={(index, itemName) => {
-                      if (itemName !== none) {
-                        setTotalNumberOfLeaveDays(0.5);
-                      } else {
-                        setTotalNumberOfLeaveDays(1);
-                      }
-                      setHalfDay(itemName);
-                      totalNumberOfLeaveDays > 1 && setHalfDay(' None');
-                    }}
-                    renderRightComponent={
-                      !fromResource
-                        ? renderRightComponent
-                        : renderRightComponentResource
-                    }
+                    renderRightComponent={renderRightComponent}
                   />
+                </View>
+                <Text style={styles.headerText}>Attendance Date:</Text>
+                <DateTimePickerModal
+                  minimumDate={new Date()}
+                  date={new Date()}
+                  isVisible={datePickerVisible}
+                  mode="date"
+                  onConfirm={() => {}}
+                  onCancel={() => {
+                    setDatePickerVisible(false);
+                  }}
+                />
+                <View style={{marginBottom: 15}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setDatePickerVisible(true);
+                    }}>
+                    <View style={styles.attendanceDate}>
+                      <Text style={{color: 'gray'}}>dd-mm-yyyy</Text>
+                      <CalenderIcon
+                        fill={Colors.lightGray1}
+                        height={hp(2)}
+                        width={hp(2)}
+                        marginRight={wp(0.64)}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <DateTimePickerModal
+                  minimumDate={new Date()}
+                  date={new Date()}
+                  isVisible={inTimePickerVisible}
+                  mode="time"
+                  onConfirm={() => {}}
+                  onCancel={() => {
+                    setInTimePickerVisible(false);
+                  }}
+                />
+                <DateTimePickerModal
+                  isVisible={outTimePickerVisible}
+                  mode="time"
+                  onConfirm={() => {}}
+                  onCancel={() => {
+                    setOutTimePickerVisible(false);
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: 15,
+                  }}>
+                  <Pressable
+                    onPress={() => {
+                      setInTimePickerVisible(true);
+                    }}>
+                    <View style={[styles.attendanceDate, {width: wp(30)}]}>
+                      <Text style={{color: 'gray'}}>In Time</Text>
+                      <Clock
+                        height={hp(2)}
+                        stroke="gray"
+                        width={hp(2)}
+                        marginRight={wp(0.64)}
+                      />
+                    </View>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      setOutTimePickerVisible(true);
+                    }}>
+                    <View style={[styles.attendanceDate, {width: wp(30)}]}>
+                      <Text style={{color: 'gray'}}>Out Time</Text>
+                      <Clock
+                        height={hp(2)}
+                        stroke="gray"
+                        width={hp(2)}
+                        marginRight={wp(0.64)}
+                      />
+                    </View>
+                  </Pressable>
+                </View>
+                <View style={{marginBottom: 25, flexDirection: 'row'}}>
+                  <Text style={{marginRight: 5}}>Is Regularized:</Text>
+                  <Pressable
+                    onPress={() => {
+                      setIsChecked(!isChecked);
+                    }}>
+                    <View style={styles.checkBox}>
+                      {isChecked && (
+                        <CheckIcon
+                          height={hp(2)}
+                          stroke="black"
+                          width={hp(2)}
+                        />
+                      )}
+                    </View>
+                  </Pressable>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Pressable onPress={() => setShowModal(false)}>
+                    <View
+                      style={[
+                        styles.btn,
+                        {borderColor: 'gray', borderWidth: 1},
+                      ]}>
+                      <Text
+                        style={{
+                          fontFamily: FontFamily.RobotoMedium,
+                          fontSize: FontSize.h14,
+                        }}>
+                        Cancel
+                      </Text>
+                    </View>
+                  </Pressable>
+                  <Pressable onPress={handleSubmitNewAttendance}>
+                    <View
+                      style={[
+                        styles.btn,
+                        {backgroundColor: Colors.lovelyPurple},
+                      ]}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontFamily: FontFamily.RobotoMedium,
+                          fontSize: FontSize.h14,
+                        }}>
+                        Save
+                      </Text>
+                    </View>
+                  </Pressable>
                 </View>
               </View>
             </Modal>

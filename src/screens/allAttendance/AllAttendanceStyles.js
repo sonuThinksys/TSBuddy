@@ -1,5 +1,6 @@
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
+import {heightPercentageToDP, widthPercentageToDP} from 'utils/Responsive';
 
 const {StyleSheet} = require('react-native');
 
@@ -85,9 +86,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: Colors.white,
     alignSelf: 'center',
-    marginBottom: 200,
     borderRadius: 5,
-    height: '34.5%',
+    height: '44.5%',
     width: '95%',
     padding: 20,
   },
@@ -98,6 +98,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerText: {marginBottom: 10},
+  attendanceDate: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: Colors.grey,
+    borderRadius: 3,
+    padding: 10,
+    justifyContent: 'space-between',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  btn: {
+    width: widthPercentageToDP(25),
+    height: heightPercentageToDP(3.5),
+    borderRadius: widthPercentageToDP(3.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkBox: {
+    width: widthPercentageToDP(4),
+    height: heightPercentageToDP(2),
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
 });
 
 export default styles;
