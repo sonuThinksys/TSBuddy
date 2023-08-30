@@ -15,6 +15,8 @@ import Loader from 'component/loader/Loader';
 import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import {renewToken} from 'Auth/LoginSlice';
+import Modal from 'react-native-modal';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const DAY_WISE = 'day wise';
 const MONTH_WISE = 'month wise';
@@ -40,7 +42,7 @@ const AllAttendance = ({navigation}) => {
 
   const [isDateSelecting, setIsDateSelecting] = useState(false);
   const [dayWiseData, setDayWiseData] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
   const [isFetchingData, setIsFetchingData] = useState(false);
 
   const fetchDayWiseData = async dayWiseDate => {
@@ -183,6 +185,89 @@ const AllAttendance = ({navigation}) => {
             </Pressable>
           </View>
         </View>
+        {showModal ? (
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setShowModal(false);
+            }}>
+            <Modal
+              backdropOpacity={0.2}
+              // animationType="fade"
+              animationIn={'bounceIn'}
+              animationOut={'jello'}
+              transparent={true}
+              closeOnClick={true}
+              isVisible={showModal}
+              onBackdropPress={() => {
+                setShowModal(false);
+              }}
+              onBackButtonPress={() => {
+                setShowModal(false);
+              }}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.newAttendanceTitle}>New Attendance</Text>
+                <Text style={styles.headerText}>Employee:</Text>
+                <View>
+                  <ModalDropdown
+                    disabled={
+                      !fromDate.fromDateObj ||
+                      !toDate.toDateObj ||
+                      totalNumberOfLeaveDays > 1 ||
+                      fromResource ||
+                      (!isEditOpenleave && fromOpenLeave)
+                    }
+                    renderButtonText={renderButtonText}
+                    style={{
+                      borderWidth: 1,
+                      backgroundColor: Colors.white,
+                      opacity:
+                        route.params.applyLeave && totalNumberOfLeaveDays > 1
+                          ? 0.5
+                          : 1,
+                      // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
+                      borderRadius: 3,
+                      paddingVertical: 5,
+                      height: 32,
+                    }}
+                    isFullWidth={true}
+                    showsVerticalScrollIndicator={false}
+                    defaultValue={
+                      !fromResource
+                        ? 'Select'
+                        : resourceHalfDay === 0
+                        ? none
+                        : resourceHalfDay === 1
+                        ? firstFalf
+                        : secondHalf
+                    }
+                    // defaultIndex={0}
+                    options={newDropDownOptions}
+                    dropdownStyle={{
+                      width: '45%',
+                      paddingLeft: 10,
+                      height: 100,
+                    }}
+                    renderRow={renderRow}
+                    onSelect={(index, itemName) => {
+                      if (itemName !== none) {
+                        setTotalNumberOfLeaveDays(0.5);
+                      } else {
+                        setTotalNumberOfLeaveDays(1);
+                      }
+                      setHalfDay(itemName);
+                      totalNumberOfLeaveDays > 1 && setHalfDay(' None');
+                    }}
+                    renderRightComponent={
+                      !fromResource
+                        ? renderRightComponent
+                        : renderRightComponentResource
+                    }
+                  />
+                </View>
+              </View>
+            </Modal>
+          </TouchableWithoutFeedback>
+        ) : null}
 
         {selectedAttendanceType.type === DAY_WISE ? (
           <View style={{flex: 1, marginBottom: 20}}>
@@ -198,11 +283,19 @@ const AllAttendance = ({navigation}) => {
               </View>
               <View style={styles.dropdownIconContainer}>
                 <MonthImages.DropDownIconSVG
-                  // fill={Colors.grey}
                   color={Colors.lightBlack}
                   height={16}
                   width={16}
                 />
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setShowModal(true);
+              }}
+              style={styles.newAttBtnContainer}>
+              <View style={styles.dateTextContainer}>
+                <Text style={styles.selectedDateText}>New Attendance</Text>
               </View>
             </Pressable>
             <DateTimePickerModal

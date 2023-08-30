@@ -57,8 +57,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.lightGray2,
     marginTop: 16,
-    marginBottom: 20,
+    marginBottom: 15,
     flexDirection: 'row',
+  },
+  newAttBtnContainer: {
+    backgroundColor: Colors.white,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: Colors.lightGray2,
+    flexDirection: 'row',
+    marginBottom: 20,
   },
   selectedDateText: {
     fontFamily: FontFamily.RobotoRegular,
@@ -71,6 +82,22 @@ const styles = StyleSheet.create({
   dropdownIconContainer: {
     marginRight: 12,
   },
+  modalContainer: {
+    backgroundColor: Colors.white,
+    alignSelf: 'center',
+    marginBottom: 200,
+    borderRadius: 5,
+    height: '34.5%',
+    width: '95%',
+    padding: 20,
+  },
+  newAttendanceTitle: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h17,
+    color: Colors.lovelyPurple,
+    marginBottom: 10,
+  },
+  headerText: {marginBottom: 10},
 });
 
 export default styles;
