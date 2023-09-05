@@ -39,6 +39,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 10,
   },
+  resourceButton: {
+    backgroundColor: Colors.white,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    paddingVertical: 6,
+  },
+
+  applyText: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });
 
 export default styles;

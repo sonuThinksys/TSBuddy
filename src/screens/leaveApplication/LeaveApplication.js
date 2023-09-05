@@ -6,6 +6,7 @@ import {Colors} from 'colors/Colors';
 import {getOpenRequestHR} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import ApplicationListLayout from './ApplicationListLayout';
+import {useIsFocused} from '@react-navigation/native';
 
 const LEAVE = 'Leave';
 const WFH = 'WFH';
@@ -21,6 +22,8 @@ const LeaveApplication = ({navigation}) => {
   const [regularisationData, setRegularisationData] = useState([]);
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
+
+  const isFocused = useIsFocused();
 
   const getAllOpenRequests = async () => {
     try {
@@ -53,7 +56,7 @@ const LeaveApplication = ({navigation}) => {
 
   useEffect(() => {
     getAllOpenRequests();
-  }, []);
+  }, [isFocused]);
 
   return (
     <>
@@ -134,6 +137,7 @@ const LeaveApplication = ({navigation}) => {
             data={leaveData}
             loading={isLoading}
             navigation={navigation}
+            getAllOpenRequests={getAllOpenRequests}
           />
         ) : selectedType.type == WFH ? (
           <ApplicationListLayout
