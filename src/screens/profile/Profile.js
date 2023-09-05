@@ -255,7 +255,7 @@ const Profile = ({navigation}) => {
                   ) : (
                     <Image
                       // source={defaultUserIcon}
-                      source={{uri: defaultUserIcon}}
+                      source={defaultUserIcon}
                       style={{height: 80, width: 80, borderRadius: 20}}
                     />
                   )}

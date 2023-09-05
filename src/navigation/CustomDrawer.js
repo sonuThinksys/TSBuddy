@@ -20,8 +20,6 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 
-// import CrossIcon from 'assets/mipmap/icon_close.svg';
-// import {appVersion} from 'utils/appVersion';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {loginStatus, logOut} from 'Auth/LoginSlice';
@@ -32,7 +30,7 @@ export default ({navigation}) => {
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   const dispatch = useDispatch();
-
+  const isHRManager = decoded?.role?.includes('HR Manager') || false;
   const isAdmin = decoded?.role?.includes('Admin Executive') || false;
   const {employeeProfile: profileData} = useSelector(state => state.home);
 
@@ -135,7 +133,7 @@ export default ({navigation}) => {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 10,
+      key: 11,
       dispatch,
       icon: MonthImages.logoutmenuS,
     },
@@ -145,7 +143,7 @@ export default ({navigation}) => {
     screen: 'policiesScreen',
     label: 'Policies',
     navigation,
-    key: 8,
+    key: 9,
     icon: MonthImages.salarySlipIcon,
   };
 
@@ -153,13 +151,21 @@ export default ({navigation}) => {
     screen: 'employeeHandbook',
     label: 'Employee Handbook',
     navigation,
-    key: 9,
+    key: 10,
     icon: MonthImages.info_scopy,
   };
 
+  const leaveApplication = {
+    screen: 'leaveApplication',
+    label: 'Leave Application',
+    navigation,
+    key: 8,
+    icon: MonthImages.OpenLeaveIcon,
+  };
+
   if (token) {
-    drawerList.splice(7, 0, policy);
-    drawerList.splice(8, 0, empHandbook);
+    drawerList.splice(8, 0, policy);
+    drawerList.splice(9, 0, empHandbook);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
@@ -167,6 +173,13 @@ export default ({navigation}) => {
 
   if (isAdmin) {
     drawerList.splice(2, 0, lunchRequests);
+    drawerList.forEach((el, index) => {
+      el.key = index + 1;
+    });
+  }
+
+  if (isHRManager) {
+    drawerList.splice(7, 0, leaveApplication);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });

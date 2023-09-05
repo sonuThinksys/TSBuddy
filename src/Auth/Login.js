@@ -69,6 +69,8 @@ const Login = ({navigation}) => {
   // const [password, setPassword] = useState('bhandari@1234');
   const [username, setUserName] = useState('kumar.jitender@thinksys.com');
   const [password, setPassword] = useState('thinksys@123');
+  // const [username, setUserName] = useState('kamal.deepika@thinksys.com');
+  // const [password, setPassword] = useState('Pica8@123');
   // const [username, setUserName] = useState('singh.vivek@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
   const {

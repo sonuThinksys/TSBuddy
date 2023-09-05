@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -12,7 +13,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './AllAttendanceStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {getAllResourcesAttendence} from 'redux/homeSlice';
+import {
+  createAttendance,
+  getAllEmployeeListForHR,
+  getAllResourcesAttendence,
+  getEmployeeShift,
+} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {Colors} from 'colors/Colors';
 
@@ -24,23 +30,32 @@ import {ERROR} from 'utils/string';
 import {renewToken} from 'Auth/LoginSlice';
 import Modal from 'react-native-modal';
 import ModalDropdown from 'react-native-modal-dropdown';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 import {newDropDownOptions} from 'utils/defaultData';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import Clock from 'assets/clock/clock.svg';
 import CheckIcon from 'assets/checkIcon/checkIcon.svg';
+import CrossIcon from 'assets/crossIcon/crossIcon.svg';
+import jwt_decode from 'jwt-decode';
 
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {FontFamily, FontSize} from 'constants/fonts';
+import {out} from 'react-native/Libraries/Animated/Easing';
 
 const DAY_WISE = 'day wise';
 const MONTH_WISE = 'month wise';
 
 const AllAttendance = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
+  var decoded = token && jwt_decode(token);
+  const isHRManager = decoded?.role?.includes('HR Manager') || false;
+  const employeeID = decoded?.id;
   const refreshToken = useSelector(state => state?.auth?.refreshToken);
   const dispatch = useDispatch();
   const todayDateObj = new Date(); // Current date and time
@@ -65,7 +80,24 @@ const AllAttendance = ({navigation}) => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [inTimePickerVisible, setInTimePickerVisible] = useState(false);
   const [outTimePickerVisible, setOutTimePickerVisible] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
+  const [allEmployeeListForHR, setAllEmployeeListForHR] = useState([]);
+  const [text, setText] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
+  const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
+  const [attendanceDate, setAttendanceDate] = useState([]);
+  const [selectDate, setSelectDate] = useState({
+    dateStr: 'DD-MM-YYYY',
+  });
+  const [selectInTime, setSelectInTime] = useState({inTimeStr: 'HH:MM'});
+  const [selectOutTime, setSelectOutTime] = useState({outTimeStr: 'HH:MM'});
+  const [selectDateForInOut, setSelectDateForInOut] = useState();
+  const [totalHours, setTotalHours] = useState();
+  const [getInTime, setGetInTime] = useState();
+  const [inTime, setInTime] = useState();
+  const [outTime, setOutTime] = useState();
+
+  const {holidayData} = useSelector(state => state.home);
 
   const fetchDayWiseData = async dayWiseDate => {
     const today = new Date();
@@ -93,27 +125,36 @@ const AllAttendance = ({navigation}) => {
           dispatch,
           navigation,
         });
-      }
-
-      // if (result?.error?.message?.toLowerCase() === 'token-expired') {
-
-      //   const date = selectedDate?.selectedDateObj.getDate();
-      //   const month = selectedDate?.selectedDateObj?.getMonth() + 1;
-      //   const year = selectedDate?.selectedDateObj?.getFullYear();
-      //   const dateStr = `${year}-${month}-${date}`;
-
-      //   const newFetchedData = await renewCurrentToken({
-      //     dispatch,
-      //     renewToken,
-      //     refreshToken,
-      //     data: {date: dateStr},
-      //     apiCallAgain: getAllResourcesAttendence,
-      //   });
-
-      //   setDayWiseData(newFetchedData);
-      // }
-      else {
+      } else {
         setDayWiseData(resourceAttendance.payload);
+      }
+    } catch (err) {
+      console.error('err:', err);
+    } finally {
+      setIsFetchingData(false);
+    }
+  };
+
+  const allEmployeeForListHR = async () => {
+    try {
+      setIsFetchingData(true);
+
+      const employeeList = await dispatch(
+        getAllEmployeeListForHR({
+          token,
+        }),
+      );
+
+      if (employeeList?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: employeeList?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      } else {
+        setAllEmployeeListForHR(employeeList.payload);
       }
     } catch (err) {
       console.error('err:', err);
@@ -124,6 +165,23 @@ const AllAttendance = ({navigation}) => {
 
   useEffect(() => {
     fetchDayWiseData();
+    isHRManager && allEmployeeForListHR();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const employeeShift = await dispatch(
+        getEmployeeShift({token, id: employeeID}),
+      );
+      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const finalWeekOffs = [];
+      daysOfWeek?.map((el, index) => {
+        if (weekOffs?.includes(el)) finalWeekOffs.push(index);
+      });
+      setEmployeeWeekOffs(finalWeekOffs);
+    })();
   }, []);
 
   // Subtract 1 day from the current date
@@ -147,39 +205,153 @@ const AllAttendance = ({navigation}) => {
     setIsDateSelecting(false);
   };
 
-  const renderRow = (rowData, rowID, highlighted) => {
-    return (
-      <View
-        style={[
-          styles.row,
-          {borderBottomColor: Colors.lightGray, borderBottomWidth: 1},
-        ]}>
-        <Text>ABC</Text>
-      </View>
+  const handleChangeEmpoyeeList = word => {
+    setText(word);
+    let employeeList = allEmployeeListForHR && allEmployeeListForHR?.data;
+    let result = employeeList?.filter(
+      item =>
+        item?.firstName?.toLowerCase().includes(word?.toLowerCase()) ||
+        item?.lastName?.toLowerCase().includes(word?.toLowerCase()) ||
+        item?.employeeId.toString().includes(word.toString()),
     );
+    setSearchResult(result);
+  };
+  const handleSubmitNewAttendance = async () => {
+    try {
+      const createNewAttendance =
+        token &&
+        (await dispatch(
+          createAttendance({
+            token,
+            body: {
+              employeeId: employeeID,
+              attendanceDate: attendanceDate,
+              inTime: inTime,
+              outTime: outTime,
+              totalHours: totalHours,
+              isRegularized: isChecked ? 1 : 0,
+            },
+          }),
+        ));
+
+      if (createNewAttendance?.error) {
+        alert(createNewAttendance.error.message);
+      } else {
+        Alert.alert('Success', 'Attendance created successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              setDatePickerVisible(false);
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.log('errCreateNewAttendance:', err);
+    } finally {
+    }
   };
 
-  const renderRightComponent = () => (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-        paddingTop: 4,
-        position: 'absolute',
-        right: 0,
-      }}>
-      <Image
-        source={MonthImages.DropDownIcon}
-        style={{
-          height: 20,
-          width: 20,
-        }}
-      />
-    </View>
-  );
+  const renderItem = useCallback(({item}) => {
+    return (
+      <>
+        <Pressable
+          onPress={() => {
+            setText(
+              `${item.firstName ? item.firstName : ''} ${
+                item.lastName ? item.lastName : ''
+              }`,
+            );
 
-  const handleSubmitNewAttendance = () => {};
+            setSearchResult([]);
+          }}>
+          <View style={styles.searcheResultRow}>
+            <Text>
+              {item?.firstName ? item?.firstName : ''}{' '}
+              {item?.lastName ? item?.lastName : ''}
+            </Text>
+            <Text>{item?.employeeId}</Text>
+          </View>
+          <View
+            style={{
+              borderBottomWidth: 1,
+              borderColor: Colors.lightGray2,
+              marginBottom: 6,
+            }}></View>
+        </Pressable>
+      </>
+    );
+  }, []);
+
+  const keyExtractor = item => item.employeeId.toString();
+
+  const handleConfirmDate = date => {
+    if (employeeWeekOffs?.includes(date.getDay())) {
+      alert('You already have a weekend holiday on this day.');
+      setDatePickerVisible(false);
+      return;
+    }
+
+    for (let i = 0; i < holidayData.length; i++) {
+      const holidayObj = new Date(holidayData[i].holidayDate);
+
+      if (
+        holidayObj.getMonth() === date.getMonth() &&
+        date.getDate() === holidayObj.getDate()
+      ) {
+        alert('You can not take a WFH on National holiday.');
+        setDatePickerVisible(false);
+        return;
+      }
+    }
+
+    setSelectDateForInOut(date);
+
+    const attendanceDate = date;
+    setAttendanceDate(attendanceDate);
+    let selectedDate = date.getDate();
+
+    let selectedMonth = date.getMonth() + 1;
+    let selectedYear = date.getFullYear();
+    setDatePickerVisible(false);
+    setSelectDate({
+      dateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      startDateObj: date,
+    });
+  };
+
+  const handleConfirmInTime = time => {
+    setInTime(time);
+
+    let inTimeStr = new Date(time.toString());
+    let inTimeToSubtract = inTimeStr.getTime();
+
+    setGetInTime(inTimeToSubtract);
+
+    const inTime = time.toLocaleString();
+    let time1 = inTime.split(',')[1];
+    setSelectInTime({inTimeStr: time1});
+    setInTimePickerVisible(false);
+  };
+
+  const handleConfirmOutTime = time => {
+    setOutTime(time);
+
+    const outTime = time.toLocaleString();
+    let time1 = outTime.split(',')[1];
+    setSelectOutTime({outTimeStr: time1});
+    setOutTimePickerVisible(false);
+
+    let outTimeStr = new Date(time.toString());
+    let outTimeToSubstract = outTimeStr.getTime();
+
+    const diffTime = outTimeToSubstract - getInTime;
+    const totalHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const totalMinutes = Math.floor(diffTime / (60 * 1000)) % 60;
+    let totalTimeStr = `${totalHours}.${totalMinutes}`;
+    let totalTimeflot = +totalTimeStr;
+    setTotalHours(totalTimeflot);
+  };
 
   return (
     <>
@@ -241,15 +413,26 @@ const AllAttendance = ({navigation}) => {
             </Pressable>
           </View>
         </View>
+        {isHRManager && (
+          <Pressable
+            onPress={() => {
+              setShowModal(true);
+            }}
+            style={styles.newAttBtnContainer}>
+            <View style={styles.dateTextContainer}>
+              <Text style={styles.selectedDateText}>New Attendance</Text>
+            </View>
+          </Pressable>
+        )}
         {showModal ? (
           <TouchableWithoutFeedback
             onPress={() => {
               setShowModal(false);
             }}>
             <Modal
-              backdropOpacity={0.2}
+              backdropOpacity={0.6}
               animationIn={'slideInUp'}
-              animationOut={'bounce'}
+              animationOut={'slideOutDown'}
               transparent={true}
               closeOnClick={true}
               isVisible={showModal}
@@ -262,38 +445,44 @@ const AllAttendance = ({navigation}) => {
               <View style={styles.modalContainer}>
                 <Text style={styles.newAttendanceTitle}>New Attendance</Text>
                 <Text style={styles.headerText}>Employee:</Text>
-                <View style={{marginBottom: 10}}>
-                  <ModalDropdown
-                    // renderButtonText={renderButtonText}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: Colors.grey,
-                      backgroundColor: Colors.white,
-                      borderRadius: 3,
-                      paddingVertical: 5,
-                      height: hp(4.3),
-                      paddingLeft: 10,
-                      paddingTop: 8,
+                <View style={styles.searchBoxContainer}>
+                  <TextInput
+                    placeholder="Employee.."
+                    onChangeText={item => {
+                      handleChangeEmpoyeeList(item);
                     }}
-                    isFullWidth={true}
-                    showsVerticalScrollIndicator={false}
-                    options={newDropDownOptions}
-                    dropdownStyle={{
-                      width: '45%',
-                      paddingLeft: 10,
-                      height: 100,
-                    }}
-                    renderRow={renderRow}
-                    renderRightComponent={renderRightComponent}
+                    value={text}
+                    style={styles.searchBoxForEmployee}
+                    autoCapitalize="none"
+                    autoCorrect={false}
                   />
+
+                  <Pressable onPress={() => setText('')}>
+                    <CrossIcon
+                      height={hp(2)}
+                      stroke="gray"
+                      width={hp(2)}
+                      marginRight={wp(0.64)}
+                    />
+                  </Pressable>
                 </View>
+                {text?.length !== 0 && searchResult.length != 0 ? (
+                  <View style={styles.searchResultBox}>
+                    <FlatList
+                      data={searchResult}
+                      renderItem={renderItem}
+                      showsVerticalScrollIndicator={false}
+                      bounces={false}
+                      keyExtractor={keyExtractor}
+                    />
+                  </View>
+                ) : null}
                 <Text style={styles.headerText}>Attendance Date:</Text>
                 <DateTimePickerModal
-                  minimumDate={new Date()}
-                  date={new Date()}
+                  // date={new Date()}
                   isVisible={datePickerVisible}
                   mode="date"
-                  onConfirm={() => {}}
+                  onConfirm={handleConfirmDate}
                   onCancel={() => {
                     setDatePickerVisible(false);
                   }}
@@ -304,7 +493,11 @@ const AllAttendance = ({navigation}) => {
                       setDatePickerVisible(true);
                     }}>
                     <View style={styles.attendanceDate}>
-                      <Text style={{color: 'gray'}}>dd-mm-yyyy</Text>
+                      <Text style={{color: 'gray'}}>
+                        {selectDate?.dateStr
+                          ? selectDate?.dateStr
+                          : dd - mm - yyyy}
+                      </Text>
                       <CalenderIcon
                         fill={Colors.lightGray1}
                         height={hp(2)}
@@ -315,19 +508,19 @@ const AllAttendance = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
                 <DateTimePickerModal
-                  minimumDate={new Date()}
-                  date={new Date()}
+                  date={selectDateForInOut}
                   isVisible={inTimePickerVisible}
                   mode="time"
-                  onConfirm={() => {}}
+                  onConfirm={handleConfirmInTime}
                   onCancel={() => {
                     setInTimePickerVisible(false);
                   }}
                 />
                 <DateTimePickerModal
+                  date={selectDateForInOut}
                   isVisible={outTimePickerVisible}
                   mode="time"
-                  onConfirm={() => {}}
+                  onConfirm={handleConfirmOutTime}
                   onCancel={() => {
                     setOutTimePickerVisible(false);
                   }}
@@ -342,8 +535,10 @@ const AllAttendance = ({navigation}) => {
                     onPress={() => {
                       setInTimePickerVisible(true);
                     }}>
-                    <View style={[styles.attendanceDate, {width: wp(30)}]}>
-                      <Text style={{color: 'gray'}}>In Time</Text>
+                    <View style={[styles.attendanceDate, {width: wp(35)}]}>
+                      <Text style={{color: 'gray'}}>
+                        {selectInTime?.inTimeStr && selectInTime.inTimeStr}
+                      </Text>
                       <Clock
                         height={hp(2)}
                         stroke="gray"
@@ -356,8 +551,10 @@ const AllAttendance = ({navigation}) => {
                     onPress={() => {
                       setOutTimePickerVisible(true);
                     }}>
-                    <View style={[styles.attendanceDate, {width: wp(30)}]}>
-                      <Text style={{color: 'gray'}}>Out Time</Text>
+                    <View style={[styles.attendanceDate, {width: wp(35)}]}>
+                      <Text style={{color: 'gray'}}>
+                        {selectOutTime.outTimeStr && selectOutTime.outTimeStr}
+                      </Text>
                       <Clock
                         height={hp(2)}
                         stroke="gray"
@@ -385,7 +582,15 @@ const AllAttendance = ({navigation}) => {
                   </Pressable>
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable onPress={() => setShowModal(false)}>
+                  <Pressable
+                    onPress={() => {
+                      setText('');
+                      setSelectDate({
+                        dateStr: 'DD-MM-YYYY',
+                      });
+                      setSelectInTime({inTimeStr: 'HH:MM'});
+                      setSelectOutTime({outTimeStr: 'HH:MM'});
+                    }}>
                     <View
                       style={[
                         styles.btn,
@@ -442,15 +647,7 @@ const AllAttendance = ({navigation}) => {
                 />
               </View>
             </Pressable>
-            <Pressable
-              onPress={() => {
-                setShowModal(true);
-              }}
-              style={styles.newAttBtnContainer}>
-              <View style={styles.dateTextContainer}>
-                <Text style={styles.selectedDateText}>New Attendance</Text>
-              </View>
-            </Pressable>
+
             <DateTimePickerModal
               // minimumDate={minimumDateLeaveApplication}
               maximumDate={new Date()}

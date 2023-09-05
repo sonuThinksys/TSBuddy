@@ -50,4 +50,7 @@ export default {
   getAllResourcesAttendance: `${API_URL}/EmployeeProfile/GetEmployeesLeaveAndAttendanceByDate?date=`,
   getConfigData: `${API_URL}/FoodRequest/GetConfigDetails`,
   createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
+  getAllEmployeeForHR: `${API_URL}/EmployeeProfile/GetAllEmployee`,
+  createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
+  getOpenRequestForHR: `${API_URL}/Attendance/GetOpenRequest`,
 };
