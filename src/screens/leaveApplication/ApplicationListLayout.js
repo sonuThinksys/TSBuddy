@@ -12,7 +12,12 @@ import {FontFamily} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import Loader from 'component/LoadingScreen/LoadingScreen';
 
-const ApplicationListLayout = ({data, loading, navigation}) => {
+const ApplicationListLayout = ({
+  data,
+  loading,
+  navigation,
+  isRegularisation,
+}) => {
   const keyExtractor = item => Math.random() * Math.random();
   const renderListOfAppliedRequests = ({item}) => {
     const options = {month: 'short', day: '2-digit', year: 'numeric'};
@@ -32,11 +37,25 @@ const ApplicationListLayout = ({data, loading, navigation}) => {
       options,
     );
 
+    const regulariseAttendanceDate = new Date(
+      item?.attendanceDate,
+    )?.toLocaleDateString('en-US', options);
+
+    const empFullName =
+      item.firstName && item.middleName && item.lastName
+        ? `${item.firstName} ${item.middleName} ${item.lastName}`
+        : item.firstName && item.lastName
+        ? `${item.firstName} ${item.lastName}`
+        : item.firstName && item.middleName
+        ? `${item.firstName} ${item.middleName}`
+        : item.firstName;
+
     return (
       <Pressable
         onPress={() => {
           navigation.navigate('applicationDetailsScreen', {
             item,
+            isRegularisation,
           });
         }}>
         <View style={styles.request} key={item.leaveApplicationId}>
@@ -44,29 +63,41 @@ const ApplicationListLayout = ({data, loading, navigation}) => {
             <View
               style={{
                 alignItems: 'center',
-                marginRight: wp(4),
+                marginRight: wp(1),
               }}>
               <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
                 {item?.totalLeaveDays < 9 ? '0' : null}
                 {item?.totalLeaveDays}
               </Text>
-              <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
-                {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
-              </Text>
+              {!isRegularisation ? (
+                <Text
+                  style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+                  {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
+                </Text>
+              ) : (
+                <Text
+                  style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+                  Emp/{item?.employeeId}
+                </Text>
+              )}
             </View>
             <View style={{marginLeft: 20, marginTop: 4}}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily: FontFamily.RobotoRegular,
-                  color: Colors.dune,
-                  marginBottom: hp(1),
-                }}>
-                {formattedStartDate} - {formattedEndDate}
-              </Text>
+              {!isRegularisation ? (
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: FontFamily.RobotoRegular,
+                    color: Colors.dune,
+                    marginBottom: hp(1),
+                  }}>
+                  {formattedStartDate} - {formattedEndDate}
+                </Text>
+              ) : (
+                <Text>{empFullName}</Text>
+              )}
               <View style={{flexDirection: 'row'}}>
                 <Text style={{fontSize: 11, color: Colors.lightGray1}}>
-                  Applied on:{' '}
+                  {!isRegularisation ? 'Applied on: ' : 'Attendance Date '}
                 </Text>
                 <Text
                   style={{
@@ -74,7 +105,7 @@ const ApplicationListLayout = ({data, loading, navigation}) => {
                     color: Colors.lightGray1,
                     fontFamily: FontFamily.RobotoMedium,
                   }}>
-                  {appliedDate}
+                  {!isRegularisation ? appliedDate : regulariseAttendanceDate}
                 </Text>
               </View>
             </View>
@@ -144,12 +175,11 @@ const ApplicationListLayout = ({data, loading, navigation}) => {
         </View>
       )}
 
-      {!loading && data?.length == 0 && (
+      {data?.length == 0 && (
         <View
           style={{
             justifyContent: 'center',
             alignItems: 'center',
-            flex: 1,
           }}>
           <Text
             style={{
@@ -158,7 +188,7 @@ const ApplicationListLayout = ({data, loading, navigation}) => {
               color: Colors.lightBlue,
               marginVertical: 4,
             }}>
-            You don't have any WFH.
+            No data found!
           </Text>
         </View>
       )}

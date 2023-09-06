@@ -287,12 +287,13 @@ const renderDrawerItem = (
       <Image
         source={icon}
         resizeMode="contain"
-        style={{height: 45, width: 45, borderRadius: 50}}
+        style={{height: 30, width: 30, borderRadius: 50}}
       />
       <Text
         style={{
           color: Colors.white,
-          fontSize: FontSize.h18,
+          fontSize: FontSize.h15,
+          textAlign: 'center',
         }}>
         {label}
       </Text>

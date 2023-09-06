@@ -7,6 +7,8 @@ import {getOpenRequestHR} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import ApplicationListLayout from './ApplicationListLayout';
 import {useIsFocused} from '@react-navigation/native';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
 
 const LEAVE = 'Leave';
 const WFH = 'WFH';
@@ -149,6 +151,8 @@ const LeaveApplication = ({navigation}) => {
           <ApplicationListLayout
             data={regularisationData}
             loading={isLoading}
+            navigation={navigation}
+            isRegularisation={true}
           />
         )}
       </View>

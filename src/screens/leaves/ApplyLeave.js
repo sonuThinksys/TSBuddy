@@ -1036,14 +1036,6 @@ const ApplyLeave = ({navigation, route}) => {
     }
   };
   const finalizeLeave = async status => {
-    // let empId;
-
-    // if (fromResource) {
-    //   empId = +resourceEmployeeID.match(/\d+/g)[0];
-    // } else {
-    //   empId = employeeID;
-    // }
-
     const empId = fromResource ? route?.params?.resourceEmployeeID : employeeID;
     const response =
       token &&

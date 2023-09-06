@@ -106,18 +106,16 @@ const RegularisationTabDetails = ({navigation, route}) => {
   };
 
   const handleDismiss = async () => {
-    const updateAttRegularize = await dispatch(
-      updateAttRegularizeStatus({
-        token,
-        body: {
-          regularizationId: regularizationId,
-          attendanceDate: attendanceDate,
-          employeeId: employeeId,
-          status: 'Dismissed',
-          attendanceType: attendanceType,
-        },
-      }),
-    );
+    const updateAttRegularize = await dispatch({
+      token,
+      body: {
+        regularizationId: regularizationId,
+        attendanceDate: attendanceDate,
+        employeeId: employeeId,
+        status: 'Dismissed',
+        attendanceType: attendanceType,
+      },
+    });
     if (updateAttRegularize?.error) {
       alert(updateAttRegularize.error.message);
     } else {

@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   cardRightTextContainer: {
     justifyContent: 'center',
     paddingLeft: 10,
+    overflow: 'hidden',
   },
   resourceButton: {
     backgroundColor: Colors.white,
@@ -56,6 +57,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 10,
+  },
+  regularisationBtnContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
