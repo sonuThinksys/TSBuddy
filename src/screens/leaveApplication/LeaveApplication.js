@@ -1,5 +1,5 @@
 import {View, Text, Pressable} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './LeaveApplicationStyle';
 import {Colors} from 'colors/Colors';
@@ -18,16 +18,15 @@ const LeaveApplication = ({navigation}) => {
   const [selectedType, setSelectedType] = useState({
     type: LEAVE,
   });
+
   const [isLoading, setIsLoading] = useState(false);
-  const [leaveData, setLeaveData] = useState([]);
-  const [wfhData, setWFHData] = useState([]);
-  const [regularisationData, setRegularisationData] = useState([]);
+  const [leaveApplicationData, setLeaveApplicationData] = useState([]);
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
 
   const isFocused = useIsFocused();
 
-  const getAllOpenRequests = async () => {
+  const getAllOpenRequests = useCallback(async () => {
     try {
       setIsLoading(true);
       const openRequestList = await dispatch(
@@ -45,19 +44,17 @@ const LeaveApplication = ({navigation}) => {
           navigation,
         });
       } else {
-        setLeaveData(openRequestList?.payload?.openLeaves);
-        setWFHData(openRequestList?.payload?.openWfh);
-        setRegularisationData(openRequestList?.payload?.openRegularizeRequest);
+        setLeaveApplicationData(openRequestList?.payload);
       }
     } catch (err) {
       console.error('err:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isFocused]);
 
   useEffect(() => {
-    getAllOpenRequests();
+    if (isFocused) getAllOpenRequests();
   }, [isFocused]);
 
   return (
@@ -136,25 +133,27 @@ const LeaveApplication = ({navigation}) => {
       <View>
         {selectedType.type == LEAVE ? (
           <ApplicationListLayout
-            data={leaveData}
+            data={leaveApplicationData?.openLeaves}
             loading={isLoading}
             navigation={navigation}
             getAllOpenRequests={getAllOpenRequests}
+            isRegularisation={false}
           />
         ) : selectedType.type == WFH ? (
           <ApplicationListLayout
-            data={wfhData}
+            data={leaveApplicationData?.openWfh}
             loading={isLoading}
             navigation={navigation}
+            isRegularisation={false}
           />
-        ) : (
+        ) : selectedType.type == REGULARISATION ? (
           <ApplicationListLayout
-            data={regularisationData}
+            data={leaveApplicationData?.openRegularizeRequest}
             loading={isLoading}
             navigation={navigation}
             isRegularisation={true}
           />
-        )}
+        ) : null}
       </View>
     </>
   );

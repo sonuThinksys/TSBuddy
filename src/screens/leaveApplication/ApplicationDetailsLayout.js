@@ -49,7 +49,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     );
   };
 
-  const isRegularisation = route.params.isRegularisation;
+  const isRegularisation = route.params.isRegularisation || false;
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
@@ -283,7 +283,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
             onPress={handleRegularisation.bind(null, 'Approved')}>
             <Text style={styles.applyText}>Approve</Text>
           </Pressable>
-        ) : (
+        ) : isRegularisation && status == 'Open' ? (
           <View style={styles.btnContainer}>
             <Pressable
               style={
@@ -316,7 +316,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
               <Text style={styles.applyText}>Approve</Text>
             </Pressable>
           </View>
-        )}
+        ) : null}
       </View>
     </>
   );
