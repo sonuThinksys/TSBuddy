@@ -82,8 +82,7 @@ import Policies from 'screens/policies/Policies';
 import EmployeeHandbook from 'screens/EmployeeHandbook/EmployeeHandbook';
 import PoliciesDetails from 'screens/policies/PoliciesDetails';
 import LeaveApplication from 'screens/leaveApplication/LeaveApplication';
-import WFHApplication from 'screens/leaveApplication/WFHApplication';
-import RegularizationApplication from 'screens/leaveApplication/RegularizationApplication';
+
 import ApplicationDetailsLayout from 'screens/leaveApplication/ApplicationDetailsLayout';
 
 const Drawer = createDrawerNavigator();
@@ -315,20 +314,6 @@ const LeaveApplicationStackScreen = ({navigation}) => {
         options={{headerShown: false}}
         name={'leaveApplicationScreen'}
         component={LeaveApplication}
-      />
-      <LeaveApplicationStack.Screen
-        options={drawerOption({
-          headerShown: false,
-        })}
-        name={'wfhApplicationScreen'}
-        component={WFHApplication}
-      />
-      <LeaveApplicationStack.Screen
-        options={drawerOption({
-          headerShown: false,
-        })}
-        name={'regularizationApplicationScreen'}
-        component={RegularizationApplication}
       />
       <LeaveApplicationStack.Screen
         options={drawerOption({

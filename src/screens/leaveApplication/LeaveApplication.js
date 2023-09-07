@@ -21,6 +21,7 @@ const LeaveApplication = ({navigation}) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [leaveApplicationData, setLeaveApplicationData] = useState([]);
+  const [isRegularisation, setIsRegularisation] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
 
@@ -51,11 +52,12 @@ const LeaveApplication = ({navigation}) => {
     } finally {
       setIsLoading(false);
     }
-  }, [isFocused]);
+  }, []);
 
   useEffect(() => {
-    if (isFocused) getAllOpenRequests();
-  }, [isFocused]);
+    // if (isFocused)
+    getAllOpenRequests();
+  }, []);
 
   return (
     <>
@@ -70,18 +72,22 @@ const LeaveApplication = ({navigation}) => {
         <View style={styles.typeContainer}>
           <Pressable
             onPress={() => {
-              setSelectedType({type: WFH});
+              setSelectedType({type: LEAVE});
             }}
             style={[
               styles.leftType,
               {
                 backgroundColor:
-                  selectedType.type === WFH ? Colors.lighterBlue : Colors.white,
+                  selectedType.type === LEAVE
+                    ? Colors.lighterBlue
+                    : Colors.white,
+                borderRightWidth: 1,
+                borderColor: Colors.lightGray1,
               },
             ]}>
             <Text
               style={{
-                color: selectedType.type === WFH ? Colors.white : null,
+                color: selectedType.type === LEAVE ? Colors.white : null,
               }}>
               Leave
             </Text>
@@ -89,6 +95,7 @@ const LeaveApplication = ({navigation}) => {
           <Pressable
             onPress={() => {
               setSelectedType({type: REGULARISATION});
+              setIsRegularisation(true);
             }}
             style={[
               styles.middleType,
@@ -110,20 +117,20 @@ const LeaveApplication = ({navigation}) => {
 
           <Pressable
             onPress={() => {
-              setSelectedType({type: LEAVE});
+              setSelectedType({type: WFH});
             }}
             style={[
               styles.rightType,
               {
                 backgroundColor:
-                  selectedType.type === LEAVE
-                    ? Colors.lighterBlue
-                    : Colors.white,
+                  selectedType.type === WFH ? Colors.lighterBlue : Colors.white,
+                borderLeftWidth: 1,
+                borderColor: Colors.lightGray1,
               },
             ]}>
             <Text
               style={{
-                color: selectedType.type === LEAVE ? Colors.white : null,
+                color: selectedType.type === WFH ? Colors.white : null,
               }}>
               WFH
             </Text>
@@ -151,7 +158,7 @@ const LeaveApplication = ({navigation}) => {
             data={leaveApplicationData?.openRegularizeRequest}
             loading={isLoading}
             navigation={navigation}
-            isRegularisation={true}
+            isRegularisation={isRegularisation}
           />
         ) : null}
       </View>
