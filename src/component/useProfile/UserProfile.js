@@ -12,10 +12,7 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import styles from './userProfileStyles';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {useIsFocused} from '@react-navigation/native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import RefreshIcon from 'assets/allImage/refresh.imageset/refreshIcon.png';
@@ -46,7 +43,6 @@ const UserProfile = ({route}) => {
   const [numValue, setNumValue] = useState(3);
   const [empDetail, setClickData] = useState({});
   const [allEmpData, setEmpData] = useState([]);
-  const [scrollBegin, setScrollBegin] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [searchedName, setSearchedName] = useState('');
   const [isFetchingEmployees, setIsFetchingEmployees] = useState(false);
@@ -54,7 +50,9 @@ const UserProfile = ({route}) => {
   const [employeesCount, setEmployeesCount] = useState(0);
 
   useEffect(() => {
-    if (showTextInput) inputRef.current.focus();
+    if (showTextInput) {
+      inputRef.current.focus();
+    }
   }, [showTextInput]);
 
   const fetchInitialData = useCallback(async () => {
@@ -67,7 +65,7 @@ const UserProfile = ({route}) => {
         take: 18,
       },
     });
-  }, []);
+  }, [fetchEmployeesData]);
 
   useEffect(() => {
     (async () => {
@@ -80,38 +78,39 @@ const UserProfile = ({route}) => {
         },
       });
     })();
-  }, []);
+  }, [fetchEmployeesData]);
 
-  const fetchEmployeesData = async ({
-    isInitial,
-    currentEmployees,
-    isSearching,
-  }) => {
-    setIsFetchingEmployees(true);
+  const fetchEmployeesData = useCallback(
+    async ({isInitial, currentEmployees, isSearching}) => {
+      setIsFetchingEmployees(true);
 
-    const result = await dispatch(getEmployeeData({token, currentEmployees}));
-    setIsFetchingEmployees(false);
-    if (isInitial && !isSearching) setTotalCount(result?.payload?.count);
-
-    if (result?.error) {
-      ShowAlert({
-        messageHeader: ERROR,
-        messageSubHeader: result?.error?.message,
-        buttonText: 'Close',
-        dispatch,
-        navigation,
-      });
-    }
-
-    if (result && result?.payload && result?.payload?.data) {
-      if (isInitial) {
-        setEmpData(result.payload.data);
-      } else {
-        setEmpData([...allEmpData, ...result?.payload?.data]);
+      const result = await dispatch(getEmployeeData({token, currentEmployees}));
+      setIsFetchingEmployees(false);
+      if (isInitial && !isSearching) {
+        setTotalCount(result?.payload?.count);
       }
-      setEmployeesCount(result?.payload?.count);
-    }
-  };
+
+      if (result?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: result?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+          navigation,
+        });
+      }
+
+      if (result && result?.payload && result?.payload?.data) {
+        if (isInitial) {
+          setEmpData(result.payload.data);
+        } else {
+          setEmpData([...allEmpData, ...result?.payload?.data]);
+        }
+        setEmployeesCount(result?.payload?.count);
+      }
+    },
+    [allEmpData, dispatch, navigation, token],
+  );
 
   const arr = [];
   for (let i = 0; i < 1000; i++) {
@@ -144,7 +143,7 @@ const UserProfile = ({route}) => {
       });
       dispatch(modalStatus(true));
     },
-    [isFocussed],
+    [dispatch],
   );
 
   const handleMail = useCallback(
@@ -157,28 +156,19 @@ const UserProfile = ({route}) => {
       // setClickData('fghfgh');
       dispatch(modalStatus(true));
     },
-    [isFocussed],
+    [dispatch],
   );
 
   const listFooterComponent = () => {
     return (
-      <View style={{padding: 8}}>
+      <View style={styles.bottomLoaderContainer}>
         <ActivityIndicator size="large" />
       </View>
     );
   };
 
   const renderItem = useCallback(
-    (
-      item,
-      index,
-      navigation,
-      isShowModall,
-      dispatch,
-      setClickData,
-      empDetail,
-      showHoriZontal,
-    ) => {
+    (item, index, nav, isShowingHoriZontal) => {
       let {
         designation,
         companyEmail,
@@ -214,10 +204,10 @@ const UserProfile = ({route}) => {
               // backgroundColor: Colors.white,
             }
           }>
-          {showHoriZontal ? (
+          {isShowingHoriZontal ? (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('UserDetail', {
+                nav.navigate('UserDetail', {
                   designation,
                   companyEmail,
                   image,
@@ -227,12 +217,7 @@ const UserProfile = ({route}) => {
                 });
               }}>
               <View style={styles.container}>
-                <View
-                  style={{
-                    flex: 0.2,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                <View style={styles.cardContainer}>
                   {/* <Image source={{uri: imageURL}} style={styles.image} /> */}
 
                   {image ? (
@@ -245,13 +230,13 @@ const UserProfile = ({route}) => {
                     <Image source={defaultUserIcon} style={styles.image} />
                   )}
                 </View>
-                <View style={{flex: 0.7}}>
+                <View style={styles.empCont}>
                   <Text style={styles.nameText}>{employeeName}</Text>
                   <Text style={styles.desniationText}>{designation}</Text>
                   <View style={styles.smallView}>
                     <Image
                       source={MonthImages.userPS}
-                      style={{height: 25, width: 25}}
+                      style={styles.dummyUserIconImage}
                     />
                     <Text style={styles.reportingText}>
                       {managerInfoDto.employeeName}
@@ -270,7 +255,7 @@ const UserProfile = ({route}) => {
               <TouchableOpacity
                 style={styles.container2}
                 onPress={() => {
-                  navigation.navigate('UserDetail', {
+                  nav.navigate('UserDetail', {
                     designation,
                     companyEmail,
                     image,
@@ -317,24 +302,15 @@ const UserProfile = ({route}) => {
         </View>
       );
     },
-    [allEmpData],
+    [handleCall, handleMail],
   );
 
-  const keyExtractor = useCallback((item, index) => index.toString());
+  const keyExtractor = useCallback((item, index) => index.toString(), []);
 
   return (
-    <View style={{flex: 1}}>
-      <View
-        style={{
-          backgroundColor: Colors.lighterBlue,
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: wp(4),
-          paddingVertical: hp(1),
-        }}>
-        <View style={{flex: 1, justifyContent: 'center'}}>
+    <View style={styles.mainCont}>
+      <View style={styles.headerContainer}>
+        <View style={styles.backArrowCont}>
           <Pressable
             onPress={() => {
               navigation.pop();
@@ -342,40 +318,18 @@ const UserProfile = ({route}) => {
             }}>
             <Image
               source={MonthImages.backArrowS}
-              style={{height: 20, width: 20}}
+              style={styles.backArrowImage}
             />
           </Pressable>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 2,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingTop: hp(1),
-          }}>
-          <Text
-            style={{
-              color: Colors.white,
-              marginRight: wp(2),
-              fontSize: 18,
-              fontWeight: '500',
-            }}>
-            Employees
-          </Text>
+        <View style={styles.headerMid}>
+          <Text style={styles.headerEmpText}>Employees</Text>
           <Image
             source={MonthImages.info_scopy}
-            style={{height: 20, width: 20}}
+            style={styles.backArrowImage}
           />
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            paddingTop: hp(0.6),
-          }}>
+        <View style={styles.swapIconCont}>
           {showHoriZontal ? (
             <Pressable
               onPress={() => {
@@ -403,45 +357,24 @@ const UserProfile = ({route}) => {
             }}>
             <Image
               source={MonthImages.searchIconwhite}
-              style={{
-                height: 20,
-                width: 20,
-                color: Colors.white,
-              }}
+              style={styles.searchIcon}
             />
           </Pressable>
         </View>
       </View>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-          zIndex: 999,
-        }}>
+      <View style={styles.refreshIconContainer}>
         <Pressable
           onPress={() => {
             fetchInitialData();
           }}
-          style={{position: 'absolute', bottom: hp(3), right: wp(5)}}>
-          <Image
-            source={RefreshIcon}
-            style={{height: 32, width: 32, borderRadius: 25, zIndex: 9999}}
-          />
+          style={styles.refreshPressable}>
+          <Image source={RefreshIcon} style={styles.refreshIcon} />
         </Pressable>
       </View>
       {showTextInput ? (
-        <View
-          style={{
-            backgroundColor: Colors.blackishGreen,
-            flexDirection: 'row',
-            paddingVertical: hp(1),
-            paddingHorizontal: wp(5),
-            // justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <View style={styles.searchIconDown}>
           <Pressable
-            disabled={searchedName.length == 0}
+            disabled={searchedName.length === 0}
             onPress={async () => {
               let currentEmployee = {
                 page: 1,
@@ -467,11 +400,7 @@ const UserProfile = ({route}) => {
             }}>
             <Image
               source={MonthImages.searchIconwhite}
-              style={{
-                height: 25,
-                width: 25,
-                marginRight: wp(5),
-              }}
+              style={styles.searchImageIcon}
             />
           </Pressable>
 
@@ -484,11 +413,7 @@ const UserProfile = ({route}) => {
             // value={e}
             onChangeText={onChangeText}
             isEditble
-            style={{
-              height: '120%',
-              width: '80%',
-              paddingVertical: 0,
-            }}
+            style={styles.textInput}
           />
           <Pressable
             onPress={() => {
@@ -496,10 +421,7 @@ const UserProfile = ({route}) => {
               fetchInitialData();
             }}
             style={styles.clearButton}>
-            <Image
-              source={CrossIcon}
-              style={{height: 20, width: 20, tintColor: Colors.white}}
-            />
+            <Image source={CrossIcon} style={styles.crossIcon} />
           </Pressable>
         </View>
       ) : null}
@@ -508,11 +430,9 @@ const UserProfile = ({route}) => {
       ) : null}
 
       {allEmpData?.length === 0 && !isFetchingEmployees ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Image source={NotFound} style={{height: 120, width: 160}} />
-          <Text style={{color: 'maroon', marginTop: 20}}>
-            No Employee Found!
-          </Text>
+        <View style={styles.noFoundContainer}>
+          <Image source={NotFound} style={styles.noFoundImage} />
+          <Text style={styles.noFoundText}>No Employee Found!</Text>
         </View>
       ) : (
         <FlatList
@@ -543,16 +463,7 @@ const UserProfile = ({route}) => {
           keyExtractor={keyExtractor}
           ref={flatListRef}
           renderItem={({item, index}) => {
-            return renderItem(
-              item,
-              index,
-              navigation,
-              isShowModall,
-              dispatch,
-              setClickData,
-              empDetail,
-              showHoriZontal,
-            );
+            return renderItem(item, index, navigation, showHoriZontal);
           }}
         />
       )}

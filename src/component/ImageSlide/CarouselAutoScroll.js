@@ -1,26 +1,16 @@
-import {useEffect, useRef, useState} from 'react';
-import {
-  FlatList,
-  ImageBackground,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Pressable,
-} from 'react-native';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import React from 'react';
+import {FlatList, View, Text, Image, Pressable} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './AutoscrollStyle';
-import {FlashList} from '@shopify/flash-list';
 
 import BirthdayAnniV from 'modals/BirthdayAnniV';
-import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
 import BriefCase from 'assets/newDashboardIcons/briefcase.svg';
 import HappyBirthday from 'assets/newDashboardIcons/cake-candles.svg';
-import {FontFamily} from 'constants/fonts';
 
 const CarouselAutoScroll = ({navigation}) => {
   const [calenderEventData, setCalenderEventData] = useState([]);
@@ -29,12 +19,14 @@ const CarouselAutoScroll = ({navigation}) => {
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
 
-  const keyOfObject = Object?.keys(calenderData);
+  const keyOfObject = useCallback(
+    () => Object?.keys(calenderData),
+    [calenderData],
+  );
 
   useEffect(() => {
     let arr = [];
     const events = [];
-    const futureBirthdays = [];
 
     birthdays?.forEach(birthday => {
       const isBirthdayTodayOrFuture =
@@ -52,14 +44,14 @@ const CarouselAutoScroll = ({navigation}) => {
       events.push(newAnniversary);
     });
 
-    keyOfObject?.map(el => {
+    keyOfObject()?.map(el => {
       calenderData[el]?.map(element => {
         arr.push(element);
       });
     });
 
     setCalenderEventData(events);
-  }, [calenderData]);
+  }, [calenderData, anniversaries, birthdays, keyOfObject]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -107,7 +99,7 @@ const CarouselAutoScroll = ({navigation}) => {
     if (calenderEventData && calenderEventData.length > 0) {
       imageRef?.current?.scrollToIndex({index: active, animated: true});
     }
-  }, [active]);
+  }, [active, calenderEventData]);
 
   const handleScrollBeginDrag = () => {
     setScrolled({scrollStart: true, scrollStop: false});
@@ -118,12 +110,7 @@ const CarouselAutoScroll = ({navigation}) => {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        paddingLeft: 20,
-      }}>
+    <View style={styles.mainContainer}>
       {showModal ? (
         <BirthdayAnniV modalData={modalData} showModal={showModal} />
       ) : null}
@@ -158,12 +145,12 @@ const CarouselAutoScroll = ({navigation}) => {
                 style={{
                   marginRight: wp(5),
                 }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={styles.eventContainerHeader}>
                   {item.isBirthday ? (
                     <>
                       <Image
                         source={MonthImages.Balloons}
-                        style={{height: 40, width: 40, marginRight: 24}}
+                        style={styles.eventImage}
                       />
                       <Text style={styles.happyText}>Happy </Text>
                       <Text style={styles.wishText}>Birthday</Text>
@@ -172,7 +159,7 @@ const CarouselAutoScroll = ({navigation}) => {
                     <>
                       <Image
                         source={MonthImages.AnniversaryIcon}
-                        style={{height: 40, width: 40, marginRight: 24}}
+                        style={styles.eventImage}
                       />
                       <Text style={styles.happyText}>Happy </Text>
                       <Text style={styles.wishText}>Anniversary</Text>
@@ -217,21 +204,8 @@ const CarouselAutoScroll = ({navigation}) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: Colors.white,
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
-          }}>
-          <Text
-            style={{
-              fontFamily: FontFamily.RobotoMedium,
-              fontSize: 16,
-              color: Colors.lightBlue,
-              marginVertical: 4,
-            }}>
+        <View style={styles.noEventTextCont}>
+          <Text style={styles.noEventText}>
             No Events found for this Month.
           </Text>
         </View>
@@ -259,44 +233,3 @@ const useInterval = (callback, delay) => {
 };
 
 export default CarouselAutoScroll;
-
-{
-  /* <ImageBackground
-                source={
-                  !item.isBirthday
-                    ? MonthImages.workAnniversaryy
-                    : MonthImages.BirthdayImage
-                }
-                resizeMode="stretch"
-                imageStyle={{
-                  borderRadius: 15,
-                }}
-                style={styles.backgroundImage}> */
-}
-{
-  /* <View style={styles.textView}>
-                <Text
-                  numberOfLines={2}
-                  style={{color: Colors.white, textAlign: 'center'}}>
-                  {!item.isBirthday
-                    ? `Happy Work Aniversary ${item.employeeName} on ${moment(
-                        item.dateOfJoining,
-                      ).format('DD MMM ')}`
-                    : `Happy Birthday ${item.employeeName} on ${moment(
-                        item.startsOn,
-                      ).format('DD MMM ')}`}
-                </Text>
-              </View> */
-}
-{
-  /* </ImageBackground> */
-}
-{
-  /* <View
-                style={{
-                  borderWidth: 5,
-                  borderColor: 'green',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}> */
-}

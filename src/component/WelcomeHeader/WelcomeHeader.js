@@ -1,13 +1,16 @@
+import React from 'react';
 import {Colors} from 'colors/Colors';
-import {FontFamily, FontSize} from 'constants/fonts';
-import {AppState, StyleSheet, Text, View} from 'react-native';
+import {AppState, Text, View} from 'react-native';
 import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
 import {useDispatch, useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {getEmployeeShift, getTodayCheckInTime} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
+import {ERROR} from 'utils/string';
+import ShowAlert from 'customComponents/CustomError';
+import styles from './WelcomeHeaderStyles';
 
-const WelcomeHeader = () => {
+const WelcomeHeader = ({navigation}) => {
   const dispatch = useDispatch();
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
   const firstName = profileData?.firstName;
@@ -22,83 +25,100 @@ const WelcomeHeader = () => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
-  const handleAppStateChange = async nextState => {
-    if (nextState === 'active' || nextState === true) {
-      try {
-        const checkIn = await dispatch(getTodayCheckInTime({token}));
+  const handleAppStateChange = useCallback(
+    async nextState => {
+      if (nextState === 'active' || nextState === true) {
+        try {
+          const checkIn = await dispatch(
+            getTodayCheckInTime({
+              token,
+            }),
+          );
 
-        const employeeShift = await dispatch(
-          getEmployeeShift({token, id: employeeID}),
-        );
+          if (checkIn?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: checkIn?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
 
-        const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
-        const properInTime = employeeShift?.payload?.startTime;
+          const employeeShift = await dispatch(
+            getEmployeeShift({token, id: employeeID}),
+          );
 
-        const [properInHours, properInMinutes, properInSeconds] =
-          properInTime.split(':');
+          const checkedInTimeObj = new Date(checkIn.payload[0]?.time);
+          const properInTime = employeeShift?.payload?.startTime;
 
-        const properCheckInTimeStamp = new Date().setHours(
-          properInHours,
-          properInMinutes,
-          properInSeconds,
-        );
-        // 2023-08-16T10:04:43
+          const [properInHours, properInMinutes, properInSeconds] =
+            properInTime.split(':');
 
-        const checkedInTimeStamp = checkedInTimeObj.getTime();
-        const differenceInTime = Math.abs(
-          checkedInTimeStamp - properCheckInTimeStamp,
-        );
+          const properCheckInTimeStamp = new Date().setHours(
+            properInHours,
+            properInMinutes,
+            properInSeconds,
+          );
+          // 2023-08-16T10:04:43
 
-        const lateHours =
-          Math.floor(differenceInTime / (1000 * 60 * 60)) > 9
-            ? Math.floor(differenceInTime / (1000 * 60 * 60))
-            : Math.floor(differenceInTime / (1000 * 60 * 60))
-            ? '0' + Math.floor(differenceInTime / (1000 * 60 * 60))
-            : '00';
-        const lateMinutes =
-          Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60)) > 9
-            ? Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
-            : Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
-            ? '0' +
-              Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
-            : '00';
-        const lateSeconds =
-          Math.floor((differenceInTime % (1000 * 60)) / 1000) > 9
-            ? Math.floor((differenceInTime % (1000 * 60)) / 1000)
-            : Math.floor((differenceInTime % (1000 * 60)) / 1000)
-            ? '0' + Math.floor((differenceInTime % (1000 * 60)) / 1000)
-            : '00';
+          const checkedInTimeStamp = checkedInTimeObj.getTime();
+          const differenceInTime = Math.abs(
+            checkedInTimeStamp - properCheckInTimeStamp,
+          );
 
-        setTodayStatus({
-          lateHours,
-          lateMinutes,
-          lateSeconds,
-          isLate: checkedInTimeStamp - properCheckInTimeStamp > 0,
-        });
+          const lateHours =
+            Math.floor(differenceInTime / (1000 * 60 * 60)) > 9
+              ? Math.floor(differenceInTime / (1000 * 60 * 60))
+              : Math.floor(differenceInTime / (1000 * 60 * 60))
+              ? '0' + Math.floor(differenceInTime / (1000 * 60 * 60))
+              : '00';
+          const lateMinutes =
+            Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60)) > 9
+              ? Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+              : Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+              ? '0' +
+                Math.floor((differenceInTime % (1000 * 60 * 60)) / (1000 * 60))
+              : '00';
+          const lateSeconds =
+            Math.floor((differenceInTime % (1000 * 60)) / 1000) > 9
+              ? Math.floor((differenceInTime % (1000 * 60)) / 1000)
+              : Math.floor((differenceInTime % (1000 * 60)) / 1000)
+              ? '0' + Math.floor((differenceInTime % (1000 * 60)) / 1000)
+              : '00';
 
-        if (checkIn.error) {
-          throw new Error('Time not found.');
+          setTodayStatus({
+            lateHours,
+            lateMinutes,
+            lateSeconds,
+            isLate: checkedInTimeStamp - properCheckInTimeStamp > 0,
+          });
+
+          if (checkIn.error) {
+            throw new Error('Time not found.');
+          }
+          const checkInDateObj = new Date(checkIn?.payload[0]?.time);
+          const totalSpentTime = +(new Date() - checkInDateObj);
+
+          const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
+          const minutes = +Math.floor(
+            (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
+          );
+          const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
+
+          setCheckInDetails({
+            hours,
+            minutes,
+            seconds,
+            empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
+          });
+        } catch (err) {
+          console.log('erroor:', err);
         }
-        const checkInDateObj = new Date(checkIn?.payload[0]?.time);
-        const totalSpentTime = +(new Date() - checkInDateObj);
-
-        const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
-        const minutes = +Math.floor(
-          (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
-
-        setCheckInDetails({
-          hours,
-          minutes,
-          seconds,
-          empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
-        });
-      } catch (err) {
-        console.log('erroor:', err);
       }
-    }
-  };
+    },
+    [dispatch, employeeID, token, navigation],
+  );
 
   useEffect(() => {
     AppState &&
@@ -109,13 +129,13 @@ const WelcomeHeader = () => {
         AppState.removeEventListener &&
         AppState?.removeEventListener('change', handleAppStateChange);
     };
-  }, []);
+  }, [handleAppStateChange]);
 
   useEffect(() => {
     if (!isGuestLogin) {
       handleAppStateChange(true);
     }
-  }, []);
+  }, [handleAppStateChange, isGuestLogin]);
 
   useEffect(() => {
     if (!isGuestLogin) {
@@ -148,11 +168,11 @@ const WelcomeHeader = () => {
         };
       }
     }
-  }, [checkInDetails.seconds]);
+  }, [checkInDetails, isGuestLogin]);
 
   const userName = `${firstName ? firstName : ''} ${
-    middleName ? middleName : ''
-  } ${lastName ? lastName : ''}`;
+    middleName ? middleName + ' ' : ''
+  }${lastName ? lastName : ''}`;
 
   const todayDateObject = new Date();
   const daysOfWeek = [
@@ -170,7 +190,6 @@ const WelcomeHeader = () => {
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>Welcome, </Text>
         <Text style={styles.nameText}>
-          {' '}
           {isGuestLogin ? 'Guest' : userName || 'N/A'}
         </Text>
         {/* <Text style={styles.nameText}> {userName || 'N/A'}</Text> */}
@@ -231,81 +250,3 @@ const WelcomeHeader = () => {
 };
 
 export default WelcomeHeader;
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    padding: 20,
-    shadowColor: Colors.colorDodgerBlue2,
-    shadowOffset: {width: 0, height: 2}, // Set the shadow offset
-    shadowOpacity: 0.2, // Set the shadow opacity
-    shadowRadius: 0.1, // Set the shadow radius
-    elevation: 1,
-  },
-  welcomeContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginLeft: 4,
-    marginBottom: 22,
-    flexWrap: 'wrap',
-  },
-  welcomeText: {
-    fontFamily: FontFamily.RobotoMedium,
-    fontSize: FontSize.h24,
-  },
-  nameText: {
-    fontFamily: FontFamily.RobotoThin,
-    fontSize: FontSize.h24,
-  },
-  infoContainer: {
-    backgroundColor: Colors.white,
-    paddingVertical: 32,
-    borderRadius: 14,
-  },
-  headingContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 24,
-  },
-  timeText: {
-    fontSize: FontSize.h20,
-    fontFamily: FontFamily.RobotoLight,
-  },
-  timeContainer: {
-    marginBottom: 18,
-  },
-  time: {
-    fontSize: FontSize.h26,
-    textAlign: 'center',
-    color: Colors.green,
-    fontFamily: FontFamily.RobotoRegular,
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 6,
-  },
-  dayMonthText: {
-    fontFamily: FontFamily.RobotoRegular,
-    fontSize: 16,
-  },
-  dateYearText: {
-    fontSize: 16,
-    fontFamily: FontFamily.RobotoLight,
-  },
-  addressContainer: {
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  addressText: {
-    fontFamily: FontFamily.RobotoLight,
-    fontSize: 15,
-  },
-  lateContainer: {
-    alignItems: 'center',
-  },
-  lateText: {
-    color: Colors.gold,
-  },
-});

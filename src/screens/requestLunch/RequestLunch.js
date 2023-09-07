@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useImperativeHandle, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -37,11 +37,9 @@ const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {configData} = useSelector(state => state.home);
-  console.log('configData:', configData);
   const [{value: deadlineToRequestForLunch}] = configData;
 
   const [deadlineHours, deadlineMinutes] = deadlineToRequestForLunch.split(':');
-  console.log('deadlineHours:', +deadlineHours, +deadlineMinutes);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
@@ -61,7 +59,7 @@ const RequestLunch = ({navigation}) => {
   const [monthStartDateStr, setMonthStartDateStr] = useState('Select..');
   const [items, setItems] = useState(RequestLunchLabel);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDaily, setIsDaily] = useState(false);
+  // const [isDaily, setIsDaily] = useState(false);
   const [startSelected, setStartSelected] = useState(false);
   const [endSelected, setEndSelected] = useState(false);
   const [lunchRequests, setLunchRequests] = useState([]);
@@ -75,9 +73,9 @@ const RequestLunch = ({navigation}) => {
       (async () => {
         try {
           setIsLoading(true);
-          let lunchPlans = await dispatch(getLunchPlans({token}));
-          if (!lunchPlans.error) {
-            setLunchPlans(lunchPlans.payload);
+          let lunchPlansResponse = await dispatch(getLunchPlans({token}));
+          if (!lunchPlansResponse.error) {
+            setLunchPlans(lunchPlansResponse.payload);
           } else {
             alert('could not fetch lunch plans.');
           }
@@ -88,7 +86,7 @@ const RequestLunch = ({navigation}) => {
         }
       })();
     }
-  }, []);
+  }, [dispatch, isGuestLogin, token]);
 
   const setUpcomingMonthlyStartDate = ({date}) => {
     setMonthlyStartDate(date);
@@ -117,7 +115,7 @@ const RequestLunch = ({navigation}) => {
         }
       })();
     }
-  }, [lunchRequests?.length]);
+  }, [lunchRequests?.length, isGuestLogin, token, employeeID, dispatch]);
 
   const onSelectItem = item => {
     const selectedPlanByUser = lunchPlans?.find(
@@ -153,7 +151,7 @@ const RequestLunch = ({navigation}) => {
         endDateStr: date + '-' + monthNameInStr + '-' + year,
         endDateObj: todayDate,
       });
-      setIsDaily(true);
+      // setIsDaily(true);
       setPermReq(false);
       setStartSelected(true);
       setEndSelected(true);
@@ -162,14 +160,14 @@ const RequestLunch = ({navigation}) => {
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
       setStartSelected(false);
       setEndSelected(false);
-      setIsDaily(false);
+      // setIsDaily(false);
       setPermReq(false);
     } else {
       setStartSelected(false);
       setEndSelected(false);
       setStartDate({startDateStr: 'Select Start Date', startDateObj: {}});
       setEndDate({endDateStr: 'Select End Date', endDateObj: {}});
-      setIsDaily(false);
+      // setIsDaily(false);
       setPermReq(true);
       const hours = new Date().getHours();
       const minutes = new Date().getMinutes();
@@ -234,11 +232,6 @@ const RequestLunch = ({navigation}) => {
   };
 
   const onSubmit = async () => {
-    // let requestType;
-    // if (value === 'daily') requestType = selectedPlan.id;
-    // else if (value === 'duration') requestType = selectedPlan.id;
-    // else requestType = 3;
-
     if (isGuestLogin) {
       alert("Guests aren't allowed to Request for lunch.");
       return;
@@ -251,7 +244,9 @@ const RequestLunch = ({navigation}) => {
 
       const day = dateArray[0];
       let startingDate = day;
-      if (day.length === 1) startingDate = 0 + startingDate;
+      if (day.length === 1) {
+        startingDate = 0 + startingDate;
+      }
       const month = dateArray[1];
       const year = dateArray[2];
 
@@ -262,7 +257,9 @@ const RequestLunch = ({navigation}) => {
         if (monthsName[i]?.toLowerCase() === month?.toLowerCase()) {
           monthNumber = i + 1 + '';
           numberOfDaysInThisMonth = new Date(year, i + 1, 0).getDate();
-          if (monthNumber.length === 1) monthNumber = 0 + monthNumber;
+          if (monthNumber.length === 1) {
+            monthNumber = 0 + monthNumber;
+          }
           break;
         }
       }
@@ -309,8 +306,8 @@ const RequestLunch = ({navigation}) => {
     if (
       appliedDate === todayDate &&
       appliedMonth === todayDateMonth &&
-      (currentHour > +deadlineHours ||
-        (currentHour === deadlineHours && +deadlineMinutes > minutes))
+      (+currentHour > +deadlineHours ||
+        (+currentHour === +deadlineHours && +deadlineMinutes < +currentMinutes))
     ) {
       alert(
         `You can not apply for the lunch request after ${deadlineHours}:${deadlineMinutes}.`,
@@ -379,21 +376,13 @@ const RequestLunch = ({navigation}) => {
     if (!monthlyStartDate) opacity = 0.5;
   }
 
-  let endDateMaximumLimit = startSelected ? startDate?.startDateObj : undefined;
-
-  const startDateCopy = new Date(startDate?.startDateObj);
-
-  // const childRef = React.createRef();
-
   return (
-    // <SharedElement id="enter">
     <View style={styles.mainContainer}>
       <View style={styles.container}>
         <View>
           <TouchableOpacity
             onPress={() => {
               navigation.pop();
-              // navigation.openDrawer();
             }}>
             <Image
               source={MonthImages.backArrowS}
@@ -435,7 +424,6 @@ const RequestLunch = ({navigation}) => {
               onSelectItem={onSelectItem}
               containerStyle={{height: 40}}
               style={{
-                height: hp(1),
                 height: 10,
                 borderRadius: open ? 5 : 50,
                 borderColor: Colors.grey,

@@ -7,7 +7,6 @@ import MenuItem from 'component/menuContent/MenuItem';
 import RecentLeaves from 'component/recentappliedLeaves/RecentLeaves';
 import RemainingLeaves from 'component/remainingLeaves/RemainingLeaves';
 import UpComingHolidays from 'component/upComingHolidays/UpComingHolidays';
-import {Colors} from 'colors/Colors';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
@@ -18,11 +17,13 @@ import {
   getEmployeeProfileData,
 } from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
-import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
+import ShowAlert from 'customComponents/CustomError';
+// import {renewCurrentToken} from 'customComponents/CustomError';
 import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
-import {renewToken} from 'Auth/LoginSlice';
+import styles from './HomeStyles';
+// import {renewToken} from 'Auth/LoginSlice';
 
 let data = [
   WelcomeHeader,
@@ -50,28 +51,28 @@ const Home = ({navigation}) => {
   }, [isFocussed]);
 
   useEffect(() => {
-    if (isFocussed) {
-      (async () => {
-        try {
-          setLoading(true);
-          const empData =
-            token &&
-            (await dispatch(
-              getEmployeeProfileData({
-                token,
-                employeeID,
-                refreshToken,
-                dispatch,
-              }),
-            ));
-        } catch (err) {
-          console.log('err:', err);
-        } finally {
-          setLoading(false);
-        }
-      })();
-    }
-  }, [token]);
+    // if (isFocussed) {
+    (async () => {
+      try {
+        setLoading(true);
+
+        token &&
+          (await dispatch(
+            getEmployeeProfileData({
+              token,
+              employeeID,
+              refreshToken,
+              dispatch,
+            }),
+          ));
+      } catch (err) {
+        console.log('errorProfile:', err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+    // }
+  }, [token, dispatch, employeeID, refreshToken]);
   // }, [isFocussed, token]);
 
   useEffect(() => {
@@ -97,20 +98,16 @@ const Home = ({navigation}) => {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch, navigation, refreshToken, token]);
 
   useEffect(() => {
     (async () => {
-      const configData = await dispatch(getConfigDataHandler({token}));
+      await dispatch(getConfigDataHandler({token}));
     })();
-  }, []);
+  }, [dispatch, token]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: Colors.whitishBlue,
-      }}>
+    <View style={styles.mainContainer}>
       <CustomHeader
         showDrawerMenu={true}
         title

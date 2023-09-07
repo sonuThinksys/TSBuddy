@@ -40,7 +40,7 @@ const Holidays = ({navigation}) => {
     } finally {
       setRefresh(false);
     }
-  }, [refresh]);
+  }, [dispatch, token]);
 
   const renderItem = useCallback(
     (

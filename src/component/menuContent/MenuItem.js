@@ -1,27 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {
-  ImageBackground,
-  Image,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  ScrollView,
-  Pressable,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Image, Text, View, FlatList, ScrollView, Pressable} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch} from 'react-redux';
 import {Colors} from 'colors/Colors';
 import styles from './MenuItemStyle';
 import {useSelector} from 'react-redux';
-import {FontFamily} from 'constants/fonts';
 import {ERROR} from 'constants/strings';
 import jwt_decode from 'jwt-decode';
-import {useIsFocused} from '@react-navigation/native';
 
 const breakfast = 'Breakfast';
 const lunch = 'Lunch';
@@ -36,7 +21,7 @@ import EditIcon from 'assets/newDashboardIcons/edit.svg';
 const MenuItem = ({navigation}) => {
   const dispatch = useDispatch();
 
-  let {userFeedback, dailyMenuID} = useSelector(state => state.home);
+  let {dailyMenuID} = useSelector(state => state.home);
 
   const [todayMenu, setTodayMenu] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -49,9 +34,9 @@ const MenuItem = ({navigation}) => {
   useEffect(() => {
     // if (isFocussed) updateData();
     updateData();
-  }, []);
+  }, [updateData]);
 
-  const updateData = () => {
+  const updateData = useCallback(() => {
     if (token) {
       (async () => {
         try {
@@ -115,10 +100,10 @@ const MenuItem = ({navigation}) => {
         },
       ]);
     }
-  };
+  }, [dispatch, navigation, token]);
 
   return (
-    <View style={{paddingLeft: 20}}>
+    <View style={styles.mainContainer}>
       <FoodFeedback modalData={modalData} showModal={showModal} />
       <FlatList
         showsHorizontalScrollIndicator={false}
@@ -129,23 +114,10 @@ const MenuItem = ({navigation}) => {
           return (
             <View>
               <View key={index} style={styles.container}>
-                <Image
-                  source={item.img_url}
-                  style={{
-                    height: wp(26),
-                    width: wp(26),
-                    borderRadius: wp(13),
-                    overflow: 'hidden',
-                  }}
-                />
+                <Image source={item.img_url} style={styles.foodImage} />
                 <Text style={styles.foodTypeText}>{item?.type}</Text>
                 <ScrollView nestedScrollEnabled={true}>
-                  <Text
-                    style={{
-                      color: Colors.dune,
-                      fontSize: 14,
-                      textAlign: 'center',
-                    }}>
+                  <Text style={styles.foodItem}>
                     {item.food ? item.food : 'N/A'}
                   </Text>
                 </ScrollView>

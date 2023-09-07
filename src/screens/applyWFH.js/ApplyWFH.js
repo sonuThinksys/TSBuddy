@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
@@ -43,15 +44,20 @@ import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 
+const initialEndDate = {endDateStr: 'Select End Date'};
+const initialStartDate = {startDateStr: 'Select Start Date'};
+const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const alreadyWeekend = 'You already have a weekend holiday on this day.';
+const alreadyNationalHoliday = 'You can not take a WFH on National holiday.';
+const alreadyWFHApplied = 'WFH are already applied for these dates.';
+
 const ApplyWFH = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
-  const [startDate, setStartDate] = useState({
-    startDateStr: 'Select Start Date',
-  });
-  const [endDate, setEndDate] = useState({endDateStr: 'Select End Date'});
+  const [startDate, setStartDate] = useState(initialStartDate);
+  const [endDate, setEndDate] = useState(initialEndDate);
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
   const drawerStatus = useDrawerStatus();
@@ -77,6 +83,7 @@ const ApplyWFH = ({navigation}) => {
   const [selectedLeaveApprover, setSelectedLeaveApprover] = useState('');
   const [reason, setReason] = useState('');
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
+  const [leavesNotIncludeWFH, setLeavesNotIncludeWFH] = useState([]);
 
   const {holidayData} = useSelector(state => state.home);
 
@@ -128,23 +135,26 @@ const ApplyWFH = ({navigation}) => {
       setLeaveApprover(listOfLeaveApprovers);
       setItems(listOfLeaveApprovers);
     })();
-  }, []);
+  }, [dispatch, employeeID, token]);
 
   useEffect(() => {
     (async () => {
-      const employeeShift = await dispatch(
-        getEmployeeShift({token, id: employeeID}),
-      );
-      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+      try {
+        const employeeShift = await dispatch(
+          getEmployeeShift({token, id: employeeID}),
+        );
+        const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
 
-      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const finalWeekOffs = [];
-      daysOfWeek?.map((el, index) => {
-        if (weekOffs?.includes(el)) finalWeekOffs.push(index);
-      });
-      setEmployeeWeekOffs(finalWeekOffs);
+        const finalWeekOffs = [];
+        daysOfWeek?.map((el, index) => {
+          if (weekOffs?.includes(el)) finalWeekOffs.push(index);
+        });
+        setEmployeeWeekOffs(finalWeekOffs);
+      } catch (err) {
+        console.log('errorEmpShift:', err);
+      }
     })();
-  }, []);
+  }, [dispatch, employeeID, token]);
 
   useEffect(() => {
     if (isFocused) {
@@ -158,9 +168,17 @@ const ApplyWFH = ({navigation}) => {
             }),
           );
 
-          let wfhLeaveList = leavesData.payload?.filter(
-            leave => leave.leaveType === 'Work From Home',
-          );
+          // let wfhLeaveList = leavesData.payload?.filter(
+          //   leave => leave.leaveType.toLowerCase() === 'work from home',
+          // );
+          const wfhLeaveList = [];
+          const otherLeaves = [];
+
+          for (let leave of leavesData?.payload) {
+            if (leave?.leaveType?.toLowerCase() === 'work from home') {
+              wfhLeaveList.push(leave);
+            } else otherLeaves.push(leave);
+          }
 
           let sortedWfhData = wfhLeaveList?.sort(
             (a, b) =>
@@ -168,6 +186,7 @@ const ApplyWFH = ({navigation}) => {
           );
 
           setWfhList(sortedWfhData);
+          setLeavesNotIncludeWFH(otherLeaves);
 
           if (leavesData?.error) {
             ShowAlert({
@@ -184,7 +203,7 @@ const ApplyWFH = ({navigation}) => {
         }
       })();
     }
-  }, [isFocused]);
+  }, [isFocused, dispatch, employeeID, token]);
 
   const dispatch = useDispatch();
 
@@ -217,7 +236,7 @@ const ApplyWFH = ({navigation}) => {
     Keyboard.dismiss;
     if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
-      alert('You already have a weekend holiday on this day.');
+      alert(alreadyWeekend);
       startOnCancel();
       return;
     }
@@ -229,7 +248,7 @@ const ApplyWFH = ({navigation}) => {
         holidayObj.getMonth() === date.getMonth() &&
         date.getDate() === holidayObj.getDate()
       ) {
-        alert('You can not take a WFH on National holiday.');
+        alert(alreadyNationalHoliday);
         startOnCancel();
         return;
       }
@@ -248,7 +267,7 @@ const ApplyWFH = ({navigation}) => {
     });
     setStartSelected(true);
     setEndSelected(false);
-    setEndDate({endDateStr: 'Select End Date'});
+    setEndDate(initialEndDate);
     setTotalDaysCount(0);
   };
 
@@ -256,7 +275,7 @@ const ApplyWFH = ({navigation}) => {
     Keyboard.dismiss;
     if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
-      alert('You already have a weekend holiday on this day.');
+      alert(alreadyWeekend);
       endOnCancel();
       return;
     }
@@ -268,7 +287,7 @@ const ApplyWFH = ({navigation}) => {
         holidayObj.getMonth() === date.getMonth() &&
         date.getDate() === holidayObj.getDate()
       ) {
-        alert('You can not take a WFH on National holiday.');
+        alert(alreadyNationalHoliday);
         endOnCancel();
         return;
       }
@@ -338,7 +357,7 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('WFH are already applied for these dates.');
+          alert(alreadyWFHApplied);
           return;
         }
       }
@@ -353,11 +372,49 @@ const ApplyWFH = ({navigation}) => {
           wfhList[i].status.toLowerCase() === 'open' ||
           wfhList[i].status.toLowerCase() === 'approved'
         ) {
-          alert('WFH are already applied for these dates.');
+          alert(alreadyWFHApplied);
           return;
         }
       }
     }
+
+    // =================================================================
+    for (let i = 0; i < leavesNotIncludeWFH?.length; i++) {
+      let {fromDate: startDate1, toDate: endDate1} = leavesNotIncludeWFH[i];
+      startDate1 = new Date(startDate1);
+      endDate1 = new Date(endDate1);
+      const startDate2 = fromDate;
+      const endDate2 = toDate;
+
+      if (
+        (startDate1 >= startDate2 && endDate2 >= startDate1) ||
+        (startDate2 >= startDate1 && startDate2 <= endDate1)
+      ) {
+        if (
+          leavesNotIncludeWFH[i]?.status?.toLowerCase() === 'open' ||
+          leavesNotIncludeWFH[i]?.status?.toLowerCase() === 'approved'
+        ) {
+          alert('Leaves are already applied for these dates.');
+          return;
+        }
+      }
+
+      if (
+        startDate1.toDateString() === startDate2.toDateString() ||
+        startDate1.toDateString() === endDate2.toDateString() ||
+        startDate2.toDateString() === startDate1.toDateString() ||
+        startDate2.toDateString() === endDate1.toDateString()
+      ) {
+        if (
+          leavesNotIncludeWFH[i]?.status?.toLowerCase() === 'open' ||
+          leavesNotIncludeWFH[i]?.status?.toLowerCase() === 'approved'
+        ) {
+          alert('Leaves are already applied for these dates.');
+          return;
+        }
+      }
+    }
+    // =================================================================
 
     try {
       setLoading(true);
@@ -397,10 +454,8 @@ const ApplyWFH = ({navigation}) => {
             onPress: () => {
               setEndSelected(false);
               setStartSelected(false);
-              setStartDate({
-                startDateStr: 'Select Start Date',
-              });
-              setEndDate({endDateStr: 'Select End Date'});
+              setStartDate(initialStartDate);
+              setEndDate(initialEndDate);
               setReason('');
               setTotalDaysCount(0);
               setValue(null);
@@ -590,10 +645,8 @@ const ApplyWFH = ({navigation}) => {
                   onPress={() => {
                     setEndSelected(false);
                     setStartSelected(false);
-                    setStartDate({
-                      startDateStr: 'Select Start Date',
-                    });
-                    setEndDate({endDateStr: 'Select End Date'});
+                    setStartDate(initialStartDate);
+                    setEndDate(initialEndDate);
                     setReason('');
                     setTotalDaysCount(0);
                     setValue(null);
@@ -663,7 +716,9 @@ const ApplyWFH = ({navigation}) => {
           {wfhList?.length > 0 && (
             <View>
               {loading ? (
-                <Loader />
+                <View style={{flex: 1}}>
+                  <Loader />
+                </View>
               ) : (
                 <FlatList
                   style={{height: '100%'}}
@@ -731,11 +786,13 @@ const renderListOfAppliedRequests = ({item}) => {
             marginRight: wp(4),
           }}>
           <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
-            {item?.totalLeaveDays < 9 ? '0' : null}
+            {item?.totalLeaveDays <= 9 && Number.isInteger(item?.totalLeaveDays)
+              ? '0'
+              : null}
             {item?.totalLeaveDays}
           </Text>
           <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
-            {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
+            {item?.totalLeaveDays > 1 ? 'Days' : 'Day'}
           </Text>
         </View>
         <View style={{marginLeft: 20, marginTop: 4}}>

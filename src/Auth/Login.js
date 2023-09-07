@@ -10,48 +10,34 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  Alert,
-  ActivityIndicator,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './LoginStyle';
-import TouchID from 'react-native-touch-id';
 import {
   heightPercentageToDP as hp,
-  screenWidth,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import TSBuddyIcon from '../assets/Icons/TSIcon.webp';
 import LoginVideo from '../assets/video/backgoundVideo.mp4';
 import Video from 'react-native-video';
 import LoginUnCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
 import LoginCheck from 'assets/mipmap/loginCheck.imageset/check.png';
-import {guestLoginStatus, logInSucess} from './LoginSlice';
-import {loginStatus} from './LoginSlice';
+import {guestLoginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {
-  BIOMETRIC_LOGIN,
-  CANCEL,
-  CONFIRM_FINGERPRINT,
   COPY_RIGHT,
   ERROR,
   FORGOT_PASSWORD,
   GUEST_LOGIN,
-  INCORRECT_LOGIN,
-  INVALID_CREDENTIAL,
   REMEMBER_ME,
-  SIGN_IN,
-  TOUCH_SENSOR,
 } from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
-  const [isAuth, setIsAuth] = useState(false);
+  // const [isAuth, setIsAuth] = useState(false);
 
   // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -71,57 +57,54 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState('thinksys@123');
   // const [username, setUserName] = useState('singh.vivek@thinksys.com');
   // const [password, setPassword] = useState('thinksys@123');
-  const {
-    userToken: token,
-    formInput,
-    isRemember,
-    bioMetricEnable,
-  } = useSelector(state => state.auth);
+  // const [username, setUserName] = useState('kamal.deepika@thinksys.com');
+  // const [password, setPassword] = useState('Pica8@123');
+  const {isRemember, bioMetricEnable} = useSelector(state => state.auth);
   useEffect(() => {
     if (Platform.OS === 'android') {
       dispatch(setBiometricEnable(true));
     }
-  }, [formInput, token]);
+  }, [dispatch]);
 
-  const enableTouchId = () => {
-    const optionalConfigObject = {
-      title: 'Authentication Required',
-      imageColor: Colors.lightBlue,
-      imageErrorColor: Colors.red,
-      sensorDescription: 'Touch sensor',
-      sensorErrorDescription: 'Failed',
-      cancelText: 'Cancel',
-      fallbackLabel: 'Show Passcode',
-      unifiedErrors: false,
-      passcodeFallback: false,
-    };
+  // const enableTouchId = () => {
+  //   const optionalConfigObject = {
+  //     title: 'Authentication Required',
+  //     imageColor: Colors.lightBlue,
+  //     imageErrorColor: Colors.red,
+  //     sensorDescription: 'Touch sensor',
+  //     sensorErrorDescription: 'Failed',
+  //     cancelText: 'Cancel',
+  //     fallbackLabel: 'Show Passcode',
+  //     unifiedErrors: false,
+  //     passcodeFallback: false,
+  //   };
 
-    TouchID.isSupported(optionalConfigObject)
-      .then(biometryType => {
-        if (biometryType === 'FaceID') {
-        } else {
-          if (isAuth) {
-            return null;
-          }
-          TouchID.authenticate('Authentication', optionalConfigObject)
-            .then(success => {
-              if (token !== '') {
-                const username = formInput.username;
-                const password = formInput.password;
-                dispatch(getUserToken({username, password}));
-              }
-            })
+  //   TouchID.isSupported(optionalConfigObject)
+  //     .then(biometryType => {
+  //       if (biometryType === 'FaceID') {
+  //       } else {
+  //         if (isAuth) {
+  //           return null;
+  //         }
+  //         TouchID.authenticate('Authentication', optionalConfigObject)
+  //           .then(success => {
+  //             if (token !== '') {
+  //               const username = formInput.username;
+  //               const password = formInput.password;
+  //               dispatch(getUserToken({username, password}));
+  //             }
+  //           })
 
-            .catch(err => {
-              // BackHandler.exitApp();
-            });
-        }
-      })
-      .catch(error => {
-        // Failure code
-        // setIsBiometric(false);
-      });
-  };
+  //           .catch(err => {
+  //             // BackHandler.exitApp();
+  //           });
+  //       }
+  //     })
+  //     .catch(error => {
+  //       // Failure code
+  //       // setIsBiometric(false);
+  //     });
+  // };
 
   const onPressLogin = async () => {
     try {
@@ -136,9 +119,7 @@ const Login = ({navigation}) => {
           navigation,
         });
       } else {
-        const {token, refreshToken} = result?.payload?.data || {};
-        var decoded = jwt_decode(token);
-        const employeeID = decoded?.id;
+        const {userToken, refreshToken} = result?.payload?.data || {};
         await AsyncStorage.setItem(
           'refreshToken',
           JSON.stringify(refreshToken),

@@ -7,24 +7,13 @@ import {
 
 import {BarChart} from 'react-native-chart-kit';
 import {useNavigation} from '@react-navigation/native';
-import jwt_decode from 'jwt-decode';
 
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {FontFamily} from 'constants/fonts';
-import {CommonActions} from '@react-navigation/native';
-import {openLeavesCount} from 'utils/utils';
-import {getLeaveDetails} from 'redux/homeSlice';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
 
 const RemainingLeaves = () => {
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const {userToken: token} = useSelector(state => state.auth);
-  const decoded = token && jwt_decode(token);
-  const employeeID = decoded?.id;
   const navigation = useNavigation();
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {leaveMenuDetails: {remainingLeaves = []} = {}} = useSelector(

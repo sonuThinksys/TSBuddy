@@ -6,6 +6,7 @@ import {
 import {Colors} from 'colors/Colors';
 import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
+  mainContainer: {paddingLeft: 20},
   container: {
     backgroundColor: Colors.white,
     width: wp(56),
@@ -67,5 +68,16 @@ export default StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  foodImage: {
+    height: wp(26),
+    width: wp(26),
+    borderRadius: wp(13),
+    overflow: 'hidden',
+  },
+  foodItem: {
+    color: Colors.dune,
+    fontSize: 14,
+    textAlign: 'center',
   },
 });

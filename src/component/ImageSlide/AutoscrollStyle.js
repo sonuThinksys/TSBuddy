@@ -6,6 +6,11 @@ import {
 import {Colors} from 'colors/Colors';
 import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 20,
+  },
   container: {
     paddingRight: 1,
     backgroundColor: Colors.white,
@@ -84,5 +89,20 @@ export default StyleSheet.create({
     bottom: 12,
     left: 16,
     color: Colors.fadedOrange,
+  },
+  eventContainerHeader: {flexDirection: 'row', alignItems: 'center'},
+  eventImage: {height: 40, width: 40, marginRight: 24},
+  noEventTextCont: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  noEventText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
   },
 });

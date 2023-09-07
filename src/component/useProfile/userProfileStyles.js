@@ -4,8 +4,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {FontFamily, FontSize} from 'constants/fonts';
+import {FontSize} from 'constants/fonts';
 export default StyleSheet.create({
+  mainCont: {flex: 1},
   container: {
     flexDirection: 'row',
     marginVertical: hp(0.8),
@@ -15,7 +16,6 @@ export default StyleSheet.create({
     borderRadius: 5,
     shadowColor: Colors.colorDodgerBlue2,
     shadowOffset: {width: 1, height: 2},
-    shadowOpacity: 0.2,
     shadowRadius: 0.1,
     elevation: 1,
     backgroundColor: Colors.skyBlue,
@@ -144,4 +144,78 @@ export default StyleSheet.create({
     backgroundColor: Colors.black,
     opacity: 0.5,
   },
+  cardContainer: {
+    flex: 0.2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  empCont: {flex: 0.7},
+  bottomLoaderContainer: {padding: 8},
+  dummyUserIconImage: {height: 25, width: 25},
+  headerContainer: {
+    backgroundColor: Colors.lighterBlue,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(1),
+  },
+  backArrowCont: {flex: 1, justifyContent: 'center'},
+  backArrowImage: {height: 20, width: 20},
+  headerMid: {
+    flexDirection: 'row',
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: hp(1),
+  },
+  headerEmpText: {
+    color: Colors.white,
+    marginRight: wp(2),
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  swapIconCont: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingTop: hp(0.6),
+  },
+  searchIcon: {
+    height: 20,
+    width: 20,
+    color: Colors.white,
+  },
+  searchIconDown: {
+    backgroundColor: Colors.blackishGreen,
+    flexDirection: 'row',
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(5),
+    // justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIconContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    zIndex: 999,
+  },
+  refreshPressable: {position: 'absolute', bottom: hp(3), right: wp(5)},
+  refreshIcon: {height: 32, width: 32, borderRadius: 25, zIndex: 9999},
+  searchImageIcon: {
+    height: 25,
+    width: 25,
+    marginRight: wp(5),
+  },
+  textInput: {
+    height: '120%',
+    width: '80%',
+    paddingVertical: 0,
+  },
+  crossIcon: {height: 20, width: 20, tintColor: Colors.white},
+  noFoundContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  noFoundImage: {height: 120, width: 160},
+  noFoundText: {color: 'maroon', marginTop: 20},
 });

@@ -176,29 +176,10 @@ const Profile = ({navigation}) => {
             source={
               profileData?.image ? {uri: profileData?.image} : defaultUserIcon
             }
-            // source={
-            //   profileData?.image
-            //     ? `data:image/jpeg;base64,${profileData?.image}`
-            //     : TSBuddyBackImage
-            // }
             blurRadius={0.9}>
-            {/* source={TSBuddyBackImage}> */}
             <View style={styles.container}>
               <View style={styles.profileView}>
-                {/* <Image
-                  resizeMode="contain"
-                  source={{uri: `${baseUrl}${profileData?.image}`}}
-                  style={{height: 120, width: 120, borderRadius: 60}}
-                /> */}
-
                 {profileData?.image ? (
-                  // <Image
-                  //   resizeMode="stretch"
-                  //   source={{
-                  //     uri: `data:image/jpeg;base64,${profileData?.image}`,
-                  //   }}
-                  //   style={{height: '100%', width: '100%', borderRadius: 60}}
-                  // />
                   <Image
                     source={{uri: profileData?.image}}
                     style={{height: '100%', width: '100%', borderRadius: 60}} // Define the width and height as needed
@@ -234,28 +215,15 @@ const Profile = ({navigation}) => {
               </View>
               <View style={styles.managerDetailView2}>
                 <View style={styles.roundIcon}>
-                  {/* <Image
-                    resizeMode="cover"
-                    source={{
-                      uri: `${baseUrl}${profileData.managerInfoDto.image}`,
-                    }}
-                    style={{height: 80, width: 80, borderRadius: 20}}
-                  /> */}
-
                   {profileData?.managerInfoDto?.image ? (
                     <Image
                       resizeMode="stretch"
-                      // source={{
-                      //   uri: `data:image/jpeg;base64,${profileData?.managerInfoDto?.image}`,
-
-                      // }}
                       source={{uri: profileData?.managerInfoDto?.image}}
                       style={{height: 90, width: 90, borderRadius: 50}}
                     />
                   ) : (
                     <Image
-                      // source={defaultUserIcon}
-                      source={{uri: defaultUserIcon}}
+                      source={defaultUserIcon}
                       style={{height: 80, width: 80, borderRadius: 20}}
                     />
                   )}

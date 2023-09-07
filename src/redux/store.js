@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {applyMiddleware, combineReducers} from 'redux';
 import Reactotron from '../../ReactotronConfig';
 import homeSlice from './homeSlice';
-import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
+// import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
 
 const reducers = combineReducers({
   auth: loginSlice,

@@ -1,8 +1,6 @@
-import React from 'react';
 import {Alert} from 'react-native';
 import {ERROR} from 'constants/strings';
 import {logOut} from 'Auth/LoginSlice';
-import {useSelector} from 'react-redux';
 
 const ShowAlert = props => {
   let {
@@ -10,10 +8,10 @@ const ShowAlert = props => {
     messageSubHeader = '',
     buttonText = 'Close',
     onPress,
-    dispatch,
     isTokenExpired,
     isCurrentTokenExpired,
     callRenewToken,
+    dispatch,
   } = props || {};
 
   if (isCurrentTokenExpired) {
@@ -26,17 +24,18 @@ const ShowAlert = props => {
   ) {
     return null;
   }
-  // if (messageSubHeader.toLowerCase() == 'token-expired') {
-  //   Alert.alert('Login expired!', 'Please login again...!!', [
-  //     {
-  //       text: 'OK',
-  //       onPress: () => {
-  //         // dispatch && dispatch(logOut());
-  //       },
-  //     },
-  //   ]);
-  // }
-  // else {
+  if (messageSubHeader?.toLowerCase() === 'token-expired') {
+    Alert.alert('Login expired!', 'Please login again.', [
+      {
+        text: 'OK',
+        onPress: () => {
+          dispatch && dispatch(logOut());
+        },
+      },
+    ]);
+    return;
+  }
+
   if (onPress) {
     Alert.alert(messageHeader, messageSubHeader, [
       {

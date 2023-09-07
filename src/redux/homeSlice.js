@@ -354,11 +354,11 @@ export const getEmployeeShift = createAsyncThunk(
       },
     };
 
-    const {getEmployeeShift} = endPoints;
+    const {getEmployeeShiftUrl} = endPoints;
 
     try {
       const {data, status} = await axios.get(
-        `${getEmployeeShift}${id}`,
+        `${getEmployeeShiftUrl}${id}`,
         config,
       );
       if (status === 200) {
@@ -421,10 +421,10 @@ export const getTodayCheckInTime = createAsyncThunk(
       },
     };
 
-    const {getTodayCheckInTime} = endPoints;
+    const {getTodayCheckInTimeURL} = endPoints;
 
     try {
-      const {data, status} = await axios.get(getTodayCheckInTime, config);
+      const {data, status} = await axios.get(getTodayCheckInTimeURL, config);
       if (status === 200) {
         return Promise.resolve(data);
       } else {
@@ -499,13 +499,13 @@ export const getResourseLeaveDetails = createAsyncThunk(
       }
     } catch (error) {
       let statusCode = 500;
-      if (err?.response) {
-        statusCode = err?.response?.status;
+      if (error?.response) {
+        statusCode = error?.response?.status;
       }
       if (statusCode == 401 || statusCode == 400) {
-        return Promise.reject(err?.response?.data);
+        return Promise.reject(error?.response?.data);
       } else {
-        return Promise.reject(new Error(err));
+        return Promise.reject(new Error(error));
       }
     }
   },
