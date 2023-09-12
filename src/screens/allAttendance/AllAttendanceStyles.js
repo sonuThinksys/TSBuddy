@@ -1,5 +1,6 @@
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
+import {heightPercentageToDP, widthPercentageToDP} from 'utils/Responsive';
 
 const {StyleSheet} = require('react-native');
 
@@ -57,8 +58,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.lightGray2,
     marginTop: 16,
-    marginBottom: 20,
+    marginBottom: 15,
     flexDirection: 'row',
+  },
+  newAttBtnContainer: {
+    backgroundColor: Colors.white,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: Colors.lightGray2,
+    flexDirection: 'row',
+    marginTop: 20,
   },
   selectedDateText: {
     fontFamily: FontFamily.RobotoRegular,
@@ -70,6 +82,79 @@ const styles = StyleSheet.create({
   },
   dropdownIconContainer: {
     marginRight: 12,
+  },
+  modalContainer: {
+    backgroundColor: Colors.white,
+    alignSelf: 'center',
+    borderRadius: 5,
+    height: '44.5%',
+    width: '95%',
+    padding: 20,
+  },
+  newAttendanceTitle: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h17,
+    color: Colors.lovelyPurple,
+    marginBottom: 10,
+  },
+  headerText: {marginBottom: 10},
+  attendanceDate: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: Colors.lightGray1,
+    borderRadius: 3,
+    padding: 10,
+    justifyContent: 'space-between',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  btn: {
+    width: widthPercentageToDP(25),
+    height: heightPercentageToDP(3.5),
+    borderRadius: widthPercentageToDP(3.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkBox: {
+    width: widthPercentageToDP(4),
+    height: heightPercentageToDP(2),
+    borderWidth: 1,
+    borderColor: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchBoxContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.lightGray1,
+    borderRadius: 3,
+    marginBottom: 10,
+  },
+  searchBoxForEmployee: {
+    padding: 8,
+  },
+  searchResultBox: {
+    position: 'absolute',
+    zIndex: 1,
+    backgroundColor: Colors.white,
+    height: '75.5%',
+    width: '100%',
+    // borderWidth: 1,
+    borderColor: Colors.lightGray1,
+    top: heightPercentageToDP(13.7),
+    left: widthPercentageToDP(5),
+    paddingLeft: 7,
+    paddingRight: 7,
+    paddingTop: 7,
+  },
+  searcheResultRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 

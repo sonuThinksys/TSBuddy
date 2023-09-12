@@ -81,6 +81,10 @@ import ApplyWFH from 'screens/applyWFH.js/ApplyWFH';
 import Policies from 'screens/policies/Policies';
 import EmployeeHandbook from 'screens/EmployeeHandbook/EmployeeHandbook';
 import PoliciesDetails from 'screens/policies/PoliciesDetails';
+import LeaveApplication from 'screens/leaveApplication/LeaveApplication';
+import WFHApplication from 'screens/leaveApplication/WFHApplication';
+import RegularizationApplication from 'screens/leaveApplication/RegularizationApplication';
+import ApplicationDetailsLayout from 'screens/leaveApplication/ApplicationDetailsLayout';
 
 const Drawer = createDrawerNavigator();
 const {plus: PlusIcon} = MonthImages;
@@ -99,7 +103,7 @@ const LunchRequestsStack = createNativeStackNavigator();
 const ApplyWfhStack = createNativeStackNavigator();
 const PoliciesStack = createNativeStackNavigator();
 const EmployeeHandbookStack = createNativeStackNavigator();
-// const LunchRequestsStack = createNativeStackNavigator();
+const LeaveApplicationStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -301,6 +305,39 @@ const AttendenceStackScreen = ({navigation}) => {
         component={Regularization}
       />
     </AttendenceStack.Navigator>
+  );
+};
+
+const LeaveApplicationStackScreen = ({navigation}) => {
+  return (
+    <LeaveApplicationStack.Navigator screenOptions={{headerShown: false}}>
+      <LeaveApplicationStack.Screen
+        options={{headerShown: false}}
+        name={'leaveApplicationScreen'}
+        component={LeaveApplication}
+      />
+      <LeaveApplicationStack.Screen
+        options={drawerOption({
+          headerShown: false,
+        })}
+        name={'wfhApplicationScreen'}
+        component={WFHApplication}
+      />
+      <LeaveApplicationStack.Screen
+        options={drawerOption({
+          headerShown: false,
+        })}
+        name={'regularizationApplicationScreen'}
+        component={RegularizationApplication}
+      />
+      <LeaveApplicationStack.Screen
+        options={drawerOption({
+          headerShown: false,
+        })}
+        name={'applicationDetailsScreen'}
+        component={ApplicationDetailsLayout}
+      />
+    </LeaveApplicationStack.Navigator>
   );
 };
 
@@ -603,6 +640,12 @@ function DrawerNavigator({navigation}) {
       <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
+
+      <Drawer.Screen
+        name="leaveApplication"
+        component={LeaveApplicationStackScreen}
+      />
+
       {token ? (
         <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
       ) : null}

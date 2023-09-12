@@ -723,6 +723,155 @@ export const applyForWfhLeave = createAsyncThunk(
   },
 );
 
+
+export const createNewAttendance = createAsyncThunk(
+  'home/newAttendance',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.createNewAttendance,
+        body,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getAllEmployeeListForHR = createAsyncThunk(
+  'home/allEmployeeForHR',
+  async function ({token}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.get(
+        endPoints.getAllEmployeeForHR,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getOpenRequestHR = createAsyncThunk(
+  'home/getOpenRequestHR',
+  async function ({token}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.get(
+        endPoints.getOpenRequestForHR,
+        config,
+      );
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const createAttendance = createAsyncThunk(
+  'home/createAttendance',
+  async function ({token, body}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const {data, status} = await axios.post(
+        endPoints.createNewAttendance,
+        body,
+        config,
+      );
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode == 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+
+
+
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
   async function ({token, body}) {

@@ -47,4 +47,8 @@ export default {
   renewToken: `${API_URL}/Account/RenewToken`,
 
   getConfigData: `${API_URL}/FoodRequest/GetConfigDetails`,
+  createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
+  getAllEmployeeForHR: `${API_URL}/EmployeeProfile/GetAllEmployee`,
+  createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
+  getOpenRequestForHR: `${API_URL}/Attendance/GetOpenRequest`,
 };
