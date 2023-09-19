@@ -1,13 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  Platform,
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
+import React from 'react';
+import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -27,7 +19,7 @@ import Attendence from 'screens/attendence/Attendence';
 import Holidays from 'screens/holidays/Holidays';
 import Leaves from 'screens/leaves/Leaves';
 import SalarySlip from 'screens/salarySlip/SalarySlip';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import CustomDrawer from './CustomDrawer';
 import {Colors} from 'colors/Colors';
 import Header from 'component/header/Header';
@@ -43,7 +35,6 @@ import WorkFromHome from 'screens/workFromHome/WorkFromHome';
 // plus.imageset
 import {
   HomeScreen,
-  LoginScreen,
   ProfileScreen,
   AttendenceScreen,
   HolidaysScreen,
@@ -54,7 +45,6 @@ import {
   RequestLunchScreen,
   LeaveApplyScreen,
   employeeProfileScreen,
-  employeeDetailsScreen,
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
   ResourcesScreen,
@@ -71,7 +61,6 @@ import {WorkFromHomeScreen} from './Route';
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
 import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
-import CustomHeader from './CustomHeader';
 import RegularisationScreen from 'screens/regularisation/RegularisationScreen';
 import RegularisationFormDetails from 'screens/regularisation/RegularisationFormDetails';
 import RegularisationTabDetails from 'screens/Resources/RegularisationTabDetails';
@@ -85,9 +74,9 @@ import LeaveApplication from 'screens/leaveApplication/LeaveApplication';
 import WFHApplication from 'screens/leaveApplication/WFHApplication';
 import RegularizationApplication from 'screens/leaveApplication/RegularizationApplication';
 import ApplicationDetailsLayout from 'screens/leaveApplication/ApplicationDetailsLayout';
+import DailyReports from 'screens/DailyReports/DailyReports';
 
 const Drawer = createDrawerNavigator();
-const {plus: PlusIcon} = MonthImages;
 const HomeStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 const AttendenceStack = createNativeStackNavigator();
@@ -104,6 +93,7 @@ const ApplyWfhStack = createNativeStackNavigator();
 const PoliciesStack = createNativeStackNavigator();
 const EmployeeHandbookStack = createNativeStackNavigator();
 const LeaveApplicationStack = createNativeStackNavigator();
+const DailyReportsStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
@@ -142,10 +132,7 @@ const drawerOption = ({
       // <TouchableOpacity>
       <View
         style={{
-          // display: 'flex',
           flexDirection: 'row',
-          // justifyContent: 'center',
-          // alignItems: 'center',
           marginRight: 'auto',
           marginLeft: 'auto',
         }}>
@@ -209,15 +196,6 @@ const HomeStackScreen = ({navigation}) => {
         name={RequestLunchScreen}
         component={RequestLunch}
         options={{headerShown: false}}
-        // options={props => {
-        //   // return drawerOption({
-        //   //   label: 'Request Lunch',
-        //   //   headerIconName: MonthImages.info_scopy,
-        //   //   lunch: true,
-        //   //   ...props,
-        //   // });
-
-        // }}
       />
       <HomeStack.Screen
         name={employeeProfileScreen}
@@ -338,6 +316,18 @@ const LeaveApplicationStackScreen = ({navigation}) => {
         component={ApplicationDetailsLayout}
       />
     </LeaveApplicationStack.Navigator>
+  );
+};
+
+const DailyReportsScreen = () => {
+  return (
+    <DailyReportsStack.Navigator screenOptions={{headerShown: false}}>
+      <DailyReportsStack.Screen
+        options={{headerShown: false}}
+        name={'leaveApplicationScreen'}
+        component={DailyReports}
+      />
+    </DailyReportsStack.Navigator>
   );
 };
 
@@ -568,6 +558,7 @@ function DrawerNavigator({navigation}) {
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
   const isAdmin = decoded?.role?.includes('Admin Executive') || false;
+  const isHRManager = decoded?.role?.includes('HR Manager') || false;
 
   return (
     <Drawer.Navigator
@@ -640,12 +631,6 @@ function DrawerNavigator({navigation}) {
       <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
-
-      <Drawer.Screen
-        name="leaveApplication"
-        component={LeaveApplicationStackScreen}
-      />
-
       {token ? (
         <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
       ) : null}
@@ -655,6 +640,17 @@ function DrawerNavigator({navigation}) {
           component={EmploeeHandbookStackScreen}
         />
       ) : null}
+
+      {isHRManager ? (
+        <Drawer.Screen
+          name="leaveApplication"
+          component={LeaveApplicationStackScreen}
+        />
+      ) : null}
+      {isHRManager ? (
+        <Drawer.Screen name="DailyReports" component={DailyReportsScreen} />
+      ) : null}
+
       <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>
   );
@@ -662,17 +658,16 @@ function DrawerNavigator({navigation}) {
 
 export default DrawerNavigator;
 
-const styles = StyleSheet.create({
-  newLeaveText: {
-    color: Colors.white,
-    borderRadius: 6,
-    borderWidth: 0.6,
-    borderColor: Colors.white,
-    fontFamily: FontFamily.RobotoBold,
-    fontSize: FontSize.h15,
-    paddingHorizontal: 4,
-    marginRight: wp(4),
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(0.8),
-  },
-});
+// const styles = StyleSheet.create({
+//   newLeaveText: {
+//     color: Colors.white,
+//     borderRadius: 6,
+//     borderWidth: 0.6,
+//     borderColor: Colors.white,
+//     fontFamily: FontFamily.RobotoBold,
+//     fontSize: FontSize.h15,
+//     marginRight: wp(4),
+//     paddingHorizontal: wp(3),
+//     paddingVertical: hp(0.8),
+//   },
+// });

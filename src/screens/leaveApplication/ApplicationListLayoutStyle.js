@@ -1,5 +1,6 @@
+import {FontFamily} from 'constants/fonts';
 const {Colors} = require('colors/Colors');
-const {StyleSheet} = require('react-native');
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   request: {
@@ -24,6 +25,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginRight: 10,
     marginLeft: 0,
+  },
+  noDataFoundText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
+  },
+  noDataContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

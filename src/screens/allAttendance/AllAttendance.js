@@ -1,15 +1,14 @@
 import {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {
   Alert,
   FlatList,
-  Image,
   Pressable,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-// import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './AllAttendanceStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -25,16 +24,13 @@ import {Colors} from 'colors/Colors';
 import DayWiseCard from './DayWiseCard';
 import MonthWiseCalnder from './MonthWise';
 import Loader from 'component/loader/Loader';
-import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
+import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {renewToken} from 'Auth/LoginSlice';
 import Modal from 'react-native-modal';
-import ModalDropdown from 'react-native-modal-dropdown';
 import {
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native-gesture-handler';
-import {newDropDownOptions} from 'utils/defaultData';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import Clock from 'assets/clock/clock.svg';
 import CheckIcon from 'assets/checkIcon/checkIcon.svg';
@@ -46,7 +42,6 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {FontFamily, FontSize} from 'constants/fonts';
-import {out} from 'react-native/Libraries/Animated/Easing';
 
 const DAY_WISE = 'day wise';
 const MONTH_WISE = 'month wise';
@@ -56,7 +51,6 @@ const AllAttendance = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const isHRManager = decoded?.role?.includes('HR Manager') || false;
   const employeeID = decoded?.id;
-  const refreshToken = useSelector(state => state?.auth?.refreshToken);
   const dispatch = useDispatch();
   const todayDateObj = new Date(); // Current date and time
   const yesterdayDateObj = new Date(todayDateObj);
@@ -99,43 +93,46 @@ const AllAttendance = ({navigation}) => {
 
   const {holidayData} = useSelector(state => state.home);
 
-  const fetchDayWiseData = async dayWiseDate => {
-    const today = new Date();
-    today.setDate(today.getDate() - 1);
-    const yesterdayDate = today.getDate();
-    const yesterdayMonth = today.getMonth() + 1;
-    const yesterdayYear = today.getFullYear();
-    const yesterdayDateStr = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDate}`;
+  const fetchDayWiseData = useCallback(
+    async dayWiseDate => {
+      const today = new Date();
+      today.setDate(today.getDate() - 1);
+      const yesterdayDate = today.getDate();
+      const yesterdayMonth = today.getMonth() + 1;
+      const yesterdayYear = today.getFullYear();
+      const yesterdayDateStr = `${yesterdayYear}-${yesterdayMonth}-${yesterdayDate}`;
 
-    try {
-      setIsFetchingData(true);
+      try {
+        setIsFetchingData(true);
 
-      const resourceAttendance = await dispatch(
-        getAllResourcesAttendence({
-          token,
-          date: dayWiseDate ? dayWiseDate : yesterdayDateStr,
-        }),
-      );
+        const resourceAttendance = await dispatch(
+          getAllResourcesAttendence({
+            token,
+            date: dayWiseDate ? dayWiseDate : yesterdayDateStr,
+          }),
+        );
 
-      if (resourceAttendance?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: resourceAttendance?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      } else {
-        setDayWiseData(resourceAttendance.payload);
+        if (resourceAttendance?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: resourceAttendance?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        } else {
+          setDayWiseData(resourceAttendance.payload);
+        }
+      } catch (err) {
+        console.error('err:', err);
+      } finally {
+        setIsFetchingData(false);
       }
-    } catch (err) {
-      console.error('err:', err);
-    } finally {
-      setIsFetchingData(false);
-    }
-  };
+    },
+    [dispatch, navigation, token],
+  );
 
-  const allEmployeeForListHR = async () => {
+  const allEmployeeForListHR = useCallback(async () => {
     try {
       setIsFetchingData(true);
 
@@ -161,12 +158,12 @@ const AllAttendance = ({navigation}) => {
     } finally {
       setIsFetchingData(false);
     }
-  };
+  }, [dispatch, navigation, token]);
 
   useEffect(() => {
     fetchDayWiseData();
     isHRManager && allEmployeeForListHR();
-  }, []);
+  }, [allEmployeeForListHR, isHRManager, fetchDayWiseData]);
 
   useEffect(() => {
     (async () => {
@@ -178,25 +175,27 @@ const AllAttendance = ({navigation}) => {
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const finalWeekOffs = [];
       daysOfWeek?.map((el, index) => {
-        if (weekOffs?.includes(el)) finalWeekOffs.push(index);
+        if (weekOffs?.includes(el)) {
+          finalWeekOffs.push(index);
+        }
       });
       setEmployeeWeekOffs(finalWeekOffs);
     })();
-  }, []);
+  }, [dispatch, employeeID, token]);
 
   // Subtract 1 day from the current date
   const onDateSelection = date => {
-    const selectedDate = date.getDate();
+    const onSelectedDate = date.getDate();
     const selectedMonth = date.toLocaleString('default', {
       month: 'long',
     });
     const selectedYear = date.getFullYear();
-    const selectedDateStr = `${selectedMonth} ${selectedDate}, ${selectedYear}`;
+    const selectedDateStr = `${selectedMonth} ${onSelectedDate}, ${selectedYear}`;
     setSelectedDate({selectedDateObj: date, selectedDateStr});
 
     const dateStrToSend = `${selectedYear}-${
       date.getMonth() + 1
-    }-${selectedDate}`;
+    }-${onSelectedDate}`;
     fetchDayWiseData(dateStrToSend);
     setIsDateSelecting(false);
   };
@@ -307,15 +306,15 @@ const AllAttendance = ({navigation}) => {
 
     setSelectDateForInOut(date);
 
-    const attendanceDate = date;
-    setAttendanceDate(attendanceDate);
-    let selectedDate = date.getDate();
+    const attendanceDateObj = date;
+    setAttendanceDate(attendanceDateObj);
+    let selectedDateNum = date.getDate();
 
     let selectedMonth = date.getMonth() + 1;
     let selectedYear = date.getFullYear();
     setDatePickerVisible(false);
     setSelectDate({
-      dateStr: selectedDate + ' / ' + selectedMonth + ' / ' + selectedYear,
+      dateStr: selectedDateNum + ' / ' + selectedMonth + ' / ' + selectedYear,
       startDateObj: date,
     });
   };
@@ -328,8 +327,8 @@ const AllAttendance = ({navigation}) => {
 
     setGetInTime(inTimeToSubtract);
 
-    const inTime = time.toLocaleString();
-    let time1 = inTime.split(',')[1];
+    const inTimeStrFormat = time.toLocaleString();
+    let time1 = inTimeStrFormat.split(',')[1];
     setSelectInTime({inTimeStr: time1});
     setInTimePickerVisible(false);
   };
@@ -337,8 +336,8 @@ const AllAttendance = ({navigation}) => {
   const handleConfirmOutTime = time => {
     setOutTime(time);
 
-    const outTime = time.toLocaleString();
-    let time1 = outTime.split(',')[1];
+    const outTimeStrFormat = time.toLocaleString();
+    let time1 = outTimeStrFormat.split(',')[1];
     setSelectOutTime({outTimeStr: time1});
     setOutTimePickerVisible(false);
 
@@ -346,9 +345,9 @@ const AllAttendance = ({navigation}) => {
     let outTimeToSubstract = outTimeStr.getTime();
 
     const diffTime = outTimeToSubstract - getInTime;
-    const totalHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const totalHoursNum = Math.floor(diffTime / (1000 * 60 * 60));
     const totalMinutes = Math.floor(diffTime / (60 * 1000)) % 60;
-    let totalTimeStr = `${totalHours}.${totalMinutes}`;
+    let totalTimeStr = `${totalHoursNum}.${totalMinutes}`;
     let totalTimeflot = +totalTimeStr;
     setTotalHours(totalTimeflot);
   };
@@ -496,7 +495,7 @@ const AllAttendance = ({navigation}) => {
                       <Text style={{color: 'gray'}}>
                         {selectDate?.dateStr
                           ? selectDate?.dateStr
-                          : dd - mm - yyyy}
+                          : 'dd - mm - yyyy'}
                       </Text>
                       <CalenderIcon
                         fill={Colors.lightGray1}

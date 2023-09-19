@@ -11,6 +11,7 @@ module.exports = {
   rules: {
     // Example rule: disallow the use of 'console'.
     'no-console': 'warn',
+    'no-lone-blocks': 'off',
     // 'no-shadow': 'error',
 
     // More rules can be added here...

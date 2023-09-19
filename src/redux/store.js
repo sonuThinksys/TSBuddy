@@ -1,9 +1,9 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {persistReducer} from 'redux-persist';
-import loginSlice, {renewToken} from 'Auth/LoginSlice';
+import loginSlice from 'Auth/LoginSlice';
 import logger from 'redux-logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {applyMiddleware, combineReducers} from 'redux';
+import {combineReducers} from 'redux';
 import Reactotron from '../../ReactotronConfig';
 import homeSlice from './homeSlice';
 // import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';

@@ -22,9 +22,9 @@ import {
   getEmployeesByLeaveApprover,
 } from 'redux/homeSlice';
 import Loader from 'component/loader/Loader';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
-import {renewToken} from 'Auth/LoginSlice';
+// import ShowAlert from 'customComponents/CustomError';
+// import {ERROR} from 'utils/string';
+// import {renewToken} from 'Auth/LoginSlice';
 
 const MonthWiseCalnder = ({navigation}) => {
   const dispatch = useDispatch();
@@ -49,12 +49,14 @@ const MonthWiseCalnder = ({navigation}) => {
         const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
 
         if (employeeData?.error) {
-          const {payload} = await getTokenIfExpires(employeeData);
-          const employeeData1 = await dispatch(
-            getEmployeesByLeaveApprover(payload?.token),
-          );
-          setEmployeesData(employeeData1?.payload);
-          setIsLoading(false);
+          console.log('employeeData?.error:', employeeData?.error);
+
+          // const {payload} = await getTokenIfExpires(employeeData);
+          // const employeeData1 = await dispatch(
+          //   getEmployeesByLeaveApprover(payload?.token),
+          // );
+          // setEmployeesData(employeeData1?.payload);
+          // setIsLoading(false);
         } else {
           setEmployeesData(employeeData?.payload);
         }
@@ -64,29 +66,29 @@ const MonthWiseCalnder = ({navigation}) => {
         setIsLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch, token]);
 
-  const getTokenIfExpires = async ({error}) => {
-    try {
-      let result;
-      if (error?.message.toLowerCase() === 'token-expired') {
-        result = await dispatch(renewToken({token: refreshToken}));
+  // const getTokenIfExpires = async ({error}) => {
+  //   try {
+  //     let result;
+  //     if (error?.message.toLowerCase() === 'token-expired') {
+  //       result = await dispatch(renewToken({token: refreshToken}));
 
-        if (result?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: result?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            navigation,
-          });
-        }
-      }
-      return result;
-    } catch (err) {
-      console.log('error:', err);
-    }
-  };
+  //       if (result?.error) {
+  //         ShowAlert({
+  //           messageHeader: ERROR,
+  //           messageSubHeader: result?.error?.message,
+  //           buttonText: 'Close',
+  //           dispatch,
+  //           navigation,
+  //         });
+  //       }
+  //     }
+  //     return result;
+  //   } catch (err) {
+  //     console.log('error:', err);
+  //   }
+  // };
 
   const showPicker = useCallback(value => setShowMonthPicker(value), []);
   const onValueChange = useCallback(
@@ -100,7 +102,7 @@ const MonthWiseCalnder = ({navigation}) => {
   );
 
   const getAttandanceData = async ({employeeId}) => {
-    if (employeeId != state.selectedEmpl) {
+    if (employeeId !== state.selectedEmpl) {
       setState({
         ...state,
         loading: true,
@@ -121,26 +123,17 @@ const MonthWiseCalnder = ({navigation}) => {
       );
 
       if (result?.error) {
-        const newResult = await getTokenIfExpires(result);
-
-        // setState({
-        //   ...state,
-        //   attendanceData: [],
-        //   loading: false,
-        //   selectedEmpl: employeeId,
-        //   isOpened: true,
-        // });
-
-        const finalResult = await dispatch(
-          incomingAttendanceData({
-            token: newResult?.payload?.token,
-            employeeID: employeeId,
-            visisbleMonth: selectedMonth,
-            visibleYear: selectedYear,
-          }),
-        );
-
-        updateAttendanceData({employeeId, result: finalResult});
+        console.log('Errorr', result?.error);
+        // const newResult = await getTokenIfExpires(result);
+        // const finalResult = await dispatch(
+        //   incomingAttendanceData({
+        //     token: newResult?.payload?.token,
+        //     employeeID: employeeId,
+        //     visisbleMonth: selectedMonth,
+        //     visibleYear: selectedYear,
+        //   }),
+        // );
+        // updateAttendanceData({employeeId, result: finalResult});
       } else {
         updateAttendanceData({employeeId, result});
       }
@@ -227,13 +220,13 @@ const MonthWiseCalnder = ({navigation}) => {
     );
   };
 
-  const renderTime = ({date, label}) => {
+  const renderTime = ({renderDate, label}) => {
     return (
       <>
         <Text style={{fontSize: 12}}>{`${label}:`}</Text>
         <Text
           style={{paddingLeft: label == 'In' ? wp(6) : wp(4), fontSize: 12}}>
-          {moment(date).format('hh:mm a')}
+          {moment(renderDate).format('hh:mm a')}
         </Text>
       </>
     );
@@ -245,7 +238,7 @@ const MonthWiseCalnder = ({navigation}) => {
         <View style={styles.selectedCommonEmployeeStyle}>
           {commonItem({index, item})}
         </View>
-        {state.selectedEmpl == item.employeeId && state.isOpened ? (
+        {state.selectedEmpl === item.employeeId && state.isOpened ? (
           <>
             {state.loading ? (
               <View style={{paddingVertical: hp(1.2)}}>
@@ -288,7 +281,7 @@ const MonthWiseCalnder = ({navigation}) => {
   const renderItem = ({item, index}) => {
     return (
       <View>
-        {state.selectedEmpl == item.employeeId
+        {state.selectedEmpl === item.employeeId
           ? renderSelectedEmployee({index, item})
           : renderSingleItem({item, index})}
       </View>

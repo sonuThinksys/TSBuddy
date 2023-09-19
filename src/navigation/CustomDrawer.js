@@ -1,31 +1,21 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-  Dimensions,
-  Image,
-} from 'react-native';
+import React from 'react';
+import {Text, TouchableOpacity, Alert, ScrollView, Image} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {FontFamily, FontSize} from 'constants/fonts';
+import {FontSize} from 'constants/fonts';
 import jwt_decode from 'jwt-decode';
-import {CommonActions, StackActions} from '@react-navigation/native';
-import {NavigationActions} from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 
 import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {loginStatus, logOut} from 'Auth/LoginSlice';
+import {logOut} from 'Auth/LoginSlice';
 import {homeReset} from 'redux/homeSlice';
 
 export default ({navigation}) => {
+  console.log('navigation:', navigation.getState().index);
+
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
@@ -74,6 +64,14 @@ export default ({navigation}) => {
     icon: MonthImages.EmployeeIdIcon,
   };
 
+  const reports = {
+    screen: 'DailyReports',
+    label: 'Daily Reports',
+    navigation,
+    key: 11,
+    icon: MonthImages.EmployeeIdIcon,
+  };
+
   const drawerList = [
     {
       screen: 'Home',
@@ -87,11 +85,12 @@ export default ({navigation}) => {
       label: 'Profile',
       navigation,
       key: 2,
-      icon: profileData?.image
-        ? (source = {
-            uri: profileData?.image,
-          })
-        : MonthImages.ProfileIcon,
+      icon: profileData?.image ? profileData?.image : MonthImages.ProfileIcon,
+      // icon: profileData?.image
+      //   ? (source = {
+      //       uri: profileData?.image,
+      //     })
+      //   : MonthImages.ProfileIcon,
     },
     {
       screen: 'Attendence',
@@ -128,7 +127,6 @@ export default ({navigation}) => {
       key: 7,
       icon: MonthImages.salarySlipIcon,
     },
-
     {
       screen: 'logout',
       label: 'Logout',
@@ -163,14 +161,6 @@ export default ({navigation}) => {
     icon: MonthImages.OpenLeaveIcon,
   };
 
-  if (token) {
-    drawerList.splice(8, 0, policy);
-    drawerList.splice(9, 0, empHandbook);
-    drawerList.forEach((el, index) => {
-      el.key = index + 1;
-    });
-  }
-
   if (isAdmin) {
     drawerList.splice(2, 0, lunchRequests);
     drawerList.forEach((el, index) => {
@@ -180,6 +170,15 @@ export default ({navigation}) => {
 
   if (isHRManager) {
     drawerList.splice(7, 0, leaveApplication);
+    drawerList.splice(8, 0, reports);
+    drawerList.forEach((el, index) => {
+      el.key = index + 1;
+    });
+  }
+
+  if (token) {
+    drawerList.splice(7, 0, policy);
+    drawerList.splice(8, 0, empHandbook);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });

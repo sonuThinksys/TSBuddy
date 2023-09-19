@@ -79,24 +79,24 @@ export const centralizeApi = ({
       'Content-Type': 'application/json',
     },
   };
-  if (method.toLocaleLowerCase() == 'post') {
+  if (method.toLocaleLowerCase() === 'post') {
     config = {
       ...config,
       data,
     };
-  } else if (method.toLocaleLowerCase() == 'get') {
+  } else if (method.toLocaleLowerCase() === 'get') {
     config = {
       ...config,
     };
   }
   return axios(config)
     .then(async response => {
-      const {data, status} = response;
+      const {resp, status} = response;
       if (status === 200) {
         if (sendResp) {
-          return Promise.resolve(data);
+          return Promise.resolve(resp);
         }
-        return Promise.resolve(data);
+        return Promise.resolve(resp);
       } else {
         return Promise.reject(new Error(ERROR));
       }
@@ -111,7 +111,7 @@ export const centralizeApi = ({
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401 || err?.response) {
+        if (statusCode === 401 || err?.response) {
           let message =
             err?.response?.data?.message ||
             err?.response?.data?.Message ||

@@ -1,10 +1,9 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {holidayDatawithImage} from '../../db';
 import endPoints from '../config';
 
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {centralizeApi} from 'utils/utils';
+// import {centralizeApi} from 'utils/utils';
 
 const initialState = {
   isShowModal: false,
@@ -723,7 +722,6 @@ export const applyForWfhLeave = createAsyncThunk(
   },
 );
 
-
 export const createNewAttendance = createAsyncThunk(
   'home/newAttendance',
   async function ({token, body}) {
@@ -868,9 +866,6 @@ export const createAttendance = createAsyncThunk(
     }
   },
 );
-
-
-
 
 export const applyForLeave = createAsyncThunk(
   'home/applyLeave',
@@ -1413,7 +1408,41 @@ export const getLeaveDetails = createAsyncThunk(
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401) {
+        if (statusCode === 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+export const getEmployeeProfileData = createAsyncThunk(
+  'home/employeeProfile',
+  async ({token, employeeID}) => {
+    var config = {
+      method: 'get',
+      url: `${endPoints.employeeProfileAPI}${employeeID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong3!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode === 401) {
           return Promise.reject(err?.response?.data?.message);
         } else {
           return Promise.reject(new Error(err));
@@ -1422,31 +1451,37 @@ export const getLeaveDetails = createAsyncThunk(
   },
 );
 
-export const getEmployeeProfileData = createAsyncThunk(
-  'home/employeeProfile',
-  async ({token, employeeID, refreshToken, dispatch}) => {
-    const output = await centralizeApi({
-      method: 'get',
-      url: `${endPoints.employeeProfileAPI}${employeeID}`,
-      token,
-      refreshToken,
-      dispatch,
-    });
-    return output;
-  },
-);
-
 export const getCalendereventData = createAsyncThunk(
   'home/getCalendereventData',
-  async ({token, refreshToken, dispatch}) => {
-    const output = await centralizeApi({
+  async token => {
+    var config = {
       method: 'get',
       url: endPoints.calenderEventAPI,
-      token,
-      refreshToken,
-      dispatch,
-    });
-    return output;
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return axios(config)
+      .then(async response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong1!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
   },
 );
 export const getAttendencaeData = createAsyncThunk(
@@ -1456,7 +1491,7 @@ export const getAttendencaeData = createAsyncThunk(
 
     const config = {
       method: 'get',
-      url: `${endPoints.attendenceAPI}${employeeID}&month=${visisbleMonth}&year=${visibleYear}`,
+      url: uri,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

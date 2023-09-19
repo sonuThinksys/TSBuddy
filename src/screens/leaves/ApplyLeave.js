@@ -185,7 +185,6 @@ const ApplyLeave = ({navigation, route}) => {
   const [resourceLeaves, setResourceLeaves] = useState([]);
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
 
-
   const leaveApproverFullName = `${
     leaveApprovers[0]?.leaveApproverFirstName
       ? leaveApprovers[0]?.leaveApproverFirstName

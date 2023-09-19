@@ -1,16 +1,17 @@
+import React, {useEffect, useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import {Image, Pressable, ScrollView, Text, View} from 'react-native';
 import styles from './LunchRequestsStyles';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTodayLunchRequests} from 'redux/homeSlice';
-import {useEffect, useState} from 'react';
 import Loader from 'component/loader/Loader';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import MailIcon from 'assets/newDashboardIcons/mail.svg';
 import {Colors} from 'colors/Colors';
-import {renewCurrentToken} from 'customComponents/CustomError';
-import {renewToken} from 'Auth/LoginSlice';
+import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
+// import {renewToken} from 'Auth/LoginSlice';
 import {useIsFocused} from '@react-navigation/native';
+import {ERROR} from 'utils/string';
 
 const LunchRequests = ({navigation}) => {
   const isFocussed = useIsFocused();
@@ -74,7 +75,7 @@ const LunchRequests = ({navigation}) => {
         }
       })();
     }
-  }, [isFocussed]);
+  }, [isFocussed, dispatch, navigation, token]);
 
   const mailPressHandler = () => {};
 

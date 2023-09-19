@@ -94,6 +94,7 @@ import checkedS from 'assets/allImage/CheckIcon.imageset/checkedS.png';
 import EventImage from 'assets/allImage/eventBG.imageset/EventImage.png';
 import DropDownIcon from 'assets/allImage/downimg.imageset/dropdown2.png';
 import whiteBlank from 'assets/allImage/topBg.imageset/whiteBlank.png';
+import HouseIcon from 'assets/allImage/house/house-building.svg';
 
 import LoginUser from 'assets/mipmap/loginUser.imageset/user.png';
 import LoginCheck from 'assets/mipmap/loginUncheck.imageset/uncheck.png';
@@ -108,17 +109,22 @@ import FilterIcon2x from 'assets/allImage/Filter.imageset/filter2x.png';
 import OpenLeaveIcon from 'assets/allImage/OpenLeave.imageset/openLeaveIcon.png';
 import ResourceIcon from 'assets/allImage/Resources.imageset/resourcesIcon.png';
 import DeleteIcon from 'assets/allImage/delete.imageset/delete.png';
+import HomeIcon from 'assets/mipmap/home_active.svg';
 
 import NotFound from 'assets/allImage/noInternet.imageset/internet2x.png';
 import Balloons from 'assets/newDashboardIcons/balloons.png';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
 import TRMSIcon from 'assets/newDashboardIcons/trms-logo.png';
+import BriefCaseIcon from 'assets/newDashboardIcons/briefcase.svg';
 import BreakFastIcon from 'assets/newDashboardIcons/breakfast.png';
 import LunchIcon from 'assets/newDashboardIcons/lunch.png';
 import SnacksIcon from 'assets/newDashboardIcons/snacks.png';
 import EditIcon from 'assets/newDashboardIcons/edit.svg';
 import AnniversaryIcon from 'assets/newDashboardIcons/laurel.png';
 import DropDownIconSVG from 'assets/newDashboardIcons/dropdownIcon.svg';
+import SearchIconSVG from 'assets/newDashboardIcons/search.svg';
+import GroupIconSVG from 'assets/newDashboardIcons/group.svg';
+import LocationIconSVG from 'assets/newDashboardIcons/location.svg';
 
 //emoji
 import Smily from 'assets/emoji/smily.png';
@@ -167,7 +173,6 @@ export const MonthImages = {
   IndpendenceMax: IndpendenceMax,
   republicDay: republicDay,
   RepublicMax: RepublicMax,
-  dussehra,
   // Menu Images and Icons
   Lunch: Lunch,
   breakfastImgS: breakfastImgS,
@@ -233,7 +238,6 @@ export const MonthImages = {
   DeleteIcon,
   DesignationIcon,
   EmployeeIdIcon,
-  CalenderIcon,
   EducationIcon,
   newYear,
   dussehra,
@@ -248,4 +252,10 @@ export const MonthImages = {
   EmailIconBAndW,
   AnniversaryIcon,
   DropDownIconSVG,
+  SearchIconSVG,
+  GroupIconSVG,
+  LocationIconSVG,
+  HomeIcon,
+  HouseIcon,
+  BriefCaseIcon,
 };
