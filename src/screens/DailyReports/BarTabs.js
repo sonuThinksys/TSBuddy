@@ -10,11 +10,15 @@ const BarTabs = ({
   TAB3,
   TAB4,
   TAB5,
+  onTabChange,
 }) => {
   return (
     <View style={styles.bottomBarTabs}>
       <Pressable
-        onPress={changeBottomTabHandler.bind(null, TAB1)}
+        onPress={() => {
+          changeBottomTabHandler(TAB1);
+          onTabChange && onTabChange();
+        }}
         style={[
           styles.bottomBarTab,
           styles.borderRadiusLeft,
@@ -27,7 +31,10 @@ const BarTabs = ({
         </Text>
       </Pressable>
       <Pressable
-        onPress={changeBottomTabHandler.bind(null, TAB2)}
+        onPress={() => {
+          changeBottomTabHandler(TAB2);
+          onTabChange && onTabChange();
+        }}
         style={[
           styles.bottomBarTab,
           styles.borderVerticalRight,
@@ -39,7 +46,10 @@ const BarTabs = ({
         </Text>
       </Pressable>
       <Pressable
-        onPress={changeBottomTabHandler.bind(null, TAB3)}
+        onPress={() => {
+          changeBottomTabHandler(TAB3);
+          onTabChange && onTabChange();
+        }}
         style={[
           styles.bottomBarTab,
           styles.borderVerticalRight,
@@ -51,7 +61,10 @@ const BarTabs = ({
         </Text>
       </Pressable>
       <Pressable
-        onPress={changeBottomTabHandler.bind(null, TAB4)}
+        onPress={() => {
+          changeBottomTabHandler(TAB4);
+          onTabChange && onTabChange();
+        }}
         style={[
           styles.bottomBarTab,
           styles.borderVerticalRight,
@@ -63,7 +76,10 @@ const BarTabs = ({
         </Text>
       </Pressable>
       <Pressable
-        onPress={changeBottomTabHandler.bind(null, TAB5)}
+        onPress={() => {
+          changeBottomTabHandler(TAB5);
+          onTabChange && onTabChange();
+        }}
         style={[
           styles.bottomBarTab,
           styles.borderRadiusRight,

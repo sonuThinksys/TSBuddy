@@ -2,20 +2,15 @@ import React from 'react';
 import {Text, TouchableOpacity, Alert, ScrollView, Image} from 'react-native';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {FontSize} from 'constants/fonts';
 import jwt_decode from 'jwt-decode';
 import {CommonActions} from '@react-navigation/native';
 
-import {widthPercentageToDP as wp} from 'utils/Responsive';
-
-import {Colors} from 'colors/Colors';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {logOut} from 'Auth/LoginSlice';
 import {homeReset} from 'redux/homeSlice';
+import styles from './DrawerStyles';
 
 export default ({navigation}) => {
-  console.log('navigation:', navigation.getState().index);
-
   const {userToken: token} = useSelector(state => state.auth);
   const decoded = token && jwt_decode(token);
   const isLeaveApprover = decoded?.role?.includes('Leave Approver') || false;
@@ -46,22 +41,6 @@ export default ({navigation}) => {
     navigation,
     key: 5,
     icon: MonthImages.ResourceIcon,
-  };
-
-  const wfhTab = {
-    screen: 'WorkFromHome',
-    label: 'WFH',
-    navigation,
-    key: 6,
-    icon: MonthImages.userPS,
-  };
-
-  const regularisationTab = {
-    screen: 'RegularisationFormScreen',
-    label: 'Regularization',
-    navigation,
-    key: 7,
-    icon: MonthImages.EmployeeIdIcon,
   };
 
   const reports = {
@@ -154,7 +133,7 @@ export default ({navigation}) => {
   };
 
   const leaveApplication = {
-    screen: 'leaveApplication',
+    screen: 'allLeaves',
     label: 'Leave Application',
     navigation,
     key: 8,
@@ -169,8 +148,7 @@ export default ({navigation}) => {
   }
 
   if (isHRManager) {
-    drawerList.splice(7, 0, leaveApplication);
-    drawerList.splice(8, 0, reports);
+    drawerList.splice(7, 0, reports);
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
@@ -187,12 +165,11 @@ export default ({navigation}) => {
   if (isLeaveApprover) {
     drawerList.splice(2, 0, resorcesTab);
     drawerList.splice(3, 0, AllAttandance);
-    drawerList.splice(4, 0, wfhTab);
-    drawerList.splice(5, 0, regularisationTab);
+    drawerList.splice(4, 0, leaveApplication);
 
-    // drawerList.splice(2, 0, resorcesTab);
-    // drawerList.splice(3, 0, wfhTab);
-    // drawerList.splice(4, 0, regularisationTab);
+    // drawerList.splice(4, 0, wfhTab);
+    // drawerList.splice(5, 0, regularisationTab);
+
     drawerList.forEach((el, index) => {
       el.key = index + 1;
     });
@@ -201,10 +178,8 @@ export default ({navigation}) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{flexGrow: 1}}
-      style={{
-        flex: 1,
-      }}>
+      contentContainerStyle={styles.drawerContentContainerStyle}
+      style={styles.drawerMainContainer}>
       {drawerList.map((value, index) => {
         return renderDrawerItem(value, index);
       })}
@@ -222,8 +197,6 @@ const renderDrawerItem = (
       key={index}
       onPress={() => {
         if (dispatch) {
-          // navigation.closeDrawer();
-          // dispatch(logOut());
           Alert.alert(
             'Log Out',
             'Are you sure you want to Log Out from this app?',
@@ -235,7 +208,6 @@ const renderDrawerItem = (
               {
                 text: 'Log Out',
                 onPress: () => {
-                  // ========================================================================
                   if (dispatch) {
                     navigation &&
                       navigation.dispatch(
@@ -264,7 +236,6 @@ const renderDrawerItem = (
                       //   );
                     }, 20);
                   }
-                  // ========================================================================
                 },
               },
             ],
@@ -275,27 +246,9 @@ const renderDrawerItem = (
           navigation.closeDrawer();
         }
       }}
-      style={{
-        paddingVertical: wp(3),
-        borderBottomWidth: 1,
-        borderBottomColor: Colors.lightBlack,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: selected ? Colors.royalBlue : null,
-      }}>
-      <Image
-        source={icon}
-        resizeMode="contain"
-        style={{height: 30, width: 30, borderRadius: 50}}
-      />
-      <Text
-        style={{
-          color: Colors.white,
-          fontSize: FontSize.h15,
-          textAlign: 'center',
-        }}>
-        {label}
-      </Text>
+      style={[styles.drawerItemContainer, selected && styles.selectedStyle]}>
+      <Image source={icon} resizeMode="contain" style={styles.icon} />
+      <Text style={styles.drawerItemText}>{label}</Text>
     </TouchableOpacity>
   );
 };

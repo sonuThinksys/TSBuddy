@@ -5,15 +5,37 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.white,
     flex: 1,
   },
-
+  mainBottomContainer: {
+    flex: 1,
+  },
   swiperContainer: {
-    // flex: 0.22,
     height: hp(16),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.black,
+  },
+  headerSliderText: {
+    fontSize: FontSize.h16,
+    fontFamily: FontFamily.RobotoBold,
+    color: Colors.white,
+  },
+  resourcePickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
+    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    zIndex: 99999,
+  },
+  selectResourceText: {
+    fontSize: FontSize.h17,
+    fontFamily: FontFamily.RobotoMedium,
   },
   formContainer: {
     paddingHorizontal: 10,
@@ -31,8 +53,6 @@ export default StyleSheet.create({
     borderWidth: 1,
     backgroundColor: Colors.white,
     borderRadius: 3,
-    paddingHorizontal: 6,
-    // alignItems: 'flex-end',
     paddingHorizontal: 5,
     paddingVertical: 5,
     height: 32,
@@ -46,6 +66,7 @@ export default StyleSheet.create({
   toContainer: {
     width: '50%',
   },
+  zIndex1000: {zIndex: 1000},
   fromText: {
     fontWeight: '700',
     marginBottom: 5,
@@ -107,6 +128,9 @@ export default StyleSheet.create({
     marginBottom: hp(2),
     // position: 'absolute',
     // bottom: 0,
+  },
+  selectLeaveApproversDropdown: {
+    borderRadius: 4,
   },
   resourceButtonContainer: {
     flexDirection: 'row',
@@ -205,6 +229,14 @@ export default StyleSheet.create({
     color: Colors.black,
     fontWeight: '600',
   },
+  headerContainer: {flex: 1},
+  headerSliderContentContainerStyle: {flexGrow: 1},
+  headerSlider: {
+    backgroundColor: Colors.lighterBlue,
+    paddingHorizontal: wp(2.4),
+    paddingVertical: hp(1.2),
+    flex: 1,
+  },
   platformStyle: {
     marginBottom: hp(5),
     marginHorizontal: '5%',
@@ -219,15 +251,45 @@ export default StyleSheet.create({
 
   row: {
     padding: 8,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
     backgroundColor: Colors.white,
+    borderBottomColor: Colors.lightGray,
+    borderBottomWidth: 1,
   },
   highlighted: {
     // backgroundColor: 'red',
   },
   rowText: {
     fontSize: 16,
+  },
+  cardRightImage: {
+    height: 20,
+    width: 20,
+  },
+  cardRightContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+    paddingTop: 4,
+    position: 'absolute',
+    right: 0,
+  },
+  rightButtonCont: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightButtonText: {
+    fontSize: 16,
+  },
+  selectLeaveDropdown: {
+    borderWidth: 1,
+    backgroundColor: Colors.white,
+    borderRadius: 3,
+    paddingVertical: 5,
+    height: 32,
+  },
+  selectLeaveDropdownStyle: {
+    width: '45%',
+    paddingLeft: 6,
   },
   loaderContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -244,4 +306,31 @@ export default StyleSheet.create({
     width: wp(6),
     height: hp(3),
   },
+  leaveApproverSelect: {
+    borderRadius: 4,
+  },
+  resourceSelectContainerStyle: {
+    width: '50%',
+  },
+  halfDayDropdown: {
+    borderWidth: 1,
+    backgroundColor: Colors.white,
+    // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
+    borderRadius: 3,
+    paddingVertical: 5,
+    height: 32,
+  },
+  lessOpacity: {
+    opacity: 0.5,
+  },
+  halfDayDropdownStyles: {
+    width: '45%',
+    paddingLeft: 10,
+    height: 100,
+  },
+  justifyContentFlexEnd: {justifyContent: 'flex-end'},
+  cardLeftImage: {height: 20, width: 20},
+  imageRight: {height: 20, width: 20},
+  backgroundGreen: {backgroundColor: Colors.green},
+  backgroundWhite: {backgroundColor: Colors.white},
 });

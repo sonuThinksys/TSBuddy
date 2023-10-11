@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import * as Keychain from 'react-native-keychain';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {AsyncStorage} from 'react-native';
 import {
@@ -26,7 +25,6 @@ import {guestLoginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
-import jwt_decode from 'jwt-decode';
 import {
   COPY_RIGHT,
   ERROR,
@@ -41,27 +39,12 @@ const Login = ({navigation}) => {
 
   // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
-  // const [username, setUserName] = useState('gupta.radhika');
-  // const [password, setPassword] = useState('radhikathinksys@123');
-  // const [username, setUserName] = useState('gupta.utkarsh@thinksys.com');
-  // const [password, setPassword] = useState('gupta@1234');
-  // const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
-  // const [password, setPassword] = useState('thinksys@123');
-  // const [username, setUserName] = useState('pant.amit@thinksys.com');
-  // const [password, setPassword] = useState('pant@1234');
-  // const [username, setUserName] = useState('jambhulkar.roshan@thinksys.com');
-  // const [password, setPassword] = useState('roshan@1234');
-  // const [username, setUserName] = useState('bhandari.tribhuwan@thinksys.com');
-  // const [password, setPassword] = useState('bhandari@1234');
-  // const [username, setUserName] = useState('kumar.jitender@thinksys.com');
-  // const [password, setPassword] = useState('thinksys@123');
+
   const [username, setUserName] = useState('kamal.deepika@thinksys.com');
   const [password, setPassword] = useState('Pica8@123');
-  // const [username, setUserName] = useState('singh.vivek@thinksys.com');
-  // const [password, setPassword] = useState('thinksys@123');
-  // const [username, setUserName] = useState('kamal.deepika@thinksys.com');
-  // const [password, setPassword] = useState('Pica8@123');
-  const {isRemember, bioMetricEnable} = useSelector(state => state.auth);
+
+  const {isRemember} = useSelector(state => state.auth);
+  // const {bioMetricEnable} = useSelector(state => state.auth);
   useEffect(() => {
     if (Platform.OS === 'android') {
       dispatch(setBiometricEnable(true));
@@ -121,7 +104,7 @@ const Login = ({navigation}) => {
           navigation,
         });
       } else {
-        const {userToken, refreshToken} = result?.payload?.data || {};
+        const {refreshToken} = result?.payload?.data || {};
         await AsyncStorage.setItem(
           'refreshToken',
           JSON.stringify(refreshToken),
@@ -256,10 +239,7 @@ const Login = ({navigation}) => {
         /> */}
           <View style={styles.passwordView}>
             <TouchableOpacity>
-              <Text
-                style={{color: Colors.white, textDecorationLine: 'underline'}}>
-                {FORGOT_PASSWORD}
-              </Text>
+              <Text style={styles.forgotPasswordText}>{FORGOT_PASSWORD}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -268,13 +248,9 @@ const Login = ({navigation}) => {
                   AsyncStorage.removeItem('userDetailsRemeber');
                 }
               }}
-              style={{
-                flexDirection: 'row',
-                paddingHorizontal: wp(2),
-                alignItems: 'center',
-              }}>
+              style={styles.forgotPasswordButton}>
               <Image
-                style={{height: 25, width: 25}}
+                style={styles.forgotPasswordIcon}
                 source={isRemember ? LoginCheck : LoginUnCheck}
               />
               <Text style={styles.rememberText}>{REMEMBER_ME}</Text>

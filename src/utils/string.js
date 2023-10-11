@@ -14,6 +14,11 @@ const INCORRECT_LOGIN = 'Please try again later.';
 const MONTHLY_LUNCH_MESSAGE = 'You will be charged ₹1000/Month.';
 const DAILY_LUNCH_MESSAGE = 'You will be charged ₹60/Day.';
 const INVALID_CREDENTIAL = 'Invalid credentials';
+const LEAVE = 'Leave';
+const REGULARISATION = 'Regularisation';
+const WFH = 'WFH';
+const WORK_FROM_HOME = 'work from home';
+const CLOSE = 'Close';
 export {
   COPY_RIGHT,
   GUEST_LOGIN,
@@ -29,4 +34,9 @@ export {
   MONTHLY_LUNCH_MESSAGE,
   DAILY_LUNCH_MESSAGE,
   INVALID_CREDENTIAL,
+  LEAVE,
+  REGULARISATION,
+  WFH,
+  WORK_FROM_HOME,
+  CLOSE,
 };

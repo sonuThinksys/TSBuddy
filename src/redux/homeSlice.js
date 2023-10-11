@@ -1,8 +1,10 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import endPoints from '../config';
+import {API_URL} from '@env';
 
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
+import {LEAVE, REGULARISATION, WFH} from 'utils/string';
 // import {centralizeApi} from 'utils/utils';
 
 const initialState = {
@@ -92,6 +94,320 @@ const snacks = 'snacks';
 //   },
 // );
 
+export const getRemainingLeavesByEmpId = createAsyncThunk(
+  'home/getRemainingLeavesByEmpId',
+  async function ({token, empId}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = endPoints.getRemLeavesById + empId;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getRegularisationsForManager = createAsyncThunk(
+  'home/getRegularisationsForManager',
+  async function ({token, body, endPoint}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = API_URL + endPoint;
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getLeaveApplicationData = createAsyncThunk(
+  'home/getLeaveApplicationData',
+  async function ({token, body, selectedType}) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const endPointsObj = {
+      [LEAVE]: endPoints.getLeavesByHR,
+      [REGULARISATION]: endPoints.getRegularisationsByHR,
+      [WFH]: endPoints.getWFHByHR,
+    };
+
+    const url = endPointsObj[selectedType];
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getEmployeesLeavesFromLeaveApplication = createAsyncThunk(
+  'home/getEmployeesLeavesFromLeaveApplication',
+  async ({token, empId}) => {
+    const config = {
+      method: 'get',
+      url: endPoints.getEmployeesLeavesFromLeaveApplication + empId,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode == 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
+
+export const getWorkModeByEmployeeId = createAsyncThunk(
+  'getWorkModeEmployees',
+  async ({token, employeeId}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = `${endPoints.getWorkModeById}${employeeId}`;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401 || statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getWorkModeEmployees = createAsyncThunk(
+  'getWorkModeEmployees',
+  async ({token, dateStart, dateEnd}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = `${endPoints.getWorkModeEmployees}${dateStart}&toDate=${dateEnd}`;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401 || statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getLeaveReport = createAsyncThunk(
+  'getLeaveReport',
+  async ({token, dateStart, dateEnd}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = `${endPoints.getFullLeaveReport}${dateStart}&toDate=${dateEnd}`;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401 || statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getAllDailyEmployees = createAsyncThunk(
+  'getDailyEmployeesCount',
+  async ({token, date}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getDailyAllEmployees + date;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401 || statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const getDailyEmployeesCount = createAsyncThunk(
+  'getDailyEmployeesCount',
+  async ({token, date}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getDailyAttendanceCount + date;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401 || statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
 export const addDailyMenuDetails = createAsyncThunk(
   'addDailyMenuDetails',
   async ({token, body}) => {
@@ -116,7 +432,7 @@ export const addDailyMenuDetails = createAsyncThunk(
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401 || statusCode == 400) {
+      if (statusCode === 401 || statusCode === 400) {
         return Promise.reject(err?.response?.data);
       } else {
         return Promise.reject(new Error(err));
@@ -784,43 +1100,7 @@ export const getAllEmployeeListForHR = createAsyncThunk(
       if (err.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else if (statusCode === 400) {
-        return Promise.reject(err?.response?.data);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
-  },
-);
-
-export const getOpenRequestHR = createAsyncThunk(
-  'home/getOpenRequestHR',
-  async function ({token}) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const {data, status} = await axios.get(
-        endPoints.getOpenRequestForHR,
-        config,
-      );
-
-      if (status === 200) {
-        return Promise.resolve(data);
-      } else {
-        return Promise.reject('Something went wrong');
-      }
-    } catch (err) {
-      let statusCode = 500;
-      if (err.response) {
-        statusCode = err?.response?.status;
-      }
-      if (statusCode == 401) {
+      if (statusCode === 401) {
         return Promise.reject(err?.response?.data?.message);
       } else if (statusCode === 400) {
         return Promise.reject(err?.response?.data);

@@ -69,77 +69,84 @@ const LeavesList = props => {
   useEffect(() => {
     if (isFocussed && !isGuestLogin) {
       (async () => {
-        setLoading(true);
-        const leavesData = fromResource
-          ? await dispatch(
-              getResourcesEmployeesLeaves({
-                token,
-                empID: resourceEmployeeID,
-              }),
-            )
-          : await dispatch(
-              getLeaveDetails({
-                token,
-                empID: employeeId,
-              }),
-            );
-
-        const sortLeaveData = !fromResource
-          ? leavesData?.payload?.sort((a, b) => {
-              return (
-                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
+        try {
+          setLoading(true);
+          const leavesData = fromResource
+            ? await dispatch(
+                getResourcesEmployeesLeaves({
+                  token,
+                  empID: resourceEmployeeID,
+                }),
+              )
+            : await dispatch(
+                getLeaveDetails({
+                  token,
+                  empID: employeeId,
+                }),
               );
-            })
-          : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
-              return (
-                new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime()
-              );
-            });
 
-        const openLeaves = {rhOpen: 0, earnedOpen: 0};
+          const sortLeaveData = !fromResource
+            ? leavesData?.payload?.sort((a, b) => {
+                return (
+                  new Date(b.fromDate).getTime() -
+                  new Date(a.fromDate).getTime()
+                );
+              })
+            : leavesData?.payload?.employeeLeaves?.sort((a, b) => {
+                return (
+                  new Date(b.fromDate).getTime() -
+                  new Date(a.fromDate).getTime()
+                );
+              });
 
-        // const empLeaves = leavesData?.payload;
-        // const resourceLeaves = leavesData?.payload?.employeeLeaves;
+          const openLeaves = {rhOpen: 0, earnedOpen: 0};
 
-        if (!fromResource) {
-          for (const leave of sortLeaveData) {
-            if (
-              leave?.leaveType?.toLowerCase() === 'earned leave' &&
-              leave.status.toLowerCase() === 'open'
-            ) {
-              const totalDays = leave?.totalLeaveDays;
-              openLeaves.earnedOpen += totalDays;
-            }
-            if (
-              leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
-              leave.status.toLowerCase() === 'open'
-            ) {
-              const totalDays = leave?.totalLeaveDays;
-              openLeaves.rhOpen += totalDays;
+          // const empLeaves = leavesData?.payload;
+          // const resourceLeaves = leavesData?.payload?.employeeLeaves;
+
+          if (!fromResource) {
+            for (const leave of sortLeaveData) {
+              if (
+                leave?.leaveType?.toLowerCase() === 'earned leave' &&
+                leave.status.toLowerCase() === 'open'
+              ) {
+                const totalDays = leave?.totalLeaveDays;
+                openLeaves.earnedOpen += totalDays;
+              }
+              if (
+                leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
+                leave.status.toLowerCase() === 'open'
+              ) {
+                const totalDays = leave?.totalLeaveDays;
+                openLeaves.rhOpen += totalDays;
+              }
             }
           }
-        }
 
-        fromLeaveDetails && fromLeaveDetails(openLeaves);
-        // setEmployeesLeaves(fromResource ? resourceLeaves : empLeaves);
-        setEmployeesLeaves(sortLeaveData);
-
-        setLoading(false);
-        let count = 0;
-        leavesData?.payload?.employeeLeaves?.forEach(element => {
-          if (element.status == 'Open') {
-            count++;
-          }
-        });
-        fromResource && getLeaveCount(count);
-
-        if (leavesData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: leavesData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
+          fromLeaveDetails && fromLeaveDetails(openLeaves);
+          // setEmployeesLeaves(fromResource ? resourceLeaves : empLeaves);
+          setEmployeesLeaves(sortLeaveData);
+          setLoading(false);
+          let count = 0;
+          leavesData?.payload?.employeeLeaves?.forEach(element => {
+            if (element.status?.toLowerCase() === 'open') {
+              count++;
+            }
           });
+          fromResource && getLeaveCount(count);
+
+          if (leavesData?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: leavesData?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+            });
+          }
+        } catch (err) {
+          console.log('errLeaves:', err);
+        } finally {
+          setLoading(false);
         }
       })();
     }

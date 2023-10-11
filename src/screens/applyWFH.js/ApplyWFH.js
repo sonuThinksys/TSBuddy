@@ -9,8 +9,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Dimensions,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 
 import {Colors} from 'colors/Colors';
@@ -27,22 +27,21 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import {
   applyForWfhLeave,
-  cancelSubscribedLunchRequest,
   getEmployeeShift,
+  getEmployeesByLeaveApprover,
   getLeaveApprovers,
   getLeaveDetails,
 } from 'redux/homeSlice';
-import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
-import Loader from 'component/loader/Loader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
 import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
+import {CLOSE, ERROR, WORK_FROM_HOME} from 'utils/string';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
+import {empFullName} from 'utils/utils';
 
 const initialEndDate = {endDateStr: 'Select End Date'};
 const initialStartDate = {startDateStr: 'Select Start Date'};
@@ -51,10 +50,11 @@ const alreadyWeekend = 'You already have a weekend holiday on this day.';
 const alreadyNationalHoliday = 'You can not take a WFH on National holiday.';
 const alreadyWFHApplied = 'WFH are already applied for these dates.';
 
-const ApplyWFH = ({navigation}) => {
+const ApplyWFH = ({navigation, fromApproverEnd}) => {
   const token = useSelector(state => state.auth.userToken);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
+  const dispatch = useDispatch();
 
   const [startDate, setStartDate] = useState(initialStartDate);
   const [endDate, setEndDate] = useState(initialEndDate);
@@ -62,19 +62,13 @@ const ApplyWFH = ({navigation}) => {
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
   const drawerStatus = useDrawerStatus();
 
-  const [openModal, setOpenModal] = useState(false);
-  const [permReq, setPermReq] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [satrtDate1, setStartDate1] = useState('');
   const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDaily, setIsDaily] = useState(false);
   const [startSelected, setStartSelected] = useState(false);
   const [endSelected, setEndSelected] = useState(false);
-  const [lunchRequests, setLunchRequests] = useState([]);
-  const [monthlyStartDate, setMonthlyStartDate] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingWFHList, setLoadingWFHList] = useState(false);
   const [wfhList, setWfhList] = useState([]);
   const [totalDaysCount, setTotalDaysCount] = useState(0);
   const [fromDate, setFromDate] = useState();
@@ -84,80 +78,75 @@ const ApplyWFH = ({navigation}) => {
   const [reason, setReason] = useState('');
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
   const [leavesNotIncludeWFH, setLeavesNotIncludeWFH] = useState([]);
+  const [openResourcePicker, setOpenResourcePicker] = useState(false);
+  const [resourcePickedId, setResourcePickedId] = useState(null);
+  const [resourcePicks, setResourcePicks] = useState([]);
 
   const {holidayData} = useSelector(state => state.home);
 
   let currentYear = new Date().getFullYear();
   const fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
 
-  const setUpcomingMonthlyStartDate = ({date}) => {
-    setMonthlyStartDate(date);
-  };
-
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const windowHeight = Dimensions.get('window').height;
     if (drawerStatus === 'open') {
       Keyboard.dismiss();
-      // setEndSelected(false);
-      // setStartSelected(false);
-      // setStartDate({
-      //   startDateStr: 'Select Start Date',
-      // });
-      // setEndDate({endDateStr: 'Select End Date'});
-      // setReason('');
-      // setTotalDaysCount(0);
-      // setValue(null);
     }
   }, [drawerStatus]);
 
   useEffect(() => {
-    (async () => {
-      const leaveApprovers = token
-        ? await dispatch(getLeaveApprovers({token, employeeID}))
-        : [];
+    if (!fromApproverEnd) {
+      (async () => {
+        const leaveApprovers = token
+          ? await dispatch(getLeaveApprovers({token, employeeID}))
+          : [];
 
-      const listOfLeaveApprovers = leaveApprovers.payload?.map(approver => {
-        const approverName = `${approver?.leaveApproverFirstName} ${
-          approver.leaveApproverMiddleName
-            ? approver.leaveApproverMiddleName + ' '
-            : ''
-        }${
-          approver.leaveApproverLastName ? approver.leaveApproverLastName : ''
-        }`;
+        const listOfLeaveApprovers = leaveApprovers.payload?.map(approver => {
+          const approverName = `${approver?.leaveApproverFirstName} ${
+            approver.leaveApproverMiddleName
+              ? approver.leaveApproverMiddleName + ' '
+              : ''
+          }${
+            approver.leaveApproverLastName ? approver.leaveApproverLastName : ''
+          }`;
 
-        return {
-          value: approver.leaveApprover,
-          label: approverName,
-        };
-      });
-      setLeaveApprover(listOfLeaveApprovers);
-      setItems(listOfLeaveApprovers);
-    })();
-  }, [dispatch, employeeID, token]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const employeeShift = await dispatch(
-          getEmployeeShift({token, id: employeeID}),
-        );
-        const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
-
-        const finalWeekOffs = [];
-        daysOfWeek?.map((el, index) => {
-          if (weekOffs?.includes(el)) finalWeekOffs.push(index);
+          return {
+            value: approver.leaveApprover,
+            label: approverName,
+          };
         });
-        setEmployeeWeekOffs(finalWeekOffs);
-      } catch (err) {
-        console.log('errorEmpShift:', err);
-      }
-    })();
-  }, [dispatch, employeeID, token]);
+        setLeaveApprover(listOfLeaveApprovers);
+        setItems(listOfLeaveApprovers);
+      })();
+    }
+  }, [dispatch, employeeID, token, fromApproverEnd]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (!fromApproverEnd) {
+      (async () => {
+        try {
+          const employeeShift = await dispatch(
+            getEmployeeShift({token, id: employeeID}),
+          );
+          const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+
+          const finalWeekOffs = [];
+          daysOfWeek?.map((el, index) => {
+            if (weekOffs?.includes(el)) {
+              finalWeekOffs.push(index);
+            }
+          });
+          setEmployeeWeekOffs(finalWeekOffs);
+        } catch (err) {
+          console.log('errorEmpShift:', err);
+        }
+      })();
+    }
+  }, [dispatch, employeeID, token, fromApproverEnd]);
+
+  useEffect(() => {
+    if (isFocused && !fromApproverEnd) {
       (async () => {
         try {
           setLoading(true);
@@ -175,14 +164,17 @@ const ApplyWFH = ({navigation}) => {
           const otherLeaves = [];
 
           for (let leave of leavesData?.payload) {
-            if (leave?.leaveType?.toLowerCase() === 'work from home') {
+            if (leave?.leaveType?.toLowerCase() === WORK_FROM_HOME) {
+              // has to import from strings.js
               wfhLeaveList.push(leave);
-            } else otherLeaves.push(leave);
+            } else {
+              otherLeaves.push(leave);
+            }
           }
 
           let sortedWfhData = wfhLeaveList?.sort(
             (a, b) =>
-              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
+              new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(), // has to import from utils.js
           );
 
           setWfhList(sortedWfhData);
@@ -192,7 +184,7 @@ const ApplyWFH = ({navigation}) => {
             ShowAlert({
               messageHeader: ERROR,
               messageSubHeader: leavesData?.error?.message,
-              buttonText: 'Close',
+              buttonText: CLOSE,
               dispatch,
             });
           }
@@ -203,21 +195,47 @@ const ApplyWFH = ({navigation}) => {
         }
       })();
     }
-  }, [isFocused, dispatch, employeeID, token]);
+  }, [isFocused, dispatch, employeeID, token, fromApproverEnd]);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (fromApproverEnd) {
+      (async () => {
+        try {
+          setLoading(true);
+          const employeeData = await dispatch(
+            getEmployeesByLeaveApprover(token),
+          );
+
+          const finalResources = employeeData?.payload?.map(employee => {
+            const empName = empFullName(employee);
+
+            return {value: employee.employeeId, label: empName, employee};
+          });
+
+          setResourcePicks(finalResources);
+          if (employeeData?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: employeeData?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+        } catch (err) {
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [dispatch, navigation, token, fromApproverEnd]);
 
   const onSelectItem = item => {
-    const selectedLeaveApprover = leaveApprover.find(
-      approver => approver?.label?.toLowerCase() === item.label.toLowerCase(),
+    const leaveApproverSelected = leaveApprover.find(
+      approver => approver?.label?.toLowerCase() === item?.label?.toLowerCase(),
     );
-    setSelectedLeaveApprover(selectedLeaveApprover.value);
-  };
-  const modalData = {
-    openModal: openModal,
-    setOpenModal: setOpenModal,
-    satrtDate1: satrtDate1,
-    // endDate1: endDate1,
+
+    setSelectedLeaveApprover(leaveApproverSelected.value);
   };
 
   const hideDatePicker = pickerToClose => {
@@ -254,8 +272,8 @@ const ApplyWFH = ({navigation}) => {
       }
     }
 
-    const fromDate = date;
-    setFromDate(fromDate);
+    const fromDateObj = date;
+    setFromDate(fromDateObj);
     let selectedDate = date.getDate();
 
     let selectedMonth = date.getMonth() + 1;
@@ -272,7 +290,7 @@ const ApplyWFH = ({navigation}) => {
   };
 
   const handleEndConfirm = date => {
-    Keyboard.dismiss;
+    Keyboard.dismiss();
     if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
       alert(alreadyWeekend);
@@ -292,8 +310,8 @@ const ApplyWFH = ({navigation}) => {
         return;
       }
     }
-    const toDate = date;
-    setToDate(toDate);
+    const toDateObj = date;
+    setToDate(toDateObj);
     setEndSelected(true);
     let selectedDate = date.getDate();
 
@@ -304,7 +322,7 @@ const ApplyWFH = ({navigation}) => {
       endDateObj: date,
     });
     hideDatePicker(setEndDatePickerVisible);
-    const diffTime = toDate?.getTime() - fromDate?.getTime();
+    const diffTime = toDateObj?.getTime() - fromDate?.getTime();
     const diffInDays = diffTime / (1000 * 60 * 60 * 24) + 1;
     setTotalDaysCount(Math.round(diffInDays));
   };
@@ -312,36 +330,17 @@ const ApplyWFH = ({navigation}) => {
   let opacity = 1;
 
   if (value !== 'monthly') {
-    if (!startSelected || !endSelected || !value || reason?.trim().length === 0)
+    if (
+      !startSelected ||
+      !endSelected ||
+      !value ||
+      reason?.trim().length === 0
+    ) {
       opacity = 0.5;
-  } else {
-    if (!monthlyStartDate) opacity = 0.5;
+    }
   }
 
-  let endDateMaximumLimit = startSelected ? startDate?.startDateObj : undefined;
-
-  const startDateCopy = new Date(startDate?.startDateObj);
-
   const onApplyWfh = async () => {
-    // if (!startDate.startDateStr || !endDate.endDateStr) {
-    //   alert('Please select dates for which you want to apply a WFH.');
-    //   return;
-    // }
-
-    // if (selectedLeaveApprover === '') {
-    //   alert('Please select a leave approver.');
-    //   return;
-    // }
-    // if (totalDaysCount === 0) {
-    //   alert('You can not apply leave on Weekends.');
-    //   return;
-    // }
-
-    // if (reason?.trim().length === 0) {
-    //   alert('Please enter a reason for applying a WFH.');
-    //   return;
-    // }
-
     for (let i = 0; i < wfhList?.length; i++) {
       let {fromDate: startDate1, toDate: endDate1} = wfhList[i];
       startDate1 = new Date(startDate1);
@@ -417,6 +416,7 @@ const ApplyWFH = ({navigation}) => {
     // =================================================================
 
     try {
+      setLoadingWFHList(true);
       setLoading(true);
       const appliedWfh =
         token &&
@@ -424,7 +424,7 @@ const ApplyWFH = ({navigation}) => {
           applyForWfhLeave({
             token,
             body: {
-              employeeId: employeeID,
+              employeeId: fromApproverEnd ? resourcePickedId : employeeID,
               fromDate: fromDate,
               toDate: toDate,
               totalLeaveDays: totalDaysCount,
@@ -442,7 +442,6 @@ const ApplyWFH = ({navigation}) => {
       if (!appliedWfh?.error) {
         setWfhList(prevRequests => [appliedWorkFromHome, ...prevRequests]);
       } else if (appliedWfh?.error) {
-        // setWfhList(prevRequests => [...prevRequests, appliedWorkFromHome]);
       }
 
       if (appliedWfh?.error) {
@@ -468,31 +467,124 @@ const ApplyWFH = ({navigation}) => {
     } catch (err) {
       console.log('errWFH2:', err);
     } finally {
+      setLoadingWFHList(false);
       setLoading(false);
+    }
+  };
+  const onSelectResource = async selectedOption => {
+    try {
+      setLoadingWFHList(true);
+      setLoading(true);
+      const leavesData = await dispatch(
+        getLeaveDetails({
+          token,
+          empID: selectedOption.value,
+        }),
+      );
+      const wfhLeaveList = [];
+      const otherLeaves = [];
+      for (let leave of leavesData?.payload) {
+        if (leave?.leaveType?.toLowerCase() === 'work from home') {
+          wfhLeaveList.push(leave);
+        } else {
+          otherLeaves.push(leave);
+        }
+      }
+      let sortedWfhData = wfhLeaveList?.sort(
+        (a, b) =>
+          new Date(b.fromDate).getTime() - new Date(a.fromDate).getTime(),
+      );
+      setWfhList(sortedWfhData);
+      setLeavesNotIncludeWFH(otherLeaves);
+      if (leavesData?.error) {
+        ShowAlert({
+          messageHeader: ERROR,
+          messageSubHeader: leavesData?.error?.message,
+          buttonText: 'Close',
+          dispatch,
+        });
+      }
+
+      // GET LEAVE APPROVERS:
+      const leaveApprovers = token
+        ? await dispatch(
+            getLeaveApprovers({token, employeeID: selectedOption.value}),
+          )
+        : [];
+
+      const listOfLeaveApprovers = leaveApprovers.payload?.map(approver => {
+        const approverName = `${approver?.leaveApproverFirstName} ${
+          approver.leaveApproverMiddleName
+            ? approver.leaveApproverMiddleName + ' '
+            : ''
+        }${
+          approver.leaveApproverLastName ? approver.leaveApproverLastName : ''
+        }`;
+
+        return {
+          value: approver.leaveApprover,
+          label: approverName,
+        };
+      });
+      setLeaveApprover(listOfLeaveApprovers);
+      setItems(listOfLeaveApprovers);
+
+      // GET EMPLOYEE SHIFT:
+      const employeeShift = await dispatch(
+        getEmployeeShift({token, id: selectedOption.value}),
+      );
+      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+
+      const finalWeekOffs = [];
+      daysOfWeek?.map((el, index) => {
+        if (weekOffs?.includes(el)) {
+          finalWeekOffs.push(index);
+        }
+      });
+      setEmployeeWeekOffs(finalWeekOffs);
+    } catch (err) {
+      console.log('errWFH:', err);
+    } finally {
+      setLoading(false);
+      setLoadingWFHList(false);
     }
   };
 
   return (
     <View style={styles.mainContainer}>
       <CustomHeader
-        showDrawerMenu={true}
+        showDrawerMenu={fromApproverEnd ? false : true}
         title="Apply WFH"
         navigation={navigation}
         isHome={false}
-        showHeaderRight={true}
+        showHeaderRight={fromApproverEnd ? false : true}
       />
 
-      <View>
+      <View style={styles.contentContainer}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.secondView}>
+              {fromApproverEnd ? (
+                <View style={styles.resourcePickerContainer}>
+                  <Text style={styles.selectResourceText}>Employee: </Text>
+                  <DropDownPicker
+                    placeholder={'Select'}
+                    open={openResourcePicker}
+                    value={resourcePickedId}
+                    items={resourcePicks}
+                    setOpen={setOpenResourcePicker}
+                    setValue={setResourcePickedId}
+                    setItems={setResourcePicks}
+                    onSelectItem={onSelectResource}
+                    containerStyle={styles.resourceSelectContainerStyle}
+                    style={styles.leaveApproverSelect}
+                  />
+                </View>
+              ) : null}
               <DateTimePickerModal
                 minimumDate={new Date()}
                 date={startSelected ? startDate?.startDateObj : undefined}
-                // maximumDate={
-                //   new Date(new Date().setMonth(new Date().getMonth() + 1))
-                // }
                 isVisible={startDatePickerVisible}
                 mode="date"
                 onConfirm={handleStartConfirm}
@@ -522,14 +614,7 @@ const ApplyWFH = ({navigation}) => {
                   modalData={modalData}
                   setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
                 /> */}
-                  <Text
-                    style={{
-                      marginBottom: hp(1),
-                      fontSize: 18,
-                      color: Colors.black,
-                    }}>
-                    From Date :
-                  </Text>
+                  <Text style={styles.fromDate}>From Date :</Text>
                   <TouchableOpacity
                     onPress={() => {
                       setStartDatePickerVisible(true);
@@ -548,19 +633,13 @@ const ApplyWFH = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.fifthView}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      color: Colors.black,
-                      marginBottom: hp(1),
-                    }}>
-                    To Date :
-                  </Text>
+                  <Text style={styles.toDate}>To Date :</Text>
                   <TouchableOpacity
                     disabled={!startSelected}
-                    style={{
-                      opacity: !startSelected ? 0.6 : 1,
-                    }}
+                    style={[
+                      styles.selectToDate,
+                      !startSelected && styles.lessOpacity,
+                    ]}
                     onPress={() => {
                       setEndDatePickerVisible(true);
                     }}>
@@ -580,43 +659,32 @@ const ApplyWFH = ({navigation}) => {
               </View>
 
               <View style={styles.dropDownView}>
-                <Text
-                  style={{
-                    marginBottom: hp(1.6),
-                    fontSize: 18,
-                    color: Colors.black,
-                  }}>
+                <Text style={styles.daysCount}>
                   Total Days: {!totalDaysCount ? 0 : totalDaysCount}
                 </Text>
-                <View
-                  style={{
-                    zIndex: 9999,
-                  }}>
+                <View style={styles.dropDownContainer}>
                   <DropDownPicker
                     open={open}
-                    placeholder={'Please Select Leave Approver..'}
+                    placeholder={
+                      !fromApproverEnd
+                        ? 'Select Leave Approver..'
+                        : !resourcePickedId
+                        ? 'Select Resource First..'
+                        : 'Select Leave Approver..'
+                    }
                     value={value}
                     items={items}
                     setOpen={setOpen}
                     setValue={setValue}
                     setItems={setItems}
                     onSelectItem={onSelectItem}
-                    containerStyle={{height: 40}}
-                    style={{
-                      borderRadius: open ? 5 : 50,
-                      borderColor: Colors.grey,
-                      marginBottom: hp(3),
-                    }}
-                    dropDownStyle={{
-                      backgroundColor: Colors.lightBlue,
-                      borderBottomWidth: 1,
-                    }}
-                    labelStyle={{
-                      fontSize: 13,
-                      textAlign: 'left',
-                      color: Colors.black,
-                      alignSelf: 'center',
-                    }}
+                    containerStyle={styles.dropDownContainerStyles}
+                    style={[
+                      styles.dropDownMainStyles,
+                      open && styles.borderRadius5,
+                    ]}
+                    dropDownStyle={styles.dropDownStyle}
+                    labelStyle={styles.dropdownLabelStyle}
                   />
                 </View>
               </View>
@@ -629,12 +697,7 @@ const ApplyWFH = ({navigation}) => {
                   onChangeText={text => setReason(text)}
                 />
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginHorizontal: wp(4),
-                }}>
+              <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   disabled={
                     !startDate.startDateObj &&
@@ -651,42 +714,20 @@ const ApplyWFH = ({navigation}) => {
                     setTotalDaysCount(0);
                     setValue(null);
                   }}
-                  style={{
-                    marginTop: 15,
-                    backgroundColor: Colors.grayishWhite,
-                    paddingHorizontal: wp(8.6),
-                    borderRadius: 200,
-                    paddingVertical: hp(1.4),
-                    opacity:
-                      !startDate.startDateObj &&
+                  style={[
+                    styles.buttonClear,
+                    !startDate.startDateObj &&
                       !endDate.endDateObj &&
                       reason?.trim().length === 0 &&
-                      !value
-                        ? 0.5
-                        : 1,
-                  }}>
+                      !value &&
+                      styles.lessOpacity,
+                  ]}>
                   <View>
-                    <Text
-                      style={{
-                        color: Colors.black,
-                        textAlign: 'center',
-                        fontSize: 17,
-                      }}>
-                      Clear
-                    </Text>
+                    <Text style={styles.clear}>Clear</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={{
-                    opacity: opacity,
-                    marginTop: 15,
-                    backgroundColor: Colors.lovelyPurple,
-                    paddingHorizontal: wp(9.2),
-                    borderRadius: 200,
-                    paddingVertical: hp(1.5),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
+                  style={[styles.buttonApply, {opacity}]}
                   disabled={
                     !startSelected ||
                     !endSelected ||
@@ -695,64 +736,46 @@ const ApplyWFH = ({navigation}) => {
                   }
                   onPress={onApplyWfh}>
                   <View>
-                    <Text
-                      style={{
-                        color: Colors.white,
-                        textAlign: 'center',
-                        fontSize: 17,
-                      }}>
-                      Apply
-                    </Text>
+                    <Text style={styles.apply}>Apply</Text>
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-        <View style={styles.appliedView}>
-          <Text style={styles.wfhHistoryText}>Work From Home History</Text>
-        </View>
-        <View style={styles.buttomView}>
-          {wfhList?.length > 0 && (
-            <View>
-              {loading ? (
-                <View style={{flex: 1}}>
-                  <Loader />
+        {!fromApproverEnd || !!resourcePickedId ? (
+          <>
+            <View style={styles.appliedView}>
+              <Text style={styles.wfhHistoryText}>Work From Home History</Text>
+            </View>
+            <View style={styles.buttomView}>
+              {loadingWFHList || loading ? (
+                <View style={styles.WFHListLoaderContainer}>
+                  <ActivityIndicator color={Colors.grey} size="large" />
                 </View>
-              ) : (
+              ) : wfhList.length > 0 ? (
                 <FlatList
-                  style={{height: '100%'}}
+                  style={styles.flatlistStyle}
                   showsVerticalScrollIndicator={false}
                   data={wfhList}
                   renderItem={renderListOfAppliedRequests}
                   keyExtractor={keyExtractor}
                 />
-                // <Text>hh</Text>
+              ) : (
+                <View style={styles.noWFHContainer}>
+                  <Text style={styles.noWFH}>You don't have any WFH.</Text>
+                </View>
               )}
             </View>
-          )}
-
-          {!loading && wfhList?.length == 0 && (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                flex: 1,
-              }}>
-              <Text
-                style={{
-                  fontFamily: FontFamily.RobotoMedium,
-                  fontSize: 16,
-                  color: Colors.lightBlue,
-                  marginVertical: 4,
-                }}>
-                You don't have any WFH.
-              </Text>
-            </View>
-          )}
-        </View>
+          </>
+        ) : null}
       </View>
-      {/* </ScrollView> */}
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" />
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -780,81 +803,58 @@ const renderListOfAppliedRequests = ({item}) => {
   return (
     <View style={styles.request} key={item.leaveApplicationId}>
       <View style={styles.appliedRequestsLeft}>
-        <View
-          style={{
-            alignItems: 'center',
-            marginRight: wp(4),
-          }}>
-          <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
+        <View style={styles.daysContainer}>
+          <Text style={styles.days}>
             {item?.totalLeaveDays <= 9 && Number.isInteger(item?.totalLeaveDays)
               ? '0'
               : null}
             {item?.totalLeaveDays}
           </Text>
-          <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+          <Text style={styles.totalLeaveDays}>
             {item?.totalLeaveDays > 1 ? 'Days' : 'Day'}
           </Text>
         </View>
-        <View style={{marginLeft: 20, marginTop: 4}}>
-          <Text
-            style={{
-              fontSize: 15,
-              fontFamily: FontFamily.RobotoRegular,
-              color: Colors.dune,
-              marginBottom: hp(1),
-            }}>
+        <View style={styles.dateContainer}>
+          <Text style={styles.formattedDate}>
             {formattedStartDate} - {formattedEndDate}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 11, color: Colors.lightGray1}}>
-              Applied on:{' '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: Colors.lightGray1,
-                fontFamily: FontFamily.RobotoMedium,
-              }}>
-              {appliedDate}
-            </Text>
+          <View style={styles.appliedContainer}>
+            <Text style={styles.appliedOn}>Applied on: </Text>
+            <Text style={styles.appliedDate}>{appliedDate}</Text>
           </View>
         </View>
       </View>
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.statusContainer}>
         {item.status?.toLowerCase() === 'open' ? (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.pendingContainer}>
             <PendingIcon
               fill={Colors.gold}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
+            <Text style={styles.pending}>Pending</Text>
           </View>
         ) : item.status?.toLowerCase() === 'dismissed' ||
           item.status?.toLowerCase() === 'rejected' ? (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.rejectedContainer}>
             <RejectedIcon
               fill={Colors.darkBrown}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.darkBrown}}>
-              {item.status}
-            </Text>
+            <Text style={styles.rejected}>{item.status}</Text>
           </View>
         ) : (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.approvedContainer}>
             <ApprovedIcon
               fill={Colors.darkLovelyGreen}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
-              {item.status || 'Approved'}
-            </Text>
+            <Text style={styles.approved}>{item.status || 'Approved'}</Text>
           </View>
         )}
       </View>

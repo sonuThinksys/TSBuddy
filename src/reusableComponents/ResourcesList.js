@@ -1,5 +1,6 @@
 // import RenderListItem from 'component/useProfile/RenderList';
-import {useCallback, useEffect, useRef, useState, memo} from 'react';
+import React from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -11,35 +12,22 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {heightPercentageToDP as hp} from 'utils/Responsive';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import ResourceIcon from 'assets/allImage/user.svg';
 import Loader from 'component/loader/Loader';
 
 const ResourcesList = props => {
-  const [numValue, setNumValue] = useState(1);
-  const [scrollBegin, setScrollBegin] = useState(false);
+  const numValue = 1;
   const [resourcesEmpiolyeeData, setResourcesEmpiolyeeData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
-    state => state.auth,
-  );
+  const {userToken: token} = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const nav = useNavigation();
 
-  const isFocussed = useIsFocused();
   const flatListRef = useRef(null);
-
-  // useEffect(() => {
-  //   if (isFocussed && flatListRef.current) {
-  //     flatListRef.current.scrollToOffset({offset: 0, animated: true});
-  //   }
-  // }, [isFocussed]);
 
   useEffect(() => {
     (async () => {
@@ -54,7 +42,7 @@ const ResourcesList = props => {
             messageSubHeader: employeeData?.error?.message,
             buttonText: 'Close',
             dispatch,
-            navigation,
+            nav,
           });
         }
       } catch (err) {
@@ -62,7 +50,7 @@ const ResourcesList = props => {
         setIsLoading(false);
       }
     })();
-  }, []);
+  }, [dispatch, nav, token]);
 
   const renderItem = useCallback(
     (
@@ -104,12 +92,7 @@ const ResourcesList = props => {
               });
             }}>
             <View style={style.container}>
-              <View
-                style={{
-                  flex: 0.2,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              <View style={style.imageContainer}>
                 {image ? (
                   <Image
                     resizeMode="stretch"
@@ -117,13 +100,7 @@ const ResourcesList = props => {
                     style={style.image}
                   />
                 ) : (
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderColor: Colors.black,
-                      borderRadius: 100,
-                      padding: 4,
-                    }}>
+                  <View style={style.iconContainer}>
                     <ResourceIcon
                       borderWidth={1}
                       borderColor={'black'}
@@ -134,7 +111,7 @@ const ResourcesList = props => {
                   </View>
                 )}
               </View>
-              <View style={{flex: 0.7, marginLeft: 15}}>
+              <View style={style.empDetailContainer}>
                 <Text numberOfLines={1} style={style.nameText}>
                   {empName}
                 </Text>
@@ -145,7 +122,7 @@ const ResourcesList = props => {
         </View>
       );
     },
-    [],
+    [props.navigateToScreen],
   );
 
   if (isLoading) {
@@ -156,18 +133,15 @@ const ResourcesList = props => {
     <FlatList
       ref={flatListRef}
       legacyImplementation={false}
-      onScrollBeginDrag={() => setScrollBegin(true)}
       onEndReachedThreshold={0.01}
       scrollsToTop={false}
       showsVerticalScrollIndicator={false}
-      onMomentumScrollBegin={() => setScrollBegin(true)}
-      onMomentumScrollEnd={() => setScrollBegin(false)}
       data={resourcesEmpiolyeeData}
       numColumns={numValue}
       key={numValue}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item, index}) => {
-        return renderItem(item, index, navigation);
+        return renderItem(item, index, nav);
       }}
     />
   );
@@ -177,7 +151,6 @@ const style = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 80,
-    borderRadius: 10,
     backgroundColor: '#ebfbee',
     borderRadius: 8,
     marginVertical: 6,
@@ -190,6 +163,21 @@ const style = StyleSheet.create({
     borderWidth: 0.3,
     borderColor: Colors.brown,
     padding: 10,
+  },
+  imageContainer: {
+    flex: 0.2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    borderWidth: 1,
+    borderColor: Colors.black,
+    borderRadius: 100,
+    padding: 4,
+  },
+  empDetailContainer: {
+    flex: 0.7,
+    marginLeft: 15,
   },
   image: {
     width: 60,

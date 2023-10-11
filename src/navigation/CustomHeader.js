@@ -1,3 +1,4 @@
+import React from 'react';
 import {Colors} from 'colors/Colors';
 import {FontFamily} from 'constants/fonts';
 import {
@@ -6,16 +7,13 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
-  Keyboard,
+  StyleSheet,
 } from 'react-native';
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {setFromNavigatedScreen} from 'redux/homeSlice';
 import {useRoute} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
 import {employeeProfileScreen} from 'navigation/Route';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
-import {StackActions} from '@react-navigation/native';
 
 const CustomHeader = function ({
   showDrawerMenu,
@@ -26,49 +24,15 @@ const CustomHeader = function ({
   headerRight,
   // navigation2,
 }) {
-  const dispatch = useDispatch();
   const route = useRoute();
   const screenName = route.name;
-  // return {
-  //   headerTitleAlign: 'center',
-  //   headerShown: true,
-  //   headerStyle: {
-  //     backgroundColor: Colors.lighterBlue,
-  //   },
-  //   headerTitle: () => (
-  //     <View
-  //       style={{
-  //         flexDirection: 'row',
-  //         marginRight: 'auto',
-  //         marginLeft: 'auto',
-  //       }}>
-  //       {
-  //         <Text
-  //           style={{
-  //             color: Colors.white,
-  //             fontSize: 18,
-  //             fontFamily: FontFamily.RobotoMedium,
-  //           }}>
-  //           {title}
-  //         </Text>
-  //       }
-  //     </View>
-  //   ),
-  //   headerTintColor: Colors.white,
-  //   headerShadowVisible: true,
-  // };
 
   return (
     <View
-      style={{
-        backgroundColor: isHome ? '#EEF2FA' : Colors.lighterBlue,
-        flexDirection: 'row',
-        paddingHorizontal: 20,
-        paddingVertical: 12,
-        // marginHorizontal: 10,
-        borderRadius: 2,
-        alignItems: 'center',
-      }}>
+      style={[
+        styles.mainContainer,
+        isHome ? styles.backgroundColorWhitishBlue : styles.backgroundColorBlue,
+      ]}>
       {showDrawerMenu ? (
         <TouchableOpacity
           onPress={() => {
@@ -93,29 +57,14 @@ const CustomHeader = function ({
         </Pressable>
       )}
 
-      <View
-        style={{
-          // display: 'flex',
-          flexDirection: 'row',
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-        }}>
+      <View style={styles.headerIconContainer}>
         {isHome ? (
           <Image
             source={MonthImages.TRMSIcon}
             style={{width: 108, height: 40}}
           />
         ) : (
-          <Text
-            style={{
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: FontFamily.RobotoMedium,
-            }}>
-            {title}
-          </Text>
+          <Text style={styles.headerTitle}>{title}</Text>
         )}
         {/* <Text>TRMS</Text> */}
 
@@ -129,12 +78,7 @@ const CustomHeader = function ({
       </View>
 
       {showHeaderRight ? (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <View style={styles.headerRightContainer}>
           <View>
             <TouchableOpacity
               onPress={() => {
@@ -157,3 +101,36 @@ const CustomHeader = function ({
 };
 
 export default CustomHeader;
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    // backgroundColor: isHome ? '#EEF2FA' : Colors.lighterBlue,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    // marginHorizontal: 10,
+    borderRadius: 2,
+    alignItems: 'center',
+  },
+  backgroundColorBlue: {
+    backgroundColor: Colors.lighterBlue,
+  },
+  backgroundColorWhitishBlue: {
+    backgroundColor: '#EEF2FA',
+  },
+  headerRightContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: Colors.white,
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  headerIconContainer: {
+    flexDirection: 'row',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
+});

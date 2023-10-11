@@ -123,3 +123,9 @@ export const centralizeApi = ({
       }
     });
 };
+
+export const empFullName = (employee = {}) => {
+  return `${employee?.firstName ? employee?.firstName + ' ' : ''}${
+    employee?.middleName ? employee?.middleName + ' ' : ''
+  }${employee?.lastName ? employee?.lastName + ' ' : ''}`;
+};

@@ -19,3 +19,6 @@ export const CheckInOutScreen = 'CheckInOutScreen';
 export const WorkFromHomeScreen = 'WorkFromHomeScreen';
 export const WFHDetailsScreen = 'WFHDetailsScreen';
 export const LunchRequestsScreen = 'LunchRequests';
+export const LeaveApplyScreenForApprover = 'LeaveApplyScreenForApprover';
+export const LeaveApplicationForApproverName = 'LeaveApplicationForApprover';
+export const WFHApplicationForApproverName = 'WFHApplicationForApprover';

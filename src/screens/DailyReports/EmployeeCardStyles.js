@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 1,
   },
   departmentContainer: {
     flexDirection: 'row',
@@ -52,8 +53,12 @@ const styles = StyleSheet.create({
   employeeDepartmentMainContainer: {
     alignItems: 'flex-end',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
-  namesContainer: {},
+  namesContainer: {
+    // width: '75%',
+    flex: 1,
+  },
   employeeNameText: {
     marginBottom: 8,
     fontSize: FontSize.h19,
@@ -365,6 +370,23 @@ const styles = StyleSheet.create({
   },
   buttonSaveText: {
     color: Colors.white,
+  },
+  leaveTypeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  leaveType: {
+    fontSize: 13,
+  },
+  noExpandedDataText: {
+    textAlign: 'center',
+    paddingVertical: 12,
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h15,
+  },
+  loaderContainer: {
+    paddingVertical: 14,
   },
 });
 

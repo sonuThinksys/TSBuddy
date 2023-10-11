@@ -4,12 +4,36 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
-import {FontFamily} from 'constants/fonts';
+import {FontFamily, FontSize} from 'constants/fonts';
 const windowHeight = Dimensions.get('window').height;
 export default StyleSheet.create({
   mainContainer: {
     backgroundColor: Colors.whitishBlue,
     flexDirection: 'column',
+    flex: 1,
+  },
+  resourcePickerContainer: {
+    flexDirection: 'row',
+    marginTop: 12,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    zIndex: 99999,
+  },
+  selectResourceText: {
+    fontSize: FontSize.h17,
+    fontFamily: FontFamily.RobotoMedium,
+    marginRight: 10,
+  },
+  resourceSelectContainerStyle: {
+    flex: 1,
+  },
+  leaveApproverSelect: {
+    borderRadius: 4,
+  },
+  contentContainer: {
+    flex: 1,
   },
   secondView: {
     backgroundColor: Colors.white,
@@ -24,9 +48,22 @@ export default StyleSheet.create({
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
   },
+  daysCount: {
+    marginBottom: hp(1.6),
+    fontSize: 18,
+    color: Colors.black,
+  },
+  dropDownContainer: {
+    zIndex: 9999,
+  },
   thirdView: {
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(2),
+  },
+  fromDate: {
+    marginBottom: hp(1),
+    fontSize: 18,
+    color: Colors.black,
   },
   fourthView: {
     borderRadius: wp(25),
@@ -44,6 +81,15 @@ export default StyleSheet.create({
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(2),
   },
+  toDate: {
+    fontSize: 18,
+    color: Colors.black,
+    marginBottom: hp(1),
+  },
+  selectToDate: {
+    opacity: 1,
+  },
+
   sixthView: {
     borderRadius: wp(25),
     borderWidth: 1,
@@ -62,6 +108,47 @@ export default StyleSheet.create({
     marginHorizontal: wp(2),
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
+    flex: 1,
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
+  },
+  lessOpacity: {
+    opacity: 0.5,
+  },
+  buttonClear: {
+    marginTop: 15,
+    backgroundColor: Colors.grayishWhite,
+    paddingHorizontal: wp(8.6),
+    borderRadius: 200,
+    paddingVertical: hp(1.4),
+  },
+  clear: {
+    color: Colors.black,
+    textAlign: 'center',
+    fontSize: 17,
+  },
+  buttonApply: {
+    marginTop: 15,
+    backgroundColor: Colors.lovelyPurple,
+    paddingHorizontal: wp(9.2),
+    borderRadius: 200,
+    paddingVertical: hp(1.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  apply: {
+    color: Colors.white,
+    textAlign: 'center',
+    fontSize: 17,
   },
   appliedView: {
     marginHorizontal: wp(4),
@@ -80,6 +167,26 @@ export default StyleSheet.create({
   selectedDated: {
     fontSize: 14,
   },
+  flatlistStyle: {
+    height: '100%',
+    flex: 1,
+  },
+  WFHListLoaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noWFHContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  noWFH: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
+  },
   request: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -92,9 +199,16 @@ export default StyleSheet.create({
   },
   appliedRequestsLeft: {
     flexDirection: 'row',
-
     marginRight: 10,
     marginLeft: 0,
+  },
+  daysContainer: {
+    alignItems: 'center',
+    marginRight: wp(4),
+  },
+  days: {
+    fontSize: 25,
+    fontFamily: FontFamily.RobotoLight,
   },
   requestText: {
     fontSize: 11.5,
@@ -128,6 +242,27 @@ export default StyleSheet.create({
     flexDirection: 'row',
     zIndex: -1,
   },
+  dropDownMainStyles: {
+    borderRadius: 50,
+    borderColor: Colors.grey,
+    marginBottom: hp(3),
+  },
+  borderRadius5: {
+    borderRadius: 5,
+  },
+  dropDownContainerStyles: {
+    height: 40,
+  },
+  dropDownStyle: {
+    backgroundColor: Colors.lightBlue,
+    borderBottomWidth: 1,
+  },
+  dropdownLabelStyle: {
+    fontSize: 13,
+    textAlign: 'left',
+    color: Colors.black,
+    alignSelf: 'center',
+  },
   reasonViewBox: {
     width: '100%',
     alignItems: 'center',
@@ -143,5 +278,64 @@ export default StyleSheet.create({
     height: 110,
     marginTop: 20,
     textAlignVertical: 'top',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: wp(4),
+  },
+  totalLeaveDays: {
+    fontSize: 12,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  dateContainer: {
+    marginLeft: 20,
+    marginTop: 4,
+  },
+  formattedDate: {
+    fontSize: 15,
+    fontFamily: FontFamily.RobotoRegular,
+    color: Colors.dune,
+    marginBottom: hp(1),
+  },
+  appliedContainer: {
+    flexDirection: 'row',
+  },
+  appliedOn: {
+    fontSize: 11,
+    color: Colors.lightGray1,
+  },
+  appliedDate: {
+    fontSize: 12,
+    color: Colors.lightGray1,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  statusContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pending: {
+    fontSize: 12,
+    color: Colors.gold,
+  },
+  rejectedContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rejected: {
+    fontSize: 12,
+    color: Colors.darkBrown,
+  },
+  approvedContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  approved: {
+    fontSize: 12,
+    color: Colors.darkLovelyGreen,
   },
 });

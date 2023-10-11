@@ -1,8 +1,15 @@
 import {FontFamily} from 'constants/fonts';
 const {Colors} = require('colors/Colors');
 import {StyleSheet} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'utils/Responsive';
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
   request: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -35,6 +42,76 @@ const styles = StyleSheet.create({
   noDataContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  leave: {
+    alignItems: 'center',
+    marginRight: wp(1),
+  },
+  totalDaysText: {
+    fontSize: 25,
+    fontFamily: FontFamily.RobotoLight,
+  },
+  daysText: {
+    fontSize: 12,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  empId: {
+    fontSize: 12,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  datesContainer: {
+    marginLeft: 20,
+    marginTop: 4,
+  },
+  dates: {
+    fontSize: 15,
+    fontFamily: FontFamily.RobotoRegular,
+    color: Colors.dune,
+    marginBottom: hp(1),
+  },
+  reguCont: {
+    flexDirection: 'row',
+  },
+  reguText: {
+    fontSize: 11,
+    color: Colors.lightGray1,
+  },
+  reguTitleText: {
+    fontSize: 12,
+    color: Colors.lightGray1,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  statusContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusText: {
+    fontSize: 12,
+    color: Colors.gold,
+  },
+  statusText2: {
+    fontSize: 12,
+    color: Colors.darkBrown,
+  },
+  statusText3: {
+    fontSize: 12,
+    color: Colors.darkLovelyGreen,
+  },
+  loaderContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+    flex: 1,
+  },
+  flatlist: {
+    flex: 1,
+  },
+  flatlistContainer: {
+    flex: 1,
+    // borderWidth: 1,
   },
 });
 

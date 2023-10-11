@@ -1,3 +1,4 @@
+import React from 'react';
 import ResourcesList from 'reusableComponents/ResourcesList';
 import {ResourcesDetailsScreen} from 'navigation/Route';
 import CustomHeader from 'navigation/CustomHeader';

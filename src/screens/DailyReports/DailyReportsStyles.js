@@ -93,10 +93,13 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.RobotoBold,
     fontSize: FontSize.h13,
   },
+  mainLeaveTabContainer: {
+    flex: 1,
+  },
   statusBoxesContainer: {
     // flexDirection: 'row',
-    flexDirection: 'row', // Rows will be stacked vertically
-    flexWrap: 'wrap', // Children will wrap to the next row when there's not enough space
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
@@ -119,8 +122,13 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     backgroundColor: Colors.white,
-    borderRadius: 50,
     width: '70%',
+    flexDirection: 'row', // Make the TextInput and icon appear in a row
+    alignItems: 'center', // Align items vertically in the middle
+    borderWidth: 1,
+    borderColor: Colors.lightGray2,
+    borderRadius: 50,
+    justifyContent: 'space-between',
   },
   customSearchContainer: {
     width: '100%',
@@ -140,13 +148,13 @@ const styles = StyleSheet.create({
   textInputContainer: {
     flexDirection: 'row', // Make the TextInput and icon appear in a row
     alignItems: 'center', // Align items vertically in the middle
-    borderWidth: 1,
-    borderColor: Colors.lightGray2,
-    borderRadius: 50,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  allEmployeesContainer: {},
+  allEmployeesContainer: {
+    position: 'relative',
+    flex: 1,
+  },
   datePickerMainContainer: {},
   datePickerTitleText: {
     FontFamily: FontFamily.RobotoThin,
@@ -239,7 +247,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: wp(3.2),
     paddingVertical: hp(1.2),
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: Colors.white,
   },
   fromDatePlaceholder: {
@@ -263,11 +271,70 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: wp(3.2),
     paddingVertical: hp(1.2),
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     backgroundColor: Colors.white,
   },
   toDatePlaceholder: {
     fontSize: 14,
+  },
+  noLeaveContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  noLeaveFound: {
+    color: Colors.dune,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h15,
+    letterSpacing: 0.5,
+  },
+  loaderContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    zIndex: 100,
+    height: '100%',
+    // justifyContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+  },
+  noEmployeesContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noEmployeesText: {
+    color: Colors.dune,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h15,
+    letterSpacing: 0.5,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+  },
+  mainContent: {
+    flex: 1,
+  },
+  opacity60: {
+    opacity: 0.6,
+  },
+  leavesListMainContainer: {
+    flex: 1,
+  },
+  employeeFlatlist: {
+    flex: 1,
+  },
+  paddingHorizontal10: {
+    paddingHorizontal: 10,
+  },
+  fullContentLoaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

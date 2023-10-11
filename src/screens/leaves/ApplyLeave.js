@@ -19,10 +19,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import jwt_decode from 'jwt-decode';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import styles from './ApplyLeaveStyle';
 
 import {
@@ -37,14 +34,18 @@ import {
   applyForLeave,
   applyForUpdateedLeave,
   getEmployeeShift,
+  getEmployeesByLeaveApprover,
   getFinalizedLeaveDays,
   getLeaveApprovers,
+  getRemainingLeavesByEmpId,
   getResourseLeaveDetails,
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 import CustomHeader from 'navigation/CustomHeader';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
 const months = [
   'Jan',
   'Feb',
@@ -71,10 +72,21 @@ const leaveWithoutPay = 'Leave Without Pay';
 const maternityLeave = 'Maternity Leave';
 const paternityLeave = 'Paternity Leave';
 
-const ApplyLeave = ({navigation, route}) => {
+const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   const {employeeProfile: empProfileData = {}} = useSelector(
     state => state.home,
   );
+
+  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  // console.log('profileData:', profileData);
+
+  const firstName = profileData?.firstName;
+  const middleName = profileData?.middleName;
+  const lastName = profileData?.lastName;
+
+  const approverUserName = `${firstName ? firstName : ''} ${
+    middleName ? middleName + ' ' : ''
+  }${lastName ? lastName : ''}`;
 
   const userGender = empProfileData.gender;
 
@@ -103,7 +115,6 @@ const ApplyLeave = ({navigation, route}) => {
   const openLeaveData = route?.params;
   const postingDateObj = new Date(resourceData?.postingDate);
   const toDateObj = new Date(resourceData?.toDate);
-  const fromDateObj = new Date(resourceData?.fromDate);
 
   const openLeavFromDateObj = new Date(openLeaveData?.fromDate);
   const openLeaveToDateObj = new Date(openLeaveData?.toDate);
@@ -166,7 +177,7 @@ const ApplyLeave = ({navigation, route}) => {
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
     fromDateStr:
-      openLeaveFromDatestr == invalidDate ? '' : openLeaveFromDatestr,
+      openLeaveFromDatestr === invalidDate ? '' : openLeaveFromDatestr,
   });
 
   const [toDate, setToDate] = useState({
@@ -180,24 +191,32 @@ const ApplyLeave = ({navigation, route}) => {
   const [reason, setReason] = useState(openLeaveReason || '');
   const [leaveApprovers, setLeaveApprovers] = useState([]);
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
+  const [openResourcePicker, setOpenResourcePicker] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
+  const [resourcePickedId, setResourcePickedId] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
+  const [resourcePicks, setResourcePicks] = useState([]);
   const [resourceLeaves, setResourceLeaves] = useState([]);
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
+  const [selectedResource, setSelectedResource] = useState(null);
+  const [selectedResourceRemainingLeaves, setSelectedResourceRemainingLeaves] =
+    useState([]);
 
-  const leaveApproverFullName = `${
-    leaveApprovers[0]?.leaveApproverFirstName
-      ? leaveApprovers[0]?.leaveApproverFirstName
-      : ''
-  } ${
-    leaveApprovers[0]?.leaveApproverMiddleName
-      ? leaveApprovers[0]?.leaveApproverMiddleName + ' '
-      : ''
-  }${
-    leaveApprovers[0]?.leaveApproverLastName
-      ? leaveApprovers[0]?.leaveApproverLastName
-      : ''
-  }`;
+  const leaveApproverFullName =
+    leaveApprovers &&
+    `${
+      leaveApprovers[0]?.leaveApproverFirstName
+        ? leaveApprovers[0]?.leaveApproverFirstName
+        : ''
+    } ${
+      leaveApprovers[0]?.leaveApproverMiddleName
+        ? leaveApprovers[0]?.leaveApproverMiddleName + ' '
+        : ''
+    }${
+      leaveApprovers[0]?.leaveApproverLastName
+        ? leaveApprovers[0]?.leaveApproverLastName
+        : ''
+    }`;
 
   useEffect(() => {
     if (fromResource || fromWfh) {
@@ -246,6 +265,43 @@ const ApplyLeave = ({navigation, route}) => {
   ]);
 
   useEffect(() => {
+    if (fromApproverEnd) {
+      (async () => {
+        try {
+          setLoading(true);
+          const employeeData = await dispatch(
+            getEmployeesByLeaveApprover(token),
+          );
+
+          const finalResources = employeeData?.payload?.map(employee => {
+            const empName = `${
+              employee.firstName ? employee.firstName + ' ' : ''
+            }${employee.middleName ? employee.middleName + ' ' : ''}${
+              employee.lastName ? employee.lastName + ' ' : ''
+            }`;
+
+            return {value: employee.employeeId, label: empName, employee};
+          });
+
+          setResourcePicks(finalResources);
+          if (employeeData?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: employeeData?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+            });
+          }
+        } catch (err) {
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [dispatch, navigation, token, fromApproverEnd]);
+
+  useEffect(() => {
     if (!isGuestLogin) {
       (async () => {
         try {
@@ -256,7 +312,9 @@ const ApplyLeave = ({navigation, route}) => {
 
           const finalWeekOffs = [];
           daysOfWeek?.map((el, index) => {
-            if (weekOffs.includes(el)) finalWeekOffs.push(index);
+            if (weekOffs.includes(el)) {
+              finalWeekOffs.push(index);
+            }
           });
           setEmployeeWeekOffs(finalWeekOffs);
         } catch (err) {
@@ -339,30 +397,7 @@ const ApplyLeave = ({navigation, route}) => {
         ? resourceLeaves[3]?.currentLeaveBalance || 0
         : allRemainingLeaves[3]?.currentLeaveBalance || 0,
     },
-    // {
-    //   leaveType: allRemainingLeaves[4]?.leaveType || 'Leave Without Pay',
-    //   allocated: isGuestLogin
-    //     ? 1
-    //     : fromResource
-    //     ? resourceLeaves[4]?.totalLeavesAllocated
-    //     : allRemainingLeaves[4]?.totalLeavesAllocated || 0,
-    //   taken: isGuestLogin
-    //     ? 0
-    //     : fromResource
-    //     ? resourceLeaves[4]?.currentLeaveApplied
-    //     : allRemainingLeaves[4]?.currentLeaveApplied || 0,
-    //   remaining: isGuestLogin
-    //     ? 1
-    //     : fromResource
-    //     ? resourceLeaves[4]?.currentLeaveBalance
-    //     : allRemainingLeaves[4]?.currentLeaveBalance || 0,
-    // },
-    // {leaveType: 'Bereavement Leave', allocated: 0, taken: 0, remaining: 0},
-    // {leaveType: 'Compensatory Off', allocated: 0, taken: 0, remaining: 0},
-    // // {leaveType: 'Maternity Leave', allocated: 0, taken: 0, remaining: 0},
-    // // {leaveType: 'Paternity Leave', allocated: 0, taken: 0, remaining: 0},
     {leaveType: leaveWithoutPay, allocated: 0, taken: 0, remaining: 0},
-    // {leaveType: 'Work From Home', allocated: 0, taken: 0, remaining: 0},
   ];
 
   const leaveTypes = [
@@ -370,11 +405,9 @@ const ApplyLeave = ({navigation, route}) => {
     restrictedHoliday,
     compensatoryHoliday,
     bereavementHoliday,
-    // 'Maternity Leave',
-    // 'Paternity Leave',
     leaveWithoutPay,
-    // 'Work From Home',
   ];
+
   if (!fromResource) {
     const genderSpecificLeave = allRemainingLeaves.find(
       leave =>
@@ -410,16 +443,16 @@ const ApplyLeave = ({navigation, route}) => {
   }
 
   for (let i = 2; i < resourceLeaves.length; i++) {
-    const leaveType = resourceLeaves[i]?.leaveType;
+    const leaveTypeUpdate = resourceLeaves[i]?.leaveType;
 
     let leaveToBeUpdated = leaves?.find(
-      leave => leave.leaveType.toLowerCase() === leaveType.toLowerCase(),
+      leave => leave.leaveType.toLowerCase() === leaveTypeUpdate.toLowerCase(),
     );
     if (!leaveToBeUpdated) {
       leaveToBeUpdated = {};
       leaves?.splice(2, 0, leaveToBeUpdated);
     }
-    leaveToBeUpdated.leaveType = leaveType;
+    leaveToBeUpdated.leaveType = leaveTypeUpdate;
     leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
     leaveToBeUpdated.remaining = resourceLeaves[i]?.currentLeaveBalance;
     leaveToBeUpdated.taken = resourceLeaves[i]?.currentLeaveApplied;
@@ -450,7 +483,7 @@ const ApplyLeave = ({navigation, route}) => {
   const fromCalenderConfirm = async date => {
     fromOnCancel();
     setToDate({
-      toDateStr: openLeaveTooDatestr == invalidDate ? '' : openLeaveTooDatestr,
+      toDateStr: openLeaveTooDatestr === invalidDate ? '' : openLeaveTooDatestr,
     });
 
     if (employeeWeekOffs?.includes(date.getDay())) {
@@ -476,54 +509,6 @@ const ApplyLeave = ({navigation, route}) => {
     const presentYear = date.getFullYear();
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    // if (toDate.toDateObj) {
-    //   if (date > toDate.toDateObj) {
-    //     alert('Please select From date which is less than To date.');
-    //     fromOnCancel();
-    //     return;
-    //   }
-
-    //   const toDateMS = toDate.toDateObj.getTime();
-    //   const fromDateMS = date.getTime();
-
-    //   const toMonthIndex =
-    //     getMonthIndex(toDate?.toDateStr?.split('-')[1]) < 10
-    //       ? `0${getMonthIndex(toDate?.toDateStr?.split('-')[1])}`
-    //       : getMonthIndex(toDate?.toDateStr?.split('-')[1]);
-
-    //   const fromMonthIndex =
-    //     getMonthIndex(finalTodayDate.split('-')[1]) < 10
-    //       ? `0${getMonthIndex(finalTodayDate.split('-')[1])}`
-    //       : getMonthIndex(finalTodayDate.split('-')[1]);
-
-    //   let toDateStr = [...toDate?.toDateStr?.split('-')].reverse();
-    //   toDateStr[1] = toMonthIndex;
-    //   toDateStr = toDateStr.join('-');
-
-    //   let fromDateStr = `${presentYear}-${fromMonthIndex}-${presentDate}`;
-
-    //   try {
-    //     setLoading(true);
-    //     const totalOutputDays = await dispatch(
-    //       getFinalizedLeaveDays({
-    //         token,
-    //         employeeId: employeeID,
-    //         fromDate: fromDateStr,
-    //         toDate: toDateStr,
-    //       }),
-    //     );
-
-    //     const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
-    //     const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
-
-    //     setTotalNumberOfLeaveDays(finalizedLeaveDays);
-    //     setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
-    //   } catch (err) {
-    //     console.log('err:', err);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
     setTotalNumberOfLeaveDays('');
     setFromDate({fromDateObj: date, fromDateStr: finalTodayDate});
   };
@@ -534,15 +519,6 @@ const ApplyLeave = ({navigation, route}) => {
     if (totalNumberOfLeaveDays > 1) {
       setHalfDay('None');
     }
-
-    // if (date.getDay() === 0 || date.getDay() === 6) {
-    //   // date.setDate(date.getDate() + 1);
-    //   alert(
-    //     'Please select a valid end date which should not fall on weekends.',
-    //   );
-    //   toOnCancel();
-    //   return;
-    // }
 
     if (employeeWeekOffs?.includes(date.getDay())) {
       // date.setDate(date.getDate() + 1);
@@ -578,11 +554,6 @@ const ApplyLeave = ({navigation, route}) => {
     const presentYear = date.getFullYear();
     const finalTodayDate = `${presentDate}-${presentMonth}-${presentYear}`;
 
-    // const toDateMS = date.getTime();
-    // const fromDateMS = fromDate.fromDateObj.getTime();
-    // const diffInMS = toDateMS - fromDateMS;
-
-    // const tempDate = new Date(`${fromDate.fromDateStr.split('-')[1]} 1, 2000`);
     const fromMonthIndex =
       getMonthIndex(fromDate.fromDateStr.split('-')[1]) < 10
         ? `0${getMonthIndex(fromDate.fromDateStr.split('-')[1])}`
@@ -611,7 +582,6 @@ const ApplyLeave = ({navigation, route}) => {
       );
 
       const finalizedLeaveDays = totalOutputDays?.payload?.totalLeaveDays;
-      const isSandwitching = totalOutputDays?.payload?.isSandwichApplicable;
       setTotalNumberOfLeaveDays(finalizedLeaveDays);
       setToDate({toDateObj: date, toDateStr: finalTodayDate});
     } catch (err) {
@@ -619,18 +589,6 @@ const ApplyLeave = ({navigation, route}) => {
     } finally {
       setLoading(false);
     }
-
-    // const totalWeekdays = weekdayCount(fromDate.fromDateObj, date);
-
-    // if (totalWeekdays > 5) {
-    //   const numberOfLeaveDays = Math.ceil(diffInMS / (24 * 60 * 60 * 1000)) + 1;
-    //   setTotalNumberOfLeaveDays(numberOfLeaveDays);
-    //   setToDate({toDateObj: date, toDateStr: finalTodayDate});
-    //   toOnCancel();
-    //   return;
-    // }
-
-    // setTotalNumberOfLeaveDays(totalWeekdays);
   };
 
   const today = new Date();
@@ -670,19 +628,19 @@ const ApplyLeave = ({navigation, route}) => {
             <View
               style={[
                 styles.calenderContainer,
-                !leftText && {justifyContent: 'flex-end'},
+                !leftText && styles.justifyContentFlexEnd,
               ]}>
               {leftText ? <Text>{leftText}</Text> : null}
               {!fromResource && selectableLeft ? (
                 <TouchableOpacity disabled={fromResource} onPress={leftOnPress}>
-                  <Image source={iconLeft} style={{height: 20, width: 20}} />
+                  <Image source={iconLeft} style={styles.cardLeftImage} />
                 </TouchableOpacity>
               ) : null}
             </View>
           </View>
         )}
         {rightDropdown ? (
-          <View style={[styles.toContainer, {zIndex: 1000}]}>
+          <View style={[styles.toContainer, styles.zIndex1000]}>
             <Text style={styles.toText}>{rightLabel}</Text>
             {rightDropdown}
           </View>
@@ -692,7 +650,7 @@ const ApplyLeave = ({navigation, route}) => {
             <View
               style={[
                 styles.calenderContainer,
-                !rightText && !fromResource && {justifyContent: 'flex-end'},
+                !rightText && !fromResource && styles.justifyContentFlexEnd,
               ]}>
               {rightText && !fromResource && <Text>{rightText}</Text>}
               {fromResource && resourseRightText ? (
@@ -702,7 +660,7 @@ const ApplyLeave = ({navigation, route}) => {
                 <TouchableOpacity
                   disabled={fromResource || rightDisabled}
                   onPress={rightOnPress}>
-                  <Image source={iconRight} style={{height: 20, width: 20}} />
+                  <Image source={iconRight} style={styles.imageRight} />
                 </TouchableOpacity>
               )}
             </View>
@@ -713,14 +671,13 @@ const ApplyLeave = ({navigation, route}) => {
   };
 
   const leaveCard = (data, index) => {
-    const {leaveType, allocated, taken, remaining} = data;
-    let checkSelected = data.leaveType == selectedCard.leaveType;
+    let checkSelected = data.leaveType === selectedCard.leaveType;
     return (
       <View
-        style={{
-          ...styles.leaveCard,
-          backgroundColor: checkSelected ? 'green' : 'white',
-        }}>
+        style={[
+          styles.leaveCard,
+          checkSelected ? styles.backgroundGreen : styles.backgroundWhite,
+        ]}>
         <View
           style={{
             ...styles.leaveTextContainer,
@@ -773,22 +730,17 @@ const ApplyLeave = ({navigation, route}) => {
     );
   };
 
-  const sliderComponent = () => {
+  const sliderComponent = data => {
     return (
-      <View style={{flex: 1}}>
+      <View style={styles.headerContainer}>
         <FlatList
           ref={flatListRef}
           showsHorizontalScrollIndicator={false}
           scrollEnabled={true}
-          contentContainerStyle={{flexGrow: 1}}
-          style={{
-            backgroundColor: Colors.lighterBlue,
-            paddingHorizontal: wp(2.4),
-            paddingVertical: hp(1.2),
-            flex: 1,
-          }}
+          contentContainerStyle={styles.headerSliderContentContainerStyle}
+          style={styles.headerSlider}
           horizontal={true}
-          data={leaves}
+          data={data}
           renderItem={({item, index}) => {
             return leaveCard(item, index);
           }}
@@ -800,11 +752,7 @@ const ApplyLeave = ({navigation, route}) => {
 
   const renderRow = (rowData, rowID, highlighted) => {
     return (
-      <View
-        style={[
-          styles.row,
-          {borderBottomColor: Colors.lightGray, borderBottomWidth: 1},
-        ]}>
+      <View style={[styles.row]}>
         <Text style={[styles.rowText]}>{rowData}</Text>
       </View>
     );
@@ -814,36 +762,18 @@ const ApplyLeave = ({navigation, route}) => {
     setReason(value);
   };
 
-  const renderRightComponentResource = () => <View></View>;
+  const renderRightComponentResource = () => <View />;
 
   const renderRightComponent = () => (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-        paddingTop: 4,
-        position: 'absolute',
-        right: 0,
-      }}>
-      <Image
-        source={MonthImages.DropDownIcon}
-        style={{
-          height: 20,
-          width: 20,
-        }}
-      />
+    <View style={styles.cardRightContainer}>
+      <Image source={MonthImages.DropDownIcon} style={styles.cardRightImage} />
     </View>
   );
 
   const renderButtonText = option => {
     return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text style={{fontSize: 16}}>
+      <View style={styles.rightButtonCont}>
+        <Text style={styles.rightButtonText}>
           {totalNumberOfLeaveDays > 1 ? 'None' : option}
         </Text>
       </View>
@@ -950,6 +880,11 @@ const ApplyLeave = ({navigation, route}) => {
       return;
     }
 
+    if (fromApproverEnd && !selectedResource) {
+      alert('Please Select a Resource.');
+      return;
+    }
+
     // =========================================================================
 
     setLoading(true);
@@ -960,7 +895,7 @@ const ApplyLeave = ({navigation, route}) => {
         applyForLeave({
           token,
           body: {
-            employeeId: employeeID,
+            employeeId: fromApproverEnd ? selectedResource.value : employeeID,
             fromDate: fromDate.fromDateObj,
             toDate: toDate.toDateObj,
             totalLeaveDays: totalNumberOfLeaveDays,
@@ -972,9 +907,13 @@ const ApplyLeave = ({navigation, route}) => {
                 : 0,
             postingDate: new Date(),
             leaveType: leaveType,
-            leaveApprover: leaveApproverMailID,
+            leaveApprover: fromApproverEnd
+              ? decoded?.emailId
+              : leaveApproverMailID,
             fiscalYear: fiscalYear,
-            userId: decoded?.emailId,
+            userId: fromApproverEnd
+              ? selectedResource.employee.companyEmail
+              : decoded?.emailId,
           },
         }),
       ));
@@ -1090,6 +1029,36 @@ const ApplyLeave = ({navigation, route}) => {
 
   const onSelectLeaveApprover = selectedOption => {};
 
+  const onSelectResource = async selectedOption => {
+    try {
+      const empId = selectedOption.value;
+      setLoading(true);
+      const {payload: selectedEmployeeRemainingLeaves} = await dispatch(
+        getRemainingLeavesByEmpId({token, empId}),
+      );
+
+      const finalLeaves = selectedEmployeeRemainingLeaves.map(leave => ({
+        leaveType: leave.leaveType,
+        allocated: leave.totalLeavesAllocated,
+        taken: leave.currentLeaveApplied,
+        remaining: leave.currentLeaveBalance,
+      }));
+      finalLeaves.push({
+        leaveType: leaveWithoutPay,
+        allocated: 0,
+        taken: 0,
+        remaining: 0,
+      });
+      setSelectedResourceRemainingLeaves(finalLeaves);
+
+      setSelectedResource(selectedOption);
+    } catch (err) {
+      console.log('errorRemLeaves:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const dateAfter6Months = new Date();
   dateAfter6Months.setMonth(new Date().getMonth() + 6);
 
@@ -1115,16 +1084,41 @@ const ApplyLeave = ({navigation, route}) => {
         isHome={false}
         showHeaderRight={false}
       />
-      <SafeAreaView style={{flex: 1}}>
-        <View style={styles.swiperContainer}>{sliderComponent()}</View>
+      <SafeAreaView style={styles.mainBottomContainer}>
+        <View style={styles.swiperContainer}>
+          {!fromApproverEnd || selectedResourceRemainingLeaves.length > 0 ? (
+            sliderComponent(
+              fromApproverEnd ? selectedResourceRemainingLeaves : leaves,
+            )
+          ) : (
+            <Text style={styles.headerSliderText}>
+              Please Select a Resource.
+            </Text>
+          )}
+        </View>
+
+        {fromApproverEnd ? (
+          <View style={styles.resourcePickerContainer}>
+            <Text style={styles.selectResourceText}>Employee: </Text>
+            {!loading ? (
+              <DropDownPicker
+                placeholder={'Select....'}
+                open={openResourcePicker}
+                value={resourcePickedId}
+                items={resourcePicks}
+                setOpen={setOpenResourcePicker}
+                setValue={setResourcePickedId}
+                setItems={setResourcePicks}
+                onSelectItem={onSelectResource}
+                containerStyle={styles.resourceSelectContainerStyle}
+                style={styles.leaveApproverSelect}
+              />
+            ) : null}
+          </View>
+        ) : null}
         <View
           showsVerticalScrollIndicator={false}
-          style={{flex: 1}}
-          contentContainerStyle={{
-            justifyContent: 'space-between',
-
-            flexGrow: 1,
-          }}>
+          style={styles.mainBottomContainer}>
           <View style={styles.mainPart}>
             <View style={[styles.formContainer]}>
               <ScrollView>
@@ -1176,19 +1170,17 @@ const ApplyLeave = ({navigation, route}) => {
                           (!isEditOpenleave && fromOpenLeave)
                         }
                         renderButtonText={renderButtonText}
-                        style={{
-                          borderWidth: 1,
-                          backgroundColor: Colors.white,
-                          opacity:
-                            route.params.applyLeave &&
-                            totalNumberOfLeaveDays > 1
-                              ? 0.5
-                              : 1,
-                          // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
-                          borderRadius: 3,
-                          paddingVertical: 5,
-                          height: 32,
-                        }}
+                        style={[
+                          styles.halfDayDropdown,
+                          totalNumberOfLeaveDays > 1 && styles.lessOpacity,
+                          // {
+                          //   opacity:
+                          //     route?.params?.applyLeave &&
+                          //     totalNumberOfLeaveDays > 1
+                          //       ? 0.5
+                          //       : 1,
+                          // },
+                        ]}
                         isFullWidth={true}
                         showsVerticalScrollIndicator={false}
                         defaultValue={
@@ -1202,11 +1194,7 @@ const ApplyLeave = ({navigation, route}) => {
                         }
                         // defaultIndex={0}
                         options={newDropDownOptions}
-                        dropdownStyle={{
-                          width: '45%',
-                          paddingLeft: 10,
-                          height: 100,
-                        }}
+                        dropdownStyle={styles.halfDayDropdownStyles}
                         renderRow={renderRow}
                         onSelect={(index, itemName) => {
                           if (itemName !== none) {
@@ -1252,13 +1240,7 @@ const ApplyLeave = ({navigation, route}) => {
                       disabled={
                         fromResource || (!isEditOpenleave && fromOpenLeave)
                       }
-                      style={{
-                        borderWidth: 1,
-                        backgroundColor: Colors.white,
-                        borderRadius: 3,
-                        paddingVertical: 5,
-                        height: 32,
-                      }}
+                      style={styles.selectLeaveDropdown}
                       isFullWidth={true}
                       showsVerticalScrollIndicator={false}
                       defaultValue={
@@ -1269,16 +1251,10 @@ const ApplyLeave = ({navigation, route}) => {
                           : 'Select'
                       }
                       options={leaveTypes}
-                      dropdownStyle={{
-                        width: '45%',
-                        paddingLeft: 6,
-                      }}
+                      dropdownStyle={styles.selectLeaveDropdownStyle}
                       animated={true}
                       renderRow={renderRow}
                       onSelect={(index, itemName) => {
-                        const itemIndex = leaves.findIndex(
-                          item => item.leaveType === itemName,
-                        );
                         flatListRef.current?.scrollToIndex({
                           animated: true,
                           index: index,
@@ -1289,7 +1265,6 @@ const ApplyLeave = ({navigation, route}) => {
                       }}
                       renderRightComponent={renderRightComponent}
                     />
-                    // </View>
                   ),
                 })}
 
@@ -1342,7 +1317,11 @@ const ApplyLeave = ({navigation, route}) => {
 
               <View style={styles.leaveApproverContainer}>
                 <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-                {isEditOpenleave ? (
+                {fromApproverEnd ? (
+                  <Text style={styles.leaveApproverName}>
+                    {approverUserName}
+                  </Text>
+                ) : isEditOpenleave ? (
                   leaveApprovers?.length === 1 ? (
                     <Text style={styles.leaveApproverName}>
                       {leaveApproverFullName[0].firstName}
@@ -1360,7 +1339,7 @@ const ApplyLeave = ({navigation, route}) => {
                           setItems={setLeaveApproversList}
                           onSelectItem={onSelectLeaveApprover}
                           containerStyle={{width: wp(50)}}
-                          style={{borderRadius: 4}}
+                          style={styles.selectLeaveApproversDropdown}
                         />
                       </View>
                     </View>
@@ -1398,7 +1377,7 @@ const ApplyLeave = ({navigation, route}) => {
                         setItems={setLeaveApproversList}
                         onSelectItem={onSelectLeaveApprover}
                         containerStyle={{width: wp(50)}}
-                        style={{borderRadius: 4}}
+                        style={styles.leaveApproverSelect}
                       />
                     </View>
                   </View>
@@ -1454,14 +1433,13 @@ const ApplyLeave = ({navigation, route}) => {
               </View>
             )}
           </View>
-
-          {loading ? (
-            <View style={styles.loaderContainer}>
-              <View style={styles.loaderBackground} />
-              <ActivityIndicator size="large" />
-            </View>
-          ) : null}
         </View>
+        {loading ? (
+          <View style={styles.loaderContainer}>
+            <View style={styles.loaderBackground} />
+            <ActivityIndicator size="large" />
+          </View>
+        ) : null}
       </SafeAreaView>
     </>
 

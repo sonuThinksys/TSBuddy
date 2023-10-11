@@ -3,61 +3,138 @@ import React, {useCallback, useEffect, useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './LeaveApplicationStyle';
 import {Colors} from 'colors/Colors';
-import {getOpenRequestHR} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import ApplicationListLayout from './ApplicationListLayout';
+
+import {
+  LeaveApplicationForApproverName,
+  WFHApplicationForApproverName,
+} from 'navigation/Route';
+import {getLeaveApplicationData} from 'redux/homeSlice';
+import jwt_decode from 'jwt-decode';
 import {useIsFocused} from '@react-navigation/native';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
 
 const LEAVE = 'Leave';
-const WFH = 'WFH';
 const REGULARISATION = 'Regularisation';
+const WFH = 'WFH';
 
 const LeaveApplication = ({navigation}) => {
-  const [selectedType, setSelectedType] = useState({
-    type: LEAVE,
-  });
+  const token = useSelector(state => state.auth.userToken);
+  const {emailId, role, id} = jwt_decode(token);
+  const isFocussed = useIsFocused();
+  // 10224;
+
+  const isHRManager = role.includes('HR Manager');
+
+  const [selectedType, setSelectedType] = useState(LEAVE);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [leaveApplicationData, setLeaveApplicationData] = useState([]);
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.userToken);
 
-  const isFocused = useIsFocused();
+  const [applicationData, setApplicationData] = useState({
+    [LEAVE]: {data: [], count: 0},
+    [WFH]: {data: [], count: 0},
+    [REGULARISATION]: {data: [], count: 0},
+  });
 
-  const getAllOpenRequests = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const openRequestList = await dispatch(
-        getOpenRequestHR({
-          token,
-        }),
-      );
+  const tabButton = ({type, tabText, onTabPress}) => {
+    return (
+      <Pressable
+        onPress={() => {
+          onTabPress(type);
+        }}
+        style={[
+          styles.tabContainer,
+          {
+            backgroundColor:
+              selectedType === type ? Colors.lighterBlue : Colors.white,
+          },
+        ]}>
+        <Text style={selectedType === type ? styles.textColorWhite : null}>
+          {tabText}
+        </Text>
+      </Pressable>
+    );
+  };
 
-      if (openRequestList?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: openRequestList?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      } else {
-        setLeaveApplicationData(openRequestList?.payload);
-      }
-    } catch (err) {
-      console.error('err:', err);
-    } finally {
-      setIsLoading(false);
+  const onNewPress = () => {
+    if (selectedType === LEAVE) {
+      navigation.navigate(LeaveApplicationForApproverName);
+    } else if (selectedType === WFH) {
+      navigation.navigate(WFHApplicationForApproverName);
     }
-  }, [dispatch, navigation, token]);
+  };
+
+  const getLeavesForManager = useCallback(
+    async (type, isRefreshing) => {
+      try {
+        let approver = {approverEmail: emailId};
+        if (type === REGULARISATION) {
+          approver = {approverId: id};
+        }
+
+        setIsLoading(true);
+        const leaves = await dispatch(
+          getLeaveApplicationData({
+            token,
+            body: {
+              take: 12,
+              skip: isRefreshing ? 0 : applicationData[type].data.length,
+              page: 1,
+              name: null,
+              ...approver,
+            },
+            selectedType: type,
+            isHR: isHRManager,
+          }),
+        );
+
+        const {
+          payload: {data: initialLeaves, count},
+        } = leaves;
+
+        setApplicationData(prevData => ({
+          ...prevData,
+          [type]: {
+            data: isRefreshing
+              ? [...initialLeaves]
+              : [...prevData[type].data, ...initialLeaves],
+            count,
+          },
+        }));
+        return {count};
+      } catch (err) {
+        console.log('errr22:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [dispatch, emailId, token, applicationData, isHRManager, id],
+  );
 
   useEffect(() => {
-    if (isFocused) {
-      getAllOpenRequests();
+    if (isFocussed) {
+      (async () => {
+        await getLeavesForManager(selectedType, true);
+      })();
     }
-  }, [isFocused, getAllOpenRequests]);
+  }, [isFocussed]);
+
+  const renderMoreLeaves = async () => {
+    if (
+      applicationData[selectedType].data.length <
+      applicationData[selectedType].count
+    ) {
+      getLeavesForManager(selectedType);
+    }
+  };
+
+  const onTabPress = async type => {
+    setSelectedType(type);
+    if (applicationData[type]?.data?.length === 0) {
+      await getLeavesForManager(type);
+    }
+  };
 
   return (
     <>
@@ -66,96 +143,37 @@ const LeaveApplication = ({navigation}) => {
         title="Leave Application"
         navigation={navigation}
         isHome={false}
-        showHeaderRight={true}
+        showHeaderRight={false}
+        headerRight={
+          selectedType !== REGULARISATION ? (
+            <Pressable onPress={onNewPress} style={styles.headerRightContainer}>
+              <Text style={styles.headerRightText}>New</Text>
+            </Pressable>
+          ) : null
+        }
       />
+
       <View style={styles.attendanceTypeContainer}>
         <View style={styles.typeContainer}>
-          <Pressable
-            onPress={() => {
-              setSelectedType({type: LEAVE});
-            }}
-            style={[
-              styles.leftType,
-              {
-                backgroundColor:
-                  selectedType.type === LEAVE
-                    ? Colors.lighterBlue
-                    : Colors.white,
-              },
-            ]}>
-            <Text
-              style={{
-                color: selectedType.type === LEAVE ? Colors.white : null,
-              }}>
-              Leave
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedType({type: REGULARISATION});
-            }}
-            style={[
-              styles.middleType,
-              {
-                backgroundColor:
-                  selectedType.type === REGULARISATION
-                    ? Colors.lighterBlue
-                    : Colors.white,
-              },
-            ]}>
-            <Text
-              style={{
-                color:
-                  selectedType.type === REGULARISATION ? Colors.white : null,
-              }}>
-              Regularisation
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={() => {
-              setSelectedType({type: WFH});
-            }}
-            style={[
-              styles.rightType,
-              {
-                backgroundColor:
-                  selectedType.type === WFH ? Colors.lighterBlue : Colors.white,
-              },
-            ]}>
-            <Text
-              style={{
-                color: selectedType.type === WFH ? Colors.white : null,
-              }}>
-              WFH
-            </Text>
-          </Pressable>
+          {tabButton({type: LEAVE, tabText: 'Leave', onTabPress})}
+          {tabButton({
+            type: REGULARISATION,
+            tabText: 'Regularisation',
+            onTabPress,
+          })}
+          {tabButton({type: WFH, tabText: 'WFH', onTabPress})}
         </View>
       </View>
-      <View>
-        {selectedType.type === LEAVE ? (
-          <ApplicationListLayout
-            data={leaveApplicationData?.openLeaves}
-            loading={isLoading}
-            navigation={navigation}
-            getAllOpenRequests={getAllOpenRequests}
-            isRegularisation={false}
-          />
-        ) : selectedType.type === REGULARISATION ? (
-          <ApplicationListLayout
-            data={leaveApplicationData?.openRegularizeRequest}
-            loading={isLoading}
-            navigation={navigation}
-            isRegularisation={true}
-          />
-        ) : selectedType.type === WFH ? (
-          <ApplicationListLayout
-            data={leaveApplicationData?.openWfh}
-            loading={isLoading}
-            navigation={navigation}
-            isRegularisation={false}
-          />
-        ) : null}
+      <View style={styles.listContainer}>
+        <ApplicationListLayout
+          data={applicationData[selectedType].data || []}
+          loading={isLoading}
+          navigation={navigation}
+          isRegularisation={selectedType === REGULARISATION ? true : false}
+          loadMoreData={renderMoreLeaves}
+          getLeavesForManager={getLeavesForManager}
+          selectedType={selectedType}
+        />
       </View>
     </>
   );

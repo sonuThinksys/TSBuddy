@@ -1,9 +1,6 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -48,21 +45,16 @@ import {
   LeaveDetailsScreen,
   ResourcesDetailsScreen,
   ResourcesScreen,
-  CheckInOutScreen,
-  WFHDetailsScreen,
   RegularzitionScreen,
   LunchRequestsScreen,
+  LeaveApplicationForApproverName,
+  WFHApplicationForApproverName,
 } from './Route';
-import {FontFamily, FontSize} from 'constants/fonts';
+import {FontFamily} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
-import CheckInOut from 'screens/checkInOut/CheckInOut';
-import {WorkFromHomeScreen} from './Route';
 
 import MenuSVG from 'assets/newDashboardIcons/bars-sort.svg';
-import WFHDetails from 'screens/workFromHome/WFhDetails';
 import Regularization from 'screens/attendence/Regularization';
-import RegularisationScreen from 'screens/regularisation/RegularisationScreen';
-import RegularisationFormDetails from 'screens/regularisation/RegularisationFormDetails';
 import RegularisationTabDetails from 'screens/Resources/RegularisationTabDetails';
 import LunchRequests from 'screens/lunchRequests/LunchRequests';
 import AllAttendance from 'screens/allAttendance/AllAttendance';
@@ -75,6 +67,8 @@ import WFHApplication from 'screens/leaveApplication/WFHApplication';
 import RegularizationApplication from 'screens/leaveApplication/RegularizationApplication';
 import ApplicationDetailsLayout from 'screens/leaveApplication/ApplicationDetailsLayout';
 import DailyReports from 'screens/DailyReports/DailyReports';
+import ApplyLeaveByManager from 'screens/LeaveApplicationManager/ApplyLeaveByManager';
+import ApplyWFHByManager from 'screens/LeaveApplicationManager/ApplyWFHByManager';
 
 const Drawer = createDrawerNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -85,9 +79,6 @@ const LeavesStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
 const AllAttendanceStack = createNativeStackNavigator();
-const CheckInOutStack = createNativeStackNavigator();
-const WorkFromHomeStack = createNativeStackNavigator();
-const RegularisationStack = createNativeStackNavigator();
 const LunchRequestsStack = createNativeStackNavigator();
 const ApplyWfhStack = createNativeStackNavigator();
 const PoliciesStack = createNativeStackNavigator();
@@ -229,44 +220,6 @@ const LunchRequestsNavigator = ({navigation}) => {
   );
 };
 
-const WorkFromHomeStackScreen = ({navigation}) => {
-  return (
-    <WorkFromHomeStack.Navigator>
-      <WorkFromHomeStack.Screen
-        options={drawerOption({
-          label: 'Work From Home',
-          headerIconName: MonthImages.info_scopy,
-          navigation: navigation,
-          headerIcon: MonthImages.info_scopy,
-        })}
-        name={WorkFromHomeScreen}
-        component={WorkFromHome}
-      />
-      <WorkFromHomeStack.Screen
-        options={() => ({
-          headerShown: false,
-        })}
-        name={WFHDetailsScreen}
-        component={WFHDetails}
-      />
-      <WorkFromHomeStack.Screen
-        options={({navigation}) => ({
-          headerShown: false,
-        })}
-        name={'workFromHomeLeaveDetailsScreen'}
-        component={LeaveDetails}
-      />
-      <WorkFromHomeStack.Screen
-        options={() => ({
-          headerShown: false,
-        })}
-        name={'workFromHomeLeaveApplyScreenOpen'}
-        component={ApplyLeave}
-      />
-    </WorkFromHomeStack.Navigator>
-  );
-};
-
 const AttendenceStackScreen = ({navigation}) => {
   return (
     <AttendenceStack.Navigator screenOptions={{headerShown: false}}>
@@ -314,6 +267,16 @@ const LeaveApplicationStackScreen = ({navigation}) => {
         })}
         name={'applicationDetailsScreen'}
         component={ApplicationDetailsLayout}
+      />
+      <LeaveApplicationStack.Screen
+        options={{headerShown: false}}
+        name={LeaveApplicationForApproverName}
+        component={ApplyLeaveByManager}
+      />
+      <LeaveApplicationStack.Screen
+        options={{headerShown: false}}
+        name={WFHApplicationForApproverName}
+        component={ApplyWFHByManager}
       />
     </LeaveApplicationStack.Navigator>
   );
@@ -381,28 +344,6 @@ const ApplyWfhStackScreen = ({navigation}) => {
         component={ApplyWFH}
       />
     </ApplyWfhStack.Navigator>
-  );
-};
-
-const RegularisationStackScreen = ({navigation}) => {
-  return (
-    <RegularisationStack.Navigator>
-      <RegularisationStack.Screen
-        options={{headerShown: false}}
-        name={'Resource List screen'}
-        component={RegularisationScreen}
-      />
-      <RegularisationStack.Screen
-        options={{headerShown: false}}
-        name={'RegularisationForm'}
-        component={RegularisationFormDetails}
-      />
-      <RegularisationStack.Screen
-        options={{headerShown: false}}
-        name={'regularisationTabDetailsScreen'}
-        component={RegularisationTabDetails}
-      />
-    </RegularisationStack.Navigator>
   );
 };
 
@@ -535,20 +476,6 @@ const AllAttendanceNavigator = () => {
   );
 };
 
-const CheckInOutStackScreen = ({navigation}) => {
-  return (
-    <CheckInOutStack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName={CheckInOutScreen}>
-      <CheckInOutStack.Screen
-        options={{headerShown: false}}
-        name={CheckInOutScreen}
-        component={CheckInOut}
-      />
-    </CheckInOutStack.Navigator>
-  );
-};
-
 const Logout = () => {
   return <Text>Logout</Text>;
 };
@@ -612,14 +539,8 @@ function DrawerNavigator({navigation}) {
       ) : null}
       {isLeaveApprover ? (
         <Drawer.Screen
-          name="WorkFromHome"
-          component={WorkFromHomeStackScreen}
-        />
-      ) : null}
-      {isLeaveApprover ? (
-        <Drawer.Screen
-          name="RegularisationFormScreen"
-          component={RegularisationStackScreen}
+          name="allLeaves"
+          component={LeaveApplicationStackScreen}
         />
       ) : null}
       <Drawer.Screen
@@ -642,12 +563,6 @@ function DrawerNavigator({navigation}) {
       ) : null}
 
       {isHRManager ? (
-        <Drawer.Screen
-          name="leaveApplication"
-          component={LeaveApplicationStackScreen}
-        />
-      ) : null}
-      {isHRManager ? (
         <Drawer.Screen name="DailyReports" component={DailyReportsScreen} />
       ) : null}
 
@@ -657,17 +572,3 @@ function DrawerNavigator({navigation}) {
 }
 
 export default DrawerNavigator;
-
-// const styles = StyleSheet.create({
-//   newLeaveText: {
-//     color: Colors.white,
-//     borderRadius: 6,
-//     borderWidth: 0.6,
-//     borderColor: Colors.white,
-//     fontFamily: FontFamily.RobotoBold,
-//     fontSize: FontSize.h15,
-//     marginRight: wp(4),
-//     paddingHorizontal: wp(3),
-//     paddingVertical: hp(0.8),
-//   },
-// });

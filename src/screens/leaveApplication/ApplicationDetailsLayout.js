@@ -5,7 +5,7 @@ import styles from './ApplicationDetailsLayoutStyle';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateAttRegularizeStatus, updateLeaveStatus} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import {widthPercentageToDP} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 
 const ApplicationDetailsLayout = ({route, navigation}) => {
   const {
@@ -16,14 +16,12 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     leaveApplicationId,
     fromDate,
     toDate,
-    halfDay,
     leaveType,
     totalLeaveDays,
     status,
     description,
     currentLeaveBalance,
     postingDate,
-    fiscalYear,
     leaveApproverFirstName,
     leaveApproverMiddleName,
     leaveApproverLastName,
@@ -43,7 +41,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           <Text style={styles.cardLeftText}>{leftText}</Text>
         </View>
         <View style={styles.cardRightTextContainer}>
-          <Text style={{width: widthPercentageToDP(60)}}>{rightText}</Text>
+          <Text style={{width: wp(60)}}>{rightText}</Text>
         </View>
       </View>
     );
@@ -84,15 +82,15 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     month: 'short',
   })}-${new Date(attendanceDate).getFullYear()}`;
 
-  const rangeOfdate = (fromDate, toDate) =>
-    `${new Date(fromDate).getDate()}-${new Date(fromDate).toLocaleString(
+  const rangeOfdate = (fromDateObj, toDateObj) =>
+    `${new Date(fromDateObj).getDate()}-${new Date(fromDateObj).toLocaleString(
       'default',
       {month: 'short'},
-    )}-${new Date(fromDate).getFullYear()} to ${new Date(
-      toDate,
-    ).getDate()}-${new Date(toDate).toLocaleString('default', {
+    )}-${new Date(fromDateObj).getFullYear()} to ${new Date(
+      toDateObj,
+    ).getDate()}-${new Date(toDateObj).toLocaleString('default', {
       month: 'short',
-    })}-${new Date(toDate).getFullYear()}`;
+    })}-${new Date(toDateObj).getFullYear()}`;
 
   const regularisationReasons = [
     'Not Carrying Access Card',
@@ -123,7 +121,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     ['Comment', comment],
   ];
 
-  const finalizeLeave = async status => {
+  const finalizeLeave = async finalStatus => {
     const empId = employeeId;
     const response =
       token &&
@@ -133,7 +131,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           body: {
             employeeId: empId,
             leaveApplicationId: leaveApplicationId,
-            status: status,
+            status: finalStatus,
             leaveType: leaveType,
           },
         }),
@@ -141,7 +139,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
 
     if (response?.error) {
       // alert(response?.error?.message);
-      Alert.alert('Failed', `Leave ${status} failed!`, [
+      Alert.alert('Failed', `Leave ${finalStatus} failed!`, [
         {
           text: 'Ok',
           onPress: () => {
@@ -150,7 +148,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
         },
       ]);
     } else {
-      Alert.alert('Success', `Leave ${status} successfully!`, [
+      Alert.alert('Success', `Leave ${finalStatus} successfully!`, [
         {
           text: 'Ok',
           onPress: () => {
@@ -161,7 +159,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     }
   };
 
-  const handleRegularisation = async status => {
+  const handleRegularisation = async finalStatus => {
     const updateAttRegularize = await dispatch(
       updateAttRegularizeStatus({
         token,
@@ -169,7 +167,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           regularizationId: regularizationId,
           attendanceDate: attendanceDate,
           employeeId: employeeId,
-          status: status,
+          status: finalStatus,
           attendanceType: attendanceType,
         },
       }),
@@ -227,7 +225,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
               {
                 backgroundColor: Colors.reddishTint,
                 padding: 14,
-                width: widthPercentageToDP(30),
+                width: wp(30),
                 alignItems: 'center',
                 borderRadius: 15,
               })
@@ -240,7 +238,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
               ([styles.resourceButton],
               {
                 backgroundColor: Colors.lovelyGreen,
-                width: widthPercentageToDP(30),
+                width: wp(30),
                 alignItems: 'center',
                 padding: 14,
                 borderRadius: 15,
@@ -260,7 +258,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
               {
                 backgroundColor: Colors.reddishTint,
                 padding: 14,
-                width: widthPercentageToDP(30),
+                width: wp(30),
                 alignItems: 'center',
                 borderRadius: 15,
               })
@@ -274,7 +272,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
               ([styles.resourceButton],
               {
                 backgroundColor: Colors.lovelyGreen,
-                width: widthPercentageToDP(30),
+                width: wp(30),
                 alignItems: 'center',
                 padding: 14,
                 borderRadius: 15,
@@ -283,7 +281,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
             onPress={handleRegularisation.bind(null, 'Approved')}>
             <Text style={styles.applyText}>Approve</Text>
           </Pressable>
-        ) : isRegularisation && status == 'Open' ? (
+        ) : isRegularisation && status.toLowerCase() === 'open' ? (
           <View style={styles.btnContainer}>
             <Pressable
               style={
@@ -291,7 +289,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
                 {
                   backgroundColor: Colors.reddishTint,
                   padding: 14,
-                  width: widthPercentageToDP(30),
+                  width: wp(30),
                   alignItems: 'center',
                   borderRadius: 15,
                   margin: 5,
@@ -305,7 +303,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
                 ([styles.resourceButton],
                 {
                   backgroundColor: Colors.lovelyGreen,
-                  width: widthPercentageToDP(30),
+                  width: wp(30),
                   alignItems: 'center',
                   padding: 14,
                   borderRadius: 15,

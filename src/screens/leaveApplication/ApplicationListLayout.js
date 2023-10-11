@@ -1,19 +1,25 @@
 import {View, Text, FlatList, Pressable} from 'react-native';
 import styles from './ApplicationListLayoutStyle';
-import React, {useCallback} from 'react';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import React, {useCallback, useState} from 'react';
+
 import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
-import {FontFamily} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import Loader from 'component/LoadingScreen/LoadingScreen';
 import {useNavigation} from '@react-navigation/native';
 
-const ApplicationListLayout = ({data, loading, isRegularisation}) => {
+const ApplicationListLayout = ({
+  data,
+  loading,
+  isRegularisation,
+  loadMoreData,
+  getLeavesForManager,
+  selectedType,
+}) => {
+  console.log('dataaa:', data);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const navigation = useNavigation();
   const keyExtractor = useCallback(item => Math.random() * Math.random(), []);
   const renderListOfAppliedRequests = ({item}) => {
@@ -38,14 +44,9 @@ const ApplicationListLayout = ({data, loading, isRegularisation}) => {
       item?.attendanceDate,
     )?.toLocaleDateString('en-US', options);
 
-    const empFullName =
-      item.firstName && item.middleName && item.lastName
-        ? `${item.firstName} ${item.middleName} ${item.lastName}`
-        : item.firstName && item.lastName
-        ? `${item.firstName} ${item.lastName}`
-        : item.firstName && item.middleName
-        ? `${item.firstName} ${item.middleName}`
-        : item.firstName;
+    const empFullName = `${item.firstName ? item.firstName + ' ' : ''}${
+      item.middleName ? item.middleName + ' ' : ''
+    }${item.lastName ? item.lastName : ''}`;
 
     return (
       <Pressable
@@ -57,93 +58,71 @@ const ApplicationListLayout = ({data, loading, isRegularisation}) => {
         }}>
         <View style={styles.request} key={item.leaveApplicationId}>
           <View style={styles.appliedRequestsLeft}>
-            <View
-              style={{
-                alignItems: 'center',
-                marginRight: wp(1),
-              }}>
-              <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
-                {item?.totalLeaveDays < 9 ? '0' : null}
+            <View style={styles.leave}>
+              <Text style={styles.totalDaysText}>
+                {item?.totalLeaveDays < 9 &&
+                Number.isInteger(item?.totalLeaveDays)
+                  ? '0'
+                  : null}
                 {item?.totalLeaveDays}
               </Text>
               {!isRegularisation ? (
-                <Text
-                  style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+                <Text style={styles.daysText}>
                   {item?.totalLeaveDays === 1 ? 'Day' : 'Days'}
                 </Text>
               ) : (
-                <Text
-                  style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
-                  Emp/{item?.employeeId}
-                </Text>
+                <Text style={styles.empId}>Emp/{item?.employeeId}</Text>
               )}
             </View>
-            <View style={{marginLeft: 20, marginTop: 4}}>
+            <View style={styles.datesContainer}>
               {!isRegularisation ? (
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontFamily: FontFamily.RobotoRegular,
-                    color: Colors.dune,
-                    marginBottom: hp(1),
-                  }}>
+                <Text style={styles.dates}>
                   {formattedStartDate} - {formattedEndDate}
                 </Text>
               ) : (
                 <Text>{empFullName}</Text>
               )}
-              <View style={{flexDirection: 'row'}}>
-                <Text style={{fontSize: 11, color: Colors.lightGray1}}>
+              <View style={styles.reguCont}>
+                <Text style={styles.reguText}>
                   {!isRegularisation ? 'Applied on: ' : 'Attendance Date '}
                 </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: Colors.lightGray1,
-                    fontFamily: FontFamily.RobotoMedium,
-                  }}>
+                <Text style={styles.reguTitleText}>
                   {!isRegularisation ? appliedDate : regulariseAttendanceDate}
                 </Text>
               </View>
             </View>
           </View>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={styles.statusContainer}>
             {item.status?.toLowerCase() === 'open' ? (
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={styles.iconContainer}>
                 <PendingIcon
                   fill={Colors.gold}
                   height={20}
                   width={20}
                   marginBottom={4}
                 />
-                <Text style={{fontSize: 12, color: Colors.gold}}>Open</Text>
+                <Text style={styles.statusText}>Open</Text>
               </View>
             ) : item.status?.toLowerCase() === 'dismissed' ||
               item.status?.toLowerCase() === 'rejected' ? (
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={styles.iconContainer}>
                 <RejectedIcon
                   fill={Colors.darkBrown}
                   height={20}
                   width={20}
                   marginBottom={4}
                 />
-                <Text style={{fontSize: 12, color: Colors.darkBrown}}>
-                  {item.status}
-                </Text>
+                <Text style={styles.statusText2}>{item.status}</Text>
               </View>
             ) : (
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={styles.iconContainer}>
                 <ApprovedIcon
                   fill={Colors.darkLovelyGreen}
                   height={20}
                   width={20}
                   marginBottom={4}
                 />
-                <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
+                <Text style={styles.statusText3}>
                   {item.status || 'Approved'}
                 </Text>
               </View>
@@ -155,27 +134,34 @@ const ApplicationListLayout = ({data, loading, isRegularisation}) => {
   };
 
   return (
-    <View>
+    <View style={styles.mainContainer}>
       {data?.length > 0 && (
-        <View>
+        <View style={styles.flatlistContainer}>
           {loading ? (
-            <View style={{marginTop: 10, marginBottom: 10}}>
+            <View style={styles.loaderContainer}>
               <Loader />
             </View>
           ) : (
             <FlatList
-              // style={{height: '95%'}}
               showsVerticalScrollIndicator={false}
               data={data}
               renderItem={renderListOfAppliedRequests}
               keyExtractor={keyExtractor}
-              // initialNumToRender={10}
+              onEndReached={loadMoreData} // Load more data when end is reached
+              onEndReachedThreshold={0.1}
+              style={styles.flatlist}
+              refreshing={isRefreshing}
+              onRefresh={() => {
+                setIsRefreshing(true);
+                getLeavesForManager(selectedType, true);
+                setIsRefreshing(false);
+              }}
             />
           )}
         </View>
       )}
 
-      {data?.length === 0 && (
+      {data?.length === 0 && !loading && (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataFoundText}>No data found!</Text>
         </View>

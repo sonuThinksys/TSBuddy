@@ -10,8 +10,10 @@ module.exports = {
   // Define the rules for your project.
   rules: {
     // Example rule: disallow the use of 'console'.
-    'no-console': 'warn',
     'no-lone-blocks': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-alert': 'off',
+    'no-console': 'off',
     // 'no-shadow': 'error',
 
     // More rules can be added here...

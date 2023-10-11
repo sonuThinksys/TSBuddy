@@ -179,4 +179,17 @@ export default StyleSheet.create({
     backgroundColor: Colors.black,
     opacity: 0.5,
   },
+  forgotPasswordText: {
+    color: Colors.white,
+    textDecorationLine: 'underline',
+  },
+  forgotPasswordButton: {
+    flexDirection: 'row',
+    paddingHorizontal: wp(2),
+    alignItems: 'center',
+  },
+  forgotPasswordIcon: {
+    height: 25,
+    width: 25,
+  },
 });
