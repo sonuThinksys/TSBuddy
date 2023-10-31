@@ -41,7 +41,7 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
-  var decoded = token && jwt_decode(token);
+  const decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
 
   useEffect(() => {
@@ -103,6 +103,14 @@ const Home = ({navigation}) => {
   useEffect(() => {
     (async () => {
       await dispatch(getConfigDataHandler({token}));
+
+      // const result = await dispatch(
+      //   getPermissions({
+      //     token:
+      //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImthbWFsLmRlZXBpa2FAdGhpbmtzeXMuY29tIiwiZW1wbG95ZWVOYW1lIjoiRGVlcGlrYSBLYW1hbCIsImdlbmRlciI6IkZlbWFsZSIsImVtcGxveWVlSWQiOjEwMjI0LCJ1c2VyUm9sZXMiOlt7InJvbGVJZCI6IlJMLzAwMDAwOCIsInJvbGVOYW1lIjoiRW1wbG95ZWUiLCJkZWZhdWx0X3JvbGUiOjF9LHsicm9sZUlkIjoiUkwvMDAwMDA3Iiwicm9sZU5hbWUiOiJMZWF2ZSBBcHByb3ZlciIsImRlZmF1bHRfcm9sZSI6MH0seyJyb2xlSWQiOiJSTC8wMDAwMDQiLCJyb2xlTmFtZSI6IkhSIE1hbmFnZXIiLCJkZWZhdWx0X3JvbGUiOjB9LHsicm9sZUlkIjoiUkwvMDAwMDAzIiwicm9sZU5hbWUiOiJBZG1pbmlzdHJhdG9yIiwiZGVmYXVsdF9yb2xlIjowfV0sImlzcyI6InRoaW5rc3lzLWhyIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwiYXV0aF90aW1lIjoxNjk3NzEyODMzODQwLCJpYXQiOjE2OTc3MTI4MzMsImV4cCI6MTY5NzcxNjQzM30.JfvxBlOluFOidyHNFePSBU4-ULjGw9cGHP6uwq6WaOs',
+      //   }),
+      // );
+      // console.log('resultIs:', result);
     })();
   }, [dispatch, token]);
 
@@ -117,18 +125,6 @@ const Home = ({navigation}) => {
       />
       {loading ? <Loader /> : null}
 
-      {/* <FlatList
-        ref={flatListRef}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        style={{flex: 1}}
-        keyExtractor={(item, index) => index}
-        renderItem={({item, index}) => {
-          let Component = item;
-          return <Component isTokenExpired={index === 0 ? true : false} />;
-        }}
-      /> */}
-
       <ScrollView nestedScrollEnabled={true}>
         {data.map((item, index) => {
           let Component = item;
@@ -140,6 +136,17 @@ const Home = ({navigation}) => {
           );
         })}
       </ScrollView>
+      {/* <FlatList
+        ref={flatListRef}
+        showsVerticalScrollIndicator={false}
+        data={data}
+        style={{flex: 1}}
+        keyExtractor={(item, index) => index}
+        renderItem={({item, index}) => {
+          let Component = item;
+          return <Component isTokenExpired={index === 0 ? true : false} />;
+        }}
+      /> */}
     </View>
   );
 };

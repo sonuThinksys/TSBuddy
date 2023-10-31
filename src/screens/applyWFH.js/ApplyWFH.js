@@ -55,6 +55,9 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id;
   const dispatch = useDispatch();
+  const {employeeShift: employeeShiftDataObj} = useSelector(
+    state => state.home,
+  );
 
   const [startDate, setStartDate] = useState(initialStartDate);
   const [endDate, setEndDate] = useState(initialEndDate);
@@ -126,10 +129,7 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
     if (!fromApproverEnd) {
       (async () => {
         try {
-          const employeeShift = await dispatch(
-            getEmployeeShift({token, id: employeeID}),
-          );
-          const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+          const weekOffs = employeeShiftDataObj?.weeklyOff.split('_');
 
           const finalWeekOffs = [];
           daysOfWeek?.map((el, index) => {
@@ -143,7 +143,13 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
         }
       })();
     }
-  }, [dispatch, employeeID, token, fromApproverEnd]);
+  }, [
+    dispatch,
+    employeeID,
+    token,
+    fromApproverEnd,
+    employeeShiftDataObj?.weeklyOff,
+  ]);
 
   useEffect(() => {
     if (isFocused && !fromApproverEnd) {
@@ -471,6 +477,7 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
       setLoading(false);
     }
   };
+
   const onSelectResource = async selectedOption => {
     try {
       setLoadingWFHList(true);

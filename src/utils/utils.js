@@ -129,3 +129,29 @@ export const empFullName = (employee = {}) => {
     employee?.middleName ? employee?.middleName + ' ' : ''
   }${employee?.lastName ? employee?.lastName + ' ' : ''}`;
 };
+
+export const getDateStringFromDateObject = date => {
+  const day = date.getDate();
+  const month = date.toLocaleString('default', {month: 'short'});
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};
+
+export const getDaysBetweenDates = (date1, date2) => {
+  const timeDifference = date2.getTime() - date1.getTime();
+  const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+  return Math.abs(Math.round(daysDifference));
+};
+
+export const getCurrentFiscalYear = () => {
+  let currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+
+  let fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
+
+  if (currentMonth < 3) {
+    fiscalYear = `${currentYear - 1} - ${new Date().getFullYear()}`;
+  }
+  return fiscalYear;
+};

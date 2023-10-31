@@ -1,24 +1,15 @@
 import {Colors} from 'colors/Colors';
-import {RegularzitionScreen} from 'navigation/Route';
 import {
   View,
   Text,
-  Button,
-  StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList,
   Alert,
   Pressable,
 } from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {TextInput} from 'react-native-gesture-handler';
 import ModalDropdown from 'react-native-modal-dropdown';
-import {heightPercentageToDP, widthPercentageToDP} from 'utils/Responsive';
-import {leaveTypes, regularnReason} from 'utils/defaultData';
 import {useEffect, useState} from 'react';
 import style from './RegularzationStyles';
 import {MonthImages} from 'assets/monthImage/MonthImage';
@@ -31,14 +22,11 @@ import {
 } from 'redux/homeSlice';
 import {ERROR} from 'utils/string';
 import jwt_decode from 'jwt-decode';
-import {Value} from 'react-native-reanimated';
 import CustomHeader from 'navigation/CustomHeader';
 import Loader from 'component/loader/Loader';
 import {FontFamily} from 'constants/fonts';
 
 const Regularization = ({navigation, route}) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState('fullDay');
-  const [checkBox, setCheckBox] = useState(false);
   const [regularizationReason, setRegularzitionReason] = useState([]);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   // console.log('leaveApproversList:', leaveApproversList);
@@ -183,7 +171,7 @@ const Regularization = ({navigation, route}) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around',
-              width: widthPercentageToDP(25),
+              width: wp(25),
             }}>
             <View
               style={[

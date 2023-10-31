@@ -12,7 +12,10 @@ import styles from './WelcomeHeaderStyles';
 
 const WelcomeHeader = ({navigation}) => {
   const dispatch = useDispatch();
-  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  const {
+    employeeProfile: profileData = {},
+    employeeShift: employeeShiftDataObj,
+  } = useSelector(state => state.home);
   // console.log('profileData:', profileData);
 
   const firstName = profileData?.firstName;

@@ -1,21 +1,27 @@
 import {Colors} from 'colors/Colors';
 import React from 'react';
-import {Text} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 // import AnimatedLoader from 'react-native-animated-loader';
 // import Modal from 'react-native-modal';
-import ProgressLoader from 'rn-progress-loader';
+// import ProgressLoader from 'rn-progress-loader';
 const Loader = () => {
   return (
-    <ProgressLoader
-      barHeight={100}
-      visible={true}
-      isModal={true}
-      isHUD={true}
-      hudColor={Colors.bluishGreen}
-      color={Colors.white}>
-      <Text style={{color: Colors.white}}>Loading..</Text>
-    </ProgressLoader>
+    <View style={styles.loaderContainer}>
+      <View style={styles.loaderBackground} />
+      <ActivityIndicator size="large" />
+    </View>
   );
+  // return (
+  //   <ProgressLoader
+  //     barHeight={100}
+  //     visible={true}
+  //     isModal={true}
+  //     isHUD={true}
+  //     hudColor={Colors.bluishGreen}
+  //     color={Colors.white}>
+  //     <Text style={{color: Colors.white}}>Loading..</Text>
+  //   </ProgressLoader>
+  // );
 
   // return (
   //   <AnimatedLoader
@@ -29,3 +35,17 @@ const Loader = () => {
 };
 
 export default Loader;
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
+  },
+});

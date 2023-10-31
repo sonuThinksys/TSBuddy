@@ -16,7 +16,6 @@ import {
   createAttendance,
   getAllEmployeeListForHR,
   getAllResourcesAttendence,
-  getEmployeeShift,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {Colors} from 'colors/Colors';
@@ -58,6 +57,10 @@ const AllAttendance = ({navigation}) => {
   const yesterdayDateString = `${yesterdayDateObj.toLocaleString('default', {
     month: 'long',
   })} ${yesterdayDateObj.getDate()}, ${yesterdayDateObj.getFullYear()}`;
+
+  const {employeeShift: employeeShiftDataObj} = useSelector(
+    state => state.home,
+  );
 
   const [selectedAttendanceType, setSelectedAttendanceType] = useState({
     type: DAY_WISE,
@@ -167,10 +170,7 @@ const AllAttendance = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
-      const employeeShift = await dispatch(
-        getEmployeeShift({token, id: employeeID}),
-      );
-      const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+      const weekOffs = employeeShiftDataObj?.weeklyOff.split('_');
 
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const finalWeekOffs = [];

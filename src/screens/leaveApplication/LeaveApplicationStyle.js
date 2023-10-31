@@ -3,6 +3,9 @@ import {FontFamily, FontSize} from 'constants/fonts';
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
+  mainContainerExcludeHeader: {
+    flex: 1,
+  },
   attendanceTypeContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -21,8 +24,6 @@ const styles = StyleSheet.create({
   tabContainer: {
     paddingHorizontal: 14,
     paddingVertical: 10,
-    // borderTopLeftRadius: 100,
-    // borderBottomLeftRadius: 100,
   },
   middleType: {
     paddingHorizontal: 14,
@@ -44,13 +45,24 @@ const styles = StyleSheet.create({
     borderColor: Colors.white,
     borderRadius: 7,
     paddingHorizontal: 6,
-    paddingVertical: 3,
+    paddingVertical: 2,
   },
   textColorWhite: {
     color: Colors.white,
   },
   listContainer: {
     flex: 1,
+  },
+  loaderContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: Colors.black,
+    opacity: 0.5,
   },
 });
 

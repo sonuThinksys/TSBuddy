@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -27,7 +27,6 @@ import SalaryDetail from 'screens/salarySlip/SalaryDetail';
 import ApplyLeave from 'screens/leaves/ApplyLeave';
 import LeaveDetails from 'screens/leaves/LeaveDetails';
 import SalaryPdf from 'screens/salarySlip/SalaryPdf';
-import WorkFromHome from 'screens/workFromHome/WorkFromHome';
 
 // plus.imageset
 import {
@@ -49,6 +48,8 @@ import {
   LunchRequestsScreen,
   LeaveApplicationForApproverName,
   WFHApplicationForApproverName,
+  LeaveAllocationMain,
+  ApplyLeaveAllocationRequest,
 } from './Route';
 import {FontFamily} from 'constants/fonts';
 import AttaindanceDetails from 'screens/Resources/AttaindanceDetails';
@@ -69,6 +70,8 @@ import ApplicationDetailsLayout from 'screens/leaveApplication/ApplicationDetail
 import DailyReports from 'screens/DailyReports/DailyReports';
 import ApplyLeaveByManager from 'screens/LeaveApplicationManager/ApplyLeaveByManager';
 import ApplyWFHByManager from 'screens/LeaveApplicationManager/ApplyWFHByManager';
+import LeaveAllocation from 'screens/LeaveAllocation/RequestLeaveAllocation';
+import AllocateLeave from 'screens/LeaveAllocation/AllocateLeave';
 
 const Drawer = createDrawerNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -76,6 +79,7 @@ const ProfileStack = createNativeStackNavigator();
 const AttendenceStack = createNativeStackNavigator();
 const HolidaysStack = createNativeStackNavigator();
 const LeavesStack = createNativeStackNavigator();
+const LeavesAllocationStack = createNativeStackNavigator();
 const SalarySlipStack = createNativeStackNavigator();
 const ResourcesStack = createNativeStackNavigator();
 const AllAttendanceStack = createNativeStackNavigator();
@@ -88,7 +92,6 @@ const DailyReportsStack = createNativeStackNavigator();
 
 const drawerOption = ({
   label,
-  headerIconName,
   navigation,
   showDrawer = true,
   showHeaderRight = true,
@@ -116,31 +119,16 @@ const drawerOption = ({
       : null,
     headerStyle: {
       padding: 20,
-      backgroundColor: isHome ? '#EEF2FA' : Colors.lighterBlue,
+      backgroundColor: isHome ? Colors.whitishBlue : Colors.lighterBlue,
     },
     headerTintColor: Colors.purple,
     headerTitle: () => (
       // <TouchableOpacity>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-        }}>
+      <View style={styles.headerTitleContainer}>
         {isHome ? (
-          <Image
-            source={MonthImages.TRMSIcon}
-            style={{width: 108, height: 40}}
-          />
+          <Image source={MonthImages.TRMSIcon} style={styles.headerTitleIcon} />
         ) : (
-          <Text
-            style={{
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: FontFamily.RobotoMedium,
-            }}>
-            {label}
-          </Text>
+          <Text style={styles.headerLabel}>{label}</Text>
         )}
         {/* <Text>TRMS</Text> */}
 
@@ -148,7 +136,7 @@ const drawerOption = ({
           <Image
             source={headerIcon}
             fill={isHome ? Colors.black : Colors.white}
-            style={{height: 22, width: 22}}
+            style={styles.headerIcon}
           />
         )}
       </View>
@@ -156,12 +144,7 @@ const drawerOption = ({
     ),
     headerRight: showHeaderRight
       ? () => (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={styles.headerRight}>
             <Header isHome={isHome} />
           </View>
         )
@@ -385,6 +368,23 @@ const LeavesStackScreen = ({}) => {
   );
 };
 
+const LeaveAllocationStackNavigator = ({}) => {
+  return (
+    <LeavesAllocationStack.Navigator screenOptions={{headerShown: false}}>
+      <LeavesAllocationStack.Screen
+        options={{headerShown: false}}
+        name={LeaveAllocationMain}
+        component={LeaveAllocation}
+      />
+      <LeavesAllocationStack.Screen
+        options={{headerShown: false}}
+        name={ApplyLeaveAllocationRequest}
+        component={AllocateLeave}
+      />
+    </LeavesAllocationStack.Navigator>
+  );
+};
+
 const SalarySlipScreen = ({navigation}) => {
   return (
     <SalarySlipStack.Navigator screenOptions={{headerShown: false}}>
@@ -531,6 +531,18 @@ function DrawerNavigator({navigation}) {
       {isLeaveApprover ? (
         <Drawer.Screen name="Resources" component={ResourcesStackScreen} />
       ) : null}
+      <Drawer.Screen
+        options={{unmountOnBlur: true}}
+        name="Attendence"
+        component={AttendenceStackScreen}
+      />
+      <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
+      <Drawer.Screen
+        name="LeaveAllocation"
+        component={LeaveAllocationStackNavigator}
+      />
+      <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
+
       {isLeaveApprover ? (
         <Drawer.Screen
           name="AllAttendance"
@@ -543,15 +555,13 @@ function DrawerNavigator({navigation}) {
           component={LeaveApplicationStackScreen}
         />
       ) : null}
-      <Drawer.Screen
-        options={{unmountOnBlur: true}}
-        name="Attendence"
-        component={AttendenceStackScreen}
-      />
-      <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
-      <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
+
       <Drawer.Screen name="Holidays" component={HolidaysStackScreen} />
       <Drawer.Screen name="Salary Slip" component={SalarySlipScreen} />
+      {isHRManager ? (
+        <Drawer.Screen name="DailyReports" component={DailyReportsScreen} />
+      ) : null}
+
       {token ? (
         <Drawer.Screen name="policiesScreen" component={PoliciesStackScreen} />
       ) : null}
@@ -562,13 +572,35 @@ function DrawerNavigator({navigation}) {
         />
       ) : null}
 
-      {isHRManager ? (
-        <Drawer.Screen name="DailyReports" component={DailyReportsScreen} />
-      ) : null}
-
       <Drawer.Screen name="logout" component={Logout} />
     </Drawer.Navigator>
   );
 }
 
 export default DrawerNavigator;
+
+const styles = StyleSheet.create({
+  headerTitleContainer: {
+    flexDirection: 'row',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
+  headerTitleIcon: {
+    width: 108,
+    height: 40,
+  },
+  headerLabel: {
+    color: Colors.white,
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  headerIcon: {
+    height: 22,
+    width: 22,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

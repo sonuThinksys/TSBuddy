@@ -1,4 +1,4 @@
-import {FontFamily} from 'constants/fonts';
+import {FontFamily, FontSize} from 'constants/fonts';
 const {Colors} = require('colors/Colors');
 import {StyleSheet} from 'react-native';
 import {
@@ -10,28 +10,25 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  request: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: Colors.grey,
+  listItemMainContainer: {
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    justifyContent: 'space-evenly',
-    backgroundColor: Colors.white,
     shadowColor: Colors.colorDodgerBlue2,
     shadowOffset: {width: 0, height: 2},
+    backgroundColor: Colors.white,
     shadowOpacity: 0.2,
     shadowRadius: 0.1,
     elevation: 1,
-    marginLeft: 8,
-    marginRight: 8,
+    marginHorizontal: 20,
     marginBottom: 10,
+  },
+  request: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   appliedRequestsLeft: {
     flexDirection: 'row',
-    marginRight: 10,
-    marginLeft: 0,
   },
   noDataFoundText: {
     fontFamily: FontFamily.RobotoMedium,
@@ -100,6 +97,33 @@ const styles = StyleSheet.create({
   statusText3: {
     fontSize: 12,
     color: Colors.darkLovelyGreen,
+  },
+  leaveAllocationStatusContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 10,
+  },
+  leaveAllocationStatusSingle: {},
+  leaveAllocationStatusTitle: {
+    fontSize: FontSize.h14,
+    fontFamily: FontFamily.RobotoMedium,
+    color: Colors.dune,
+  },
+  leaveAllocationStatus: {
+    fontSize: FontSize.h12,
+    fontFamily: FontFamily.RobotoLight,
+    color: Colors.lightGray1,
+  },
+  textGreen: {
+    color: Colors.darkLovelyGreen,
+  },
+
+  textGold: {
+    color: Colors.gold,
+  },
+
+  textBrown: {
+    color: Colors.darkBrown,
   },
   loaderContainer: {
     marginTop: 10,

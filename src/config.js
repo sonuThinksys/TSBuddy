@@ -60,4 +60,10 @@ export default {
   getRegularisationsByHR: `${API_URL}/Attendance/GetAttRegularizationRequest`,
   getWFHByHR: `${API_URL}/Leave/GetOpenWfh`,
   getRemLeavesById: `${API_URL}/Leave/GetAllocatedLeaves?empId=`,
+  getLeaveAllocationRequests: `${API_URL}/Leave/GetLeaveAllocationRequest`,
+  createLeaveAllocationRequest: `${API_URL}/Leave/CreateLeaveAllocationRequest`,
+  getSelfLeaveAllocationRequest: `${API_URL}/Leave/GetLeaveAllocationRequestBySelf`,
+  getSelfLeaveRegularisationRequest: `${API_URL}/Attendance/GetEmployeeRegularizationRequest?empId=`,
+  getPermissionAccess:
+    'https://hrportalapi-qa.thinksys.com/api/master/component-access',
 };

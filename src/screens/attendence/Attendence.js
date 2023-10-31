@@ -11,16 +11,15 @@ import Modal from 'react-native-modal';
 
 import {
   heightPercentageToDP as hp,
-  screenHeight,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import styles from './AttendenceStyle';
-import {Calendar, CalendarList} from 'react-native-calendars';
+import {CalendarList} from 'react-native-calendars';
 import {Colors} from 'colors/Colors';
 import {getAttendencaeData} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import {attendenceMonthImages, days} from 'defaultData';
+import {attendenceMonthImages} from 'defaultData';
 import {ERROR} from 'constants/strings';
 import ShowAlert from 'customComponents/CustomError';
 import {
@@ -67,14 +66,12 @@ const Attendence = ({navigation}) => {
   const [visibleYear, setVisibleYear] = useState(0);
   const [remainingHours, setRemainingHours] = useState(null);
   const [isLoading, setLoading] = useState(false);
-  const [isImageLoading, setImageLoading] = useState(false);
   const [showDailyStatusModal, setShowDailyStatusModal] = useState(false);
   const [modalDate, setModalDate] = useState(null);
   const [pressedDayDate, setPressedDayDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [finalWeekTime, setFinalWeekTime] = useState('00:00');
-  const [markDates, setMarkDates] = useState({});
   const [todaysDay, setTodayDay] = useState();
   const [todaysDate, setTodayDate] = useState();
 
@@ -106,10 +103,8 @@ const Attendence = ({navigation}) => {
     };
     setPressedDayDate(pressedDateObj);
 
-    return () => {
-      console.log('Unmounting', 'yes');
-    };
-  }, [showDailyStatusModal]);
+    return () => {};
+  }, [showDailyStatusModal, dailyAttendance, modalDate?.dateString]);
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
@@ -537,14 +532,14 @@ const RenderCalender = ({
             return;
           let filterData = dailyAttendance?.filter(element => {
             let date = element?.attendanceDate?.split('T')[0];
-            return date == day.dateString;
+            return date === day.dateString;
           });
           let attendanceId = filterData[0]?.attendanceId;
           let attendanceDate = filterData[0]?.attendanceDate;
 
           if (
-            filterData[0]?.attendanceType == 'H' ||
-            filterData[0]?.attendanceType == 'A'
+            filterData[0]?.attendanceType === 'H' ||
+            filterData[0]?.attendanceType === 'A'
           ) {
             navigation.navigate(RegularzitionScreen, {
               attendanceId,
@@ -568,10 +563,7 @@ const RenderCalender = ({
         }}
         pastScrollRange={100}
         markedDates={mark}
-        calendarStyle={{
-          flex: 1,
-          backgroundColor: Colors.white,
-        }}
+        calendarStyle={styles.calendarStyle}
         theme={{
           'stylesheet.calendar-list.main': {
             calendar: {
@@ -581,8 +573,8 @@ const RenderCalender = ({
           },
           'stylesheet.calendar.header': {
             partialHeader: {
-              paddingHorizontal: 1,
               backgroundColor: Colors.blue,
+              paddingHorizontal: 15,
             },
 
             headerContainer: {
@@ -606,9 +598,7 @@ const RenderCalender = ({
               color: Colors.white,
               alignItems: 'center',
             },
-            partialHeader: {
-              paddingHorizontal: 15,
-            },
+
             monthText: {
               color: Colors.white,
               fontWeight: 'bold',
@@ -621,6 +611,10 @@ const RenderCalender = ({
               // width: '120%',
               justifyContent: 'center',
               alignItems: 'center',
+            },
+            calendarStyle: {
+              flex: 1,
+              backgroundColor: Colors.white,
             },
           },
         }}

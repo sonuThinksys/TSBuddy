@@ -6,34 +6,46 @@ import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {Colors} from 'colors/Colors';
-import Loader from 'component/LoadingScreen/LoadingScreen';
 import {useNavigation} from '@react-navigation/native';
+import {LEAVE_ALLOCATION, OPEN} from 'utils/string';
+
+const DISMISSED = 'Dismissed';
+const REJECTED = 'Rejected';
+const APPROVED = 'Approved';
 
 const ApplicationListLayout = ({
   data,
-  loading,
   isRegularisation,
   loadMoreData,
   getLeavesForManager,
   selectedType,
 }) => {
-  console.log('dataaa:', data);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const navigation = useNavigation();
+
+  const particularTypeStatus = status => {
+    return status?.toLowerCase() === APPROVED.toLowerCase()
+      ? styles.textGreen
+      : status?.toLowerCase() === DISMISSED.toLowerCase() ||
+        status?.toLowerCase() === REJECTED.toLowerCase()
+      ? styles.textBrown
+      : styles.textGold;
+  };
+
   const keyExtractor = useCallback(item => Math.random() * Math.random(), []);
   const renderListOfAppliedRequests = ({item}) => {
     const options = {month: 'short', day: '2-digit', year: 'numeric'};
 
-    const formattedStartDate = new Date(item?.fromDate)?.toLocaleDateString(
-      'en-US',
-      options,
-    );
+    // const formattedStartDate = new Date(item?.fromDate)?.toLocaleDateString(
+    //   'en-US',
+    //   options,
+    // );
 
-    const formattedEndDate = new Date(item?.toDate)?.toLocaleDateString(
-      'en-US',
-      options,
-    );
+    // const formattedEndDate = new Date(item?.toDate)?.toLocaleDateString(
+    //   'en-US',
+    //   options,
+    // );
 
     const appliedDate = new Date(item?.postingDate)?.toLocaleDateString(
       'en-US',
@@ -48,9 +60,31 @@ const ApplicationListLayout = ({
       item.middleName ? item.middleName + ' ' : ''
     }${item.lastName ? item.lastName : ''}`;
 
+    const isLeaveAllocation = selectedType === LEAVE_ALLOCATION;
+    const hrStatus = item.hrApproval;
+    const hodStatus = item.hodApproval;
+    const rmStatus = item.rmApproval;
+
+    const leaveAllocationIsDismissed =
+      hrStatus?.toLowerCase() === DISMISSED?.toLowerCase() ||
+      hrStatus?.toLowerCase() === REJECTED?.toLowerCase() ||
+      hodStatus?.toLowerCase() === DISMISSED?.toLowerCase() ||
+      hodStatus?.toLowerCase() === REJECTED?.toLowerCase() ||
+      rmStatus?.toLowerCase() === DISMISSED?.toLowerCase() ||
+      rmStatus?.toLowerCase() === REJECTED?.toLowerCase();
+
+    const leaveAllocationIsApproved =
+      hrStatus?.toLowerCase() === APPROVED.toLowerCase() &&
+      hodStatus?.toLowerCase() === APPROVED.toLowerCase() &&
+      rmStatus.toLowerCase() === APPROVED.toLowerCase();
+
     return (
       <Pressable
+        style={styles.listItemMainContainer}
         onPress={() => {
+          if (isLeaveAllocation) {
+            return;
+          }
           navigation.navigate('applicationDetailsScreen', {
             item,
             isRegularisation,
@@ -76,24 +110,31 @@ const ApplicationListLayout = ({
             </View>
             <View style={styles.datesContainer}>
               {!isRegularisation ? (
-                <Text style={styles.dates}>
-                  {formattedStartDate} - {formattedEndDate}
-                </Text>
+                <Text style={styles.dates}>{empFullName}</Text>
               ) : (
                 <Text>{empFullName}</Text>
               )}
               <View style={styles.reguCont}>
                 <Text style={styles.reguText}>
-                  {!isRegularisation ? 'Applied on: ' : 'Attendance Date '}
+                  {isRegularisation
+                    ? 'Attendance Date'
+                    : isLeaveAllocation
+                    ? 'Leave Type:'
+                    : 'Applied on:'}{' '}
                 </Text>
                 <Text style={styles.reguTitleText}>
-                  {!isRegularisation ? appliedDate : regulariseAttendanceDate}
+                  {isRegularisation
+                    ? regulariseAttendanceDate
+                    : isLeaveAllocation
+                    ? item.leaveType
+                    : `${appliedDate}`}
                 </Text>
               </View>
             </View>
           </View>
           <View style={styles.statusContainer}>
-            {item.status?.toLowerCase() === 'open' ? (
+            {item.status?.toLowerCase() === 'open' ||
+            (!leaveAllocationIsApproved && !leaveAllocationIsDismissed) ? (
               <View style={styles.iconContainer}>
                 <PendingIcon
                   fill={Colors.gold}
@@ -104,7 +145,8 @@ const ApplicationListLayout = ({
                 <Text style={styles.statusText}>Open</Text>
               </View>
             ) : item.status?.toLowerCase() === 'dismissed' ||
-              item.status?.toLowerCase() === 'rejected' ? (
+              item.status?.toLowerCase() === 'rejected' ||
+              leaveAllocationIsDismissed ? (
               <View style={styles.iconContainer}>
                 <RejectedIcon
                   fill={Colors.darkBrown}
@@ -112,7 +154,9 @@ const ApplicationListLayout = ({
                   width={20}
                   marginBottom={4}
                 />
-                <Text style={styles.statusText2}>{item.status}</Text>
+                <Text style={styles.statusText2}>
+                  {leaveAllocationIsDismissed ? DISMISSED : item.status}
+                </Text>
               </View>
             ) : (
               <View style={styles.iconContainer}>
@@ -129,6 +173,44 @@ const ApplicationListLayout = ({
             )}
           </View>
         </View>
+        {isLeaveAllocation ? (
+          <View style={styles.leaveAllocationStatusContainer}>
+            <View style={styles.leaveAllocationStatusSingle}>
+              <Text style={styles.leaveAllocationStatusTitle}>RM Status: </Text>
+              <Text
+                style={[
+                  styles.leaveAllocationStatus,
+                  particularTypeStatus(rmStatus),
+                ]}>
+                {rmStatus || OPEN}
+              </Text>
+            </View>
+
+            <View style={styles.leaveAllocationStatusSingle}>
+              <Text style={styles.leaveAllocationStatusTitle}>
+                HOD Status:{' '}
+              </Text>
+              <Text
+                style={[
+                  styles.leaveAllocationStatus,
+                  particularTypeStatus(hodStatus),
+                ]}>
+                {hodStatus || OPEN}
+              </Text>
+            </View>
+
+            <View style={styles.leaveAllocationStatusSingle}>
+              <Text style={styles.leaveAllocationStatusTitle}>HR Status: </Text>
+              <Text
+                style={[
+                  styles.leaveAllocationStatus,
+                  particularTypeStatus(hrStatus),
+                ]}>
+                {hrStatus || OPEN}
+              </Text>
+            </View>
+          </View>
+        ) : null}
       </Pressable>
     );
   };
@@ -137,11 +219,7 @@ const ApplicationListLayout = ({
     <View style={styles.mainContainer}>
       {data?.length > 0 && (
         <View style={styles.flatlistContainer}>
-          {loading ? (
-            <View style={styles.loaderContainer}>
-              <Loader />
-            </View>
-          ) : (
+          {
             <FlatList
               showsVerticalScrollIndicator={false}
               data={data}
@@ -157,11 +235,11 @@ const ApplicationListLayout = ({
                 setIsRefreshing(false);
               }}
             />
-          )}
+          }
         </View>
       )}
 
-      {data?.length === 0 && !loading && (
+      {data?.length === 0 && (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataFoundText}>No data found!</Text>
         </View>

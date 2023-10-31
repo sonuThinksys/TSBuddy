@@ -14,6 +14,7 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useRoute} from '@react-navigation/native';
 import {employeeProfileScreen} from 'navigation/Route';
 import SearchIcon from 'assets/newDashboardIcons/user-magnifying-glass.svg';
+import {heightPercentageToDP as hp} from 'utils/Responsive';
 
 const CustomHeader = function ({
   showDrawerMenu,
@@ -50,31 +51,16 @@ const CustomHeader = function ({
             navigation.goBack();
             // navigation.pop();
           }}>
-          <Image
-            source={MonthImages.backArrowS}
-            style={{height: 20, width: 20}}
-          />
+          <Image source={MonthImages.backArrowS} style={styles.backArrowIcon} />
         </Pressable>
       )}
 
       <View style={styles.headerIconContainer}>
         {isHome ? (
-          <Image
-            source={MonthImages.TRMSIcon}
-            style={{width: 108, height: 40}}
-          />
+          <Image source={MonthImages.TRMSIcon} style={styles.headerLogo} />
         ) : (
           <Text style={styles.headerTitle}>{title}</Text>
         )}
-        {/* <Text>TRMS</Text> */}
-
-        {/* {headerIcon && (
-          <Image
-            source={headerIcon}
-            fill={isHome ? Colors.black : Colors.white}
-            style={{height: 22, width: 22}}
-          />
-        )} */}
       </View>
 
       {showHeaderRight ? (
@@ -104,19 +90,22 @@ export default CustomHeader;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    // backgroundColor: isHome ? '#EEF2FA' : Colors.lighterBlue,
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    // marginHorizontal: 10,
     borderRadius: 2,
     alignItems: 'center',
+    minHeight: hp(5.5),
   },
   backgroundColorBlue: {
     backgroundColor: Colors.lighterBlue,
   },
+  backArrowIcon: {
+    height: 20,
+    width: 20,
+  },
   backgroundColorWhitishBlue: {
-    backgroundColor: '#EEF2FA',
+    backgroundColor: Colors.whitishBlue,
   },
   headerRightContainer: {
     flexDirection: 'row',
@@ -132,5 +121,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginRight: 'auto',
     marginLeft: 'auto',
+    // marginLeft: wp(22),
+  },
+  headerLogo: {
+    width: 108,
+    height: 40,
   },
 });

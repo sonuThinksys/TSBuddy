@@ -1,10 +1,8 @@
+import React from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 const {Text, FlatList, View} = require('react-native');
 import styles from './PoliciesStyle';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {FontFamily} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import {useEffect, useState} from 'react';
@@ -14,7 +12,6 @@ import {useIsFocused} from '@react-navigation/native';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
 import Loader from 'component/LoadingScreen/LoadingScreen';
 
 const Policies = ({navigation}) => {
@@ -46,7 +43,7 @@ const Policies = ({navigation}) => {
         }
       })();
     }
-  }, [isFocussed]);
+  }, [isFocussed, dispatch, token]);
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);

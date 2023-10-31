@@ -45,7 +45,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {guestProfileData} from 'guestData';
 import CustomHeader from 'navigation/CustomHeader';
 import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
+import {ERROR, LEAVE_APPROVER_FAIL_FETCH} from 'utils/string';
+import {getCurrentFiscalYear} from 'utils/utils';
 const months = [
   'Jan',
   'Feb',
@@ -61,7 +62,6 @@ const months = [
   'Dec',
 ];
 const invalidDate = 'Invalid Date';
-const leaveApprFailFetch = 'Cannot fetch Leave Approvers. Kindly try later.';
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const weekoffsFetchFailed = 'Cannot fetch weekoffs for you. Kindly try later.';
 const earnedLeave = 'Earned Leave';
@@ -78,6 +78,9 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   );
 
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  const {employeeShift: employeeShiftDataObj} = useSelector(
+    state => state.home,
+  );
   // console.log('profileData:', profileData);
 
   const firstName = profileData?.firstName;
@@ -126,14 +129,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   // const openLeaveApprover = openLeaveData?.managerInfoDto?.employeeName;
   const openLeaveApplicationId = openLeaveData?.leaveApplicationId;
 
-  const currentMonth = new Date().getMonth();
-  let currentYear = new Date().getFullYear();
-
-  let fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
-
-  if (currentMonth < 3) {
-    fiscalYear = `${currentYear - 1} - ${new Date().getFullYear()}`;
-  }
+  const fiscalYear = getCurrentFiscalYear();
 
   const openLeaveApproverEmail = openLeaveData?.leaveApprover;
 
@@ -238,7 +234,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
             : [];
           setLeaveApprovers(leaveApproversFetched?.payload);
           if (!leaveApproversFetched.payload) {
-            alert(leaveApprFailFetch);
+            alert(LEAVE_APPROVER_FAIL_FETCH);
           }
           const listOfLeaveApprovers = leaveApproversFetched.payload.map(
             approver => {
@@ -305,10 +301,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
     if (!isGuestLogin) {
       (async () => {
         try {
-          const employeeShift = await dispatch(
-            getEmployeeShift({token, id: employeeID}),
-          );
-          const weekOffs = employeeShift?.payload?.weeklyOff.split('_');
+          const weekOffs = employeeShiftDataObj?.weeklyOff.split('_');
 
           const finalWeekOffs = [];
           daysOfWeek?.map((el, index) => {
@@ -322,7 +315,13 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
         }
       })();
     }
-  }, [dispatch, employeeID, isGuestLogin, token]);
+  }, [
+    dispatch,
+    employeeID,
+    isGuestLogin,
+    token,
+    employeeShiftDataObj?.weeklyOff,
+  ]);
 
   const leaves = [
     {

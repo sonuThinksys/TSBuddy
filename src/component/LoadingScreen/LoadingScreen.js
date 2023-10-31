@@ -1,6 +1,6 @@
 import {Colors} from 'colors/Colors';
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, ActivityIndicator} from 'react-native';
 const Loader = () => {
   return (
     <View style={styles.container}>

@@ -17,8 +17,18 @@ const INVALID_CREDENTIAL = 'Invalid credentials';
 const LEAVE = 'Leave';
 const REGULARISATION = 'Regularisation';
 const WFH = 'WFH';
+const LEAVE_ALLOCATION = 'Leave Allocation';
 const WORK_FROM_HOME = 'work from home';
 const CLOSE = 'Close';
+const LEAVE_APPROVER_FAIL_FETCH =
+  'Cannot fetch Leave Approvers. Kindly try later.';
+const SELECT_LEAVE_APPROVER = 'Please Select Leave Approver.';
+const SELECT_LEAVE_TYPE = 'Please Select Leave Type.';
+const ENTER_REASON = 'Please Enter a Reason.';
+const OPEN = 'Open';
+const SELECT_FROM_DATE = 'Please Select From Date.';
+const SELECT_TO_DATE = 'Please Select To Date.';
+
 export {
   COPY_RIGHT,
   GUEST_LOGIN,
@@ -39,4 +49,12 @@ export {
   WFH,
   WORK_FROM_HOME,
   CLOSE,
+  LEAVE_ALLOCATION,
+  LEAVE_APPROVER_FAIL_FETCH,
+  SELECT_LEAVE_APPROVER,
+  SELECT_LEAVE_TYPE,
+  ENTER_REASON,
+  OPEN,
+  SELECT_FROM_DATE,
+  SELECT_TO_DATE,
 };

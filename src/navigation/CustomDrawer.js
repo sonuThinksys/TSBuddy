@@ -19,161 +19,127 @@ export default ({navigation}) => {
   const isAdmin = decoded?.role?.includes('Admin Executive') || false;
   const {employeeProfile: profileData} = useSelector(state => state.home);
 
-  const lunchRequests = {
-    screen: 'Lunch',
-    label: 'Lunch Requests',
-    navigation,
-    key: 3,
-    icon: MonthImages.Lunch,
-  };
-
-  const resorcesTab = {
-    screen: 'Resources',
-    label: 'Resources',
-    navigation,
-    key: 4,
-    icon: MonthImages.ResourceIcon,
-  };
-
-  const AllAttandance = {
-    screen: 'AllAttendance',
-    label: 'All Attendance',
-    navigation,
-    key: 5,
-    icon: MonthImages.ResourceIcon,
-  };
-
-  const reports = {
-    screen: 'DailyReports',
-    label: 'Daily Reports',
-    navigation,
-    key: 11,
-    icon: MonthImages.EmployeeIdIcon,
-  };
-
-  const drawerList = [
+  let drawerList = [
     {
       screen: 'Home',
       label: 'Home',
       navigation,
-      key: 1,
       icon: MonthImages.HomeImage,
+      isVisible: true,
     },
     {
       screen: 'Profile',
       label: 'Profile',
       navigation,
-      key: 2,
       icon: profileData?.image ? profileData?.image : MonthImages.ProfileIcon,
-      // icon: profileData?.image
-      //   ? (source = {
-      //       uri: profileData?.image,
-      //     })
-      //   : MonthImages.ProfileIcon,
+      isVisible: true,
+    },
+    {
+      screen: 'Lunch',
+      label: 'Lunch Requests',
+      navigation,
+      icon: MonthImages.Lunch,
+      isVisible: isAdmin ? true : false,
+    },
+    {
+      screen: 'Resources',
+      label: 'Resources',
+      navigation,
+      icon: MonthImages.ResourceIcon,
+      isVisible: isLeaveApprover ? true : false,
     },
     {
       screen: 'Attendence',
       label: 'Attendance',
       navigation,
-      key: 3,
       icon: MonthImages.AttendanceDrawer,
+      isVisible: true,
     },
     {
       screen: 'Leaves',
       label: 'Leaves',
       navigation,
-      key: 4,
       icon: MonthImages.leavesImage,
+      isVisible: true,
+    },
+    {
+      screen: 'LeaveAllocation',
+      label: 'Leaves Allocation',
+      navigation,
+      icon: MonthImages.leavesImage,
+      isVisible: true,
     },
     {
       screen: 'applyWfh',
       label: 'Apply WFH',
       navigation,
-      key: 5,
       icon: MonthImages.leavesImage,
+      isVisible: true,
+    },
+    {
+      screen: 'AllAttendance',
+      label: 'All Attendance',
+      navigation,
+      icon: MonthImages.ResourceIcon,
+      isVisible: isLeaveApprover ? true : false,
+    },
+    {
+      screen: 'allLeaves',
+      label: 'Leave Application',
+      navigation,
+      icon: MonthImages.OpenLeaveIcon,
+      isVisible: isLeaveApprover ? true : false,
     },
     {
       screen: 'Holidays',
       label: 'Holidays',
       navigation,
-      key: 6,
       icon: MonthImages.HolidaysIcon,
+      isVisible: true,
     },
     {
       screen: 'Salary Slip',
       label: 'Salary Slip',
       navigation,
-      key: 7,
       icon: MonthImages.salarySlipIcon,
+      isVisible: true,
+    },
+    isHRManager && {
+      screen: 'DailyReports',
+      label: 'Daily Reports',
+      navigation,
+      icon: MonthImages.EmployeeIdIcon,
+      isVisible: isHRManager ? true : false,
+    },
+    {
+      screen: 'policiesScreen',
+      label: 'Policies',
+      navigation,
+      icon: MonthImages.salarySlipIcon,
+      isVisible: token ? true : false,
+    },
+    {
+      screen: 'employeeHandbook',
+      label: 'Employee Handbook',
+      navigation,
+      icon: MonthImages.info_scopy,
+      isVisible: token ? true : false,
     },
     {
       screen: 'logout',
       label: 'Logout',
       navigation,
-      key: 11,
       dispatch,
       icon: MonthImages.logoutmenuS,
+      isVisible: true,
     },
   ];
 
-  const policy = {
-    screen: 'policiesScreen',
-    label: 'Policies',
-    navigation,
-    key: 9,
-    icon: MonthImages.salarySlipIcon,
-  };
+  drawerList = drawerList.filter(listItem => listItem.isVisible);
 
-  const empHandbook = {
-    screen: 'employeeHandbook',
-    label: 'Employee Handbook',
-    navigation,
-    key: 10,
-    icon: MonthImages.info_scopy,
-  };
-
-  const leaveApplication = {
-    screen: 'allLeaves',
-    label: 'Leave Application',
-    navigation,
-    key: 8,
-    icon: MonthImages.OpenLeaveIcon,
-  };
-
-  if (isAdmin) {
-    drawerList.splice(2, 0, lunchRequests);
-    drawerList.forEach((el, index) => {
-      el.key = index + 1;
-    });
-  }
-
-  if (isHRManager) {
-    drawerList.splice(7, 0, reports);
-    drawerList.forEach((el, index) => {
-      el.key = index + 1;
-    });
-  }
-
-  if (token) {
-    drawerList.splice(7, 0, policy);
-    drawerList.splice(8, 0, empHandbook);
-    drawerList.forEach((el, index) => {
-      el.key = index + 1;
-    });
-  }
-
-  if (isLeaveApprover) {
-    drawerList.splice(2, 0, resorcesTab);
-    drawerList.splice(3, 0, AllAttandance);
-    drawerList.splice(4, 0, leaveApplication);
-
-    // drawerList.splice(4, 0, wfhTab);
-    // drawerList.splice(5, 0, regularisationTab);
-
-    drawerList.forEach((el, index) => {
-      el.key = index + 1;
-    });
-  }
+  drawerList.forEach((el, index) => {
+    el.key = index + 1;
+  });
 
   return (
     <ScrollView
@@ -181,6 +147,9 @@ export default ({navigation}) => {
       contentContainerStyle={styles.drawerContentContainerStyle}
       style={styles.drawerMainContainer}>
       {drawerList.map((value, index) => {
+        if (!value.isVisible) {
+          return null;
+        }
         return renderDrawerItem(value, index);
       })}
     </ScrollView>
@@ -190,7 +159,7 @@ const renderDrawerItem = (
   {navigation, key, screen, label, dispatch, icon},
   index,
 ) => {
-  const selected = navigation.getState().index + 1 === key;
+  const selected = navigation?.getState()?.index + 1 === key;
 
   return (
     <TouchableOpacity
@@ -224,16 +193,6 @@ const renderDrawerItem = (
 
                     setTimeout(() => {
                       dispatch(homeReset());
-                      // navigation &&
-                      //   navigation.dispatch(
-                      //     CommonActions.reset({
-                      //       routes: [
-                      //         {
-                      //           name: 'Home',
-                      //         },
-                      //       ],
-                      //     }),
-                      //   );
                     }, 20);
                   }
                 },

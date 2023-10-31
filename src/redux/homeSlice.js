@@ -4,12 +4,14 @@ import {API_URL} from '@env';
 
 import axios from 'axios';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import {LEAVE, REGULARISATION, WFH} from 'utils/string';
+import {LEAVE, LEAVE_ALLOCATION, REGULARISATION, WFH} from 'utils/string';
 // import {centralizeApi} from 'utils/utils';
 
 const initialState = {
   isShowModal: false,
   salarySlipData: {},
+  employeeShift: [],
+  employeeShiftError: undefined,
   salarySlipDataLoading: false,
   salarySlipDataError: false,
   employeeData: {},
@@ -93,6 +95,97 @@ const snacks = 'snacks';
 //     }
 //   },
 // );
+
+export const getSelfLeaveRegularisationRequests = createAsyncThunk(
+  'getSelfLeaveRegularisationRequests',
+  async ({token, empId}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = endPoints.getSelfLeaveRegularisationRequest + empId;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+export const getSelfLeaveAllocationRequests = createAsyncThunk(
+  'getSelfLeaveAllocationRequests',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.getSelfLeaveAllocationRequest;
+
+    try {
+      const {data, status} = await axios.get(url, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      if (err?.response) {
+        return Promise.reject(err?.response?.data);
+      }
+      return Promise.reject(new Error(err));
+    }
+  },
+);
+
+export const createLeaveAllocationRequest = createAsyncThunk(
+  'createLeaveAllocationRequest',
+  async ({token, body}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const url = endPoints.createLeaveAllocationRequest;
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject(new Error('Something Went Wrong.'));
+      }
+    } catch (err) {
+      if (err?.response) {
+        return Promise.reject(err?.response?.data);
+      }
+      return Promise.reject(new Error(err));
+    }
+  },
+);
 
 export const getRemainingLeavesByEmpId = createAsyncThunk(
   'home/getRemainingLeavesByEmpId',
@@ -180,6 +273,7 @@ export const getLeaveApplicationData = createAsyncThunk(
       [LEAVE]: endPoints.getLeavesByHR,
       [REGULARISATION]: endPoints.getRegularisationsByHR,
       [WFH]: endPoints.getWFHByHR,
+      [LEAVE_ALLOCATION]: endPoints.getLeaveAllocationRequests,
     };
 
     const url = endPointsObj[selectedType];
@@ -474,6 +568,40 @@ export const getConfigData = createAsyncThunk(
     }
   },
 );
+
+// export const getPermissions = createAsyncThunk(
+//   'getPermissions',
+//   async ({token}) => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
+
+//     const url = endPoints.getPermissionAccess;
+
+//     try {
+//       const {data, status} = await axios.get(url, config);
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject(new Error());
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
+
+//       if (err?.response) {
+//         statusCode = err?.response?.status;
+//       }
+
+//       if (statusCode === 400 || statusCode === 401) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
 
 export const getAllResourcesAttendence = createAsyncThunk(
   'getAllResourcesAttendence',
@@ -1995,6 +2123,16 @@ const homeSlice = createSlice({
       state.salarySlipData = [];
       state.salarySlipDataError = action.payload;
     });
+    // ====================getEmployeeShift ===================
+    builder.addCase(getEmployeeShift.fulfilled, (state, action) => {
+      state.employeeShift = action.payload;
+      state.employeeShiftError = undefined;
+    });
+    builder.addCase(getEmployeeShift.rejected, (state, action) => {
+      state.employeeShift = [];
+      state.employeeShiftError = action.payload;
+    });
+    // ====================getEmployeeShift ===================
 
     builder.addCase(getEmployeeData.pending, state => {
       state.employeeDataLoading = true;

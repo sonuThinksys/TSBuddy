@@ -1,11 +1,10 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, ActivityIndicator} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './LeaveApplicationStyle';
 import {Colors} from 'colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
 import ApplicationListLayout from './ApplicationListLayout';
-
 import {
   LeaveApplicationForApproverName,
   WFHApplicationForApproverName,
@@ -13,10 +12,7 @@ import {
 import {getLeaveApplicationData} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
 import {useIsFocused} from '@react-navigation/native';
-
-const LEAVE = 'Leave';
-const REGULARISATION = 'Regularisation';
-const WFH = 'WFH';
+import {LEAVE, LEAVE_ALLOCATION, REGULARISATION, WFH} from 'utils/string';
 
 const LeaveApplication = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -29,12 +25,14 @@ const LeaveApplication = ({navigation}) => {
   const [selectedType, setSelectedType] = useState(LEAVE);
 
   const [isLoading, setIsLoading] = useState(false);
+  // const [selfOpenLeaves, setSelfOpenLeaves] = useState([]);
   const dispatch = useDispatch();
 
   const [applicationData, setApplicationData] = useState({
     [LEAVE]: {data: [], count: 0},
     [WFH]: {data: [], count: 0},
     [REGULARISATION]: {data: [], count: 0},
+    [LEAVE_ALLOCATION]: {data: [], count: 0},
   });
 
   const tabButton = ({type, tabText, onTabPress}) => {
@@ -89,9 +87,10 @@ const LeaveApplication = ({navigation}) => {
           }),
         );
 
-        const {
+        let {
           payload: {data: initialLeaves, count},
         } = leaves;
+        // console.log('initialLeaves:', initialLeaves);
 
         setApplicationData(prevData => ({
           ...prevData,
@@ -118,7 +117,7 @@ const LeaveApplication = ({navigation}) => {
         await getLeavesForManager(selectedType, true);
       })();
     }
-  }, [isFocussed]);
+  }, [isFocussed, setSelectedType]);
 
   const renderMoreLeaves = async () => {
     if (
@@ -152,28 +151,39 @@ const LeaveApplication = ({navigation}) => {
           ) : null
         }
       />
-
-      <View style={styles.attendanceTypeContainer}>
-        <View style={styles.typeContainer}>
-          {tabButton({type: LEAVE, tabText: 'Leave', onTabPress})}
-          {tabButton({
-            type: REGULARISATION,
-            tabText: 'Regularisation',
-            onTabPress,
-          })}
-          {tabButton({type: WFH, tabText: 'WFH', onTabPress})}
+      <View style={styles.mainContainerExcludeHeader}>
+        <View style={styles.attendanceTypeContainer}>
+          <View style={styles.typeContainer}>
+            {tabButton({type: LEAVE, tabText: 'Leave', onTabPress})}
+            {tabButton({
+              type: REGULARISATION,
+              tabText: 'Regularisation',
+              onTabPress,
+            })}
+            {tabButton({type: WFH, tabText: 'WFH', onTabPress})}
+            {tabButton({
+              type: LEAVE_ALLOCATION,
+              tabText: LEAVE_ALLOCATION,
+              onTabPress,
+            })}
+          </View>
         </View>
-      </View>
-      <View style={styles.listContainer}>
-        <ApplicationListLayout
-          data={applicationData[selectedType].data || []}
-          loading={isLoading}
-          navigation={navigation}
-          isRegularisation={selectedType === REGULARISATION ? true : false}
-          loadMoreData={renderMoreLeaves}
-          getLeavesForManager={getLeavesForManager}
-          selectedType={selectedType}
-        />
+        <View style={styles.listContainer}>
+          <ApplicationListLayout
+            data={applicationData[selectedType].data || []}
+            navigation={navigation}
+            isRegularisation={selectedType === REGULARISATION ? true : false}
+            loadMoreData={renderMoreLeaves}
+            getLeavesForManager={getLeavesForManager}
+            selectedType={selectedType}
+          />
+        </View>
+        {isLoading ? (
+          <View style={styles.loaderContainer}>
+            <View style={styles.loaderBackground} />
+            <ActivityIndicator size="large" />
+          </View>
+        ) : null}
       </View>
     </>
   );

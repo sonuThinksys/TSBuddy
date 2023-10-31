@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {View, Text, Image, Modal} from 'react-native';
+import {View, Text} from 'react-native';
 import {Colors} from 'colors/Colors';
 // import {FontFamily, FontSize} from 'constants/Fonts';
 

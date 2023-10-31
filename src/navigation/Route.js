@@ -22,3 +22,5 @@ export const LunchRequestsScreen = 'LunchRequests';
 export const LeaveApplyScreenForApprover = 'LeaveApplyScreenForApprover';
 export const LeaveApplicationForApproverName = 'LeaveApplicationForApprover';
 export const WFHApplicationForApproverName = 'WFHApplicationForApprover';
+export const LeaveAllocationMain = 'LeaveAllocationMainScreen';
+export const ApplyLeaveAllocationRequest = 'ApplyLeaveAllocationRequest';

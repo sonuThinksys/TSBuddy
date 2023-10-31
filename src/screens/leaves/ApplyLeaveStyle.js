@@ -18,12 +18,12 @@ export default StyleSheet.create({
     height: hp(16),
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.black,
+    backgroundColor: Colors.lightGray,
   },
   headerSliderText: {
     fontSize: FontSize.h16,
     fontFamily: FontFamily.RobotoBold,
-    color: Colors.white,
+    color: Colors.dune,
   },
   resourcePickerContainer: {
     flexDirection: 'row',

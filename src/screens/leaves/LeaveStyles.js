@@ -4,7 +4,23 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 export default StyleSheet.create({
+  mainContainerExcludeHeader: {
+    marginTop: hp(1.6),
+    flex: 1,
+    backgroundColor: Colors.whitishBlue,
+  },
+  filterButton: {
+    position: 'absolute',
+    bottom: hp(3),
+    right: wp(5),
+  },
+  filterIcon: {
+    height: 55,
+    width: 55,
+    borderRadius: 25,
+  },
   container: {
     paddingHorizontal: wp(5),
     paddingVertical: hp(1),
@@ -38,15 +54,15 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.purple,
   },
-  flateListView: {
-    flexDirection: 'row',
-    borderRadius: 5,
-    marginVertical: hp(0.5),
-    marginHorizontal: wp(2),
-    backgroundColor: Colors.lightcyan,
-    shadowOpacity: 0.1,
-    // elevation: 1,
-  },
+  // flateListView: {
+  //   flexDirection: 'row',
+  //   borderRadius: 5,
+  //   marginVertical: hp(0.5),
+  //   marginHorizontal: wp(2),
+  //   backgroundColor: Colors.lightcyan,
+  //   shadowOpacity: 0.1,
+  //   // elevation: 1,
+  // },
   secondView: {
     flex: 2,
     backgroundColor: Colors.lightcyan,
@@ -55,5 +71,15 @@ export default StyleSheet.create({
     justifyContent: 'center',
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
+  },
+  noLeavesContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  noLeavesText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 17,
+    color: Colors.dune,
   },
 });

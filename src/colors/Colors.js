@@ -70,4 +70,5 @@ export const Colors = {
   darkParrot: '#006C00',
   midGrey: '#999999',
   almostWhite: '#E8F6FF',
+  whiteGreyTint: '#f8f9fa',
 };

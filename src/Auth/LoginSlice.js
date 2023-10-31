@@ -37,7 +37,6 @@ export const getUserToken = createAsyncThunk(
     return axios(config)
       .then(async result => {
         let data = result.data;
-        console.log('data:', data, result);
 
         const {response = {}, status} = result || {};
         if (status === 200) {
