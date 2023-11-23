@@ -40,8 +40,8 @@ const Login = ({navigation}) => {
   // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
-  const [username, setUserName] = useState('kamal.deepika@thinksys.com');
-  const [password, setPassword] = useState('Pica8@123');
+  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  const [password, setPassword] = useState('Thinksys@123');
 
   const {isRemember} = useSelector(state => state.auth);
   // const {bioMetricEnable} = useSelector(state => state.auth);

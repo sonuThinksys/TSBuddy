@@ -32,17 +32,17 @@ const AppConfig = () => {
     </Provider>
   );
 
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <SafeAreaProvider>
-          <ActionSheetProvider>
-            <App />
-          </ActionSheetProvider>
-        </SafeAreaProvider>
-      </PersistGate>
-    </Provider>
-  );
+  // return (
+  //   <Provider store={store}>
+  //     <PersistGate loading={null} persistor={persistor}>
+  //       <SafeAreaProvider>
+  //         <ActionSheetProvider>
+  //           <App />
+  //         </ActionSheetProvider>
+  //       </SafeAreaProvider>
+  //     </PersistGate>
+  //   </Provider>
+  // );
 };
 
 //ReactNativeForegroundService.register();
