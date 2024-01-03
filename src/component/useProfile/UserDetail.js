@@ -1,16 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Linking,
-  Image,
-  Platform,
-  Pressable,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Pressable} from 'react-native';
 import Contacts from 'react-native-contacts';
 
-import baseUrl from 'services/Urls';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,

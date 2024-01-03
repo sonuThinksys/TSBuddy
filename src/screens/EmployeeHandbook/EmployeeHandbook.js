@@ -1,7 +1,6 @@
 import {Colors} from 'colors/Colors';
 import {styles} from 'modals/FoodFeedbackStyles';
 import CustomHeader from 'navigation/CustomHeader';
-import {react} from 'plotly.js';
 import React, {useEffect, useState} from 'react';
 import {
   heightPercentageToDP as hp,

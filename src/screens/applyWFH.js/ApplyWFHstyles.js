@@ -19,7 +19,9 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
-    zIndex: 99999,
+  },
+  zIndex9999: {
+    zIndex: 9999,
   },
   selectResourceText: {
     fontSize: FontSize.h17,
@@ -54,7 +56,7 @@ export default StyleSheet.create({
     color: Colors.black,
   },
   dropDownContainer: {
-    zIndex: 9999,
+    // zIndex: 9999,
   },
   thirdView: {
     paddingVertical: hp(0.5),
@@ -246,6 +248,7 @@ export default StyleSheet.create({
     borderRadius: 50,
     borderColor: Colors.grey,
     marginBottom: hp(3),
+    zIndex: 999,
   },
   borderRadius5: {
     borderRadius: 5,
@@ -318,6 +321,13 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  dismissButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  dismissTitle: {
+    fontSize: FontSize.h14,
+  },
   pending: {
     fontSize: 12,
     color: Colors.gold,
@@ -337,5 +347,9 @@ export default StyleSheet.create({
   approved: {
     fontSize: 12,
     color: Colors.darkLovelyGreen,
+  },
+
+  dropDownContainerStyleEmployeePicker: {
+    borderColor: Colors.grey,
   },
 });

@@ -2,9 +2,7 @@ import React from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 const {Text, FlatList, View} = require('react-native');
 import styles from './PoliciesStyle';
-import {widthPercentageToDP as wp} from 'utils/Responsive';
-import {FontFamily} from 'constants/fonts';
-import {Colors} from 'colors/Colors';
+
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPolicies} from 'redux/homeSlice';
@@ -51,42 +49,17 @@ const Policies = ({navigation}) => {
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
-        style={{marginTop: 10}}
+        style={styles.policy}
         onPress={() => {
           navigation.navigate('policiesDetails', item.policy);
           // navigation.navigate('practice');
         }}>
         <View style={styles.request}>
-          <View style={styles.appliedRequestsLeft}>
-            <View
-              style={{
-                alignItems: 'center',
-                marginRight: wp(4),
-                backgroundColor: '#68C19E',
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingVertical: 5,
-                borderRadius: 20,
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: FontFamily.RobotoLight,
-                  color: Colors.white,
-                }}>
-                {item.policyId}
-              </Text>
-            </View>
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontFamily: FontFamily.RobotoRegular,
-                  color: Colors.dune,
-                }}>
-                {item.policyName}
-              </Text>
-            </View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>{item.policyId}</Text>
+          </View>
+          <View style={styles.policyTextContainer}>
+            <Text style={styles.policyText}>{item.policyName}</Text>
           </View>
         </View>
       </TouchableOpacity>

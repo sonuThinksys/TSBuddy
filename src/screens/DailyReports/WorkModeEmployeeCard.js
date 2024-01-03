@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  Switch,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Image, Pressable, Text, View} from 'react-native';
 import styles from './EmployeeCardStyles';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import {Colors} from 'colors/Colors';
@@ -22,6 +15,8 @@ import {
 import Radio from 'component/Radio/Radio';
 import {useDispatch, useSelector} from 'react-redux';
 import {getWorkModeByEmployeeId} from 'redux/homeSlice';
+import SelectDaysWFO from './SelectDaysWFO';
+import Buttons from './Buttons';
 
 const WorkModeEmployeeCard = ({
   employeeName,
@@ -96,15 +91,6 @@ const WorkModeEmployeeCard = ({
       }
     }
   };
-  const [daysStatus, setDaysStatus] = useState({
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-    sunday: false,
-  });
 
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
@@ -278,110 +264,8 @@ const WorkModeEmployeeCard = ({
                       </Pressable>
                     </View>
                   </View>
-                  <View style={styles.selectDaysMainContainer}>
-                    <Text style={styles.selectDaysTitle}>Select Days:</Text>
-                    <View style={styles.allDaysContainer}>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Monday</Text>
-                        <Switch
-                          value={daysStatus.monday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              monday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Tuesday</Text>
-                        <Switch
-                          value={daysStatus.tuesday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              tuesday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Wednesday</Text>
-                        <Switch
-                          value={daysStatus.wednesday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              wednesday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Thursday</Text>
-                        <Switch
-                          value={daysStatus.thursday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              thursday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Friday</Text>
-                        <Switch
-                          value={daysStatus.friday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              friday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Saturday</Text>
-                        <Switch
-                          value={daysStatus.saturday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              saturday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                      <View style={styles.specificDayContainer}>
-                        <Text style={styles.allDayText}>Sunday</Text>
-                        <Switch
-                          value={daysStatus.sunday}
-                          onValueChange={newValue =>
-                            setDaysStatus(currentDaysStatus => ({
-                              ...currentDaysStatus,
-                              sunday: newValue,
-                            }))
-                          }
-                        />
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.buttonsContainer}>
-                    <Pressable
-                      onPress={modalCloseHandler}
-                      style={[styles.button]}>
-                      <Text
-                        style={[styles.buttonText, styles.buttonCancelText]}>
-                        Cancel
-                      </Text>
-                    </Pressable>
-                    <Pressable style={[styles.button, styles.saveButton]}>
-                      <Text style={[styles.buttonText, styles.buttonSaveText]}>
-                        Save
-                      </Text>
-                    </Pressable>
-                  </View>
+                  {isWFO ? <SelectDaysWFO /> : null}
+                  <Buttons modalCloseHandler={modalCloseHandler} />
                   <View>
                     <DateTimePickerModal
                       isVisible={startDatePickerVisible}

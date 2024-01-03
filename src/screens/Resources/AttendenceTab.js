@@ -1,3 +1,4 @@
+import React from 'react';
 import {ScrollView} from 'react-native';
 import styles from './AttendenceTabStyle';
 import AttendenceTabLayout from './AttendenceTabLayout';
@@ -7,6 +8,7 @@ import {GetDailyAttendanceByEmpId} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import Loader from 'component/LoadingScreen/LoadingScreen';
+import {renderNoLeaves} from 'utils/utils';
 
 const AttendenceTab = ({employeeID, employeeName}) => {
   const dispatch = useDispatch();
@@ -16,7 +18,7 @@ const AttendenceTab = ({employeeID, employeeName}) => {
   const [loading, setLoading] = useState(false);
 
   let year = new Date().getFullYear();
-  let month = new Date().getMonth();
+  let month = new Date().getMonth() + 1;
 
   useEffect(() => {
     (async () => {
@@ -47,7 +49,7 @@ const AttendenceTab = ({employeeID, employeeName}) => {
         });
       }
     })();
-  }, []);
+  }, [dispatch, employeeID, month, token, year]);
 
   if (loading) {
     return <Loader />;
@@ -65,7 +67,7 @@ const AttendenceTab = ({employeeID, employeeName}) => {
               />
             );
           })
-        : null}
+        : renderNoLeaves({styles, message: 'No Attendance Data Found.'})}
     </ScrollView>
   );
 };

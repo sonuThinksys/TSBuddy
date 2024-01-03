@@ -206,6 +206,69 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 14,
   },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalChildContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    overflow: 'hidden',
+    paddingTop: 16,
+    paddingBottom: 24,
+    paddingHorizontal: 10,
+  },
+  modalFirstChild: {
+    zIndex: 9999,
+  },
+  workModeTitle: {
+    color: Colors.lovelyPurple,
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h17,
+    letterSpacing: 0.8,
+    marginBottom: 16,
+  },
+  title: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: FontSize.h15,
+    letterSpacing: 0.6,
+    marginBottom: 14,
+  },
+  modesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 24,
+    paddingHorizontal: 16,
+  },
+  mode: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  checkBoxModeText: {
+    fontSize: FontSize.h16,
+    color: Colors.dune,
+    marginRight: 8,
+  },
+  containerStyleEmployeePicker: {},
+  listItemLabelStyleEmployeePicker: {},
+  labelStyleEmployeePicker: {},
+  searchContainerStyleEmployeePicker: {
+    borderWidth: 0,
+  },
+  searchTextInputStyle: {
+    borderWidth: 1,
+    borderColor: Colors.grey,
+  },
+  stylesEmployeePicker: {
+    marginBottom: 20,
+    borderColor: Colors.grey,
+  },
+  dropDownStyleEmployeePicker: {},
+  dropDownContainerStyleEmployeePicker: {
+    borderColor: Colors.grey,
+  },
+
   createWorkModeButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -228,6 +291,7 @@ const styles = StyleSheet.create({
     // marginBottom: 16,
     justifyContent: 'space-between',
     paddingVertical: 5,
+    marginBottom: 14,
   },
   fromDateContainer: {
     marginTop: 10,

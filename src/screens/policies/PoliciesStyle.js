@@ -1,7 +1,12 @@
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 import {StyleSheet} from 'react-native';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 
 export default StyleSheet.create({
+  policy: {
+    marginTop: 10,
+  },
   request: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -9,10 +14,13 @@ export default StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    justifyContent: 'space-between',
     backgroundColor: Colors.white,
     marginHorizontal: 10,
     marginVertical: 3,
+    flex: 1,
+    marginRight: 10,
+    marginLeft: 0,
+    borderWidth: 2,
     // elevation: 1,
   },
   appliedRequestsLeft: {
@@ -20,6 +28,29 @@ export default StyleSheet.create({
     flex: 1,
     marginRight: 10,
     marginLeft: 0,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: wp(4),
+    backgroundColor: '#68C19E',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  titleText: {
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoLight,
+    color: Colors.white,
+  },
+  policyTextContainer: {
+    flex: 1,
+  },
+  policyText: {
+    fontSize: 18,
+    fontFamily: FontFamily.RobotoRegular,
+    color: Colors.dune,
   },
   requestText: {
     fontSize: 11.5,

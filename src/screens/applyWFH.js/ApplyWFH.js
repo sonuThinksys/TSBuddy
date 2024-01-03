@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TextInput,
   Keyboard,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
+  // TouchableWithoutFeedback,
   Platform,
   ActivityIndicator,
 } from 'react-native';
@@ -31,6 +31,7 @@ import {
   getEmployeesByLeaveApprover,
   getLeaveApprovers,
   getLeaveDetails,
+  updateLeaveStatus,
 } from 'redux/homeSlice';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import CustomHeader from 'navigation/CustomHeader';
@@ -40,8 +41,9 @@ import {CLOSE, ERROR, WORK_FROM_HOME} from 'utils/string';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
-import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
+// import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
 import {empFullName} from 'utils/utils';
+import CustomButton from 'navigation/CustomButton';
 
 const initialEndDate = {endDateStr: 'Select End Date'};
 const initialStartDate = {startDateStr: 'Select Start Date'};
@@ -49,6 +51,7 @@ const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const alreadyWeekend = 'You already have a weekend holiday on this day.';
 const alreadyNationalHoliday = 'You can not take a WFH on National holiday.';
 const alreadyWFHApplied = 'WFH are already applied for these dates.';
+const workFromHome = 'Work From Home';
 
 const ApplyWFH = ({navigation, fromApproverEnd}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -151,7 +154,7 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
     employeeShiftDataObj?.weeklyOff,
   ]);
 
-  useEffect(() => {
+  const fetchWFHs = useCallback(() => {
     if (isFocused && !fromApproverEnd) {
       (async () => {
         try {
@@ -201,7 +204,11 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
         }
       })();
     }
-  }, [isFocused, dispatch, employeeID, token, fromApproverEnd]);
+  }, [dispatch, employeeID, fromApproverEnd, token, isFocused]);
+
+  useEffect(() => {
+    fetchWFHs();
+  }, [fetchWFHs]);
 
   useEffect(() => {
     if (fromApproverEnd) {
@@ -557,6 +564,51 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
     }
   };
 
+  const onDismissWFH = async ({status, openLeaveApplicationId}) => {
+    const empId = employeeID;
+    setLoadingWFHList(true);
+    try {
+      const response =
+        token &&
+        (await dispatch(
+          updateLeaveStatus({
+            token,
+            body: {
+              employeeId: empId,
+              leaveApplicationId: openLeaveApplicationId,
+              status: status,
+              leaveType: workFromHome,
+            },
+          }),
+        ));
+      if (response?.error) {
+        // alert(response?.error?.message);
+        Alert.alert('Failed', 'Leave Dismiss failed!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              null;
+            },
+          },
+        ]);
+      } else {
+        fetchWFHs();
+        Alert.alert('Success', 'Leave Dismissed successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              null;
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.log('errFinalLeave:', err);
+    } finally {
+      setLoadingWFHList(false);
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <CustomHeader
@@ -570,185 +622,183 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
       <View style={styles.contentContainer}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.secondView}>
-              {fromApproverEnd ? (
-                <View style={styles.resourcePickerContainer}>
-                  <Text style={styles.selectResourceText}>Employee: </Text>
-                  <DropDownPicker
-                    placeholder={'Select'}
-                    open={openResourcePicker}
-                    value={resourcePickedId}
-                    items={resourcePicks}
-                    setOpen={setOpenResourcePicker}
-                    setValue={setResourcePickedId}
-                    setItems={setResourcePicks}
-                    onSelectItem={onSelectResource}
-                    containerStyle={styles.resourceSelectContainerStyle}
-                    style={styles.leaveApproverSelect}
-                  />
-                </View>
-              ) : null}
-              <DateTimePickerModal
-                minimumDate={new Date()}
-                date={startSelected ? startDate?.startDateObj : undefined}
-                isVisible={startDatePickerVisible}
-                mode="date"
-                onConfirm={handleStartConfirm}
-                onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
-              />
-              <DateTimePickerModal
-                minimumDate={
-                  startSelected ? startDate?.startDateObj : undefined
-                }
-                // maximumDate={
-                //   startSelected
-                //     ? new Date(
-                //         startDate?.startDateObj?.getTime() +
-                //           7 * 24 * 60 * 60 * 1000,
-                //       )
-                //     : undefined
-                // }
-                isVisible={endDatePickerVisible}
-                mode="date"
-                date={startSelected ? startDate?.startDateObj : undefined}
-                onConfirm={handleEndConfirm}
-                onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
-              />
-              <View style={styles.datesContainer}>
-                <View style={styles.thirdView}>
-                  {/* <SelectDateModal
-                  modalData={modalData}
-                  setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
-                /> */}
-                  <Text style={styles.fromDate}>From Date :</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setStartDatePickerVisible(true);
-                    }}>
-                    <View style={styles.fourthView}>
-                      <Text style={styles.selectedDated}>
-                        {startDate.startDateStr}
-                      </Text>
-                      <CalenderIcon
-                        fill={Colors.lightGray1}
-                        height={hp(2)}
-                        width={hp(2)}
-                        marginRight={wp(0.64)}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.fifthView}>
-                  <Text style={styles.toDate}>To Date :</Text>
-                  <TouchableOpacity
-                    disabled={!startSelected}
-                    style={[
-                      styles.selectToDate,
-                      !startSelected && styles.lessOpacity,
-                    ]}
-                    onPress={() => {
-                      setEndDatePickerVisible(true);
-                    }}>
-                    <View style={styles.sixthView}>
-                      <Text style={styles.selectedDated}>
-                        {endDate.endDateStr}
-                      </Text>
-                      <CalenderIcon
-                        fill={Colors.lightGray1}
-                        height={hp(2)}
-                        width={hp(2)}
-                        marginRight={wp(0.64)}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.dropDownView}>
-                <Text style={styles.daysCount}>
-                  Total Days: {!totalDaysCount ? 0 : totalDaysCount}
-                </Text>
-                <View style={styles.dropDownContainer}>
-                  <DropDownPicker
-                    open={open}
-                    placeholder={
-                      !fromApproverEnd
-                        ? 'Select Leave Approver..'
-                        : !resourcePickedId
-                        ? 'Select Resource First..'
-                        : 'Select Leave Approver..'
-                    }
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    onSelectItem={onSelectItem}
-                    containerStyle={styles.dropDownContainerStyles}
-                    style={[
-                      styles.dropDownMainStyles,
-                      open && styles.borderRadius5,
-                    ]}
-                    dropDownStyle={styles.dropDownStyle}
-                    labelStyle={styles.dropdownLabelStyle}
-                  />
-                </View>
-              </View>
-              <View style={styles.reasonViewBox}>
-                <TextInput
-                  value={reason}
-                  placeholder="Reason..."
-                  multiline={true}
-                  style={styles.reasonInputBox}
-                  onChangeText={text => setReason(text)}
+          {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+          <View style={styles.secondView}>
+            {fromApproverEnd ? (
+              <View
+                style={[
+                  styles.resourcePickerContainer,
+                  Platform.OS === 'ios' ? styles.zIndex9999 : null,
+                ]}>
+                <Text style={styles.selectResourceText}>Employee: </Text>
+                <DropDownPicker
+                  searchable={true}
+                  searchPlaceholder="Search..."
+                  placeholder={'Select'}
+                  open={openResourcePicker}
+                  value={resourcePickedId}
+                  items={resourcePicks}
+                  setOpen={val => {
+                    setOpen(false);
+                    setOpenResourcePicker(val);
+                  }}
+                  setValue={setResourcePickedId}
+                  setItems={setResourcePicks}
+                  onSelectItem={onSelectResource}
+                  containerStyle={styles.resourceSelectContainerStyle}
+                  style={styles.leaveApproverSelect}
                 />
               </View>
-              <View style={styles.buttonContainer}>
+            ) : null}
+            <DateTimePickerModal
+              minimumDate={new Date()}
+              date={startSelected ? startDate?.startDateObj : undefined}
+              isVisible={startDatePickerVisible}
+              mode="date"
+              onConfirm={handleStartConfirm}
+              onCancel={hideDatePicker.bind(null, setStartDatePickerVisible)}
+            />
+            <DateTimePickerModal
+              minimumDate={startSelected ? startDate?.startDateObj : undefined}
+              isVisible={endDatePickerVisible}
+              mode="date"
+              date={startSelected ? startDate?.startDateObj : undefined}
+              onConfirm={handleEndConfirm}
+              onCancel={hideDatePicker.bind(null, setEndDatePickerVisible)}
+            />
+            <View style={styles.datesContainer}>
+              <View style={styles.thirdView}>
+                <Text style={styles.fromDate}>From Date :</Text>
                 <TouchableOpacity
-                  disabled={
-                    !startDate.startDateObj &&
-                    !endDate.endDateObj &&
-                    !reason &&
-                    !value
-                  }
                   onPress={() => {
-                    setEndSelected(false);
-                    setStartSelected(false);
-                    setStartDate(initialStartDate);
-                    setEndDate(initialEndDate);
-                    setReason('');
-                    setTotalDaysCount(0);
-                    setValue(null);
-                  }}
-                  style={[
-                    styles.buttonClear,
-                    !startDate.startDateObj &&
-                      !endDate.endDateObj &&
-                      reason?.trim().length === 0 &&
-                      !value &&
-                      styles.lessOpacity,
-                  ]}>
-                  <View>
-                    <Text style={styles.clear}>Clear</Text>
+                    setStartDatePickerVisible(true);
+                  }}>
+                  <View style={styles.fourthView}>
+                    <Text style={styles.selectedDated}>
+                      {startDate.startDateStr}
+                    </Text>
+                    <CalenderIcon
+                      fill={Colors.lightGray1}
+                      height={hp(2)}
+                      width={hp(2)}
+                      marginRight={wp(0.64)}
+                    />
                   </View>
                 </TouchableOpacity>
+              </View>
+              <View style={styles.fifthView}>
+                <Text style={styles.toDate}>To Date :</Text>
                 <TouchableOpacity
-                  style={[styles.buttonApply, {opacity}]}
-                  disabled={
-                    !startSelected ||
-                    !endSelected ||
-                    !value ||
-                    reason?.trim().length === 0
-                  }
-                  onPress={onApplyWfh}>
-                  <View>
-                    <Text style={styles.apply}>Apply</Text>
+                  disabled={!startSelected}
+                  style={[
+                    styles.selectToDate,
+                    !startSelected && styles.lessOpacity,
+                  ]}
+                  onPress={() => {
+                    setEndDatePickerVisible(true);
+                  }}>
+                  <View style={styles.sixthView}>
+                    <Text style={styles.selectedDated}>
+                      {endDate.endDateStr}
+                    </Text>
+                    <CalenderIcon
+                      fill={Colors.lightGray1}
+                      height={hp(2)}
+                      width={hp(2)}
+                      marginRight={wp(0.64)}
+                    />
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
-          </TouchableWithoutFeedback>
+
+            <View style={styles.dropDownView}>
+              <Text style={styles.daysCount}>
+                Total Days: {!totalDaysCount ? 0 : totalDaysCount}
+              </Text>
+              <View style={styles.dropDownContainer}>
+                <DropDownPicker
+                  open={open}
+                  placeholder={
+                    !fromApproverEnd
+                      ? 'Select Leave Approver..'
+                      : !resourcePickedId
+                      ? 'Select Resource First..'
+                      : 'Select Leave Approver..'
+                  }
+                  value={value}
+                  items={items}
+                  setOpen={val => {
+                    setOpenResourcePicker(false);
+                    setOpen(val);
+                  }}
+                  setValue={setValue}
+                  setItems={setItems}
+                  onSelectItem={onSelectItem}
+                  containerStyle={styles.dropDownContainerStyles}
+                  style={[
+                    styles.dropDownMainStyles,
+                    open && styles.borderRadius5,
+                  ]}
+                  dropDownStyle={styles.dropDownStyle}
+                  labelStyle={styles.dropdownLabelStyle}
+                />
+              </View>
+            </View>
+            <View style={styles.reasonViewBox}>
+              <TextInput
+                value={reason}
+                placeholder="Reason..."
+                multiline={true}
+                style={styles.reasonInputBox}
+                onChangeText={text => setReason(text)}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                disabled={
+                  !startDate.startDateObj &&
+                  !endDate.endDateObj &&
+                  !reason &&
+                  !value
+                }
+                onPress={() => {
+                  setEndSelected(false);
+                  setStartSelected(false);
+                  setStartDate(initialStartDate);
+                  setEndDate(initialEndDate);
+                  setReason('');
+                  setTotalDaysCount(0);
+                  setValue(null);
+                }}
+                style={[
+                  styles.buttonClear,
+                  !startDate.startDateObj &&
+                    !endDate.endDateObj &&
+                    reason?.trim().length === 0 &&
+                    !value &&
+                    styles.lessOpacity,
+                ]}>
+                <View>
+                  <Text style={styles.clear}>Clear</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.buttonApply, {opacity}]}
+                disabled={
+                  !startSelected ||
+                  !endSelected ||
+                  !value ||
+                  reason?.trim().length === 0
+                }
+                onPress={onApplyWfh}>
+                <View>
+                  <Text style={styles.apply}>Apply</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* </TouchableWithoutFeedback> */}
         </KeyboardAvoidingView>
         {!fromApproverEnd || !!resourcePickedId ? (
           <>
@@ -765,7 +815,9 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
                   style={styles.flatlistStyle}
                   showsVerticalScrollIndicator={false}
                   data={wfhList}
-                  renderItem={renderListOfAppliedRequests}
+                  renderItem={({item}) =>
+                    renderListOfAppliedRequests({item, onDismissWFH})
+                  }
                   keyExtractor={keyExtractor}
                 />
               ) : (
@@ -789,7 +841,7 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
 
 const keyExtractor = item => Math.random() * Math.random();
 
-const renderListOfAppliedRequests = ({item}) => {
+const renderListOfAppliedRequests = ({item, onDismissWFH}) => {
   const options = {month: 'short', day: '2-digit', year: 'numeric'};
 
   const formattedStartDate = new Date(item?.fromDate)?.toLocaleDateString(
@@ -834,13 +886,22 @@ const renderListOfAppliedRequests = ({item}) => {
       <View style={styles.statusContainer}>
         {item.status?.toLowerCase() === 'open' ? (
           <View style={styles.pendingContainer}>
-            <PendingIcon
+            {/* <PendingIcon
               fill={Colors.gold}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={styles.pending}>Pending</Text>
+            <Text style={styles.pending}>Pending</Text> */}
+            <CustomButton
+              title="Dismiss"
+              onPress={onDismissWFH.bind(null, {
+                status: 'Dismissed',
+                openLeaveApplicationId: item.leaveApplicationId,
+              })}
+              styleButton={styles.dismissButton}
+              styleTitle={styles.dismissTitle}
+            />
           </View>
         ) : item.status?.toLowerCase() === 'dismissed' ||
           item.status?.toLowerCase() === 'rejected' ? (

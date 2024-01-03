@@ -69,6 +69,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  opacity50: {
+    opacity: 0.5,
+  },
   foodImage: {
     height: wp(26),
     width: wp(26),

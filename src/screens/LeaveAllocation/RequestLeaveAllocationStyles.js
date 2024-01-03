@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
   },
   leftStatus: {
-    flex: 1,
+    flex: 3,
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
     justifyContent: 'center',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
   },
   backgroundPink: {
-    backgroundColor: Colors.grey,
+    backgroundColor: Colors.darkPink,
   },
   backgroundGreen: {
     backgroundColor: Colors.parrotGreenLight,
@@ -60,13 +60,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   secondView: {
-    flex: 2,
+    flex: 7,
     backgroundColor: Colors.lightcyan,
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
-    justifyContent: 'center',
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rightFirstContainer: {
+    flex: 4,
   },
   leaveAppIdText: {
     fontWeight: 'bold',
@@ -75,6 +79,18 @@ const styles = StyleSheet.create({
   },
   lessOpacity: {
     opacity: 0.6,
+  },
+  dismissContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 2,
+  },
+  dismissButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  dismissTitle: {
+    fontSize: FontSize.h14,
   },
   loaderContainer: {
     ...StyleSheet.absoluteFillObject,

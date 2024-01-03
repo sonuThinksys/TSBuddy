@@ -5,15 +5,22 @@ import {MonthImages} from 'assets/monthImage/MonthImage';
 import styles from './AutoscrollStyle';
 
 import BirthdayAnniV from 'modals/BirthdayAnniV';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
 import BriefCase from 'assets/newDashboardIcons/briefcase.svg';
 import HappyBirthday from 'assets/newDashboardIcons/cake-candles.svg';
+import {getCalendereventData} from 'redux/homeSlice';
+import ShowAlert from 'customComponents/CustomError';
+import {ERROR} from 'utils/string';
+import Loader from 'component/loader/Loader';
 
 const CarouselAutoScroll = ({navigation}) => {
+  const dispatch = useDispatch();
   const [calenderEventData, setCalenderEventData] = useState([]);
+  const {userToken: token, refreshToken} = useSelector(state => state.auth);
+  const [loadingEvents, setLoadingEvents] = useState(false);
   const {calendereventData: calenderData} = useSelector(state => state.home);
 
   const birthdays = calenderData?.calenderEvent;
@@ -23,6 +30,32 @@ const CarouselAutoScroll = ({navigation}) => {
     () => Object?.keys(calenderData),
     [calenderData],
   );
+
+  useEffect(() => {
+    // if (isFocussed) {
+    (async () => {
+      try {
+        setLoadingEvents(true);
+        const events = await dispatch(
+          getCalendereventData({token, dispatch, refreshToken}),
+        );
+        if (events?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: events?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        console.log('errorEvents:', err);
+      } finally {
+        setLoadingEvents(false);
+      }
+    })();
+    // }
+  }, [token, refreshToken, dispatch, navigation]);
 
   useEffect(() => {
     let arr = [];
@@ -210,6 +243,7 @@ const CarouselAutoScroll = ({navigation}) => {
           </Text>
         </View>
       )}
+      {loadingEvents ? <Loader /> : null}
     </View>
   );
 };

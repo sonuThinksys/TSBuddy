@@ -17,9 +17,8 @@ import styles from './HolidaysStyles';
 import moment from 'moment';
 import {DATE_FORMAT, PAST_HOLIDAYS, UPCOMING_HOLIDAYS} from 'constants/strings';
 import {guestHolidaysData} from 'guestData';
-import {getHolidaysData} from 'redux/homeSlice';
 import CustomHeader from 'navigation/CustomHeader';
-import {refresh} from '@react-native-community/netinfo';
+import {sortByFiscalYear} from 'utils/utils';
 
 const Holidays = ({navigation}) => {
   const [holidaysShowModal, holidaysSetShowModal] = useState(false);
@@ -31,16 +30,6 @@ const Holidays = ({navigation}) => {
   const {holidayData: holidaysData, holidayDataLoading: isLoading} =
     useSelector(state => state.home);
   const [isRefresh, setRefresh] = useState(false);
-
-  const updateData = useCallback(async () => {
-    try {
-      setRefresh(true);
-      await dispatch(getHolidaysData(token));
-    } catch (err) {
-    } finally {
-      setRefresh(false);
-    }
-  }, [dispatch, token]);
 
   const renderItem = useCallback(
     (
@@ -133,6 +122,12 @@ const Holidays = ({navigation}) => {
     [],
   );
 
+  const duplicateHolidays =
+    (holidaysData &&
+      holidaysData.length &&
+      [...holidaysData]?.sort(sortByFiscalYear)) ||
+    [];
+
   return (
     <>
       <CustomHeader
@@ -145,10 +140,10 @@ const Holidays = ({navigation}) => {
       <SafeAreaView style={{paddingTop: hp(1), flex: 1}}>
         {/* {isLoading  ? <Loader /> : null} */}
         <FlatList
-          data={isGuestLogin ? guestHolidaysData : holidaysData}
+          data={isGuestLogin ? guestHolidaysData : duplicateHolidays}
           keyExtractor={(item, index) => index}
           refreshing={isRefresh}
-          onRefresh={updateData}
+          // onRefresh={updateData}
           renderItem={({item, index}) => {
             return renderItem(
               item,

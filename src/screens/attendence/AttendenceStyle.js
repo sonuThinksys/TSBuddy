@@ -1,16 +1,42 @@
 import {Colors} from 'colors/Colors';
+import {FontFamily} from 'constants/fonts';
 import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 export default StyleSheet.create({
+  renderItemMainContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    marginRight: wp(2.8),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  attTypeNotation: {
+    width: wp(4),
+    height: hp(2),
+    borderRadius: 20,
+  },
+  attType: {
+    color: Colors.white,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: 14,
+  },
   container: {
     flex: 1,
     // width:"100%",
     // justifyContent: 'space-between',
     justifyContent: 'center',
     backgroundColor: Colors.whitishBlue,
+  },
+  backgroundImg: {
+    flex: 1,
+  },
+  clickedDateModal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: hp(20),
   },
   modalContainer: {
     backgroundColor: Colors.skyColor,
@@ -19,6 +45,10 @@ export default StyleSheet.create({
     borderColor: 'blue',
     borderWidth: 1,
     width: wp(40),
+  },
+  weeklyReport: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
   secondContainer: {
     borderColor: Colors.white,
@@ -97,4 +127,10 @@ export default StyleSheet.create({
     backgroundColor: Colors.black,
     opacity: 0.5,
   },
+  attTypes: {
+    marginTop: hp(1),
+    flex: 1,
+    alignItems: 'center',
+  },
+  calenderContainer: {flex: 1.2, position: 'relative'},
 });

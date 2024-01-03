@@ -3,13 +3,11 @@ import {View, Text, Pressable} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {guestLeavesData} from 'guestData';
 import styles from './RecentLeavesStyles';
-import {FontFamily} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
-import {widthPercentageToDP as wp} from 'utils/Responsive';
 import {useIsFocused} from '@react-navigation/native';
 import {getLeaveDetails} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
@@ -94,24 +92,26 @@ const RecentLeaves = ({navigation}) => {
   }, [isFocussed, isGuestLogin, token, dispatch, employeeID]);
 
   return (
-    <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
+    <View style={styles.mainContainer}>
       <View style={styles.container}>
         <Text style={styles.recentText}>
           {showLeaveType === 'leaves'
             ? 'Recent Leaves Applied'
             : 'Recent WFH Applied'}
         </Text>
-        <Pressable
-          onPress={() => {
-            setShowLeaveType(leaveType =>
-              leaveType === 'leaves' ? 'wfh' : 'leaves',
-            );
-          }}
-          style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>
-            {showLeaveType === 'leaves' ? 'WFH' : 'Leaves'}
-          </Text>
-        </Pressable>
+        {!isGuestLogin && (
+          <Pressable
+            onPress={() => {
+              setShowLeaveType(leaveType =>
+                leaveType === 'leaves' ? 'wfh' : 'leaves',
+              );
+            }}
+            style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>
+              {showLeaveType === 'leaves' ? 'WFH' : 'Leaves'}
+            </Text>
+          </Pressable>
+        )}
       </View>
       {isGuestLogin ? (
         guestLeavesData.map((item, index) => {
@@ -126,14 +126,8 @@ const RecentLeaves = ({navigation}) => {
           return renderItem({item, index});
         })
       ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text
-            style={{
-              fontFamily: FontFamily.RobotoMedium,
-              fontSize: 16,
-              color: Colors.lightBlue,
-              marginVertical: 4,
-            }}>
+        <View style={styles.noLeavesContainer}>
+          <Text style={styles.noLeavesText}>
             Recent {showLeaveType === 'leaves' ? 'Leaves' : 'WFH'} not found.
           </Text>
         </View>
@@ -144,7 +138,7 @@ const RecentLeaves = ({navigation}) => {
 const renderItem = ({item, index}) => {
   return (
     <View key={index} style={styles.imageView}>
-      <View style={{flexDirection: 'row'}}>
+      <View style={styles.leaveDetailsContainer}>
         <View style={styles.daysContainer}>
           <Text style={styles.daysText}>
             {item?.totalLeaveDays > 9 || item?.totalLeaveDays < 1
@@ -169,7 +163,7 @@ const renderItem = ({item, index}) => {
             ]}>
             {item?.leaveType || 'Earned Leave'}
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={styles.leaveDatesContainer}>
             <CalenderIcon height={11} width={11} marginRight={8} />
             <Text style={styles.dateText}>
               {`${new Date(item.fromDate).toLocaleString('default', {
@@ -188,41 +182,37 @@ const renderItem = ({item, index}) => {
           </View>
         </View>
       </View>
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.statusContainer}>
         {item.status?.toLowerCase() === 'open' ? (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.status}>
             <PendingIcon
               fill={Colors.gold}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.gold}}>Pending</Text>
+            <Text style={styles.pending}>Pending</Text>
           </View>
         ) : item.status?.toLowerCase() === 'dismissed' ||
           item.status?.toLowerCase() === 'rejected' ? (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.status}>
             <RejectedIcon
               fill={Colors.darkBrown}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.darkBrown}}>
-              {item.status}
-            </Text>
+            <Text style={styles.dismissed}>{item.status}</Text>
           </View>
         ) : (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.status}>
             <ApprovedIcon
               fill={Colors.darkLovelyGreen}
               height={20}
               width={20}
               marginBottom={4}
             />
-            <Text style={{fontSize: 12, color: Colors.darkLovelyGreen}}>
-              {item.status || 'Approved'}
-            </Text>
+            <Text style={styles.approved}>{item.status || 'Approved'}</Text>
           </View>
         )}
       </View>

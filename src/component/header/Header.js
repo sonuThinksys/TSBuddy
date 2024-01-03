@@ -1,11 +1,8 @@
 import * as React from 'react';
-import {View, TouchableOpacity, Image, Text} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
-import {MonthImages} from 'assets/monthImage/MonthImage';
+
+// import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {Colors} from 'colors/Colors';

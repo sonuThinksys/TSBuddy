@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
 import {

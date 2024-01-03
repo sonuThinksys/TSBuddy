@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, TextView, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import AppIcon from '../../assets/mipmap/appIcon120-1.png';
 
 import {appVersion} from '../../utils/AppVersion';
@@ -9,11 +9,11 @@ const SplashScreen = ({navigation}) => {
     setTimeout(() => {
       navigation.replace('MainRoute');
     }, 3000);
-  }, []);
+  }, [navigation]);
   return (
     <View style={styles.container}>
       <Image source={AppIcon} />
-      <Text style={{textAlign: 'center'}}>{appVersion}</Text>
+      <Text style={styles.versionText}>{appVersion}</Text>
     </View>
   );
 };
@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'red',
   },
+  versionText: {textAlign: 'center'},
 });
 
 export default SplashScreen;

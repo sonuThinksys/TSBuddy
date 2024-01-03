@@ -4,7 +4,13 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
+  containerExceptHeader: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
   NameView: {
     paddingVertical: hp(1.5),
     backgroundColor: Colors.colorDodgerBlue2,
@@ -12,6 +18,12 @@ export default StyleSheet.create({
     paddingHorizontal: wp(5),
     fontWeight: '500',
     fontSize: 18,
+  },
+  salariesContainer: {flex: 1},
+  salaryYearContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'blue',
   },
   yearMainView: {
     flexDirection: 'row',
@@ -43,16 +55,20 @@ export default StyleSheet.create({
     marginHorizontal: 2.1,
   },
   backgroundImageView: {
-    width: '100%',
-    height: hp(11.15),
-    marginHorizontal: 3.1,
     borderRadius: 8,
-    //  borderWidth: 1,
     shadowOpacity: 0.3,
-    backgroundColor: 'white',
-    padding: 2,
+    backgroundColor: Colors.white,
+    padding: 5,
   },
-  backGroundImage: {height: hp(10.5), borderRadius: 20, backgroundColor: 'red'},
+  salary: {
+    borderRadius: 5,
+  },
+  backGroundImage: {
+    height: hp(10.5),
+    borderRadius: 20,
+    backgroundColor: 'red',
+  },
+  imageBackground: {borderRadius: 8},
   smalllImageView: {
     height: 40,
     width: 40,
@@ -63,6 +79,10 @@ export default StyleSheet.create({
     justifyContent: 'center',
     borderTopLeftRadius: 10,
   },
+  image: {
+    height: 20,
+    width: 20,
+  },
   monthText: {
     textAlign: 'center',
     color: 'white',
@@ -70,26 +90,25 @@ export default StyleSheet.create({
     fontSize: 24,
   },
   downloadView: {
-    width: '99%',
-    height: hp(5.4),
+    width: '100%',
     marginVertical: hp(0.5),
-    // marginTop: hp(1),
-    marginHorizontal: wp(1),
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     borderRadius: 6,
-    paddingVertical: hp(0.5),
-    paddingHorizontal: wp(1),
     shadowOpacity: 0.2,
+    padding: 4,
   },
   downloadTextView: {
     backgroundColor: Colors.lightBlue,
-    paddingVertical: hp(1),
-    // height: hp(4),
+    paddingVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 6,
   },
-  downloadtext: {color: 'white', fontWeight: 'bold', fontSize: 17},
+  downloadtext: {
+    color: Colors.white,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h13,
+  },
   salaryNotFound: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -98,5 +117,15 @@ export default StyleSheet.create({
   },
   salaryNotFoundText: {
     // fontSize: 16,
+  },
+  filterContainer: {
+    position: 'absolute',
+    bottom: hp(3),
+    right: wp(5),
+  },
+  filterImage: {
+    height: 55,
+    width: 55,
+    borderRadius: 25,
   },
 });

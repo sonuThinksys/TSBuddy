@@ -17,7 +17,7 @@ const initialState = {
   employeeData: {},
   employeeDataLoading: false,
   employeeDataError: false,
-  holidayData: {},
+  holidayData: [],
   holidayDataLoading: false,
   holidayDataError: false,
   dateData: '',
@@ -96,9 +96,9 @@ const snacks = 'snacks';
 //   },
 // );
 
-export const getSelfLeaveRegularisationRequests = createAsyncThunk(
-  'getSelfLeaveRegularisationRequests',
-  async ({token, empId}) => {
+export const dismissSelfLeaveAllocationRequest = createAsyncThunk(
+  'dismissSelfLeaveAllocationRequest',
+  async ({token, body}) => {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -106,7 +106,78 @@ export const getSelfLeaveRegularisationRequests = createAsyncThunk(
       },
     };
 
-    const url = endPoints.getSelfLeaveRegularisationRequest + empId;
+    const url = endPoints.dismissSelfLeaveAllocationRequest;
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+
+export const updateLeaveAllocationRequest = createAsyncThunk(
+  'updateLeaveAllocationRequest',
+  async ({token, body}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = endPoints.updateLeaveAllocationRequest;
+
+    try {
+      const {data, status} = await axios.post(url, body, config);
+
+      if (status === 200) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.reject('Something went wrong!');
+      }
+    } catch (err) {
+      let statusCode = 500;
+      if (err?.response) {
+        statusCode = err?.response?.status;
+      }
+      if (statusCode === 401) {
+        return Promise.reject(err?.response?.data?.message);
+      } else if (statusCode === 400) {
+        return Promise.reject(err?.response?.data);
+      } else {
+        return Promise.reject(new Error(err));
+      }
+    }
+  },
+);
+export const getAllEmployeesForHR = createAsyncThunk(
+  'getAllEmployeesForHR',
+  async ({token}) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const url = endPoints.getAllEmployeesForHR;
 
     try {
       const {data, status} = await axios.get(url, config);
@@ -131,6 +202,43 @@ export const getSelfLeaveRegularisationRequests = createAsyncThunk(
     }
   },
 );
+
+// export const getSelfLeaveRegularisationRequests = createAsyncThunk(
+//   'getSelfLeaveRegularisationRequests',
+//   async ({token, empId}) => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     const url = endPoints.getSelfLeaveRegularisationRequest + empId;
+
+//     try {
+//       const {data, status} = await axios.get(url, config);
+
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject('Something went wrong!');
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
+//       if (err?.response) {
+//         statusCode = err?.response?.status;
+//       }
+//       if (statusCode === 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else if (statusCode === 400) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
+
 export const getSelfLeaveAllocationRequests = createAsyncThunk(
   'getSelfLeaveAllocationRequests',
   async ({token}) => {
@@ -302,40 +410,40 @@ export const getLeaveApplicationData = createAsyncThunk(
   },
 );
 
-export const getEmployeesLeavesFromLeaveApplication = createAsyncThunk(
-  'home/getEmployeesLeavesFromLeaveApplication',
-  async ({token, empId}) => {
-    const config = {
-      method: 'get',
-      url: endPoints.getEmployeesLeavesFromLeaveApplication + empId,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
+// export const getEmployeesLeavesFromLeaveApplication = createAsyncThunk(
+//   'home/getEmployeesLeavesFromLeaveApplication',
+//   async ({token, empId}) => {
+//     const config = {
+//       method: 'get',
+//       url: endPoints.getEmployeesLeavesFromLeaveApplication + empId,
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    return axios(config)
-      .then(response => {
-        const {data, status} = response;
-        if (status === 200) {
-          return Promise.resolve(data);
-        } else {
-          return Promise.reject(new Error('Something Went Wrong!'));
-        }
-      })
-      .catch(err => {
-        let statusCode = 500;
-        if (err?.response) {
-          statusCode = err?.response.status;
-        }
-        if (statusCode == 401) {
-          return Promise.reject(err?.response?.data?.message);
-        } else {
-          return Promise.reject(new Error(err));
-        }
-      });
-  },
-);
+//     return axios(config)
+//       .then(response => {
+//         const {data, status} = response;
+//         if (status === 200) {
+//           return Promise.resolve(data);
+//         } else {
+//           return Promise.reject(new Error('Something Went Wrong!'));
+//         }
+//       })
+//       .catch(err => {
+//         let statusCode = 500;
+//         if (err?.response) {
+//           statusCode = err?.response.status;
+//         }
+//         if (statusCode == 401) {
+//           return Promise.reject(err?.response?.data?.message);
+//         } else {
+//           return Promise.reject(new Error(err));
+//         }
+//       });
+//   },
+// );
 
 export const getWorkModeByEmployeeId = createAsyncThunk(
   'getWorkModeEmployees',
@@ -671,39 +779,39 @@ export const getTodayLunchRequests = createAsyncThunk(
   },
 );
 
-export const lunchRequestCancellationDeadline = createAsyncThunk(
-  'lunchRequestCancellationDeadline',
-  async ({token}) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+// export const lunchRequestCancellationDeadline = createAsyncThunk(
+//   'lunchRequestCancellationDeadline',
+//   async ({token}) => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
 
-    const url = endPoints.getLunchCancelDeadline;
+//     const url = endPoints.getLunchCancelDeadline;
 
-    try {
-      const {data, status} = await axios.get(url, config);
-      if (status === 200) {
-        return Promise.resolve(data);
-      } else {
-        return Promise.reject(new Error());
-      }
-    } catch (err) {
-      let statusCode = 500;
+//     try {
+//       const {data, status} = await axios.get(url, config);
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject(new Error());
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
 
-      if (err?.response) {
-        statusCode = err?.response?.status;
-      }
+//       if (err?.response) {
+//         statusCode = err?.response?.status;
+//       }
 
-      if (statusCode === 400 || statusCode === 401) {
-        return Promise.reject(err?.response?.data);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
-  },
-);
+//       if (statusCode === 400 || statusCode === 401) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
 
 export const getLunchPlans = createAsyncThunk(
   'getLunchPlans',
@@ -878,7 +986,7 @@ export const getTodayCheckInTime = createAsyncThunk(
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401 || statusCode == 400) {
+      if (statusCode === 401 || statusCode === 400) {
         return Promise.reject(err?.response?.data);
       } else {
         return Promise.reject(new Error(err));
@@ -1010,7 +1118,7 @@ export const getSubscribedLunchRequests = createAsyncThunk(
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401) {
+      if (statusCode === 401) {
         return Promise.reject(err?.response?.data?.message);
       } else {
         return Promise.reject(new Error(err));
@@ -1166,42 +1274,42 @@ export const applyForWfhLeave = createAsyncThunk(
   },
 );
 
-export const createNewAttendance = createAsyncThunk(
-  'home/newAttendance',
-  async function ({token, body}) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const {data, status} = await axios.post(
-        endPoints.createNewAttendance,
-        body,
-        config,
-      );
+// export const createNewAttendance = createAsyncThunk(
+//   'home/newAttendance',
+//   async function ({token, body}) {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     };
+//     try {
+//       const {data, status} = await axios.post(
+//         endPoints.createNewAttendance,
+//         body,
+//         config,
+//       );
 
-      if (status === 200) {
-        return Promise.resolve(data);
-      } else {
-        return Promise.reject('Something went wrong');
-      }
-    } catch (err) {
-      let statusCode = 500;
-      if (err.response) {
-        statusCode = err?.response?.status;
-      }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else if (statusCode === 400) {
-        return Promise.reject(err?.response?.data);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
-  },
-);
+//       if (status === 200) {
+//         return Promise.resolve(data);
+//       } else {
+//         return Promise.reject('Something went wrong');
+//       }
+//     } catch (err) {
+//       let statusCode = 500;
+//       if (err.response) {
+//         statusCode = err?.response?.status;
+//       }
+//       if (statusCode == 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else if (statusCode === 400) {
+//         return Promise.reject(err?.response?.data);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
 
 export const getAllEmployeeListForHR = createAsyncThunk(
   'home/allEmployeeForHR',
@@ -1264,7 +1372,7 @@ export const createAttendance = createAsyncThunk(
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401) {
+      if (statusCode === 401) {
         return Promise.reject(err?.response?.data?.message);
       } else if (statusCode === 400) {
         return Promise.reject(err?.response?.data);
@@ -1296,11 +1404,12 @@ export const applyForLeave = createAsyncThunk(
         return Promise.reject('Something went wrong!');
       }
     } catch (err) {
+      console.log('errrrrrr:', err);
       let statusCode = 500;
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401) {
+      if (statusCode === 401) {
         return Promise.reject(err?.response?.data?.message);
       } else if (statusCode === 400) {
         return Promise.reject(err?.response?.data);
@@ -1372,7 +1481,7 @@ export const requestForAttendanceRegularization = createAsyncThunk(
       if (err?.response) {
         statusCode = err?.response?.status;
       }
-      if (statusCode == 401) {
+      if (statusCode === 401) {
         return Promise.reject(err?.response?.data?.message);
       } else if (statusCode === 400) {
         return Promise.reject(err?.response?.data);
@@ -1488,81 +1597,81 @@ export const getSingleUserFeedback = createAsyncThunk(
   },
 ); // removeReduxVariables
 
-export const giveMenuFeedback = createAsyncThunk(
-  'home/giveMenuFeedback',
-  async ({token, menuID, userData, feedbackType, index}) => {
-    const isLike = feedbackType === 'like';
-    let value;
-    if (isLike) value = 1;
-    else value = 0;
+// export const giveMenuFeedback = createAsyncThunk(
+//   'home/giveMenuFeedback',
+//   async ({token, menuID, userData, feedbackType, index}) => {
+//     const isLike = feedbackType === 'like';
+//     let value;
+//     if (isLike) value = 1;
+//     else value = 0;
 
-    let type;
-    if (index === 0) type = 'breakfast';
-    if (index === 1) type = 'lunch';
-    if (index === 2) type = 'meal';
+//     let type;
+//     if (index === 0) type = 'breakfast';
+//     if (index === 1) type = 'lunch';
+//     if (index === 2) type = 'meal';
 
-    const apiEndpoint = endPoints.giveFeedbackPost;
+//     const apiEndpoint = endPoints.giveFeedbackPost;
 
-    userData.dailyMenuId = menuID;
-    userData[type] = value;
+//     userData.dailyMenuId = menuID;
+//     userData[type] = value;
 
-    return axios
-      .post(apiEndpoint, userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(response => {
-        const {data, status} = response;
-        if (status === 200) {
-          data.index = index;
-          return Promise.resolve(data);
-        } else {
-          return Promise.reject(new Error('Something Went Wrong!'));
-        }
-      })
-      .catch(err => {
-        let statusCode = 500;
-        if (err?.response) {
-          statusCode = err?.response.status;
-        }
-        if (statusCode == 401) {
-          return Promise.reject(err?.response?.data?.message);
-        } else {
-          return Promise.reject(new Error(err));
-        }
-      });
-  },
-);
+//     return axios
+//       .post(apiEndpoint, userData, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       })
+//       .then(response => {
+//         const {data, status} = response;
+//         if (status === 200) {
+//           data.index = index;
+//           return Promise.resolve(data);
+//         } else {
+//           return Promise.reject(new Error('Something Went Wrong!'));
+//         }
+//       })
+//       .catch(err => {
+//         let statusCode = 500;
+//         if (err?.response) {
+//           statusCode = err?.response.status;
+//         }
+//         if (statusCode == 401) {
+//           return Promise.reject(err?.response?.data?.message);
+//         } else {
+//           return Promise.reject(new Error(err));
+//         }
+//       });
+//   },
+// );
 
-export const getMenuFeedback = createAsyncThunk(
-  'home/menuFeedback',
-  async token => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+// export const getMenuFeedback = createAsyncThunk(
+//   'home/menuFeedback',
+//   async token => {
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     };
 
-    try {
-      const feedback = await axios.get(
-        endPoints.getMenuFeedbackTotalCount,
-        config,
-      );
-      return Promise.resolve(feedback.data);
-    } catch (err) {
-      let statusCode = 500;
-      if (err?.response) {
-        statusCode = err?.response.status;
-      }
-      if (statusCode == 401) {
-        return Promise.reject(err?.response?.data?.message);
-      } else {
-        return Promise.reject(new Error(err));
-      }
-    }
-  },
-);
+//     try {
+//       const feedback = await axios.get(
+//         endPoints.getMenuFeedbackTotalCount,
+//         config,
+//       );
+//       return Promise.resolve(feedback.data);
+//     } catch (err) {
+//       let statusCode = 500;
+//       if (err?.response) {
+//         statusCode = err?.response.status;
+//       }
+//       if (statusCode == 401) {
+//         return Promise.reject(err?.response?.data?.message);
+//       } else {
+//         return Promise.reject(new Error(err));
+//       }
+//     }
+//   },
+// );
 
 // =============================================
 
@@ -1612,6 +1721,40 @@ export const getTodayMenuDetails = createAsyncThunk(
 // ============================================================================================
 
 // your userSlice with other reducers
+export const getEmployeesAtManagerEnd = createAsyncThunk(
+  'home/getEmployeesAtManagerEnd',
+  async token => {
+    const config = {
+      method: 'get',
+      url: endPoints.getEmployeesAtManagerEnd,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return axios(config)
+      .then(response => {
+        const {data, status} = response;
+        if (status === 200) {
+          return Promise.resolve(data);
+        } else {
+          return Promise.reject(new Error('Something Went Wrong!'));
+        }
+      })
+      .catch(err => {
+        let statusCode = 500;
+        if (err?.response) {
+          statusCode = err?.response.status;
+        }
+        if (statusCode === 401) {
+          return Promise.reject(err?.response?.data?.message);
+        } else {
+          return Promise.reject(new Error(err));
+        }
+      });
+  },
+);
 
 export const getEmployeesByLeaveApprover = createAsyncThunk(
   'home/getEmployeesByLeaveApprover',
@@ -1742,7 +1885,7 @@ export const GetDailyAttendanceByEmpId = createAsyncThunk(
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401) {
+        if (statusCode === 401) {
           return Promise.reject(err?.response?.data?.message);
         } else {
           return Promise.reject(new Error(err));
@@ -1953,7 +2096,7 @@ export const getSalarySlipData = createAsyncThunk(
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401) {
+        if (statusCode === 401) {
           return Promise.reject(err?.response?.data?.message);
         } else {
           return Promise.reject(new Error(err));
@@ -2001,16 +2144,10 @@ export const requestLunchSubmission = createAsyncThunk(
   'dataReducer/requestLunchSubmission',
   async formInput => {
     const {token, ...extraPayload} = formInput;
-    // const data = {
-    //   employeeId: 10352,
-    //   requestType: 'Today',
-    //   requestStartDate: '2023-05-10',
-    //   requestEndDate: '2023-05-10',
-    // };
     const url = endPoints.requestLunchApi;
     var config = {
       method: 'post',
-      url: endPoints.requestLunchApi,
+      url: url,
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -2096,18 +2233,18 @@ const homeSlice = createSlice({
       state.userFeedback = feedbackArray;
     });
 
-    builder.addCase(giveMenuFeedback.fulfilled, (state, action) => {
-      const feedbackArray = [...state.userFeedback];
-      // return;
+    // builder.addCase(giveMenuFeedback.fulfilled, (state, action) => {
+    //   const feedbackArray = [...state.userFeedback];
+    //   // return;
 
-      if (feedbackArray.length) {
-        feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
-          ? 1
-          : 0;
-      }
+    //   if (feedbackArray.length) {
+    //     feedbackArray[action?.payload?.index].feedback = action?.payload?.isLike
+    //       ? 1
+    //       : 0;
+    //   }
 
-      state.userFeedback = feedbackArray;
-    });
+    //   state.userFeedback = feedbackArray;
+    // });
     // builder.addCase(giveMenuFeedback.rejected, (state, action) => {
     // });
     builder.addCase(getSalarySlipData.pending, state => {
@@ -2161,7 +2298,7 @@ const homeSlice = createSlice({
       state.holidayDataError = action.payload;
     });
 
-    builder.addCase(getMenuFeedback.pending, state => {});
+    // builder.addCase(getMenuFeedback.pending, state => {});
 
     builder.addCase(getTodayMenuDetails.pending, state => {
       state.menuDetailsLoading = true;

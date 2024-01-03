@@ -6,6 +6,10 @@ import {
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
+  mainContainer: {
+    paddingHorizontal: 18,
+    paddingBottom: wp(6),
+  },
   container: {
     paddingBottom: hp(1),
     paddingHorizontal: wp(3),
@@ -55,6 +59,17 @@ export default StyleSheet.create({
     marginTop: hp(1),
     color: Colors.black,
   },
+  noHolidaysContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noHolidaysText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
+  },
+  dateContainer: {flexDirection: 'row'},
   daysContainer: {
     marginRight: wp(5),
     width: wp(16),
@@ -71,5 +86,9 @@ export default StyleSheet.create({
     fontSize: 18,
     color: '#0F673E',
     fontFamily: FontFamily.RobotoMedium,
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

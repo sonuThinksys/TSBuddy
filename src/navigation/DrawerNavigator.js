@@ -537,11 +537,15 @@ function DrawerNavigator({navigation}) {
         component={AttendenceStackScreen}
       />
       <Drawer.Screen name="Leaves" component={LeavesStackScreen} />
-      <Drawer.Screen
-        name="LeaveAllocation"
-        component={LeaveAllocationStackNavigator}
-      />
-      <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
+      {token ? (
+        <Drawer.Screen
+          name="LeaveAllocation"
+          component={LeaveAllocationStackNavigator}
+        />
+      ) : null}
+      {token ? (
+        <Drawer.Screen name="applyWfh" component={ApplyWfhStackScreen} />
+      ) : null}
 
       {isLeaveApprover ? (
         <Drawer.Screen

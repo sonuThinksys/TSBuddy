@@ -6,6 +6,10 @@ import {
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
+  mainContainer: {
+    paddingHorizontal: 18,
+    paddingBottom: wp(6),
+  },
   container: {
     // paddingBottom: hp(1),
     // paddingHorizontal: wp(3),
@@ -34,6 +38,9 @@ export default StyleSheet.create({
     marginBottom: 5,
     paddingHorizontal: wp(4),
     justifyContent: 'space-between',
+  },
+  leaveDetailsContainer: {
+    flexDirection: 'row',
   },
   itemView: {
     paddingVertical: hp(1.6),
@@ -71,6 +78,27 @@ export default StyleSheet.create({
     marginBottom: 5,
     fontFamily: FontFamily.RobotoMedium,
   },
+  leaveDatesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  status: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  approved: {
+    fontSize: 12,
+    color: Colors.darkLovelyGreen,
+  },
+  pending: {
+    fontSize: 12,
+    color: Colors.gold,
+  },
+  dismissed: {fontSize: 12, color: Colors.darkBrown},
   buttonContainer: {
     borderWidth: 1,
     borderRadius: 100,
@@ -84,5 +112,15 @@ export default StyleSheet.create({
     fontFamily: FontFamily.RobotoMedium,
     fontSize: FontSize.h16,
     color: Colors.purpleShade,
+  },
+  noLeavesContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noLeavesText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
   },
 });

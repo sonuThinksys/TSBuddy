@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
   },
   backgroundPink: {
-    backgroundColor: Colors.grey,
+    backgroundColor: Colors.darkPink,
   },
   backgroundGreen: {
     backgroundColor: Colors.parrotGreenLight,

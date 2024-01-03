@@ -40,12 +40,38 @@ const styles = StyleSheet.create({
     fontSize: FontSize.h16,
     fontFamily: FontFamily.RobotoMedium,
   },
+  textInputContainer: {
+    marginHorizontal: 14,
+    marginVertical: 7,
+    flexDirection: 'row',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textInput: {
+    backgroundColor: Colors.white,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: Colors.grey,
+    borderRadius: 7,
+    fontSize: 15,
+    flex: 1,
+    marginRight: 10,
+  },
+  searchIcon: {
+    height: 20,
+    width: 20,
+    color: Colors.white,
+  },
   headerRightContainer: {
     borderWidth: 2,
     borderColor: Colors.white,
     borderRadius: 7,
     paddingHorizontal: 6,
     paddingVertical: 2,
+    marginLeft: 10,
   },
   textColorWhite: {
     color: Colors.white,

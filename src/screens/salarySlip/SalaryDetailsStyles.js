@@ -4,6 +4,7 @@ import {
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
+import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
   container: {
     backgroundColor: Colors.darkBlue,
@@ -25,25 +26,50 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
   },
+  mainContainerExceptHeader: {
+    flex: 1,
+  },
   imageView: {
     height: 150,
-    backgroundColor: Colors.lightBlue,
+    backgroundColor: Colors.lighterBlue,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(3),
   },
+  monthImage: {height: 80, width: 120, marginRight: wp(4)},
   monthText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 18,
     marginRight: wp(3),
   },
+  downloadIcon: {
+    height: 40,
+    width: 40,
+  },
+  salaryDetails: {
+    flex: 1,
+    marginBottom: hp(2),
+  },
+  salaryDetailsContainerStyle: {flexGrow: 1},
   labelView: {
     flexDirection: 'row',
     flex: 1,
     // justifyContent: 'space-between',
     paddingVertical: hp(0.5),
     paddingHorizontal: wp(4),
+  },
+  fieldLabel: {
+    flex: 0.6,
+    fontFamily: FontFamily.RobotoBold,
+    fontSize: FontSize.h16,
+    color: Colors.royalBlue,
+  },
+  fieldValue: {
+    color: Colors.dune,
+    fontFamily: FontFamily.RobotoMedium,
+    flex: 0.4,
+    fontSize: FontSize.h15,
   },
   earningView: {
     flexDirection: 'row',
@@ -55,6 +81,11 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: hp(1),
   },
+  title: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   minusImageView: {
     height: 25,
     width: 25,
@@ -63,6 +94,10 @@ export default StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  plusIcon: {
+    height: 15,
+    width: 15,
   },
   earningTextView: {
     flexDirection: 'row',
@@ -79,6 +114,7 @@ export default StyleSheet.create({
     paddingHorizontal: wp(3),
     justifyContent: 'space-between',
   },
+  salaryPart: {color: Colors.white, fontWeight: 'bold', fontSize: 16},
   deductionImageView: {
     height: 25,
     width: 25,
@@ -88,6 +124,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  expandIcon: {height: 15, width: 15},
   deductionTextView: {
     flexDirection: 'row',
     justifyContent: 'space-between',

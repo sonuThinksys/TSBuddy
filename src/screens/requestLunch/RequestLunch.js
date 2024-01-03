@@ -28,7 +28,6 @@ import {
   getSubscribedLunchRequests,
   requestLunchSubmission,
 } from 'redux/homeSlice';
-import {FontFamily} from 'constants/fonts';
 import CalenderIcon from 'assets/newDashboardIcons/calendar-day.svg';
 import TrashIcon from 'assets/newDashboardIcons/trash-can.svg';
 import Loader from 'component/loader/Loader';
@@ -37,7 +36,9 @@ const RequestLunch = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
   const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const {configData} = useSelector(state => state.home);
-  const [{value: deadlineToRequestForLunch}] = configData;
+  // const [{value: deadlineToRequestForLunch}] = configData;
+  let deadlineToRequestForLunch = configData[0];
+  deadlineToRequestForLunch = deadlineToRequestForLunch?.value || '60';
 
   const [deadlineHours, deadlineMinutes] = deadlineToRequestForLunch.split(':');
   var decoded = token && jwt_decode(token);
@@ -56,7 +57,6 @@ const RequestLunch = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [satrtDate1, setStartDate1] = useState('');
-  const [monthStartDateStr, setMonthStartDateStr] = useState('Select..');
   const [items, setItems] = useState(RequestLunchLabel);
   const [isLoading, setIsLoading] = useState(false);
   // const [isDaily, setIsDaily] = useState(false);
@@ -102,12 +102,12 @@ const RequestLunch = ({navigation}) => {
           (await dispatch(getSubscribedLunchRequests({token, employeeID})));
 
         if (!subscribedLunchRequests.error) {
-          let lunchRequestsList = subscribedLunchRequests?.payload;
-          const sortedLunchRequestList = lunchRequestsList.sort(
-            (a, b) =>
-              new Date(a?.requestStartDate).getTime() -
-              new Date(b?.requestStartDate).getTime(),
-          );
+          // let lunchRequestsList = subscribedLunchRequests?.payload;
+          // const sortedLunchRequestList = lunchRequestsList.sort(
+          //   (a, b) =>
+          //     new Date(a?.requestStartDate).getTime() -
+          //     new Date(b?.requestStartDate).getTime(),
+          // );
 
           setLunchRequests(subscribedLunchRequests?.payload);
         } else {
@@ -173,18 +173,20 @@ const RequestLunch = ({navigation}) => {
       const minutes = new Date().getMinutes();
       if (date === 1 && hours < 11 && minutes < 30) {
         month = monthsName[todayDate.getMonth()];
-        const monthNameInStr = new Date().toLocaleString('en-US', {
-          month: 'short',
-        });
+        // const monthNameInStr = new Date().toLocaleString('en-US', {
+        //   month: 'short',
+        // });
         setStartDate1(date + '-' + month + '-' + year);
-
-        setMonthStartDateStr(date + '-' + monthNameInStr + '-' + year);
 
         // setEndDate1(16 + '-' + month + '-' + year);
       } else {
-        2;
         // else if (date >= 16 && date < 31) {
-        month = monthsName[todayDate.getMonth() + 1];
+        month = monthsName[todayDate.getMonth() + 1] || monthsName[0];
+        const currentMonthIndex = new Date().getMonth();
+
+        if (currentMonthIndex === 11) {
+          year += 1;
+        }
 
         setStartDate1(1 + '-' + month + '-' + year);
         // setEndDate1(16 + '-' + month + '-' + year);
@@ -371,9 +373,13 @@ const RequestLunch = ({navigation}) => {
   let opacity = 1;
 
   if (value !== 'monthly') {
-    if (!startSelected || !endSelected || !value) opacity = 0.5;
+    if (!startSelected || !endSelected || !value) {
+      opacity = 0.5;
+    }
   } else {
-    if (!monthlyStartDate) opacity = 0.5;
+    if (!monthlyStartDate) {
+      opacity = 0.5;
+    }
   }
 
   return (
@@ -384,35 +390,19 @@ const RequestLunch = ({navigation}) => {
             onPress={() => {
               navigation.pop();
             }}>
-            <Image
-              source={MonthImages.backArrowS}
-              style={{height: 20, width: 20}}
-            />
+            <Image source={MonthImages.backArrowS} style={styles.headerIcon} />
           </TouchableOpacity>
         </View>
         <Text style={styles.text1}>Request Lunch</Text>
         <View style={styles.lunchTextView}>
-          <Image
-            source={MonthImages.info_scopy}
-            style={{height: 20, width: 20}}
-          />
+          <Image source={MonthImages.info_scopy} style={styles.headerIcon} />
         </View>
       </View>
 
       <View style={styles.secondView}>
         <View style={styles.dropDownView}>
-          <Text
-            style={{
-              marginBottom: hp(1.6),
-              fontSize: 18,
-              color: Colors.black,
-            }}>
-            Request Type:
-          </Text>
-          <View
-            style={{
-              zIndex: 9999,
-            }}>
+          <Text style={styles.reqTypeText}>Request Type:</Text>
+          <View style={styles.dropdownContainer}>
             <DropDownPicker
               open={open}
               placeholder={'Please Select..'}
@@ -422,23 +412,10 @@ const RequestLunch = ({navigation}) => {
               setValue={setValue}
               setItems={setItems}
               onSelectItem={onSelectItem}
-              containerStyle={{height: 40}}
-              style={{
-                height: 10,
-                borderRadius: open ? 5 : 50,
-                borderColor: Colors.grey,
-                marginBottom: hp(3),
-              }}
-              dropDownStyle={{
-                backgroundColor: Colors.lightBlue,
-                borderBottomWidth: 1,
-              }}
-              labelStyle={{
-                fontSize: 13,
-                textAlign: 'left',
-                color: Colors.black,
-                alignSelf: 'center',
-              }}
+              containerStyle={styles.dropdownContainerStyle}
+              style={[styles.dropdownStyle, open && styles.borderRadius5]}
+              dropDownStyle={styles.selectDropdownStyle}
+              labelStyle={styles.dropdownLabelStyle}
             />
           </View>
         </View>
@@ -479,16 +456,9 @@ const RequestLunch = ({navigation}) => {
               setUpcomingMonthlyStartDate={setUpcomingMonthlyStartDate}
               ref={refAnimationSuccess}
             />
-            <Text
-              style={{
-                marginBottom: hp(1),
-                fontSize: 18,
-                color: Colors.black,
-              }}>
-              Start Date :
-            </Text>
+            <Text style={styles.datePickerLabel}>Start Date :</Text>
             <TouchableOpacity
-              style={{opacity: !value || value === 'daily' ? 0.6 : 1}}
+              style={!value || value === 'daily' ? styles.opacity60 : null}
               disabled={!value || value === 'daily'}
               onPress={() => {
                 if (permReq) {
@@ -514,20 +484,13 @@ const RequestLunch = ({navigation}) => {
           </View>
           {value !== 'monthly' ? (
             <View style={styles.fifthView}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: Colors.black,
-                  marginBottom: hp(1),
-                }}>
-                End Date :
-              </Text>
+              <Text style={styles.datePickerLabel}>End Date :</Text>
               <TouchableOpacity
                 disabled={!value || value === 'daily' || !startSelected}
-                style={{
-                  opacity:
-                    !value || value === 'daily' || !startSelected ? 0.6 : 1,
-                }}
+                style={
+                  (!value || value === 'daily' || !startSelected) &&
+                  styles.opacity60
+                }
                 // disabled={isDaily}
                 onPress={() => {
                   setEndDatePickerVisible(true);
@@ -545,12 +508,7 @@ const RequestLunch = ({navigation}) => {
             </View>
           ) : null}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: wp(4),
-          }}>
+        <View style={styles.buttonsContainer}>
           <TouchableOpacity
             onPress={() => {
               setEndSelected(false);
@@ -564,35 +522,13 @@ const RequestLunch = ({navigation}) => {
               setValue(null);
               refAnimationSuccess.current.resetSelected(false);
             }}
-            style={{
-              marginTop: 20,
-              backgroundColor: Colors.grayishWhite,
-              paddingHorizontal: wp(8.6),
-              borderRadius: 200,
-              paddingVertical: hp(1.4),
-            }}>
+            style={styles.buttonCancel}>
             <View>
-              <Text
-                style={{
-                  color: Colors.black,
-                  textAlign: 'center',
-                  fontSize: 17,
-                }}>
-                Cancel
-              </Text>
+              <Text style={styles.buttonCancelText}>Cancel</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              opacity: opacity,
-              marginTop: 20,
-              backgroundColor: Colors.lovelyPurple,
-              paddingHorizontal: wp(9.2),
-              borderRadius: 200,
-              paddingVertical: hp(1.5),
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={[styles.buttonSubmit, {opacity}]}
             disabled={
               value !== 'monthly'
                 ? !startSelected || !endSelected || !value
@@ -600,14 +536,7 @@ const RequestLunch = ({navigation}) => {
             }
             onPress={onSubmit}>
             <View>
-              <Text
-                style={{
-                  color: Colors.white,
-                  textAlign: 'center',
-                  fontSize: 17,
-                }}>
-                Apply
-              </Text>
+              <Text style={styles.applyText}>Apply</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -617,7 +546,7 @@ const RequestLunch = ({navigation}) => {
       </View>
       <View style={styles.buttomView}>
         {lunchRequests?.length > 0 ? (
-          <View style={{flexBasis: 300}}>
+          <View style={styles.lunchRequestsContainer}>
             <FlatList
               showsVerticalScrollIndicator={false}
               data={lunchRequests}
@@ -638,18 +567,8 @@ const RequestLunch = ({navigation}) => {
             />
           </View>
         ) : (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: FontFamily.RobotoLight,
-                position: 'absolute',
-                top: hp(10),
-              }}>
+          <View style={styles.noRequestsContainer}>
+            <Text style={styles.noRequestsText}>
               You don't have any lunch request.
             </Text>
           </View>
@@ -690,52 +609,20 @@ const renderListOfAppliedRequests = ({
   return (
     <View style={styles.request}>
       <View style={styles.appliedRequestsLeft}>
-        <View
-          style={{
-            alignItems: 'center',
-            marginRight: wp(4),
-          }}>
-          <Text style={{fontSize: 25, fontFamily: FontFamily.RobotoLight}}>
-            01
-          </Text>
-          <Text style={{fontSize: 12, fontFamily: FontFamily.RobotoMedium}}>
+        <View style={styles.requestDetails}>
+          <Text style={styles.dayText}>01</Text>
+          <Text style={styles.requestTypeText}>
             {item?.planId === 1 || item?.planId === 2 ? 'Day' : 'Month'}
           </Text>
         </View>
         <View style={{}}>
-          <Text
-            style={{
-              fontSize: 15,
-              fontFamily: FontFamily.RobotoRegular,
-              color: Colors.dune,
-              marginBottom: hp(1),
-            }}>
+          <Text style={styles.requestDateText}>
             {formattedStartDate} - {formattedEndDate}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 11, color: Colors.lightGray1}}>
-              Applied on:{' '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: Colors.lightGray1,
-                fontFamily: FontFamily.RobotoMedium,
-              }}>
-              {appliedDate}
-            </Text>
-            <Text
-              style={{
-                marginLeft: 10,
-                paddingHorizontal: 10,
-                paddingVertical: 3,
-                backgroundColor: Colors.skin,
-                color: Colors.darkSkin,
-                fontSize: 12,
-                fontFamily: FontFamily.RobotoLightItalic,
-              }}>
-              {item?.requestType}
-            </Text>
+          <View style={styles.applyContainer}>
+            <Text style={styles.appliedOnText}>Applied on: </Text>
+            <Text style={styles.appliedDateText}>{appliedDate}</Text>
+            <Text style={styles.typeRequestText}>{item?.requestType}</Text>
           </View>
         </View>
       </View>

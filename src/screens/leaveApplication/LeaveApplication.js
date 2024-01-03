@@ -1,4 +1,10 @@
-import {View, Text, Pressable, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './LeaveApplicationStyle';
@@ -13,6 +19,9 @@ import {getLeaveApplicationData} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
 import {useIsFocused} from '@react-navigation/native';
 import {LEAVE, LEAVE_ALLOCATION, REGULARISATION, WFH} from 'utils/string';
+import {MonthImages} from 'assets/monthImage/MonthImage';
+import {Image} from 'react-native';
+import CustomButton from 'navigation/CustomButton';
 
 const LeaveApplication = ({navigation}) => {
   const token = useSelector(state => state.auth.userToken);
@@ -23,8 +32,10 @@ const LeaveApplication = ({navigation}) => {
   const isHRManager = role.includes('HR Manager');
 
   const [selectedType, setSelectedType] = useState(LEAVE);
+  const [searchedName, setSearchedName] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showTextInput, setShowTextInput] = useState(false);
   // const [selfOpenLeaves, setSelfOpenLeaves] = useState([]);
   const dispatch = useDispatch();
 
@@ -64,10 +75,10 @@ const LeaveApplication = ({navigation}) => {
   };
 
   const getLeavesForManager = useCallback(
-    async (type, isRefreshing) => {
+    async (type, isRefreshing, name) => {
       try {
         let approver = {approverEmail: emailId};
-        if (type === REGULARISATION) {
+        if (type === REGULARISATION || type === LEAVE_ALLOCATION) {
           approver = {approverId: id};
         }
 
@@ -76,10 +87,11 @@ const LeaveApplication = ({navigation}) => {
           getLeaveApplicationData({
             token,
             body: {
-              take: 12,
+              take: 151,
+              // take: name ? applicationData[selectedType].count : 12,
               skip: isRefreshing ? 0 : applicationData[type].data.length,
               page: 1,
-              name: null,
+              name: name ?? null,
               ...approver,
             },
             selectedType: type,
@@ -108,7 +120,7 @@ const LeaveApplication = ({navigation}) => {
         setIsLoading(false);
       }
     },
-    [dispatch, emailId, token, applicationData, isHRManager, id],
+    [dispatch, emailId, token, applicationData, isHRManager, id, selectedType],
   );
 
   useEffect(() => {
@@ -117,7 +129,7 @@ const LeaveApplication = ({navigation}) => {
         await getLeavesForManager(selectedType, true);
       })();
     }
-  }, [isFocussed, setSelectedType]);
+  }, [isFocussed, selectedType]);
 
   const renderMoreLeaves = async () => {
     if (
@@ -135,6 +147,14 @@ const LeaveApplication = ({navigation}) => {
     }
   };
 
+  const onEnterValue = enteredName => {
+    setSearchedName(enteredName);
+  };
+
+  const onSearchUser = async () => {
+    await getLeavesForManager(selectedType, true, searchedName);
+  };
+
   return (
     <>
       <CustomHeader
@@ -144,13 +164,36 @@ const LeaveApplication = ({navigation}) => {
         isHome={false}
         showHeaderRight={false}
         headerRight={
-          selectedType !== REGULARISATION ? (
-            <Pressable onPress={onNewPress} style={styles.headerRightContainer}>
-              <Text style={styles.headerRightText}>New</Text>
-            </Pressable>
-          ) : null
+          <View style={styles.headerRight}>
+            {selectedType === LEAVE_ALLOCATION && (
+              <Pressable
+                onPress={() => {
+                  setShowTextInput(prevShow => !prevShow);
+                  // inputRef.current?.focus();
+                }}>
+                <Image
+                  source={MonthImages.searchIconwhite}
+                  style={styles.searchIcon}
+                />
+              </Pressable>
+            )}
+            {selectedType !== REGULARISATION &&
+              selectedType !== LEAVE_ALLOCATION && (
+                <Pressable
+                  onPress={onNewPress}
+                  style={styles.headerRightContainer}>
+                  <Text style={styles.headerRightText}>New</Text>
+                </Pressable>
+              )}
+          </View>
         }
       />
+      {showTextInput && (
+        <View style={styles.textInputContainer}>
+          <TextInput onChangeText={onEnterValue} style={styles.textInput} />
+          <CustomButton title="Search" onPress={onSearchUser} />
+        </View>
+      )}
       <View style={styles.mainContainerExcludeHeader}>
         <View style={styles.attendanceTypeContainer}>
           <View style={styles.typeContainer}>
@@ -173,6 +216,7 @@ const LeaveApplication = ({navigation}) => {
             data={applicationData[selectedType].data || []}
             navigation={navigation}
             isRegularisation={selectedType === REGULARISATION ? true : false}
+            isLeaveAllocation={selectedType === LEAVE_ALLOCATION ? true : false}
             loadMoreData={renderMoreLeaves}
             getLeavesForManager={getLeavesForManager}
             selectedType={selectedType}

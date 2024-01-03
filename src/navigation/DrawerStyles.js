@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.royalBlue,
   },
   icon: {
-    height: 30,
-    width: 30,
+    height: 32,
+    width: 32,
     borderRadius: 50,
   },
   drawerItemText: {

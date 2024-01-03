@@ -6,6 +6,10 @@ import {
 import {Colors} from 'colors/Colors';
 import {FontFamily, FontSize} from 'constants/fonts';
 export default StyleSheet.create({
+  barChartStyle: {
+    marginVertical: 10,
+  },
+  mainContainer: {paddingHorizontal: 20},
   container: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(3),
@@ -25,6 +29,28 @@ export default StyleSheet.create({
     elevation: 1,
     paddingVertical: wp(6),
     marginBottom: hp(3.2),
+  },
+  graphsContainer: {
+    flexDirection: 'row',
+  },
+  earnedLeaveText: {
+    textAlign: 'center',
+    position: 'absolute',
+    top: 200,
+    left: wp(19),
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoLight,
+    marginTop: hp(0.5),
+  },
+  RHLeaveText: {
+    textAlign: 'center',
+    position: 'absolute',
+    bottom: 0,
+    top: 200,
+    right: 10,
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoLight,
+    marginTop: hp(0.5),
   },
   remainingText: {
     fontFamily: FontFamily.RobotoLight,
@@ -87,5 +113,18 @@ export default StyleSheet.create({
     fontFamily: FontFamily.RobotoMedium,
     fontSize: FontSize.h16,
     color: Colors.purpleShade,
+  },
+  noLeavesContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  noLeavesText: {
+    fontFamily: FontFamily.RobotoMedium,
+    fontSize: 16,
+    color: Colors.lightBlue,
+    marginVertical: 4,
   },
 });

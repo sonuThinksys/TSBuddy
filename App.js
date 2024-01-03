@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, Text, View, Image} from 'react-native';
+import {SafeAreaView, Text, View, Image, StyleSheet} from 'react-native';
 import MainNavigator from './src/navigation/MainNavigator';
 import {Colors} from 'colors/Colors';
 import reactotron from 'reactotron-react-native';
@@ -38,23 +38,15 @@ const App = () => {
     })();
   }, []);
 
-  if (isLoading) return <Loader />;
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (!isInternedConnected) {
     return (
-      <View
-        style={{
-          flex: 1,
-          borderWidth: 1,
-          borderColor: 'orange',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Image
-          source={MonthImages.NotFound}
-          style={{height: 120, width: 160}}
-        />
-        <Text style={{fontSize: 16, fontFamily: FontFamily.RobotoBold}}>
+      <View style={styles.noInternetMainContainer}>
+        <Image source={MonthImages.NotFound} style={styles.image} />
+        <Text style={styles.noInternerText}>
           Please turn on your Internet connection.
         </Text>
       </View>
@@ -63,10 +55,32 @@ const App = () => {
 
   return (
     <>
-      <SafeAreaView style={{flex: 0, backgroundColor: Colors.whitishBlue}} />
+      <SafeAreaView style={styles.mainContainer} />
       <MainNavigator />
     </>
   );
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 0,
+    backgroundColor: Colors.whitishBlue,
+  },
+  noInternetMainContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    height: 120,
+    width: 160,
+  },
+  noInternerText: {
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoBold,
+  },
+});

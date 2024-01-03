@@ -7,6 +7,10 @@ import {
 import {FontFamily} from 'constants/fonts';
 
 export const styles = StyleSheet.create({
+  emoji: {
+    width: wp(16),
+    alignItems: 'center',
+  },
   modalBackground: {
     backgroundColor: Colors.white,
     justifyContent: 'center',

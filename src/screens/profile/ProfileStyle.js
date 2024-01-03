@@ -5,6 +5,10 @@ import {
 } from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 export default StyleSheet.create({
+  imageBackground: {
+    height: '60%',
+    width: '100%',
+  },
   container: {
     paddingHorizontal: wp(5),
     paddingTop: hp(12),
@@ -51,6 +55,11 @@ export default StyleSheet.create({
     paddingHorizontal: wp(4),
     backgroundColor: Colors.darkGreen,
   },
+  managerInfoTitle: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   managerDetailView2: {
     paddingHorizontal: wp(5),
     paddingTop: hp(0.5),
@@ -63,6 +72,7 @@ export default StyleSheet.create({
     borderRadius: 40,
     backgroundColor: Colors.grey,
   },
+  image: {height: 90, width: 90, borderRadius: 50},
   managerNameText: {
     marginTop: hp(1),
     marginHorizontal: wp(4),

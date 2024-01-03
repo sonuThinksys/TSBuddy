@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {getEmployeesByLeaveApprover} from 'redux/homeSlice';
+import {getEmployeesAtManagerEnd} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {heightPercentageToDP as hp} from 'utils/Responsive';
 import ShowAlert from 'customComponents/CustomError';
@@ -33,7 +33,8 @@ const ResourcesList = props => {
     (async () => {
       try {
         setIsLoading(true);
-        const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
+        const employeeData = await dispatch(getEmployeesAtManagerEnd(token));
+        // const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
         setResourcesEmpiolyeeData(employeeData?.payload);
 
         if (employeeData?.error) {

@@ -1,13 +1,21 @@
 import {View, Text, Pressable, Alert} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import CustomHeader from 'navigation/CustomHeader';
 import styles from './ApplicationDetailsLayoutStyle';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateAttRegularizeStatus, updateLeaveStatus} from 'redux/homeSlice';
+import {
+  updateAttRegularizeStatus,
+  updateLeaveAllocationRequest,
+  updateLeaveStatus,
+} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {widthPercentageToDP as wp} from 'utils/Responsive';
+import Loader from 'component/loader/Loader';
+import jwt_decode from 'jwt-decode';
+import {getCurrentFiscalYear} from 'utils/utils';
 
 const ApplicationDetailsLayout = ({route, navigation}) => {
+  const isLeaveAllocationRequest = route.params.isLeaveAllocationRequest;
   const {
     employeeId,
     firstName,
@@ -32,7 +40,10 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     comment,
     mode,
     regularizationId,
+    allocationDate,
+    leaveAllocationId,
   } = route.params.item;
+  const isAllocationOpen = route.params.item.status.toLowerCase() === 'open';
 
   const card = (leftText, rightText, index) => {
     return (
@@ -51,6 +62,19 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
+  const {emailId, role, id: managerId} = jwt_decode(token);
+
+  let designation;
+  if (role.includes('HR Manager')) {
+    designation = 'HR';
+  } else if (role.includes('Head Of Department')) {
+    designation = 'HOD';
+  } else if (role.includes('Leave Approver')) {
+    designation = 'RM';
+  }
+
+  console.log('designation:', designation);
+  const [isLoading, setIsLoading] = useState(false);
 
   const empFullName =
     firstName && middleName && lastName
@@ -70,10 +94,14 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
       ? `${leaveApproverFirstName} ${leaveApproverMiddleName}`
       : leaveApproverFirstName;
 
-  const applyingDate = `${new Date(postingDate).getDate()}-${new Date(
-    postingDate,
-  ).toLocaleString('default', {month: 'short'})}-${new Date(
-    fromDate,
+  const applyingDate = `${new Date(
+    isLeaveAllocationRequest ? allocationDate : postingDate,
+  ).getDate()}-${new Date(
+    isLeaveAllocationRequest ? allocationDate : postingDate,
+  ).toLocaleString('default', {
+    month: 'short',
+  })}-${new Date(
+    isLeaveAllocationRequest ? allocationDate : postingDate,
   ).getFullYear()}`;
 
   const attendanceDateFormated = `${new Date(
@@ -100,13 +128,16 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
   ];
   const details = [
     ['Employee Name', empFullName],
-    ['Leave Approver', approverFullName],
+    !isLeaveAllocationRequest && ['Leave Approver', approverFullName],
     ['Leave Type', leaveType],
-    ['Leave Time Period', rangeOfdate(fromDate, toDate)],
+    !isLeaveAllocationRequest && [
+      'Leave Time Period',
+      rangeOfdate(fromDate, toDate),
+    ],
     ['Leave Status', status],
     ['Number Of Leaves', totalLeaveDays],
     ['Leave Balance', currentLeaveBalance || 'N/A'],
-    ['Applying Date', applyingDate || '04/05/2023'],
+    ['Applying Date', applyingDate || 'N/A'],
     ['Reason', description || 'N/A'],
   ];
 
@@ -123,66 +154,109 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
 
   const finalizeLeave = async finalStatus => {
     const empId = employeeId;
-    const response =
-      token &&
-      (await dispatch(
-        updateLeaveStatus({
-          token,
-          body: {
-            employeeId: empId,
-            leaveApplicationId: leaveApplicationId,
-            status: finalStatus,
-            leaveType: leaveType,
-          },
-        }),
-      ));
+    try {
+      setIsLoading(true);
+      let response;
+      if (isLeaveAllocationRequest) {
+        response =
+          token &&
+          (await dispatch(
+            updateLeaveAllocationRequest({
+              token,
+              body: {
+                leaveAllocationId,
+                employeeId,
+                daysRequested: totalLeaveDays,
+                status: finalStatus,
+                leaveType: leaveType,
+                approvalType: designation,
+                approverId: managerId,
+                approvalDate: allocationDate,
+                fiscalYear: getCurrentFiscalYear(),
+                totalLeavesAllocated: role.includes('HR Manager')
+                  ? totalLeaveDays
+                  : 0,
+                currentLeaveBalance: role.includes('HR Manager')
+                  ? totalLeaveDays
+                  : 0,
+                postingDate: allocationDate,
+              },
+            }),
+          ));
+      } else {
+        response =
+          token &&
+          (await dispatch(
+            updateLeaveStatus({
+              token,
+              body: {
+                employeeId: empId,
+                leaveApplicationId: leaveApplicationId,
+                status: finalStatus,
+                leaveType: leaveType,
+              },
+            }),
+          ));
+      }
 
-    if (response?.error) {
-      // alert(response?.error?.message);
-      Alert.alert('Failed', `Leave ${finalStatus} failed!`, [
-        {
-          text: 'Ok',
-          onPress: () => {
-            navigation.goBack();
+      if (response?.error) {
+        // alert(response?.error?.message);
+        Alert.alert('Failed', `Leave ${finalStatus} failed!`, [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.goBack();
+            },
           },
-        },
-      ]);
-    } else {
-      Alert.alert('Success', `Leave ${finalStatus} successfully!`, [
-        {
-          text: 'Ok',
-          onPress: () => {
-            navigation.goBack();
+        ]);
+      } else {
+        Alert.alert('Success', `Leave ${finalStatus} successfully!`, [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.goBack();
+            },
           },
-        },
-      ]);
+        ]);
+      }
+    } catch (err) {
+      console.log('errUpdating:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRegularisation = async finalStatus => {
-    const updateAttRegularize = await dispatch(
-      updateAttRegularizeStatus({
-        token,
-        body: {
-          regularizationId: regularizationId,
-          attendanceDate: attendanceDate,
-          employeeId: employeeId,
-          status: finalStatus,
-          attendanceType: attendanceType,
-        },
-      }),
-    );
-    if (updateAttRegularize?.error) {
-      alert(updateAttRegularize.error.message);
-    } else {
-      Alert.alert('Success', 'Updated successfully!', [
-        {
-          text: 'Ok',
-          onPress: () => {
-            navigation.goBack();
+    try {
+      setIsLoading(true);
+      const updateAttRegularize = await dispatch(
+        updateAttRegularizeStatus({
+          token,
+          body: {
+            regularizationId: regularizationId,
+            attendanceDate: attendanceDate,
+            employeeId: employeeId,
+            status: finalStatus,
+            attendanceType: attendanceType,
           },
-        },
-      ]);
+        }),
+      );
+      if (updateAttRegularize?.error) {
+        alert(updateAttRegularize.error.message);
+      } else {
+        Alert.alert('Success', 'Updated successfully!', [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.goBack();
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.log('errUpdating:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -207,7 +281,11 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
         </View>
         {!isRegularisation ? (
           <View>
-            {details?.map((item, index) => card(item[0], item[1], index))}
+            {details?.map((item, index) => {
+              if (item) {
+                return card(item[0], item[1], index);
+              }
+            })}
           </View>
         ) : (
           <View>
@@ -217,38 +295,39 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           </View>
         )}
       </View>
-      {!isRegularisation && (
-        <View style={styles.btnContainer}>
-          <Pressable
-            style={
-              ([styles.resourceButton],
-              {
-                backgroundColor: Colors.reddishTint,
-                padding: 14,
-                width: wp(30),
-                alignItems: 'center',
-                borderRadius: 15,
-              })
-            }
-            onPress={finalizeLeave.bind(null, 'Rejected')}>
-            <Text style={styles.applyText}>Reject</Text>
-          </Pressable>
-          <Pressable
-            style={
-              ([styles.resourceButton],
-              {
-                backgroundColor: Colors.lovelyGreen,
-                width: wp(30),
-                alignItems: 'center',
-                padding: 14,
-                borderRadius: 15,
-              })
-            }
-            onPress={finalizeLeave.bind(null, 'Approved')}>
-            <Text style={styles.applyText}>Approve</Text>
-          </Pressable>
-        </View>
-      )}
+      {!isRegularisation &&
+        (isAllocationOpen ? (
+          <View style={styles.btnContainer}>
+            <Pressable
+              style={
+                ([styles.resourceButton],
+                {
+                  backgroundColor: Colors.reddishTint,
+                  padding: 14,
+                  width: wp(30),
+                  alignItems: 'center',
+                  borderRadius: 15,
+                })
+              }
+              onPress={finalizeLeave.bind(null, 'Rejected')}>
+              <Text style={styles.applyText}>Reject</Text>
+            </Pressable>
+            <Pressable
+              style={
+                ([styles.resourceButton],
+                {
+                  backgroundColor: Colors.lovelyGreen,
+                  width: wp(30),
+                  alignItems: 'center',
+                  padding: 14,
+                  borderRadius: 15,
+                })
+              }
+              onPress={finalizeLeave.bind(null, 'Approved')}>
+              <Text style={styles.applyText}>Approve</Text>
+            </Pressable>
+          </View>
+        ) : null)}
 
       <View style={styles.regularisationBtnContainer}>
         {isRegularisation && status === 'Approved' ? (
@@ -316,6 +395,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           </View>
         ) : null}
       </View>
+      {isLoading ? <Loader /> : null}
     </>
   );
 };

@@ -6,9 +6,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTodayLunchRequests} from 'redux/homeSlice';
 import Loader from 'component/loader/Loader';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import MailIcon from 'assets/newDashboardIcons/mail.svg';
-import {Colors} from 'colors/Colors';
-import ShowAlert, {renewCurrentToken} from 'customComponents/CustomError';
+// import MailIcon from 'assets/newDashboardIcons/mail.svg';
+import ShowAlert from 'customComponents/CustomError';
 // import {renewToken} from 'Auth/LoginSlice';
 import {useIsFocused} from '@react-navigation/native';
 import {ERROR} from 'utils/string';
@@ -18,7 +17,7 @@ const LunchRequests = ({navigation}) => {
   const dispatch = useDispatch();
   const [lunchRequests, setLunchRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const refreshToken = useSelector(state => state?.auth?.refreshToken);
+  // const refreshToken = useSelector(state => state?.auth?.refreshToken);
 
   const {userToken: token} = useSelector(state => state.auth);
 
@@ -89,14 +88,7 @@ const LunchRequests = ({navigation}) => {
         showHeaderRight={false}
         headerRight={
           <Pressable onPress={mailPressHandler} style={{}}>
-            <Image
-              source={MonthImages.mailEmp}
-              style={{
-                height: 25,
-                width: 25,
-                tintColor: Colors.reddishTint,
-              }}
-            />
+            <Image source={MonthImages.mailEmp} style={styles.mailImg} />
           </Pressable>
         }
       />

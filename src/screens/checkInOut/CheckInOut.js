@@ -15,6 +15,7 @@ import {
 import styles from '../../screens/checkInOut/checkInOutStyles';
 import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from 'navigation/CustomHeader';
 // import GetLocation from 'react-native-get-location';
 
 const dayArray = [
@@ -42,7 +43,7 @@ const monthArray = [
   'Dec',
 ];
 
-const CheckInOut = () => {
+const CheckInOut = ({navigation}) => {
   const [toggleCheckInBtn, setToggleCheckInBtn] = useState(true);
   const [checkInTime, setCheckInTime] = useState('');
   const [checkOutTime, setCheckoutTime] = useState('');

@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import * as Keychain from 'react-native-keychain';
+// import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
 const jwtDecode = require('jwt-decode');
 
@@ -36,8 +36,8 @@ export const getUserToken = createAsyncThunk(
     };
     return axios(config)
       .then(async result => {
+        console.log('result:', result);
         let data = result.data;
-
         const {response = {}, status} = result || {};
         if (status === 200) {
           return Promise.resolve({data, formInput});
@@ -49,7 +49,7 @@ export const getUserToken = createAsyncThunk(
         }
       })
       .catch(err => {
-        return Promise.reject(err?.response);
+        return Promise.reject(err?.response?.data);
       });
   },
 );

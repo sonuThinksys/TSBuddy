@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   Text,
   TextInput,
@@ -120,14 +121,26 @@ const AllocateLeave = ({navigation}) => {
             if (!leaveApproversFetched.payload) {
               alert(LEAVE_APPROVER_FAIL_FETCH);
             }
-            const listOfLeaveApprovers = leaveApproversFetched.payload.map(
-              approver => {
+            const listOfLeaveApprovers = leaveApproversFetched.payload
+              .map(approver => {
                 return {
                   value: `${approver?.leaveApprover}`,
-                  label: `${approver.leaveApproverFirstName} ${approver.leaveApproverLastName}`,
+                  label: `${
+                    approver.leaveApproverFirstName
+                      ? approver.leaveApproverFirstName + ' '
+                      : ''
+                  }${
+                    approver.leaveApproverMiddleName
+                      ? approver.leaveApproverMiddleName + ' '
+                      : ''
+                  }${approver.leaveApproverLastName || ''}`,
                 };
-              },
-            );
+              })
+              .filter((obj, index, self) => {
+                console.log('self:', self);
+                return index === self.findIndex(o => o.value === obj.value);
+              });
+
             setLeaveApproverPicks(listOfLeaveApprovers);
           } catch (err) {
             console.log('errMap:', err);
@@ -182,7 +195,7 @@ const AllocateLeave = ({navigation}) => {
           body: {
             employeeId,
             description: reason,
-            leaveDaysCount: +leaveToAllocateCount,
+            daysRequested: +leaveToAllocateCount,
             fromDate: fromDate?.dateObj || null,
             toDate: toDate?.dateObj || null,
             fiscalYear,
@@ -193,8 +206,6 @@ const AllocateLeave = ({navigation}) => {
         }),
       );
       if (leaveAllocation.error) {
-        console.log('leaveAllocation:', leaveAllocation);
-        // alert(leaveAllocation.error.message);
         ShowAlert({
           messageHeader: ERROR,
           messageSubHeader: leaveAllocation?.error?.message,
@@ -202,6 +213,15 @@ const AllocateLeave = ({navigation}) => {
           dispatch,
           navigation,
         });
+      } else {
+        Alert.alert('Success!', 'Leave Allocation Requested Successfully.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.goBack();
+            },
+          },
+        ]);
       }
     } catch (err) {
       console.log('errLeaveAllocation:', err);

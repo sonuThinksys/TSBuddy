@@ -181,7 +181,7 @@ const AllAttendance = ({navigation}) => {
       });
       setEmployeeWeekOffs(finalWeekOffs);
     })();
-  }, [dispatch, employeeID, token]);
+  }, [dispatch, employeeID, token, employeeShiftDataObj?.weeklyOff]);
 
   // Subtract 1 day from the current date
   const onDateSelection = date => {

@@ -13,7 +13,7 @@ import {heightPercentageToDP, widthPercentageToDP} from 'utils/Responsive';
 import {ERROR} from 'utils/string';
 
 const RegularisationList = props => {
-  const {employeeID, employeeName, navigateTo, fromRegularisation} = props;
+  const {employeeID, employeeName, navigateTo} = props;
 
   const [isRefresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);

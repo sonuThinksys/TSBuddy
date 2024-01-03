@@ -12,6 +12,7 @@ export default StyleSheet.create({
     // width: '100%',
     flex: 1,
   },
+  mainTopContainer: {flex: 1},
   textInputContainer: {
     width: '90%',
     backgroundColor: Colors.darkTransparentColor,
@@ -36,12 +37,25 @@ export default StyleSheet.create({
     backgroundColor: Colors.lightBlue,
     paddingHorizontal: wp(5),
   },
+  loginLockImage: {
+    height: 24,
+    width: 18,
+  },
+  image: {
+    height: 30,
+    width: 25,
+  },
   textinput: {
     width: '80%',
     height: '100%',
     backgroundColor: Colors.white,
     paddingLeft: wp(5),
   },
+  passwordTextInput: {
+    height: '100%',
+    width: '100%',
+  },
+  userNameText: {height: '100%', width: '100%'},
   passwordView: {
     paddingHorizontal: wp(2),
     paddingVertical: hp(3),
@@ -67,6 +81,11 @@ export default StyleSheet.create({
     fontSize: 18,
     marginTop: hp(2),
     fontWeight: '200',
+  },
+  guestLoginText: {
+    color: Colors.white,
+    textAlign: 'center',
+    marginTop: hp(1),
   },
   bioMetricView: {
     flexDirection: 'row',
@@ -133,13 +152,17 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: hp(2),
   },
+  // imageContainer: {
+  //   height: 40,
+  //   width: 40,
+  //   backgroundColor: Colors.darkBlue,
+  //   borderRadius: 20,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   imageContainer: {
-    height: 40,
-    width: 40,
-    backgroundColor: Colors.darkBlue,
-    borderRadius: 20,
-    justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: hp(4),
   },
   touchSensorText: {
     paddingLeft: wp(3),

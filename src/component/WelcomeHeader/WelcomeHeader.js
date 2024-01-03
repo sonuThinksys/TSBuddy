@@ -4,18 +4,22 @@ import {AppState, Text, View} from 'react-native';
 import BusinessClock from 'assets/newDashboardIcons/business-time.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useEffect, useState} from 'react';
-import {getEmployeeShift, getTodayCheckInTime} from 'redux/homeSlice';
+import {
+  getEmployeeProfileData,
+  getEmployeeShift,
+  getTodayCheckInTime,
+} from 'redux/homeSlice';
 import jwt_decode from 'jwt-decode';
 import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 import styles from './WelcomeHeaderStyles';
+import Loader from 'component/loader/Loader';
 
 const WelcomeHeader = ({navigation}) => {
   const dispatch = useDispatch();
-  const {
-    employeeProfile: profileData = {},
-    employeeShift: employeeShiftDataObj,
-  } = useSelector(state => state.home);
+  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+
   // console.log('profileData:', profileData);
 
   const firstName = profileData?.firstName;
@@ -30,8 +34,43 @@ const WelcomeHeader = ({navigation}) => {
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingProfile(true);
+
+        const userData =
+          token &&
+          (await dispatch(
+            getEmployeeProfileData({
+              token,
+              employeeID,
+              dispatch,
+            }),
+          ));
+
+        if (userData?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: userData?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+      } catch (err) {
+        console.log('errorProfile:', err);
+      } finally {
+        setLoadingProfile(false);
+      }
+    })();
+    // }
+  }, [token, dispatch, employeeID, navigation]);
+
   const handleAppStateChange = useCallback(
     async nextState => {
+      console.log('Calling', 'UseEffect');
+
       if (nextState === 'active' || nextState === true) {
         try {
           const checkIn = await dispatch(
@@ -250,6 +289,7 @@ const WelcomeHeader = ({navigation}) => {
           </Text>
         </View>
       </View>
+      {loadingProfile ? <Loader /> : null}
     </View>
   );
 };

@@ -10,6 +10,7 @@ import HeaderTab from './HeaderTab';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getAllDailyEmployees,
+  getAllEmployeesForHR,
   getDailyEmployeesCount,
   getLeaveReport,
   getWorkModeEmployees,
@@ -40,6 +41,7 @@ const DailyReports = ({navigation}) => {
   const [leavesCount, setLeavesCount] = useState({});
   const [leaves, setLeaves] = useState({});
   const [workModeEmployees, setWorkModeEmployees] = useState([]);
+  const [itemsEmployeePicker, setItemsEmployeePicker] = useState([]);
 
   const handleLeaveDateStartConfirm = date => {
     setStartDate(date);
@@ -188,7 +190,16 @@ const DailyReports = ({navigation}) => {
         );
 
         const finalWorkMode = workModeEmployeesResponse.payload;
+
+        const {payload} = await dispatch(getAllEmployeesForHR({token}));
+
+        const finalItems = payload.map(employee => ({
+          label: employee.employee.split('/')[1],
+          value: employee.employeeId,
+        }));
+
         setWorkModeEmployees(finalWorkMode);
+        setItemsEmployeePicker(finalItems);
       } catch (err) {
         // console.log('errorTodayLeaves:', err);
       } finally {
@@ -243,6 +254,7 @@ const DailyReports = ({navigation}) => {
         {selectedHeaderTab === 'work mode' && (
           <WorkModeTabContent
             workModeData={workModeEmployees}
+            itemsEmployeePickerList={itemsEmployeePicker}
             isLoading={isLoadingWorkMode}
           />
         )}

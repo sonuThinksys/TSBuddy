@@ -19,6 +19,7 @@ const ApplicationListLayout = ({
   loadMoreData,
   getLeavesForManager,
   selectedType,
+  isLeaveAllocation: fromLeaveAllocation,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -34,18 +35,16 @@ const ApplicationListLayout = ({
   };
 
   const keyExtractor = useCallback(item => Math.random() * Math.random(), []);
+  const status = ({statusTitle, Icon, color}) => {
+    return (
+      <View style={styles.iconContainer}>
+        <Icon fill={color} height={20} width={20} marginBottom={4} />
+        <Text style={[styles.statusText, {color}]}>{statusTitle}</Text>
+      </View>
+    );
+  };
   const renderListOfAppliedRequests = ({item}) => {
     const options = {month: 'short', day: '2-digit', year: 'numeric'};
-
-    // const formattedStartDate = new Date(item?.fromDate)?.toLocaleDateString(
-    //   'en-US',
-    //   options,
-    // );
-
-    // const formattedEndDate = new Date(item?.toDate)?.toLocaleDateString(
-    //   'en-US',
-    //   options,
-    // );
 
     const appliedDate = new Date(item?.postingDate)?.toLocaleDateString(
       'en-US',
@@ -82,12 +81,13 @@ const ApplicationListLayout = ({
       <Pressable
         style={styles.listItemMainContainer}
         onPress={() => {
-          if (isLeaveAllocation) {
-            return;
-          }
+          // if (isLeaveAllocation) {
+          //   return;
+          // }
           navigation.navigate('applicationDetailsScreen', {
             item,
             isRegularisation,
+            isLeaveAllocationRequest: fromLeaveAllocation,
           });
         }}>
         <View style={styles.request} key={item.leaveApplicationId}>
@@ -133,44 +133,45 @@ const ApplicationListLayout = ({
             </View>
           </View>
           <View style={styles.statusContainer}>
-            {item.status?.toLowerCase() === 'open' ||
-            (!leaveAllocationIsApproved && !leaveAllocationIsDismissed) ? (
-              <View style={styles.iconContainer}>
-                <PendingIcon
-                  fill={Colors.gold}
-                  height={20}
-                  width={20}
-                  marginBottom={4}
-                />
-                <Text style={styles.statusText}>Open</Text>
-              </View>
-            ) : item.status?.toLowerCase() === 'dismissed' ||
-              item.status?.toLowerCase() === 'rejected' ||
-              leaveAllocationIsDismissed ? (
-              <View style={styles.iconContainer}>
-                <RejectedIcon
-                  fill={Colors.darkBrown}
-                  height={20}
-                  width={20}
-                  marginBottom={4}
-                />
-                <Text style={styles.statusText2}>
-                  {leaveAllocationIsDismissed ? DISMISSED : item.status}
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.iconContainer}>
-                <ApprovedIcon
-                  fill={Colors.darkLovelyGreen}
-                  height={20}
-                  width={20}
-                  marginBottom={4}
-                />
-                <Text style={styles.statusText3}>
-                  {item.status || 'Approved'}
-                </Text>
-              </View>
-            )}
+            {isLeaveAllocation
+              ? item.status?.toLowerCase() === 'open'
+                ? //  || (!leaveAllocationIsApproved && !leaveAllocationIsDismissed)
+                  status({
+                    statusTitle: 'Open',
+                    color: Colors.gold,
+                    Icon: PendingIcon,
+                  })
+                : item.status?.toLowerCase() === 'dismissed' ||
+                  item.status?.toLowerCase() === 'rejected' ||
+                  leaveAllocationIsDismissed
+                ? status({
+                    statusTitle: DISMISSED,
+                    color: Colors.darkBrown,
+                    Icon: RejectedIcon,
+                  })
+                : status({
+                    statusTitle: item.status || 'Approved',
+                    color: Colors.darkLovelyGreen,
+                    Icon: ApprovedIcon,
+                  })
+              : item.status?.toLowerCase() === 'open'
+              ? status({
+                  statusTitle: 'Open',
+                  color: Colors.gold,
+                  Icon: PendingIcon,
+                })
+              : item.status?.toLowerCase() === 'dismissed' ||
+                item.status?.toLowerCase() === 'rejected'
+              ? status({
+                  statusTitle: DISMISSED,
+                  color: Colors.darkBrown,
+                  Icon: RejectedIcon,
+                })
+              : status({
+                  statusTitle: item.status || 'Approved',
+                  color: Colors.darkLovelyGreen,
+                  Icon: ApprovedIcon,
+                })}
           </View>
         </View>
         {isLeaveAllocation ? (
@@ -217,33 +218,35 @@ const ApplicationListLayout = ({
 
   return (
     <View style={styles.mainContainer}>
-      {data?.length > 0 && (
+      {data?.length > 0 ? (
         <View style={styles.flatlistContainer}>
-          {
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={data}
-              renderItem={renderListOfAppliedRequests}
-              keyExtractor={keyExtractor}
-              onEndReached={loadMoreData} // Load more data when end is reached
-              onEndReachedThreshold={0.1}
-              style={styles.flatlist}
-              refreshing={isRefreshing}
-              onRefresh={() => {
-                setIsRefreshing(true);
-                getLeavesForManager(selectedType, true);
-                setIsRefreshing(false);
-              }}
-            />
-          }
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={data}
+            renderItem={renderListOfAppliedRequests}
+            keyExtractor={keyExtractor}
+            onEndReached={loadMoreData} // Load more data when end is reached
+            onEndReachedThreshold={0.1}
+            style={styles.flatlist}
+            refreshing={isRefreshing}
+            onRefresh={() => {
+              setIsRefreshing(true);
+              getLeavesForManager(selectedType, true);
+              setIsRefreshing(false);
+            }}
+          />
         </View>
-      )}
-
-      {data?.length === 0 && (
+      ) : (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataFoundText}>No data found!</Text>
         </View>
       )}
+
+      {/* {data?.length === 0 && (
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataFoundText}>No data found!</Text>
+        </View>
+      )} */}
     </View>
   );
 };

@@ -1,9 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {View, Text, Image} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {useSelector, useDispatch} from 'react-redux';
 import moment from 'moment';
@@ -11,42 +7,34 @@ import styles from './UpComingHolidaysStyles';
 import {getHolidaysData} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'constants/strings';
-import {FontFamily} from 'constants/fonts';
-import {Colors} from 'colors/Colors';
+import {sortByFiscalYear} from 'utils/utils';
 const UpComingHolidays = ({navigation}) => {
-  function sortByFiscalYear(date1, date2) {
-    const a = new Date(date1?.holidayDate);
-    const b = new Date(date2?.holidayDate);
-    const fiscalYearA =
-      a.getMonth() >= 3 ? a.getFullYear() : a.getFullYear() - 1;
-    const fiscalYearB =
-      b.getMonth() >= 3 ? b.getFullYear() : b.getFullYear() - 1;
-    if (fiscalYearA < fiscalYearB) {
-      return 1;
-    } else if (fiscalYearA > fiscalYearB) {
-      return -1;
-    } else {
-      return a.getTime() - b.getTime();
-    }
-  }
+  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
+    state => state.auth,
+  );
 
-  const {userToken: token} = useSelector(state => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    (async () => {
-      const holidays = await dispatch(getHolidaysData(token));
-      if (holidays?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: holidays?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-          isTokenExpired: false,
-        });
-      }
-    })();
-  }, []);
+    if (!isGuestLogin) {
+      (async () => {
+        try {
+          const holidays = await dispatch(getHolidaysData(token));
+          if (holidays?.error) {
+            ShowAlert({
+              messageHeader: ERROR,
+              messageSubHeader: holidays?.error?.message,
+              buttonText: 'Close',
+              dispatch,
+              navigation,
+              isTokenExpired: false,
+            });
+          }
+        } catch (err) {
+          console.log('errHoliday:', err);
+        }
+      })();
+    }
+  }, [dispatch, navigation, token, isGuestLogin]);
 
   const currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
@@ -66,7 +54,7 @@ const UpComingHolidays = ({navigation}) => {
     [];
 
   return (
-    <View style={{paddingHorizontal: 18, paddingBottom: wp(6)}}>
+    <View style={styles.mainContainer}>
       <View style={styles.container}>
         <Text style={styles.upcomingText}>Holidays {fiscalYear}</Text>
       </View>
@@ -81,55 +69,21 @@ const UpComingHolidays = ({navigation}) => {
           return renderItem({item, index});
         })
       ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text
-            style={{
-              fontFamily: FontFamily.RobotoMedium,
-              fontSize: 16,
-              color: Colors.lightBlue,
-              marginVertical: 4,
-            }}>
-            No holidays found.
-          </Text>
+        <View style={styles.noHolidaysContainer}>
+          <Text style={styles.noHolidaysText}>No holidays found.</Text>
         </View>
       )}
     </View>
   );
 };
 const renderItem = ({item, index}) => {
-  const newDateFormate = moment(item.holidayDate).format(`DD MMMM`);
-  const date = moment(item.holidayDate).format(`DD`);
-  const month = moment(item.holidayDate).format(`MMMM`);
+  // const newDateFormate = moment(item.holidayDate).format(`DD MMMM`);
+  const date = moment(item.holidayDate).format('DD');
+  const month = moment(item.holidayDate).format('MMMM');
 
   return (
     <View style={styles.imageView} key={index}>
-      {/* <Text style={styles.text1}>{item.description}</Text>
-      <View style={{flex: 3}}>
-        <View style={styles.textView}>
-          <Text style={styles.text2}>{newDateFormate}</Text>
-        </View>
-      </View>
-      <Image
-        resizeMode="contain"
-        source={
-          item.description === 'Republic Day'
-            ? MonthImages.republicDay
-            : item.description === 'Holi'
-            ? MonthImages.holi
-            : item.description === 'Independence Day'
-            ? MonthImages.independenceDay
-            : item.description === 'Diwali'
-            ? MonthImages.diwali
-            : item.description === 'Dussehra'
-            ? MonthImages.diwali
-            : item.description === "Mahatma Gandhi's Birthday"
-            ? MonthImages.gandhiJayantiS
-            : MonthImages.gandhiJayantiS
-        }
-        style={styles.image}
-      /> */}
-
-      <View style={{flexDirection: 'row'}}>
+      <View style={styles.dateContainer}>
         <View style={styles.daysContainer}>
           <Text style={styles.daysText}>{date}</Text>
           <Text>{month}</Text>
@@ -138,7 +92,7 @@ const renderItem = ({item, index}) => {
           <Text style={styles.leaveTypeText}>{item.description}</Text>
         </View>
       </View>
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.imageContainer}>
         <Image
           resizeMode="contain"
           source={

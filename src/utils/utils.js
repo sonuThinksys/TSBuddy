@@ -1,7 +1,11 @@
+import React from 'react';
 import {renewToken} from 'Auth/LoginSlice';
 import axios from 'axios';
 import {ERROR} from 'constants/strings';
 import {days} from 'defaultData';
+import CryptoJS from 'crypto-js';
+import {View} from 'react-native';
+import {Text} from 'react-native';
 
 export const attendanceDate = val => {
   let today = new Date();
@@ -151,7 +155,53 @@ export const getCurrentFiscalYear = () => {
   let fiscalYear = `${currentYear}-${new Date().getFullYear() + 1}`;
 
   if (currentMonth < 3) {
-    fiscalYear = `${currentYear - 1} - ${new Date().getFullYear()}`;
+    fiscalYear = `${currentYear - 1}-${new Date().getFullYear()}`;
   }
   return fiscalYear;
+};
+
+export function sortByFiscalYear(date1, date2) {
+  const a = new Date(date1?.holidayDate);
+  const b = new Date(date2?.holidayDate);
+  const fiscalYearA = a.getMonth() >= 3 ? a.getFullYear() : a.getFullYear() - 1;
+  const fiscalYearB = b.getMonth() >= 3 ? b.getFullYear() : b.getFullYear() - 1;
+  if (fiscalYearA < fiscalYearB) {
+    return 1;
+  } else if (fiscalYearA > fiscalYearB) {
+    return -1;
+  } else {
+    return a.getTime() - b.getTime();
+  }
+}
+
+export const sortArrayOfObjectsOnProperty = (arr, property) => {
+  arr.sort((a, b) => {
+    const nameA = a[property]?.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+    const nameB = b[property]?.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+  console.log('arr:', arr);
+
+  return arr;
+};
+
+export function decryptData(encryptedData, decryptionKey) {
+  const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, decryptionKey);
+  return decryptedBytes.toString(CryptoJS.enc.Utf8);
+}
+
+export const renderNoLeaves = ({styles, message}) => {
+  console.log('styles:', styles);
+  return (
+    <View style={styles?.noLeavesContainer}>
+      <Text style={styles?.noLeavesText}>{message}</Text>
+    </View>
+  );
 };

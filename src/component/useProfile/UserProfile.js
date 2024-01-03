@@ -37,7 +37,7 @@ const UserProfile = ({route}) => {
 
   const {isShowModal: isShowModall} = useSelector(state => state.home);
 
-  const {userToken: token} = useSelector(state => state.auth);
+  const {userToken: token, isGuestLogin} = useSelector(state => state.auth);
   const [showHoriZontal, setShowHorizontal] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [numValue, setNumValue] = useState(3);
@@ -82,34 +82,38 @@ const UserProfile = ({route}) => {
 
   const fetchEmployeesData = useCallback(
     async ({isInitial, currentEmployees, isSearching}) => {
-      setIsFetchingEmployees(true);
+      if (!isGuestLogin) {
+        setIsFetchingEmployees(true);
 
-      const result = await dispatch(getEmployeeData({token, currentEmployees}));
-      setIsFetchingEmployees(false);
-      if (isInitial && !isSearching) {
-        setTotalCount(result?.payload?.count);
-      }
-
-      if (result?.error) {
-        ShowAlert({
-          messageHeader: ERROR,
-          messageSubHeader: result?.error?.message,
-          buttonText: 'Close',
-          dispatch,
-          navigation,
-        });
-      }
-
-      if (result && result?.payload && result?.payload?.data) {
-        if (isInitial) {
-          setEmpData(result.payload.data);
-        } else {
-          setEmpData([...allEmpData, ...result?.payload?.data]);
+        const result = await dispatch(
+          getEmployeeData({token, currentEmployees}),
+        );
+        setIsFetchingEmployees(false);
+        if (isInitial && !isSearching) {
+          setTotalCount(result?.payload?.count);
         }
-        setEmployeesCount(result?.payload?.count);
+
+        if (result?.error) {
+          ShowAlert({
+            messageHeader: ERROR,
+            messageSubHeader: result?.error?.message,
+            buttonText: 'Close',
+            dispatch,
+            navigation,
+          });
+        }
+
+        if (result && result?.payload && result?.payload?.data) {
+          if (isInitial) {
+            setEmpData(result.payload.data);
+          } else {
+            setEmpData([...allEmpData, ...result?.payload?.data]);
+          }
+          setEmployeesCount(result?.payload?.count);
+        }
       }
     },
-    [allEmpData, dispatch, navigation, token],
+    [allEmpData, dispatch, navigation, token, isGuestLogin],
   );
 
   const arr = [];

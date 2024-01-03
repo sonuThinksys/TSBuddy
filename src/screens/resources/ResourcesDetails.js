@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   SafeAreaView,
   View,
@@ -29,6 +30,7 @@ import {
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import CustomHeader from 'navigation/CustomHeader';
+import Loader from 'component/loader/Loader';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -60,7 +62,6 @@ const ResourcesDetails = ({route, navigation}) => {
   const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
     state => state.auth,
   );
-  const [resurcesEmployeeLeaves, setResourcesEmployeesLeaves] = useState([]);
   const [selectedTab, setSelectedTab] = useState('leaves');
   const [openCount, setOpenCount] = useState(0);
   const [wfhCount, setWfhCount] = useState(0);
@@ -75,7 +76,7 @@ const ResourcesDetails = ({route, navigation}) => {
         );
         let count = 0;
         regularisationRequests.payload.forEach(element => {
-          if (element.status == 'Open') {
+          if (element.status.toLowerCase() === 'open') {
             count++;
           }
         });
@@ -98,13 +99,13 @@ const ResourcesDetails = ({route, navigation}) => {
           }),
         );
 
-        let wfhCount = 0;
+        let totalWfhCount = 0;
         leavesData?.payload?.employeeWfh?.forEach(element => {
-          if (element.status == 'Open') {
-            wfhCount++;
+          if (element.status.toLowerCase() === 'open') {
+            totalWfhCount++;
           }
         });
-        setWfhCount(wfhCount);
+        setWfhCount(totalWfhCount);
 
         if (leavesData?.error) {
           ShowAlert({
@@ -116,7 +117,7 @@ const ResourcesDetails = ({route, navigation}) => {
         }
       })();
     }
-  }, [isFocussed]);
+  }, [isFocussed, dispatch, employeeID, token]);
 
   const {isShowModal: isShowModal, employeeProfileLoading: isLoading} =
     useSelector(state => state.home);
@@ -161,10 +162,6 @@ const ResourcesDetails = ({route, navigation}) => {
     dispatch(modalStatus(true));
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <>
       <CustomHeader
@@ -177,8 +174,8 @@ const ResourcesDetails = ({route, navigation}) => {
       {isShowModal && isFocussed ? (
         <CommunicationModal empDetail={empDetail} />
       ) : null}
-      <SafeAreaView style={{flex: 1}}>
-        <View style={style.container}>
+      <SafeAreaView style={styles.safeAreaView}>
+        <View style={styles.container}>
           <ResourceProfileDetails
             dialCall={dialCall}
             sendMail={sendMail}
@@ -193,31 +190,21 @@ const ResourcesDetails = ({route, navigation}) => {
               managerInfoDto,
             }}
           />
-          <View style={style.tab_view}>
+          <View style={styles.tab_view}>
             <Pressable
               onPress={() => {
                 setSelectedTab('leaves');
               }}>
               <View
                 style={[
-                  style.tab,
-                  selectedTab === 'leaves' && {
-                    borderBottomColor: Colors.red,
-                    borderBottomWidth: 2,
-                  },
+                  styles.tab,
+                  selectedTab === 'leaves' && styles.selectedTab,
                 ]}>
-                <View style={{position: 'relative'}}>
-                  <Text style={{color: 'white', fontSize: 17}}>Leaves</Text>
+                <View style={styles.tabContainer}>
+                  <Text style={styles.tabText}>Leaves</Text>
                   {openCount > 0 ? (
-                    <View style={style.badges_number}>
-                      <Text
-                        style={{
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: FontFamily.RobotoMedium,
-                        }}>
-                        {openCount}
-                      </Text>
+                    <View style={styles.badges_number}>
+                      <Text style={styles.openCountText}>{openCount}</Text>
                     </View>
                   ) : null}
                 </View>
@@ -229,13 +216,10 @@ const ResourcesDetails = ({route, navigation}) => {
               }}>
               <View
                 style={[
-                  style.tab,
-                  selectedTab == 'attendence' && {
-                    borderBottomColor: Colors.red,
-                    borderBottomWidth: 2,
-                  },
+                  styles.tab,
+                  selectedTab === 'attendence' && styles.selectedTab,
                 ]}>
-                <Text style={{color: 'white', fontSize: 17}}>Att</Text>
+                <Text style={styles.tabText}>Att</Text>
               </View>
             </Pressable>
             <Pressable
@@ -244,24 +228,14 @@ const ResourcesDetails = ({route, navigation}) => {
               }}>
               <View
                 style={[
-                  style.tab,
-                  selectedTab === 'wfh' && {
-                    borderBottomColor: Colors.red,
-                    borderBottomWidth: 2,
-                  },
+                  styles.tab,
+                  selectedTab === 'wfh' && styles.selectedTab,
                 ]}>
-                <View style={{position: 'relative'}}>
-                  <Text style={{color: 'white', fontSize: 17}}>WFH</Text>
+                <View style={styles.tabContainer}>
+                  <Text style={styles.tabText}>WFH</Text>
                   {wfhCount > 0 ? (
-                    <View style={style.badges_number}>
-                      <Text
-                        style={{
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: FontFamily.RobotoMedium,
-                        }}>
-                        {wfhCount}
-                      </Text>
+                    <View style={styles.badges_number}>
+                      <Text style={styles.openCountText}>{wfhCount}</Text>
                     </View>
                   ) : null}
                 </View>
@@ -273,24 +247,14 @@ const ResourcesDetails = ({route, navigation}) => {
               }}>
               <View
                 style={[
-                  style.tab,
-                  selectedTab === 'regularisation' && {
-                    borderBottomColor: Colors.red,
-                    borderBottomWidth: 2,
-                  },
+                  styles.tab,
+                  selectedTab === 'regularisation' && styles.selectedTab,
                 ]}>
-                <View style={{position: 'relative'}}>
-                  <Text style={{color: 'white', fontSize: 17}}>Reg</Text>
+                <View style={styles.tabContainer}>
+                  <Text style={styles.tabText}>Reg</Text>
                   {regCount > 0 ? (
-                    <View style={style.badges_number}>
-                      <Text
-                        style={{
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: FontFamily.RobotoMedium,
-                        }}>
-                        {regCount}
-                      </Text>
+                    <View style={styles.badges_number}>
+                      <Text style={styles.regCount}>{regCount}</Text>
                     </View>
                   ) : null}
                 </View>
@@ -298,16 +262,16 @@ const ResourcesDetails = ({route, navigation}) => {
             </Pressable>
           </View>
         </View>
-        <View style={style.listOfLeaves}>
+        <View style={styles.listOfLeaves}>
           {selectedTab === 'leaves' ? (
             <LeavesList
               fromResource={true}
               getLeaveCount={getLeaveCount}
               resourceEmployeeID={employeeID}
             />
-          ) : selectedTab == 'attendence' ? (
+          ) : selectedTab === 'attendence' ? (
             <AttendenceTab employeeName={empFullName} employeeID={employeeID} />
-          ) : selectedTab == 'wfh' ? (
+          ) : selectedTab === 'wfh' ? (
             <WfhTab
               employeeName={empFullName}
               employeeID={employeeID}
@@ -321,12 +285,14 @@ const ResourcesDetails = ({route, navigation}) => {
             />
           )}
         </View>
+        {isLoading ? <Loader /> : null}
       </SafeAreaView>
     </>
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+  safeAreaView: {flex: 1},
   container: {
     backgroundColor: Colors.colorDodgerBlue2,
     marginBottom: 5,
@@ -381,6 +347,20 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  selectedTab: {
+    borderBottomColor: Colors.red,
+    borderBottomWidth: 2,
+  },
+  tabContainer: {position: 'relative'},
+  regCount: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  tabText: {
+    color: 'white',
+    fontSize: 17,
+  },
   badges_number: {
     backgroundColor: Colors.reddishTint,
     width: 25,
@@ -391,6 +371,11 @@ const style = StyleSheet.create({
     top: -10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  openCountText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoMedium,
   },
   image: {
     width: '100%',

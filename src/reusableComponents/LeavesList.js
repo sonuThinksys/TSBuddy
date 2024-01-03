@@ -1,12 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  Image,
-  SafeAreaView,
-} from 'react-native';
+import {FlatList, Pressable, Image, SafeAreaView} from 'react-native';
 
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import styles from '../screens/leaves/LeaveStyles';
@@ -19,6 +12,7 @@ import Loader from 'component/LoadingScreen/LoadingScreen';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR} from 'utils/string';
 import LeavesListItem from './LeavesListItem';
+import {renderNoLeaves} from 'utils/utils';
 
 const LeavesList = props => {
   const {
@@ -176,14 +170,6 @@ const LeavesList = props => {
     );
   };
 
-  const renderNoLeaves = () => {
-    return (
-      <View style={styles.noLeavesContainer}>
-        <Text style={styles.noLeavesText}>No Leaves Applied.</Text>
-      </View>
-    );
-  };
-
   if (loading) {
     return <Loader />;
   }
@@ -192,7 +178,7 @@ const LeavesList = props => {
     <>
       <SafeAreaView style={styles.mainContainerExcludeHeader}>
         {isGuestLogin ? (
-          renderNoLeaves()
+          renderNoLeaves({styles, message: 'No Leaves Applied.'})
         ) : employeeLeaves?.length > 0 ? (
           <FlatList
             ref={flatListRef}
@@ -202,7 +188,7 @@ const LeavesList = props => {
             keyExtractor={(_, index) => index}
           />
         ) : (
-          renderNoLeaves()
+          renderNoLeaves({styles, message: 'No Leaves Applied.'})
         )}
         <DateTimePickerModal
           isVisible={filterCalenderOpen}

@@ -1,3 +1,4 @@
+import React from 'react';
 import {Colors} from 'colors/Colors';
 import {
   View,
@@ -25,6 +26,7 @@ import jwt_decode from 'jwt-decode';
 import CustomHeader from 'navigation/CustomHeader';
 import Loader from 'component/loader/Loader';
 import {FontFamily} from 'constants/fonts';
+import ShowAlert from 'customComponents/CustomError';
 
 const Regularization = ({navigation, route}) => {
   const [regularizationReason, setRegularzitionReason] = useState([]);
@@ -39,17 +41,17 @@ const Regularization = ({navigation, route}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [approvers, setApprovers] = useState([]);
 
-  const [dayData, setDayData] = useState([
-    {
-      isSelected: false,
-      type: 'Half day',
-    },
-    {isSelected: false, type: 'Full day'},
-  ]);
+  // const [dayData, setDayData] = useState([
+  //   {
+  //     isSelected: false,
+  //     type: 'Half day',
+  //   },
+  //   {isSelected: false, type: 'Full day'},
+  // ]);
 
   const attendanceId = route?.params?.attendanceId;
-  const attDate = route?.params?.attendanceDate;
-  const attendanceDate = new Date(route?.params?.attendanceDate);
+  const attDate = route?.params?.attDate;
+  const attendanceDate = new Date(route?.params?.attDate);
   const date = `${
     attendanceDate.getDate() < 10
       ? '0' + attendanceDate.getDate()
@@ -60,9 +62,7 @@ const Regularization = ({navigation, route}) => {
       : +attendanceDate.getMonth() + 1
   }-${attendanceDate.getFullYear()}`;
 
-  const {userToken: token, isGuestLogin: isGuestLogin} = useSelector(
-    state => state.auth,
-  );
+  const {userToken: token} = useSelector(state => state.auth);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
@@ -147,53 +147,53 @@ const Regularization = ({navigation, route}) => {
     </View>
   );
 
-  const onSelectItem = (item, index) => {
-    let tempArr = [];
-    dayData &&
-      dayData?.map((item, ind) => {
-        if (index === ind) {
-          tempArr.push((item.isSelected = true));
-        } else {
-          tempArr.push((item.isSelected = false));
-        }
-      });
-    setSelectDay(item.type);
-  };
+  // const onSelectItem = (item, index) => {
+  //   let tempArr = [];
+  //   dayData &&
+  //     dayData?.map((i, ind) => {
+  //       if (index === ind) {
+  //         tempArr.push((i.isSelected = true));
+  //       } else {
+  //         tempArr.push((i.isSelected = false));
+  //       }
+  //     });
+  //   setSelectDay(item.type);
+  // };
 
-  const renderItem = ({item, index}) => {
-    return (
-      <View style={{paddingHorizontal: wp(2)}} key={index}>
-        <Pressable
-          onPress={() => {
-            onSelectItem(item, index);
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: wp(25),
-            }}>
-            <View
-              style={[
-                style.checkbox,
-                {
-                  backgroundColor: item.isSelected
-                    ? Colors.reddishTint
-                    : Colors.white,
-                },
-              ]}></View>
-            <Text
-              style={{
-                fontSize: 16,
-                color: 'black',
-              }}>
-              {item.type}
-            </Text>
-          </View>
-        </Pressable>
-      </View>
-    );
-  };
+  // const renderItem = ({item, index}) => {
+  //   return (
+  //     <View style={{paddingHorizontal: wp(2)}} key={index}>
+  //       <Pressable
+  //         onPress={() => {
+  //           onSelectItem(item, index);
+  //         }}>
+  //         <View
+  //           style={{
+  //             flexDirection: 'row',
+  //             justifyContent: 'space-around',
+  //             width: wp(25),
+  //           }}>
+  //           <View
+  //             style={[
+  //               style.checkbox,
+  //               {
+  //                 backgroundColor: item.isSelected
+  //                   ? Colors.reddishTint
+  //                   : Colors.white,
+  //               },
+  //             ]}></View>
+  //           <Text
+  //             style={{
+  //               fontSize: 16,
+  //               color: 'black',
+  //             }}>
+  //             {item.type}
+  //           </Text>
+  //         </View>
+  //       </Pressable>
+  //     </View>
+  //   );
+  // };
 
   const handleSubmit = async () => {
     if (!selectApprover) {

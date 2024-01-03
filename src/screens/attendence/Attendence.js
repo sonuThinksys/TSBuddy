@@ -9,10 +9,7 @@ import {
 
 import Modal from 'react-native-modal';
 
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+import {widthPercentageToDP as wp} from 'utils/Responsive';
 import styles from './AttendenceStyle';
 import {CalendarList} from 'react-native-calendars';
 import {Colors} from 'colors/Colors';
@@ -28,7 +25,6 @@ import {
   startEndDateFormat,
   todaySelectedDate,
 } from 'utils/utils';
-import {FontFamily} from 'constants/fonts';
 import {RegularzitionScreen} from 'navigation/Route';
 import Loader from 'component/LoadingScreen/LoadingScreen';
 import CustomHeader from 'navigation/CustomHeader';
@@ -62,6 +58,7 @@ const Attendence = ({navigation}) => {
   );
 
   const {holidayData: holidaysData = []} = useSelector(state => state.home);
+
   const [visisbleMonth, setVisibleMonth] = useState(0);
   const [visibleYear, setVisibleYear] = useState(0);
   const [remainingHours, setRemainingHours] = useState(null);
@@ -107,7 +104,7 @@ const Attendence = ({navigation}) => {
   }, [showDailyStatusModal, dailyAttendance, modalDate?.dateString]);
 
   const dispatch = useDispatch();
-  const {userToken: token} = useSelector(state => state.auth);
+  const {userToken: token, isGuestLogin} = useSelector(state => state.auth);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
@@ -118,36 +115,39 @@ const Attendence = ({navigation}) => {
   //   return date.getDate();
   // }
 
-  async function fetchData() {
-    if (employeeID && token) {
-      try {
-        if (visisbleMonth > 0 || visibleYear > 0) {
-          setLoading(true);
-          const attendence = await dispatch(
-            getAttendencaeData({
-              token,
-              employeeID,
-              visisbleMonth,
-              visibleYear,
-            }),
-          );
-          if (attendence?.error) {
-            ShowAlert({
-              messageHeader: ERROR,
-              messageSubHeader: attendence?.error?.message,
-              buttonText: 'Close',
-              dispatch,
-              navigation,
-            });
+  const fetchData = useCallback(
+    async function fetchData() {
+      if (employeeID && token) {
+        try {
+          if (visisbleMonth > 0 || visibleYear > 0) {
+            setLoading(true);
+            const attendence = await dispatch(
+              getAttendencaeData({
+                token,
+                employeeID,
+                visisbleMonth,
+                visibleYear,
+              }),
+            );
+            if (attendence?.error) {
+              ShowAlert({
+                messageHeader: ERROR,
+                messageSubHeader: attendence?.error?.message,
+                buttonText: 'Close',
+                dispatch,
+                navigation,
+              });
+            }
           }
+        } catch (err) {
+          console.log('errAttendance:', err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.log('errAttendance:', err);
-      } finally {
-        setLoading(false);
       }
-    }
-  }
+    },
+    [dispatch, navigation, employeeID, token, visibleYear, visisbleMonth],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -156,12 +156,12 @@ const Attendence = ({navigation}) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [visisbleMonth]);
+  }, [visisbleMonth, fetchData]);
 
   const startEndDate = () => {
-    let startDate = attendanceDate(1);
-    let endDate = attendanceDate(7);
-    return {startDate, endDate};
+    let start = attendanceDate(1);
+    let end = attendanceDate(7);
+    return {start, end};
   };
 
   useEffect(() => {
@@ -169,9 +169,9 @@ const Attendence = ({navigation}) => {
     setTodayDate(finalTodayDate);
     setTodayDay(currentDay);
 
-    const {startDate, endDate} = startEndDate();
-    let startDateFormat = startEndDateFormat(startDate);
-    let endDateFormat = startEndDateFormat(endDate);
+    const {start, end} = startEndDate();
+    let startDateFormat = startEndDateFormat(start);
+    let endDateFormat = startEndDateFormat(end);
 
     setStartDate(startDateFormat);
     setEndDate(endDateFormat);
@@ -192,8 +192,8 @@ const Attendence = ({navigation}) => {
     let thisWeekDays = [];
 
     for (let val of dailyAttendance) {
-      let {attendanceDate} = val;
-      const attendanceDateValue = new Date(attendanceDate).getDate();
+      let {attendance} = val;
+      const attendanceDateValue = new Date(attendance).getDate();
       if (weekDays.includes(attendanceDateValue)) {
         thisWeekDays.push(val);
       }
@@ -207,7 +207,9 @@ const Attendence = ({navigation}) => {
       let [hours, minutes] = timeStr?.split('.');
 
       if (day?.attendanceType !== 'A') {
-        if (minutes?.length === 1) minutes = minutes + 0;
+        if (minutes?.length === 1) {
+          minutes = minutes + 0;
+        }
 
         thisWeekHours += +hours;
         thisWeekExtraMinutes += +minutes;
@@ -250,24 +252,7 @@ const Attendence = ({navigation}) => {
         extraTime: `-${hoursLeft}:${minutesLeft}`,
       });
     }
-  }, []);
-
-  // const daysInMonth = getDaysInMonth(visisbleMonth - 1);
-
-  // for (let i = 1; i <= daysInMonth; i++) {
-  //   const date = i > 9 ? i : '0' + i;
-  //   const month = visisbleMonth > 9 ? visisbleMonth : '0' + visisbleMonth;
-  //   const dateStr = `${visibleYear}-${month}-${date}`;
-  //   if (new Date(dateStr) < Date.now()) {
-  //     const dateIndex = new Date(dateStr).getDay();
-  //     if (dateIndex !== 6 && dateIndex !== 0) {
-  //       monthMark = {
-  //         ...monthMark,
-  //         [dateStr]: {selected: true, selectedColor: 'red'},
-  //       };
-  //     }
-  //   }
-  // }
+  }, [dailyAttendance]);
 
   let monthMark = {};
   let todayDate = todaySelectedDate();
@@ -315,51 +300,26 @@ const Attendence = ({navigation}) => {
 
   let mark = monthMark;
 
-  // const renderLoading = style => {
-  //   return (
-  //     <View
-  //       style={{
-  //         ...styles.loaderStyle,
-  //         ...style,
-  //       }}>
-  //       <ActivityIndicator size={'large'} color="white" />
-  //     </View>
-  //   );
-  // };
-
   const renderItem = useCallback(({item}) => {
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          flex: 1,
-          marginRight: wp(2.8),
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View style={styles.renderItemMainContainer}>
         <View
-          style={{
-            width: wp(4),
-            height: hp(2),
-            borderRadius: 20,
-            backgroundColor:
-              item.title === 'Absent'
-                ? Colors.reddishTint
-                : item.title === 'Half Day'
-                ? Colors.blue
-                : item.title === 'Present'
-                ? Colors.green
-                : Colors.pink,
-            marginRight: wp(1.6),
-          }}></View>
-        <Text
-          style={{
-            color: Colors.white,
-            fontFamily: FontFamily.RobotoBold,
-            fontSize: 14,
-          }}>
-          {item.title}
-        </Text>
+          style={[
+            styles.attTypeNotation,
+            {
+              backgroundColor:
+                item.title === 'Absent'
+                  ? Colors.reddishTint
+                  : item.title === 'Half Day'
+                  ? Colors.blue
+                  : item.title === 'Present'
+                  ? Colors.green
+                  : Colors.pink,
+              marginRight: wp(1.6),
+            },
+          ]}
+        />
+        <Text style={styles.attType}>{item.title}</Text>
       </View>
     );
   }, []);
@@ -379,16 +339,10 @@ const Attendence = ({navigation}) => {
           // onLoadStart={() => setImageLoading(true)}
           // onLoadEnd={() => setImageLoading(false)}
           source={attendenceMonthImages[visisbleMonth]}
-          style={{
-            flex: 1,
-          }}>
+          style={styles.backgroundImg}>
           {showDailyStatusModal ? (
             <Modal
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                top: hp(20),
-              }}
+              style={styles.clickedDateModal}
               animationType="slide"
               transparent={true}
               closeOnClick={true}
@@ -401,22 +355,21 @@ const Attendence = ({navigation}) => {
               }}>
               <View style={styles.modalContainer}>
                 <Text style={styles.text1}>
-                  In Time: {pressedDayDate?.inTime}
+                  In Time: {isGuestLogin ? '00:00' : pressedDayDate?.inTime}
                 </Text>
                 <Text style={styles.text1}>
-                  Out Time: {pressedDayDate?.outTime}
+                  Out Time: {isGuestLogin ? '00:00' : pressedDayDate?.outTime}
                 </Text>
                 <View style={styles.imageView}>
-                  <Text>Total Hours: {pressedDayDate?.totalHours}</Text>
+                  <Text>
+                    Total Hours:{' '}
+                    {isGuestLogin ? '00:00' : pressedDayDate?.totalHours}
+                  </Text>
                 </View>
               </View>
             </Modal>
           ) : null}
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'space-between',
-            }}>
+          <View style={styles.weeklyReport}>
             {/* {isImageLoading ? renderLoading() : null}    */}
             <View style={styles.secondContainer}>
               <View>
@@ -446,12 +399,7 @@ const Attendence = ({navigation}) => {
               </View>
             </View>
 
-            <View
-              style={{
-                marginTop: hp(1),
-                flex: 1,
-                alignItems: 'center',
-              }}>
+            <View style={styles.attTypes}>
               <FlatList
                 data={DATA}
                 horizontal={true}
@@ -461,7 +409,7 @@ const Attendence = ({navigation}) => {
             </View>
           </View>
         </ImageBackground>
-        <View style={{flex: 1.2, position: 'relative'}}>
+        <View style={styles.calenderContainer}>
           <RenderCalender
             setVisibleMonth={setVisibleMonth}
             setVisibleYear={setVisibleYear}
@@ -494,10 +442,10 @@ const RenderCalender = ({
   visisbleMonth,
   visibleYear,
 }) => {
-  console.log('visibleYear:', visibleYear, visisbleMonth);
   return (
     <>
       <CalendarList
+        markingType={'dot'}
         onDayPress={day => {
           const isCurrentDatePressed =
             day.year === new Date().getFullYear() &&
@@ -512,7 +460,8 @@ const RenderCalender = ({
           const pressedYear = day.year;
 
           let isHoliday = false;
-          holidaysData.forEach(holiday => {
+
+          holidaysData?.forEach(holiday => {
             const {holidayDate} = holiday;
             const holidayDateObj = new Date(holidayDate);
             const holidayMonth = holidayDateObj.getMonth() + 1;
@@ -527,23 +476,27 @@ const RenderCalender = ({
             }
           });
 
-          if (isHoliday) return;
-          if (Date.now() < day.timestamp || isCurrentDatePressed || isWeekend)
+          if (isHoliday) {
             return;
+          }
+          if (Date.now() < day.timestamp || isCurrentDatePressed || isWeekend) {
+            return;
+          }
           let filterData = dailyAttendance?.filter(element => {
             let date = element?.attendanceDate?.split('T')[0];
             return date === day.dateString;
           });
           let attendanceId = filterData[0]?.attendanceId;
-          let attendanceDate = filterData[0]?.attendanceDate;
+          let attDate = filterData[0]?.attendanceDate;
 
           if (
             filterData[0]?.attendanceType === 'H' ||
-            filterData[0]?.attendanceType === 'A'
+            (filterData[0]?.attendanceType === 'A' &&
+              filterData[0].attendanceId)
           ) {
             navigation.navigate(RegularzitionScreen, {
               attendanceId,
-              attendanceDate,
+              attDate,
             });
           } else {
             setShowDailyStatusModal(true);
@@ -552,7 +505,7 @@ const RenderCalender = ({
         }}
         // displayLoadingIndicator={true}
         horizontal={true}
-        markingType={'custom'}
+        // markingType={'custom'}
         scrollEnabled={true}
         animateScroll={true}
         showScrollIndicator={false}

@@ -1,7 +1,19 @@
 const guestLeavesData = [
-  {fromDate: '2024-03-08T00:00:00', totalLeaveDays: 1},
-  {fromDate: '2024-03-10T00:00:00', totalLeaveDays: 2},
-  {fromDate: '2024-03-13T00:00:00', totalLeaveDays: 3},
+  {
+    fromDate: '2024-03-08T00:00:00',
+    toDate: '2024-03-08T00:00:00',
+    totalLeaveDays: 1,
+  },
+  {
+    fromDate: '2024-03-10T00:00:00',
+    toDate: '2024-03-11T00:00:00',
+    totalLeaveDays: 2,
+  },
+  {
+    fromDate: '2024-03-13T00:00:00',
+    toDate: '2024-03-15T00:00:00',
+    totalLeaveDays: 3,
+  },
 ];
 
 const guestProfileData = {

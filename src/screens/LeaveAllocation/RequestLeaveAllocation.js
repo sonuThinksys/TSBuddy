@@ -3,10 +3,14 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, Pressable, Text, View} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import styles from './RequestLeaveAllocationStyles';
-import {getSelfLeaveAllocationRequests} from 'redux/homeSlice';
+import {
+  dismissSelfLeaveAllocationRequest,
+  getSelfLeaveAllocationRequests,
+} from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {ApplyLeaveAllocationRequest} from 'navigation/Route';
+import CustomButton from 'navigation/CustomButton';
 
 const LeaveAllocation = ({navigation}) => {
   const {userToken: token} = useSelector(state => state.auth);
@@ -23,6 +27,7 @@ const LeaveAllocation = ({navigation}) => {
       const {payload, error} = await dispatch(
         getSelfLeaveAllocationRequests({token}),
       );
+      payload.reverse();
 
       if (error) {
         throw new Error(error.message);
@@ -47,6 +52,33 @@ const LeaveAllocation = ({navigation}) => {
 
   const onClickListItem = item => {};
 
+  const onDismissLeaveRequest = async ({
+    leaveType,
+    leaveAllocationId,
+    empId,
+  }) => {
+    try {
+      setIsLoading(true);
+      await dispatch(
+        dismissSelfLeaveAllocationRequest({
+          token,
+          body: {
+            employeeId: empId,
+            status: 'Dismissed',
+            leaveAllocationId,
+            leaveType,
+          },
+        }),
+      );
+
+      getLeaveAllocationRequests();
+    } catch (err) {
+      console.log('errDismiss:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const flatlistRenderItem = ({item}) => {
     return (
       <View style={styles.listItem} onPress={onClickListItem.bind(this, item)}>
@@ -70,17 +102,33 @@ const LeaveAllocation = ({navigation}) => {
         </View>
 
         <View style={styles.secondView}>
-          <Text style={styles.leaveAppIdText}>
-            {item.leaveAllocationId} - {item.description}
-          </Text>
-          <Text style={styles.lessOpacity}>
-            {`${new Date(item.allocationDate).getDate()} ${new Date(
-              item.allocationDate,
-            ).toLocaleString('default', {month: 'short'})} ${new Date(
-              item.allocationDate,
-            ).getFullYear()}`}
-          </Text>
-          <Text style={styles.lessOpacity}>{item.currentStatus}</Text>
+          <View style={styles.rightFirstContainer}>
+            <Text style={styles.leaveAppIdText}>
+              {item.leaveAllocationId} - {item.description}
+            </Text>
+            <Text style={styles.lessOpacity}>
+              {`${new Date(item.allocationDate).getDate()} ${new Date(
+                item.allocationDate,
+              ).toLocaleString('default', {month: 'short'})} ${new Date(
+                item.allocationDate,
+              ).getFullYear()}`}
+            </Text>
+            <Text style={styles.lessOpacity}>{item.currentStatus}</Text>
+          </View>
+          {item.status === 'Open' ? (
+            <View style={styles.dismissContainer}>
+              <CustomButton
+                title="Dismiss"
+                onPress={onDismissLeaveRequest.bind(null, {
+                  leaveAllocationId: item.leaveAllocationId,
+                  empId: item.employeeId,
+                  leaveType: item.leaveType,
+                })}
+                styleButton={styles.dismissButton}
+                styleTitle={styles.dismissTitle}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     );

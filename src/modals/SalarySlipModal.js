@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  Modal,
   View,
   Text,
   TouchableOpacity,
@@ -12,18 +11,12 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'utils/Responsive';
-import {authLoginStatus, getUserToken} from 'Auth/LoginSlice';
 import CustomModal from 'customComponents/CustomModal';
-import {getSalarySlipData} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
-import {ERROR} from 'constants/strings';
-import ShowAlert from 'customComponents/CustomError';
+
 const SalarSlipModal = ({navigation, submitPassword}) => {
   const {username, password} = useSelector(state => state.auth.formInput);
 
-  const dispatch = useDispatch();
-  const [modalVisible, setModalVisible] = useState(true);
-  const token = useSelector(state => state.auth.userToken);
   const [enteredPassword, setEnteredPassword] = useState('');
   return (
     <CustomModal>
@@ -52,18 +45,6 @@ const SalarSlipModal = ({navigation, submitPassword}) => {
               submitPassword();
             } else {
               alert('Incorrect password! Please try again.');
-            }
-
-            const salarySlips = await dispatch(getSalarySlipData(token));
-
-            if (salarySlips?.error) {
-              ShowAlert({
-                messageHeader: ERROR,
-                messageSubHeader: salarySlips?.error?.message,
-                buttonText: 'Close',
-                dispatch,
-                navigation,
-              });
             }
           }}>
           <View style={styles.secondTextView}>

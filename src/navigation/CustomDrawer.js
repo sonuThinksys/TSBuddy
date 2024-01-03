@@ -33,6 +33,7 @@ export default ({navigation}) => {
       navigation,
       icon: profileData?.image ? profileData?.image : MonthImages.ProfileIcon,
       isVisible: true,
+      isPhotoExist: profileData?.image,
     },
     {
       screen: 'Lunch',
@@ -43,7 +44,7 @@ export default ({navigation}) => {
     },
     {
       screen: 'Resources',
-      label: 'Resources',
+      label: 'My Team',
       navigation,
       icon: MonthImages.ResourceIcon,
       isVisible: isLeaveApprover ? true : false,
@@ -67,14 +68,14 @@ export default ({navigation}) => {
       label: 'Leaves Allocation',
       navigation,
       icon: MonthImages.leavesImage,
-      isVisible: true,
+      isVisible: token ? true : false,
     },
     {
       screen: 'applyWfh',
       label: 'Apply WFH',
       navigation,
       icon: MonthImages.leavesImage,
-      isVisible: true,
+      isVisible: token ? true : false,
     },
     {
       screen: 'AllAttendance',
@@ -156,7 +157,7 @@ export default ({navigation}) => {
   );
 };
 const renderDrawerItem = (
-  {navigation, key, screen, label, dispatch, icon},
+  {navigation, key, screen, label, dispatch, icon, isPhotoExist},
   index,
 ) => {
   const selected = navigation?.getState()?.index + 1 === key;
@@ -206,7 +207,15 @@ const renderDrawerItem = (
         }
       }}
       style={[styles.drawerItemContainer, selected && styles.selectedStyle]}>
-      <Image source={icon} resizeMode="contain" style={styles.icon} />
+      {/* <Image
+        source={{uri: profileData?.image}}
+        style={{height: '100%', width: '100%', borderRadius: 60}} // Define the width and height as needed
+      /> */}
+      <Image
+        source={isPhotoExist ? {uri: icon} : icon}
+        resizeMode="contain"
+        style={styles.icon}
+      />
       <Text style={styles.drawerItemText}>{label}</Text>
     </TouchableOpacity>
   );

@@ -27,10 +27,10 @@ import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
 import {
   COPY_RIGHT,
-  ERROR,
   FORGOT_PASSWORD,
   GUEST_LOGIN,
   REMEMBER_ME,
+  ERROR,
 } from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 const Login = ({navigation}) => {
@@ -98,7 +98,7 @@ const Login = ({navigation}) => {
       if (result?.error) {
         ShowAlert({
           messageHeader: ERROR,
-          messageSubHeader: ERROR,
+          messageSubHeader: result.error?.message,
           buttonText: 'CLOSE',
           dispatch,
           navigation,
@@ -110,14 +110,6 @@ const Login = ({navigation}) => {
           JSON.stringify(refreshToken),
         );
 
-        // await dispatch(
-        //   getEmployeeProfileData({
-        //     token,
-        //     employeeID,
-        //   }),
-        // );
-        // dispatch(logInSucess());
-
         if (isRemember) {
           AsyncStorage.setItem(
             'userDetailsRemeber',
@@ -126,6 +118,7 @@ const Login = ({navigation}) => {
         }
       }
     } catch (error) {
+      console.log('error:', error);
     } finally {
       setLoading(false);
     }
@@ -170,7 +163,7 @@ const Login = ({navigation}) => {
           </View>
         </Modal>
       ) : null} */}
-      <View style={{flex: 1}}>
+      <View style={styles.mainTopContainer}>
         <Video
           source={LoginVideo}
           style={styles.backgroundVideo}
@@ -180,7 +173,7 @@ const Login = ({navigation}) => {
           rate={1.0}
           ignoreSilentSwitch={'obey'}
         />
-        <View style={{alignItems: 'center', paddingTop: hp(4)}}>
+        <View style={styles.imageContainer}>
           <Image
             style={{height: hp(12), width: wp(25)}}
             source={MonthImages.TSBudLogo}
@@ -190,14 +183,11 @@ const Login = ({navigation}) => {
         <View style={styles.textInputContainer}>
           <View style={styles.textinputView}>
             <View style={styles.iconView}>
-              <Image
-                style={{height: 30, width: 25}}
-                source={MonthImages.LoginUser}
-              />
+              <Image style={styles.image} source={MonthImages.LoginUser} />
             </View>
             <View style={styles.textinput}>
               <TextInput
-                style={{height: '100%', width: '100%'}}
+                style={styles.userNameText}
                 maxLength={256}
                 name="username"
                 returnKeyType="next"
@@ -212,13 +202,13 @@ const Login = ({navigation}) => {
           <View style={styles.textinputView}>
             <View style={styles.iconView}>
               <Image
-                style={{height: 24, width: 18}}
+                style={styles.loginLockImage}
                 source={MonthImages.LoginLock}
               />
             </View>
             <View style={styles.textinput}>
               <TextInput
-                style={{height: '100%', width: '100%'}}
+                style={styles.passwordTextInput}
                 // ref={this.passwordRef}
                 name="password"
                 // maxLength={256}
@@ -267,14 +257,7 @@ const Login = ({navigation}) => {
             onPress={() => {
               dispatch(guestLoginStatus(true));
             }}>
-            <Text
-              style={{
-                color: Colors.white,
-                textAlign: 'center',
-                marginTop: hp(1),
-              }}>
-              {GUEST_LOGIN}
-            </Text>
+            <Text style={styles.guestLoginText}>{GUEST_LOGIN}</Text>
           </TouchableOpacity>
         </View>
         {/* {Platform.OS === 'android' && bioMetricEnable ? (

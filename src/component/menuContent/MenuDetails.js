@@ -3,23 +3,15 @@ import {useNavigation} from '@react-navigation/native';
 import {
   View,
   Text,
-  TouchableOpacity,
   Pressable,
-  StyleSheet,
   TextInput,
   Platform,
-  // Modal,
   SafeAreaView,
 } from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
+
 import Modal from 'react-native-modal';
 import styles from './MenudetailStyle';
-import RequestLunch from 'screens/requestLunch/RequestLunch';
 import {RequestLunchScreen} from 'navigation/Route';
-import {FontFamily, FontSize} from 'constants/fonts';
 import {Colors} from 'colors/Colors';
 import {useDispatch, useSelector} from 'react-redux';
 import jwt_decode from 'jwt-decode';
@@ -69,11 +61,6 @@ const MenuDetails = () => {
     } catch (err) {
       console.log('err:', err);
     } finally {
-      // setMenu({
-      //   breakfast: '',
-      //   lunch: '',
-      //   eveningSnack: '',
-      // });
       setIsLoading(false);
       setOpenAddMenuModal(false);
     }
@@ -90,7 +77,7 @@ const MenuDetails = () => {
             setOpenAddMenuModal(false);
           }}
           keyboardAvoidingBehavior={
-            Platform.OS == 'android' ? 'height' : 'padding'
+            Platform.OS === 'android' ? 'height' : 'padding'
           }
           animationType="slide"
           transparent={true}
@@ -109,7 +96,10 @@ const MenuDetails = () => {
                 <Text style={styles.foodTypeText}>Enter today Breakfast :</Text>
                 <TextInput
                   onChangeText={enteredInput => {
-                    setMenu(menu => ({...menu, breakfast: enteredInput}));
+                    setMenu(foodMenu => ({
+                      ...foodMenu,
+                      breakfast: enteredInput,
+                    }));
                   }}
                   style={styles.textInput}
                   value={menu.breakfast}
@@ -119,7 +109,7 @@ const MenuDetails = () => {
                 <Text style={styles.foodTypeText}>Enter today Lunch :</Text>
                 <TextInput
                   onChangeText={enteredInput => {
-                    setMenu(menu => ({...menu, lunch: enteredInput}));
+                    setMenu(foodMenu => ({...foodMenu, lunch: enteredInput}));
                   }}
                   style={styles.textInput}
                   value={menu.lunch}
@@ -131,7 +121,10 @@ const MenuDetails = () => {
                 </Text>
                 <TextInput
                   onChangeText={enteredInput => {
-                    setMenu(menu => ({...menu, eveningSnack: enteredInput}));
+                    setMenu(foodMenu => ({
+                      ...foodMenu,
+                      eveningSnack: enteredInput,
+                    }));
                   }}
                   style={styles.textInput}
                   value={menu.eveningSnack}
@@ -155,15 +148,10 @@ const MenuDetails = () => {
                   onPress={submitHandler}
                   style={[
                     styles.buttonContainer,
-                    {
-                      backgroundColor: Colors.green,
-                      opacity:
-                        !menu?.breakfast?.trim() ||
-                        !menu?.lunch?.trim() ||
-                        !menu?.eveningSnack?.trim()
-                          ? 0.4
-                          : 1,
-                    },
+                    (!menu?.breakfast?.trim() ||
+                      !menu?.lunch?.trim() ||
+                      !menu?.eveningSnack?.trim()) &&
+                      styles.opacity40,
                   ]}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </Pressable>

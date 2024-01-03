@@ -1,9 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, Dimensions, Pressable} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
 
 import {BarChart} from 'react-native-chart-kit';
 import {useNavigation} from '@react-navigation/native';
@@ -11,7 +7,6 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './RemainingLeavesStyles';
 import {Colors} from 'colors/Colors';
 import {useSelector} from 'react-redux';
-import {FontFamily} from 'constants/fonts';
 
 const RemainingLeaves = () => {
   const navigation = useNavigation();
@@ -74,13 +69,6 @@ const RemainingLeaves = () => {
           decimalPlaces: 0,
           fillShadowGradientOpacity: '0.5',
           barPercentage: 0.25,
-          // barPercentage: !rh
-          //   ? totalEarnedTypesAvailable === 3
-          //     ? 0.72
-          //     : 0.56
-          //   : totalRestrictedTypesAvailable === 3
-          //   ? 0.72
-          //   : 0.56,
           color: (opacity = 1) =>
             Colors.customColor({opacity, r: 0, g: 0, b: 0}),
           style: {
@@ -88,9 +76,7 @@ const RemainingLeaves = () => {
           },
           categoryPercentage: 0.5,
         }}
-        style={{
-          marginVertical: 10,
-        }}
+        style={styles.barChartStyle}
       />
     );
   };
@@ -108,120 +94,81 @@ const RemainingLeaves = () => {
   // }
 
   return (
-    <View style={{paddingHorizontal: 20}}>
+    <View style={styles.mainContainer}>
       <View style={styles.container}>
         <Text style={styles.remainingText}>Manage Leaves</Text>
-        <Pressable
-          onPress={() => {
-            ////////////////////////////////////////////////////////////////
-            const openLeaves = {rhOpen: 0, earnedOpen: 0};
+        {!isGuestLogin && (
+          <Pressable
+            onPress={() => {
+              ////////////////////////////////////////////////////////////////
+              const openLeaves = {rhOpen: 0, earnedOpen: 0};
 
-            for (const leave of leavesData) {
-              if (
-                leave?.leaveType?.toLowerCase() === 'earned leave' &&
-                leave.status?.toLowerCase() === 'open'
-              ) {
-                const totalDays = leave?.totalLeaveDays;
-                openLeaves.earnedOpen += totalDays;
+              for (const leave of leavesData) {
+                if (
+                  leave?.leaveType?.toLowerCase() === 'earned leave' &&
+                  leave.status?.toLowerCase() === 'open'
+                ) {
+                  const totalDays = leave?.totalLeaveDays;
+                  openLeaves.earnedOpen += totalDays;
+                }
+                if (
+                  leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
+                  leave.status?.toLowerCase() === 'open'
+                ) {
+                  const totalDays = leave?.totalLeaveDays;
+                  openLeaves.rhOpen += totalDays;
+                }
               }
-              if (
-                leave?.leaveType?.toLowerCase() === 'restricted holiday' &&
-                leave.status?.toLowerCase() === 'open'
-              ) {
-                const totalDays = leave?.totalLeaveDays;
-                openLeaves.rhOpen += totalDays;
-              }
-            }
 
-            ////////////////////////////////////////////////////////////////
+              ////////////////////////////////////////////////////////////////
 
-            navigation.navigate('Leaves', {
-              screen: 'LeaveApplyScreen',
-              initial: false,
-              params: {
-                leavesData,
-                openLeavesCount: openLeaves,
-                applyLeave: true,
-              },
-            });
-          }}
-          style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Apply</Text>
-        </Pressable>
+              navigation.navigate('Leaves', {
+                screen: 'LeaveApplyScreen',
+                initial: false,
+                params: {
+                  leavesData,
+                  openLeavesCount: openLeaves,
+                  applyLeave: true,
+                },
+              });
+            }}
+            style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Apply</Text>
+          </Pressable>
+        )}
       </View>
       {remainingLeaves?.length === 0 ? (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: Colors.white,
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
-          }}>
-          <Text
-            style={{
-              fontFamily: FontFamily.RobotoMedium,
-              fontSize: 16,
-              color: Colors.lightBlue,
-              marginVertical: 4,
-            }}>
-            No remaining leaves found.
-          </Text>
+        <View style={styles.noLeavesContainer}>
+          <Text style={styles.noLeavesText}>No remaining leaves found.</Text>
         </View>
       ) : (
         <View style={styles.leavesContainer}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
+          <View style={styles.graphsContainer}>
             <View>
               {earnedLeavesData && earnedLeavesData?.length
                 ? barChartGraph({data: earnedLeavesData})
                 : null}
 
-              <Text
-                style={{
-                  textAlign: 'center',
-                  position: 'absolute',
-                  top: 200,
-                  left: wp(19),
-                  fontSize: 16,
-                  fontFamily: FontFamily.RobotoLight,
-                  marginTop: hp(0.5),
-                }}>
-                Earned Leave
-              </Text>
+              <Text style={styles.earnedLeaveText}>Earned Leave</Text>
             </View>
             <View>
               {restrictedLeavesData?.length
                 ? barChartGraph({data: restrictedLeavesData, rh: true})
                 : null}
-              <Text
-                style={{
-                  textAlign: 'center',
-                  position: 'absolute',
-                  bottom: 0,
-                  top: 200,
-                  right: 10,
-                  fontSize: 16,
-                  fontFamily: FontFamily.RobotoLight,
-                  marginTop: hp(0.5),
-                }}>
-                Restricted Leave
-              </Text>
+              <Text style={styles.RHLeaveText}>Restricted Leave</Text>
             </View>
           </View>
           <View style={styles.leavesTypeContainer}>
             <View style={styles.leaveType}>
-              <View style={styles.leavesType1}></View>
+              <View style={styles.leavesType1} />
               <Text>Allocated</Text>
             </View>
             <View style={styles.leaveType}>
-              <View style={styles.leavesType2}></View>
+              <View style={styles.leavesType2} />
               <Text>Taken</Text>
             </View>
             <View style={styles.leaveType}>
-              <View style={styles.leavesType3}></View>
+              <View style={styles.leavesType3} />
               <Text>+ve Balance</Text>
             </View>
             {/* <View style={styles.leaveType}>
@@ -235,44 +182,43 @@ const RemainingLeaves = () => {
   );
 };
 
-const renderItem = ({item}) => {
-  return (
-    <>
-      <View
-        style={{
-          height: hp(1.2),
-          width: wp(2.8),
-          marginTop: hp(0.5),
-          marginHorizontal: wp(1.5),
-          backgroundColor:
-            item.text === 'Allocate'
-              ? Colors.orange
-              : item.text === 'Taken'
-              ? Colors.darkBlue
-              : item.text === '-ve Balance'
-              ? Colors.red
-              : Colors.green,
-        }}></View>
-      <Text
-        style={{
-          color:
-            item.text === 'Allocate'
-              ? Colors.orange
-              : item.text === 'Taken'
-              ? Colors.darkBlue
-              : item.text === '-ve Balance'
-              ? Colors.red
-              : Colors.green,
-        }}>
-        {item.text}
-      </Text>
-    </>
-  );
-};
+// const renderItem = ({item}) => {
+//   return (
+//     <>
+//       <View
+//         style={{
+//           height: hp(1.2),
+//           width: wp(2.8),
+//           marginTop: hp(0.5),
+//           marginHorizontal: wp(1.5),
+//           backgroundColor:
+//             item.text === 'Allocate'
+//               ? Colors.orange
+//               : item.text === 'Taken'
+//               ? Colors.darkBlue
+//               : item.text === '-ve Balance'
+//               ? Colors.red
+//               : Colors.green,
+//         }}></View>
+//       <Text
+//         style={{
+//           color:
+//             item.text === 'Allocate'
+//               ? Colors.orange
+//               : item.text === 'Taken'
+//               ? Colors.darkBlue
+//               : item.text === '-ve Balance'
+//               ? Colors.red
+//               : Colors.green,
+//         }}>
+//         {item.text}
+//       </Text>
+//     </>
+//   );
+// };
 export default RemainingLeaves;
 
 // import React from 'react';
-// import Plotly from 'react-native-plotly';
 // export default () => {
 //   const layout = {
 //     xaxis: {

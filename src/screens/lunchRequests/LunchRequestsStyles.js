@@ -8,6 +8,11 @@ import {
 const {StyleSheet} = require('react-native');
 
 const styles = StyleSheet.create({
+  mailImg: {
+    height: 25,
+    width: 25,
+    tintColor: Colors.reddishTint,
+  },
   mainContainer: {
     paddingHorizontal: 12,
   },

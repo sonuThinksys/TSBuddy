@@ -2,7 +2,6 @@ import {Colors} from 'colors/Colors';
 import React from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 // import AnimatedLoader from 'react-native-animated-loader';
-// import Modal from 'react-native-modal';
 // import ProgressLoader from 'rn-progress-loader';
 const Loader = () => {
   return (
@@ -11,6 +10,10 @@ const Loader = () => {
       <ActivityIndicator size="large" />
     </View>
   );
+
+  // <View style={styles.fullContentLoaderContainer}>
+  //         <ActivityIndicator size="large" color={Colors.dune} />
+  //       </View>
   // return (
   //   <ProgressLoader
   //     barHeight={100}

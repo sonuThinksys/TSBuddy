@@ -14,19 +14,15 @@ import {
 } from 'utils/Responsive';
 import styles from './ProfileStyle';
 import {MonthImages} from 'assets/monthImage/MonthImage';
-import TSBuddyBackImage from 'assets/mipmap/tsbuddyBack.png';
 import {useSelector, useDispatch} from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import {useIsFocused} from '@react-navigation/native';
-import baseUrl from 'services/Urls';
 import moment from 'moment';
 import {modalStatus} from 'redux/homeSlice';
 import CommunicationModal from 'modals/CommunicationModal';
 import Loader from 'component/loader/Loader';
 import {Colors} from 'colors/Colors';
 import {guestProfileData} from 'guestData';
-import {ERROR} from 'constants/strings';
-import ShowAlert from 'customComponents/CustomError';
 import defaultUserIcon from 'assets/allImage/DefaultImage.imageset/defaultUserIcon.png';
 import CustomHeader from 'navigation/CustomHeader';
 import {FontFamily} from 'constants/fonts';
@@ -99,8 +95,8 @@ const Profile = ({navigation}) => {
       nameOfField: 'Date of Joining',
       // email: profileData.dateOfJoining,
       email: isGuestLogin
-        ? moment(guestProfileData.dateOfJoining).format(`DD-MMM-YYYY`)
-        : moment(profileData.dateOfJoining).format(`DD-MMM-YYYY`),
+        ? moment(guestProfileData.dateOfJoining).format('DD-MMM-YYYY')
+        : moment(profileData.dateOfJoining).format('DD-MMM-YYYY'),
       id: '5',
     },
     {
@@ -172,10 +168,13 @@ const Profile = ({navigation}) => {
           }}>
           <ImageBackground
             resizeMode="cover"
-            style={{height: '60%', width: '100%'}}
+            style={styles.imageBackground}
             source={
               profileData?.image ? {uri: profileData?.image} : defaultUserIcon
             }
+            // source={
+            //   profileData?.image ? {uri: profileData?.image} : defaultUserIcon
+            // }
             blurRadius={0.9}>
             <View style={styles.container}>
               <View style={styles.profileView}>
@@ -204,14 +203,7 @@ const Profile = ({navigation}) => {
             </View>
             <View style={styles.managerDetailView}>
               <View style={styles.managerDetailView1}>
-                <Text
-                  style={{
-                    color: Colors.white,
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                  }}>
-                  Manager Info
-                </Text>
+                <Text style={styles.managerInfoTitle}>Manager Info</Text>
               </View>
               <View style={styles.managerDetailView2}>
                 <View style={styles.roundIcon}>
@@ -219,13 +211,10 @@ const Profile = ({navigation}) => {
                     <Image
                       resizeMode="stretch"
                       source={{uri: profileData?.managerInfoDto?.image}}
-                      style={{height: 90, width: 90, borderRadius: 50}}
+                      style={styles.image}
                     />
                   ) : (
-                    <Image
-                      source={defaultUserIcon}
-                      style={{height: 80, width: 80, borderRadius: 20}}
-                    />
+                    <Image source={defaultUserIcon} style={styles.image} />
                   )}
                 </View>
                 <View>

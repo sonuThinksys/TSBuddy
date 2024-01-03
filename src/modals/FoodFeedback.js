@@ -4,28 +4,23 @@ import {
   Text,
   TouchableWithoutFeedback,
   Image,
-  ImageBackground,
-  StyleSheet,
   TouchableOpacity,
   Alert,
-  Dimensions,
 } from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'utils/Responsive';
 import {Colors} from 'colors/Colors';
 import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {useSelector, useDispatch} from 'react-redux';
 import {addMealFeedback} from 'redux/homeSlice';
 import {styles} from './FoodFeedbackStyles';
+import Loader from 'component/loader/Loader';
 
 const FoodFeedback = ({modalData, showModal}) => {
   const [text, setText] = useState('');
   const [reaction, setReaction] = useState(0);
-  const [emojidata, setEmojidata] = useState([
+  const [isLoading, setIsLoading] = useState(false);
+  const [emojidata, setEmojiData] = useState([
     {
       image: MonthImages.angry,
       tag: 1,
@@ -37,6 +32,7 @@ const FoodFeedback = ({modalData, showModal}) => {
     {image: MonthImages.lovely, tag: 5, isSelected: false},
   ]);
   const {setShowModal, type, dailyMenuID, employeeID} = modalData || {};
+  console.log('emojidata:', emojidata);
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
@@ -44,11 +40,12 @@ const FoodFeedback = ({modalData, showModal}) => {
   const onSelectItem = (item, index) => {
     let tempArr = [];
     emojidata &&
-      emojidata.map((item, ind) => {
+      emojidata.map((emoji, ind) => {
         if (index === ind) {
-          tempArr.push((item.isSelected = true));
+          tempArr.push((emoji.isSelected = true));
         } else {
-          tempArr.push((item.isSelected = false));
+          emojidata[index].isSelected = false;
+          tempArr.push((emoji.isSelected = false));
         }
       });
     setReaction(item.tag);
@@ -56,19 +53,7 @@ const FoodFeedback = ({modalData, showModal}) => {
 
   const renderItem = ({item, index}) => {
     return (
-      <View
-        style={{
-          width: wp(16),
-          // alignItems:
-          //   index !== 0 && index !== 4
-          //     ? 'center'
-          //     : index === 0
-          //     ? 'flex-start'
-          //     : 'flex-end',
-          alignItems: 'center',
-          // borderWidth: 1,
-        }}
-        key={index}>
+      <View style={styles.emoji} key={index}>
         <TouchableOpacity
           onPress={() => {
             onSelectItem(item, index);
@@ -77,10 +62,12 @@ const FoodFeedback = ({modalData, showModal}) => {
             style={[
               styles.emojiImages,
               {
-                borderWidth: item.isSelected ? 1 : 0,
-                borderColor: item.isSelected
-                  ? Colors.blackishGreen
-                  : Colors.white,
+                borderWidth: 2,
+                // borderWidth: item.isSelected ? 2 : 0,
+                // borderColor: item.isSelected
+                //   ? Colors.blackishGreen
+                //   : Colors.white,
+                borderColor: 'black',
               },
             ]}
             source={item.image}
@@ -104,6 +91,7 @@ const FoodFeedback = ({modalData, showModal}) => {
       reaction: reaction,
       type: type,
     };
+    setIsLoading(true);
 
     try {
       const response = await dispatch(
@@ -126,8 +114,9 @@ const FoodFeedback = ({modalData, showModal}) => {
         ]);
       }
     } catch (err) {
-      // console.log('err:', err);
+      console.log('errEmoji:', err);
     } finally {
+      setIsLoading(false);
       onCancelModal();
     }
   };
@@ -179,11 +168,11 @@ const FoodFeedback = ({modalData, showModal}) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  disabled={reaction === 0 || text === ''}
+                  // disabled={reaction === 0 || text === ''}
                   style={[
                     styles.buttonCancel,
                     styles.buttonSubmit,
-                    {opacity: reaction === 0 || text === '' ? 0.5 : 1},
+                    // {opacity: reaction === 0 || text === '' ? 0.5 : 1},
                   ]}
                   onPress={() => {
                     handleSubmit();
@@ -192,6 +181,7 @@ const FoodFeedback = ({modalData, showModal}) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {isLoading ? <Loader /> : null}
           </Modal>
         </TouchableWithoutFeedback>
       ) : null}

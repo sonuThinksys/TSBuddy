@@ -1,8 +1,8 @@
+import React from 'react';
 import CustomHeader from 'navigation/CustomHeader';
-import {Dimensions, Text, useWindowDimensions} from 'react-native';
-import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useWindowDimensions} from 'react-native';
 
 const PoliciesDetails = ({navigation, route}) => {
   const policy = route.params;

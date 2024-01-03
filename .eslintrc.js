@@ -15,7 +15,5 @@ module.exports = {
     'no-alert': 'off',
     'no-console': 'off',
     // 'no-shadow': 'error',
-
-    // More rules can be added here...
   },
 };

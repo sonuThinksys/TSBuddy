@@ -10,11 +10,10 @@ import jwt_decode from 'jwt-decode';
 
 const breakfast = 'Breakfast';
 const lunch = 'Lunch';
-const snacks = 'Snacks';
+const snacks = 'Evening Snack';
 
 import {getTodayMenuDetails} from 'redux/homeSlice';
 import ShowAlert from 'customComponents/CustomError';
-// import LinearGradient from 'react-native-linear-gradient';
 import FoodFeedback from 'modals/FoodFeedback';
 import EditIcon from 'assets/newDashboardIcons/edit.svg';
 
@@ -42,13 +41,7 @@ const MenuItem = ({navigation}) => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
           const totalMenusLength = menuDetails.payload?.foodMenus?.length;
-          // const menuDetails = await dispatch(getTodayMenuDetails(token));
 
-          // console.log(
-          //   'menuDetails:',
-          //   menuDetails,
-          //   menuDetails.payload?.foodMenus[totalMenusLength - 1]?.breakfast,
-          // );
           setTodayMenu([
             {
               type: breakfast,
@@ -79,7 +72,9 @@ const MenuItem = ({navigation}) => {
               isTokenExpired: false,
             });
           }
-        } catch (err) {}
+        } catch (err) {
+          console.log('errMenu:', err);
+        }
       })();
     } else {
       setTodayMenu([
@@ -126,7 +121,7 @@ const MenuItem = ({navigation}) => {
                 disabled={!dailyMenuID}
                 style={[
                   styles.feedbackContainer,
-                  {opacity: dailyMenuID ? 1 : 0.5},
+                  !dailyMenuID && styles.opacity50,
                 ]}
                 onPress={() => {
                   setShowModal(true);

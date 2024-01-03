@@ -22,6 +22,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     paddingTop: hp(0.5),
   },
+  headerIcon: {height: 20, width: 20},
   text1: {
     color: Colors.white,
     // marginRight: wp(2),
@@ -44,10 +45,51 @@ export default StyleSheet.create({
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
   },
+  reqTypeText: {
+    marginBottom: hp(1.6),
+    fontSize: 18,
+    color: Colors.black,
+  },
+  dropdownContainer: {
+    zIndex: 9999,
+  },
+  dropdownContainerStyle: {
+    height: 40,
+  },
+  dropdownStyle: {
+    height: 10,
+    borderRadius: 50,
+    borderColor: Colors.grey,
+    marginBottom: hp(3),
+  },
+  borderRadius5: {
+    borderRadius: 5,
+  },
+  selectDropdownStyle: {
+    backgroundColor: Colors.lightBlue,
+    borderBottomWidth: 1,
+  },
+  dropdownLabelStyle: {
+    fontSize: 13,
+    textAlign: 'left',
+    color: Colors.black,
+    alignSelf: 'center',
+  },
   thirdView: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
     marginTop: hp(2),
+  },
+  datePickerLabel: {
+    marginBottom: hp(1),
+    fontSize: 18,
+    color: Colors.black,
+  },
+  opacity60: {
+    opacity: 0.6,
+  },
+  opacity50: {
+    opacity: 0.5,
   },
   fourthView: {
     borderRadius: wp(25),
@@ -61,7 +103,6 @@ export default StyleSheet.create({
     paddingVertical: hp(1.2),
     justifyContent: 'space-between',
   },
-
   fifthView: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(2),
@@ -91,6 +132,19 @@ export default StyleSheet.create({
     paddingHorizontal: wp(2),
     paddingVertical: hp(2),
     // height: hp(52),
+  },
+  lunchRequestsContainer: {
+    flexBasis: 300,
+  },
+  noRequestsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noRequestsText: {
+    fontSize: 16,
+    fontFamily: FontFamily.RobotoLight,
+    position: 'absolute',
+    top: hp(10),
   },
   appliedView: {
     marginHorizontal: wp(4),
@@ -148,6 +202,37 @@ export default StyleSheet.create({
   selectedDated: {
     fontSize: 14,
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: wp(4),
+  },
+  buttonCancel: {
+    marginTop: 20,
+    backgroundColor: Colors.grayishWhite,
+    paddingHorizontal: wp(8.6),
+    borderRadius: 200,
+    paddingVertical: hp(1.4),
+  },
+  buttonCancelText: {
+    color: Colors.black,
+    textAlign: 'center',
+    fontSize: 17,
+  },
+  buttonSubmit: {
+    marginTop: 20,
+    backgroundColor: Colors.lovelyPurple,
+    paddingHorizontal: wp(9.2),
+    borderRadius: 200,
+    paddingVertical: hp(1.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  applyText: {
+    color: Colors.white,
+    textAlign: 'center',
+    fontSize: 17,
+  },
   request: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -166,6 +251,42 @@ export default StyleSheet.create({
     marginRight: 10,
 
     marginLeft: 0,
+  },
+  requestDetails: {
+    alignItems: 'center',
+    marginRight: wp(4),
+  },
+  dayText: {
+    fontSize: 25,
+    fontFamily: FontFamily.RobotoLight,
+  },
+  requestTypeText: {
+    fontSize: 12,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  requestDateText: {
+    fontSize: 15,
+    fontFamily: FontFamily.RobotoRegular,
+    color: Colors.dune,
+    marginBottom: hp(1),
+  },
+  applyContainer: {
+    flexDirection: 'row',
+  },
+  appliedOnText: {fontSize: 11, color: Colors.lightGray1},
+  appliedDateText: {
+    fontSize: 12,
+    color: Colors.lightGray1,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  typeRequestText: {
+    marginLeft: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: Colors.skin,
+    color: Colors.darkSkin,
+    fontSize: 12,
+    fontFamily: FontFamily.RobotoLightItalic,
   },
   requestText: {
     fontSize: 11.5,
