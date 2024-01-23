@@ -10,7 +10,7 @@ import {
 import Modal from 'react-native-modal';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchIconSVG from 'assets/newDashboardIcons/search.svg';
-import HouseIcon from 'assets/allImage/house/house-building.svg';
+// import HouseIcon from 'assets/allImage/house/house-building.svg';
 import {Colors} from 'colors/Colors';
 import WorkModeEmployeeCard from './WorkModeEmployeeCard';
 import styles from './DailyReportsStyles';
@@ -38,9 +38,7 @@ const WorkModeTabContent = ({
   const [openCreateWMModal, setOpenCreateWMModal] = useState(false);
   const [isWFO, setIsWFO] = useState(false);
   const [isWFH, setIsWFH] = useState(false);
-  const createModeHandler = () => {
-    setOpenCreateWMModal(true);
-  };
+
   const [startDatePickerVisible, setStartDatePickerVisible] = useState(false);
   const [endDatePickerVisible, setEndDatePickerVisible] = useState(false);
   const workModeRenderData = ({item}) => {
@@ -154,12 +152,12 @@ const WorkModeTabContent = ({
           <SearchIconSVG color={Colors.lightGray1} height={22} width={22} />
         </View>
 
-        <Pressable
+        {/* <Pressable
           onPress={createModeHandler}
           style={styles.createWorkModeButton}>
           <HouseIcon height={19} width={19} fill={Colors.lovelyPurple} />
           <Text style={styles.createText}>Create</Text>
-        </Pressable>
+        </Pressable> */}
 
         <Modal
           animationType="slide"

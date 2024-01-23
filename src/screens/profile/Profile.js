@@ -201,54 +201,56 @@ const Profile = ({navigation}) => {
                 keyExtractor={item => item.id}
               />
             </View>
-            <View style={styles.managerDetailView}>
-              <View style={styles.managerDetailView1}>
-                <Text style={styles.managerInfoTitle}>Manager Info</Text>
-              </View>
-              <View style={styles.managerDetailView2}>
-                <View style={styles.roundIcon}>
-                  {profileData?.managerInfoDto?.image ? (
-                    <Image
-                      resizeMode="stretch"
-                      source={{uri: profileData?.managerInfoDto?.image}}
-                      style={styles.image}
-                    />
-                  ) : (
-                    <Image source={defaultUserIcon} style={styles.image} />
-                  )}
+            {profileData?.managerInfoDto ? (
+              <View style={styles.managerDetailView}>
+                <View style={styles.managerDetailView1}>
+                  <Text style={styles.managerInfoTitle}>Manager Info</Text>
                 </View>
-                <View>
-                  <Text style={styles.managerNameText}>
-                    {isGuestLogin ? 'Guest Manager' : managerUserName}
-                  </Text>
-                  <Text style={styles.emailText}>
-                    {isGuestLogin
-                      ? 'guest@thinksys.com'
-                      : profileData.managerInfoDto.companyEmail}
-                  </Text>
-                  <View style={styles.socialIconView}>
-                    <TouchableOpacity onPress={sendMail}>
+                <View style={styles.managerDetailView2}>
+                  <View style={styles.roundIcon}>
+                    {profileData?.managerInfoDto?.image ? (
                       <Image
-                        source={MonthImages.empMailS}
-                        style={{height: 40, width: 40}}
+                        resizeMode="stretch"
+                        source={{uri: profileData?.managerInfoDto?.image}}
+                        style={styles.image}
                       />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={dialCall}>
-                      <Image
-                        source={MonthImages.empCallS}
-                        style={{height: 40, width: 40}}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={snedMessage}>
-                      <Image
-                        source={MonthImages.empMsg}
-                        style={{height: 40, width: 40}}
-                      />
-                    </TouchableOpacity>
+                    ) : (
+                      <Image source={defaultUserIcon} style={styles.image} />
+                    )}
+                  </View>
+                  <View>
+                    <Text style={styles.managerNameText}>
+                      {isGuestLogin ? 'Guest Manager' : managerUserName}
+                    </Text>
+                    <Text style={styles.emailText}>
+                      {isGuestLogin
+                        ? 'guest@thinksys.com'
+                        : profileData?.managerInfoDto?.companyEmail}
+                    </Text>
+                    <View style={styles.socialIconView}>
+                      <TouchableOpacity onPress={sendMail}>
+                        <Image
+                          source={MonthImages.empMailS}
+                          style={{height: 40, width: 40}}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={dialCall}>
+                        <Image
+                          source={MonthImages.empCallS}
+                          style={{height: 40, width: 40}}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={snedMessage}>
+                        <Image
+                          source={MonthImages.empMsg}
+                          style={{height: 40, width: 40}}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
+            ) : null}
           </ImageBackground>
         </SafeAreaView>
       ) : (

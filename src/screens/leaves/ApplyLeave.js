@@ -1,6 +1,6 @@
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import {Colors} from 'colors/Colors';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -40,7 +40,7 @@ import {
   updateLeaveStatus,
 } from 'redux/homeSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import {guestProfileData} from 'guestData';
+// import {guestProfileData} from 'guestData';
 import CustomHeader from 'navigation/CustomHeader';
 import ShowAlert from 'customComponents/CustomError';
 import {ERROR, LEAVE_APPROVER_FAIL_FETCH} from 'utils/string';
@@ -59,41 +59,33 @@ const months = [
   'Nov',
   'Dec',
 ];
+
+function getMonthIndex(shortForm) {
+  const index =
+    months.findIndex(
+      month => month.toLowerCase() === shortForm?.toLowerCase(),
+    ) + 1;
+  return index;
+}
 const invalidDate = 'Invalid Date';
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const weekoffsFetchFailed = 'Cannot fetch weekoffs for you. Kindly try later.';
 const earnedLeave = 'Earned Leave';
-const restrictedHoliday = 'Restricted Holiday';
-const compensatoryHoliday = 'Compensatory Off';
-const bereavementHoliday = 'Bereavement Leave';
-const leaveWithoutPay = 'Leave Without Pay';
 
 const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
-  const {employeeProfile: profileData = {}} = useSelector(state => state.home);
-  const {employeeShift: employeeShiftDataObj} = useSelector(
-    state => state.home,
+  const isApplyingLeave = route?.params?.applyLeave;
+  const {
+    employeeShift: employeeShiftDataObj,
+    leavesData,
+    leaveMenuDetails,
+    holidayData,
+  } = useSelector(state => state.home);
+  const {isGuestLogin: isGuestLogin, userToken: token} = useSelector(
+    state => state.auth,
   );
-
-  const firstName = profileData?.firstName;
-  const middleName = profileData?.middleName;
-  const lastName = profileData?.lastName;
-
-  const approverUserName = `${firstName ? firstName : ''} ${
-    middleName ? middleName + ' ' : ''
-  }${lastName ? lastName : ''}`;
-
-  function getMonthIndex(shortForm) {
-    const index =
-      months.findIndex(
-        month => month.toLowerCase() === shortForm?.toLowerCase(),
-      ) + 1;
-    return index;
-  }
-
-  const {leavesData} = useSelector(state => state.home);
+  const isHalfDay = route?.params?.halfDay;
 
   const {openLeavesCount} = route?.params || {};
-  const {isGuestLogin: isGuestLogin} = useSelector(state => state.auth);
   const dateOptions = {day: 'numeric', month: 'short', year: 'numeric'};
   const fromResource = route?.params?.fromResource || false;
   const fromWfh = route?.params?.fromWfh;
@@ -112,9 +104,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   const openLeaveType = openLeaveData?.leaveType;
   const openLeaveNumberOfDays = openLeaveData?.totalLeaveDays;
   const openLeavePostingDateObj = new Date(openLeaveData?.postingDate);
-  // const openLeavehalfDay = openLeaveData?.halfDay;
   const openLeaveReason = openLeaveData?.description;
-  // const openLeaveApprover = openLeaveData?.managerInfoDto?.employeeName;
   const openLeaveApplicationId = openLeaveData?.leaveApplicationId;
 
   const fiscalYear = getCurrentFiscalYear();
@@ -142,24 +132,26 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
 
   const toDatestr = toDateObj.toLocaleDateString('en-US', dateOptions);
   const resourceHalfDay = route?.params?.halfDay;
+  console.log('route?.params:', route?.params);
 
   const flatListRef = useRef(null);
   const dispatch = useDispatch();
-  const {userToken: token} = useSelector(state => state.auth);
   var decoded = token && jwt_decode(token);
   const employeeID = decoded?.id || '';
 
-  const homeData = useSelector(state => state.home);
-  const leaveMenuDetails = homeData?.leaveMenuDetails;
   const remainingLeaves = leaveMenuDetails?.remainingLeaves || [];
   const earnedLeaves = remainingLeaves[0] || {};
   const restrictedLeaves = remainingLeaves[1] || {};
 
-  const holidayData = homeData.holidayData;
+  const [allRemainingLeaves, setAllRemainingLeaves] = useState(
+    leaveMenuDetails.remainingLeaves || [],
+  );
 
-  const allRemainingLeaves = leaveMenuDetails.remainingLeaves || [];
+  const leaveTypesItems = allRemainingLeaves.map(leave => ({
+    value: leave.leaveType,
+    label: leave.leaveType,
+  }));
 
-  const leaveTypesNew = allRemainingLeaves.map(leave => leave.leaveType);
   const [fromCalenderVisible, setFromCalenderVisible] = useState(false);
   const [toCalenderVisible, setToCalenderVisible] = useState(false);
   const [fromDate, setFromDate] = useState({
@@ -174,36 +166,64 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   const [loading, setLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState({leaveType: ''});
   const [halfDay, setHalfDay] = useState('');
-  const [leaveType, setLeaveType] = useState('');
   const [reason, setReason] = useState(openLeaveReason || '');
-  const [leaveApprovers, setLeaveApprovers] = useState([]);
   const [openLeaveApprovers, setOpenLeaveApproovers] = useState(false);
+  const [isLeaveTypeOpen, setIsLeaveTypeOpen] = useState(false);
+  const [isHalfDayOpen, setIsHalfDayOpen] = useState(false);
+  const [selectLeaveTypeValue, setSelectLeaveTypeValue] = useState('');
+  const [selectHalfDayValue, setSelectHalfDayValue] = useState('');
   const [openResourcePicker, setOpenResourcePicker] = useState(false);
   const [leaveApproversValue, setLeaveApproversValue] = useState(null);
   const [resourcePickedId, setResourcePickedId] = useState(null);
   const [leaveApproversList, setLeaveApproversList] = useState([]);
   const [resourcePicks, setResourcePicks] = useState([]);
-  const [resourceLeaves, setResourceLeaves] = useState([]);
+
   const [employeeWeekOffs, setEmployeeWeekOffs] = useState([]);
   const [selectedResource, setSelectedResource] = useState(null);
-  const [selectedResourceRemainingLeaves, setSelectedResourceRemainingLeaves] =
-    useState([]);
 
-  const leaveApproverFullName =
-    leaveApprovers &&
-    `${
-      leaveApprovers[0]?.leaveApproverFirstName
-        ? leaveApprovers[0]?.leaveApproverFirstName
-        : ''
-    } ${
-      leaveApprovers[0]?.leaveApproverMiddleName
-        ? leaveApprovers[0]?.leaveApproverMiddleName + ' '
-        : ''
-    }${
-      leaveApprovers[0]?.leaveApproverLastName
-        ? leaveApprovers[0]?.leaveApproverLastName
-        : ''
-    }`;
+  const getLAs = useCallback(
+    async empId => {
+      try {
+        const leaveApproversFetched = token
+          ? await dispatch(getLeaveApprovers({token, employeeID: empId}))
+          : [];
+
+        const uniqueNamesSet = new Set();
+        const uniqueObjects = leaveApproversFetched?.payload.filter(obj => {
+          if (!uniqueNamesSet.has(obj.employeeId)) {
+            uniqueNamesSet.add(obj.employeeId);
+            return true;
+          }
+          return false;
+        });
+
+        if (!leaveApproversFetched.payload) {
+          alert(LEAVE_APPROVER_FAIL_FETCH);
+        }
+
+        const listOfLeaveApprovers = uniqueObjects.map(approver => {
+          return {
+            value: `${approver?.leaveApprover}`,
+            label: `${
+              approver.leaveApproverFirstName
+                ? approver.leaveApproverFirstName + ' '
+                : ''
+            }${
+              approver.leaveApproverMiddleName
+                ? approver.leaveApproverMiddleName + ' '
+                : ''
+            }${approver.leaveApproverLastName || ''}`,
+          };
+        });
+
+        setLeaveApproversList(listOfLeaveApprovers);
+        setLeaveApproversValue(listOfLeaveApprovers[0].value);
+      } catch (err) {
+        console.log('errMap:', err);
+      }
+    },
+    [dispatch, token],
+  );
 
   useEffect(() => {
     if (!isGuestLogin) {
@@ -214,52 +234,27 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
           const remLeaves = await dispatch(
             getResourseLeaveDetails({token, id: empId}),
           );
-          setResourceLeaves(remLeaves?.payload);
+          setAllRemainingLeaves(remLeaves?.payload);
         })();
       }
     }
 
-    if (!isGuestLogin) {
+    if (!isGuestLogin && !fromApproverEnd && !fromOpenLeave) {
       (async () => {
-        try {
-          const leaveApproversFetched = token
-            ? await dispatch(getLeaveApprovers({token, employeeID}))
-            : [];
-          setLeaveApprovers(leaveApproversFetched?.payload);
-          if (!leaveApproversFetched.payload) {
-            alert(LEAVE_APPROVER_FAIL_FETCH);
-          }
-
-          const listOfLeaveApprovers = leaveApproversFetched.payload.map(
-            approver => {
-              return {
-                value: `${approver?.leaveApprover}`,
-                label: `${
-                  approver.leaveApproverFirstName
-                    ? approver.leaveApproverFirstName + ' '
-                    : ''
-                }${
-                  approver.leaveApproverMiddleName
-                    ? approver.leaveApproverMiddleName + ' '
-                    : ''
-                }${approver.leaveApproverLastName || ''}`,
-              };
-            },
-          );
-          setLeaveApproversList(listOfLeaveApprovers);
-        } catch (err) {
-          console.log('errMap:', err);
-        }
+        await getLAs(employeeID);
       })();
     }
   }, [
     dispatch,
     isGuestLogin,
-    employeeID,
     fromResource,
     fromWfh,
     resourceEmployeeID,
     token,
+    getLAs,
+    employeeID,
+    fromApproverEnd,
+    fromOpenLeave,
   ]);
 
   useEffect(() => {
@@ -325,98 +320,6 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
     employeeShiftDataObj?.weeklyOff,
   ]);
 
-  const leaves = [
-    {
-      leaveType: allRemainingLeaves[0]?.leaveType || earnedLeave,
-      allocated: isGuestLogin
-        ? 15
-        : fromResource || fromWfh
-        ? resourceLeaves[0]?.totalLeavesAllocated
-        : allRemainingLeaves[0]?.totalLeavesAllocated || 0,
-      taken: isGuestLogin
-        ? 7
-        : fromResource || fromWfh
-        ? resourceLeaves[0]?.currentLeaveApplied
-        : allRemainingLeaves[0]?.currentLeaveApplied || 0,
-      remaining: isGuestLogin
-        ? 8
-        : fromResource || fromWfh
-        ? resourceLeaves[0]?.currentLeaveBalance
-        : allRemainingLeaves[0]?.currentLeaveBalance || 0,
-    },
-    {
-      leaveType: allRemainingLeaves[1]?.leaveType || restrictedHoliday,
-      allocated: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[1]?.totalLeavesAllocated || 0
-        : allRemainingLeaves[1]?.totalLeavesAllocated || 0,
-      taken: isGuestLogin
-        ? 0
-        : fromResource || fromWfh
-        ? resourceLeaves[1]?.currentLeaveApplied || 0
-        : allRemainingLeaves[1]?.currentLeaveApplied || 0,
-      remaining: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[1]?.currentLeaveBalance || 0
-        : allRemainingLeaves[1]?.currentLeaveBalance || 0,
-    },
-    {
-      leaveType: allRemainingLeaves[2]?.leaveType || compensatoryHoliday,
-      allocated: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[2]?.totalLeavesAllocated || 0
-        : allRemainingLeaves[2]?.totalLeavesAllocated || 0,
-      taken: isGuestLogin
-        ? 0
-        : fromResource || fromWfh
-        ? resourceLeaves[2]?.currentLeaveApplied || 0
-        : allRemainingLeaves[2]?.currentLeaveApplied || 0,
-      remaining: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[2]?.currentLeaveBalance || 0
-        : allRemainingLeaves[2]?.currentLeaveBalance || 0,
-    },
-    {
-      leaveType: allRemainingLeaves[3]?.leaveType || bereavementHoliday,
-      allocated: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[3]?.totalLeavesAllocated || 0
-        : allRemainingLeaves[3]?.totalLeavesAllocated || 0,
-      taken: isGuestLogin
-        ? 0
-        : fromResource || fromWfh
-        ? resourceLeaves[3]?.currentLeaveApplied || 0
-        : allRemainingLeaves[3]?.currentLeaveApplied || 0,
-      remaining: isGuestLogin
-        ? 1
-        : fromResource || fromWfh
-        ? resourceLeaves[3]?.currentLeaveBalance || 0
-        : allRemainingLeaves[3]?.currentLeaveBalance || 0,
-    },
-    {leaveType: leaveWithoutPay, allocated: 0, taken: 0, remaining: 0},
-  ];
-
-  for (let i = 2; i < resourceLeaves.length; i++) {
-    const leaveTypeUpdate = resourceLeaves[i]?.leaveType;
-
-    let leaveToBeUpdated = leaves?.find(
-      leave => leave.leaveType.toLowerCase() === leaveTypeUpdate.toLowerCase(),
-    );
-    if (!leaveToBeUpdated) {
-      leaveToBeUpdated = {};
-      leaves?.splice(2, 0, leaveToBeUpdated);
-    }
-    leaveToBeUpdated.leaveType = leaveTypeUpdate;
-    leaveToBeUpdated.allocated = resourceLeaves[i]?.totalLeavesAllocated;
-    leaveToBeUpdated.remaining = resourceLeaves[i]?.currentLeaveBalance;
-    leaveToBeUpdated.taken = resourceLeaves[i]?.currentLeaveApplied;
-  }
-
   const showFromDatePicker = () => {
     if (!isEditOpenleave && fromOpenLeave) {
     } else {
@@ -480,7 +383,6 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
     }
 
     if (employeeWeekOffs?.includes(date.getDay())) {
-      // date.setDate(date.getDate() + 1);
       alert('You already have a weekend holiday on this day.');
       toOnCancel();
       return;
@@ -753,24 +655,24 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       return;
     }
 
-    if (!reason) {
+    if (!reason.trim()) {
       alert('Please enter a reason for applying a leave.');
       return;
     }
 
-    if (!leaveType) {
+    if (!selectLeaveTypeValue) {
       alert('Please select a leave type.');
       return;
     }
 
-    if (totalNumberOfLeaveDays === 0) {
-      alert('You can not apply leave on Weekends.');
-      return;
-    }
-    if (totalNumberOfLeaveDays < 0.5) {
-      alert('Difference between the number of leave days must be positive.');
-      return;
-    }
+    // if (totalNumberOfLeaveDays === 0) {
+    //   alert('You can not apply leave on Weekends.');
+    //   return;
+    // }
+    // if (totalNumberOfLeaveDays < 0.5) {
+    //   alert('Difference between the number of leave days must be positive.');
+    //   return;
+    // }
 
     for (let i = 0; i < leavesData?.length; i++) {
       let {fromDate: startDate1, toDate: endDate1} = leavesData[i];
@@ -810,7 +712,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       }
     }
 
-    if (leaveType?.toLowerCase() === 'earned leave') {
+    if (selectLeaveTypeValue?.toLowerCase() === 'earned leave') {
       const positiveDays = openLeavesCount?.earnedOpen + totalNumberOfLeaveDays;
 
       if (positiveDays > earnedLeaves?.currentLeaveBalance) {
@@ -823,7 +725,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
 
     // return;
 
-    if (leaveType?.toLowerCase() === 'restricted holiday') {
+    if (selectLeaveTypeValue?.toLowerCase() === 'restricted holiday') {
       const positiveDays = openLeavesCount?.rhOpen + totalNumberOfLeaveDays;
       if (positiveDays > restrictedLeaves?.currentLeaveBalance) {
         alert(
@@ -833,9 +735,6 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       }
     }
 
-    // return;
-
-    // =========================================================================
     if (isGuestLogin) {
       Alert.alert('Success', 'Leave Applied Successfully!', [
         {
@@ -848,10 +747,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       return;
     }
 
-    const leaveApproverMailID =
-      leaveApprovers.length === 1
-        ? leaveApprovers[0].leaveApprover
-        : leaveApproversValue;
+    const leaveApproverMailID = leaveApproversValue;
 
     if (!leaveApproverMailID) {
       alert('Please Select a Leave Approver.');
@@ -862,8 +758,6 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       alert('Please Select a Resource.');
       return;
     }
-
-    // =========================================================================
 
     setLoading(true);
 
@@ -884,7 +778,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
                 ? 1
                 : 0,
             postingDate: new Date(),
-            leaveType: leaveType,
+            leaveType: selectLeaveTypeValue,
             leaveApprover: fromApproverEnd
               ? decoded?.emailId
               : leaveApproverMailID,
@@ -917,12 +811,12 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
       return;
     }
 
-    if (!reason) {
+    if (!reason.trim()) {
       alert('Please enter a reason for applying for a leave.');
       return;
     }
 
-    if (!leaveType) {
+    if (!selectLeaveTypeValue) {
       alert('Please select a leave type.');
       return;
     }
@@ -968,6 +862,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   };
   const finalizeLeave = async status => {
     const empId = fromResource ? route?.params?.resourceEmployeeID : employeeID;
+    setLoading(true);
     const response =
       token &&
       (await dispatch(
@@ -1013,6 +908,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
     }
     try {
       const empId = selectedOption.value;
+      getLAs(empId);
       setLoading(true);
       const {payload: selectedEmployeeRemainingLeaves} = await dispatch(
         getRemainingLeavesByEmpId({token, empId}),
@@ -1020,17 +916,12 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
 
       const finalLeaves = selectedEmployeeRemainingLeaves.map(leave => ({
         leaveType: leave.leaveType,
-        allocated: leave.totalLeavesAllocated,
-        taken: leave.currentLeaveApplied,
-        remaining: leave.currentLeaveBalance,
+        totalLeavesAllocated: leave.totalLeavesAllocated,
+        currentLeaveApplied: leave.currentLeaveApplied,
+        currentLeaveBalance: leave.currentLeaveBalance,
       }));
-      finalLeaves.push({
-        leaveType: leaveWithoutPay,
-        allocated: 0,
-        taken: 0,
-        remaining: 0,
-      });
-      setSelectedResourceRemainingLeaves(finalLeaves);
+
+      setAllRemainingLeaves(finalLeaves);
 
       setSelectedResource(selectedOption);
     } catch (err) {
@@ -1043,10 +934,6 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   const dateAfter6Months = new Date();
   dateAfter6Months.setMonth(new Date().getMonth() + 6);
 
-  // const minimumDateLeaveApplication = new Date(
-  //   `${new Date().getFullYear()}-${new Date().getMonth()}-25`,
-  // );
-
   const minimumDateLeaveApplication = new Date();
 
   minimumDateLeaveApplication.setMonth(
@@ -1058,6 +945,22 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
   const handleLeaveApply = () => {
     isEditOpenleave ? applyUpdatedLeave() : applyLeave();
   };
+
+  let leaveSlider = <></>;
+
+  if (fromApproverEnd && !resourcePickedId) {
+    leaveSlider = (
+      <Text style={styles.headerSliderText}>Please Select a Resource.</Text>
+    );
+  } else if (allRemainingLeaves.length) {
+    leaveSlider = sliderComponent(allRemainingLeaves);
+  } else {
+    leaveSlider = (
+      <Text style={styles.headerSliderText}>
+        Something went wrong while fetching remaining leaves. Kindly try later.
+      </Text>
+    );
+  }
 
   return (
     // <KeyboardAvoidingView behavior="height" style={styles.mainContainer}>
@@ -1074,19 +977,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
         showHeaderRight={false}
       />
       <SafeAreaView style={styles.mainBottomContainer}>
-        <View style={styles.swiperContainer}>
-          {!fromApproverEnd || selectedResourceRemainingLeaves.length > 0 ? (
-            sliderComponent(
-              fromApproverEnd
-                ? selectedResourceRemainingLeaves
-                : allRemainingLeaves,
-            )
-          ) : (
-            <Text style={styles.headerSliderText}>
-              Please Select a Resource.
-            </Text>
-          )}
-        </View>
+        <View style={styles.swiperContainer}>{leaveSlider}</View>
 
         {fromApproverEnd ? (
           <View style={styles.resourcePickerContainer}>
@@ -1107,12 +998,13 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
             ) : null}
           </View>
         ) : null}
-        <View
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          style={styles.mainBottomContainer}>
+          style={styles.mainBottomContainer}
+          contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.mainPart}>
             <View style={[styles.formContainer]}>
-              <ScrollView>
+              <View>
                 {card({
                   leftLabel: 'From',
                   rightLabel: 'To',
@@ -1132,7 +1024,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
                     : fromOpenLeave
                     ? openLeaveTooDatestr
                     : toDate.toDateStr,
-                  zIndex: 1000,
+                  zIndex: 10000,
                   resourseRightText: toDatestr,
                   rightDisabled: !fromDate.fromDateObj,
                 })}
@@ -1151,63 +1043,55 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
                   iconRight: MonthImages.DropDownIcon,
                   rightText: 'None',
                   rightDropdown: (
-                    <View>
-                      <ModalDropdown
-                        disabled={
-                          !fromDate.fromDateObj ||
+                    <DropDownPicker
+                      disabled={
+                        !fromDate.fromDateObj ||
+                        !toDate.toDateObj ||
+                        totalNumberOfLeaveDays > 1 ||
+                        fromResource ||
+                        (!isEditOpenleave && fromOpenLeave)
+                      }
+                      listMode="SCROLLVIEW"
+                      placeholder={
+                        !fromResource && !fromOpenLeave
+                          ? 'Select'
+                          : !resourceHalfDay || !isHalfDay
+                          ? none
+                          : resourceHalfDay === 1 || isHalfDay === 1
+                          ? firstFalf
+                          : secondHalf
+                      }
+                      // placeholder={'Select'}
+                      open={isHalfDayOpen}
+                      value={selectHalfDayValue}
+                      items={newDropDownOptions}
+                      setOpen={setIsHalfDayOpen}
+                      setValue={setSelectHalfDayValue}
+                      onSelectItem={itemName => {
+                        if (itemName.value !== none) {
+                          setTotalNumberOfLeaveDays(0.5);
+                        } else {
+                          setTotalNumberOfLeaveDays(1);
+                        }
+                        setHalfDay(itemName.value);
+                        totalNumberOfLeaveDays > 1 && setHalfDay(' None');
+                      }}
+                      containerStyle={{}}
+                      style={[
+                        styles.halfDayDropdown,
+                        (!fromDate.fromDateObj ||
                           !toDate.toDateObj ||
                           totalNumberOfLeaveDays > 1 ||
                           fromResource ||
-                          (!isEditOpenleave && fromOpenLeave)
-                        }
-                        renderButtonText={renderButtonText}
-                        style={[
-                          styles.halfDayDropdown,
-                          totalNumberOfLeaveDays > 1 && styles.lessOpacity,
-                          // {
-                          //   opacity:
-                          //     route?.params?.applyLeave &&
-                          //     totalNumberOfLeaveDays > 1
-                          //       ? 0.5
-                          //       : 1,
-                          // },
-                        ]}
-                        isFullWidth={true}
-                        showsVerticalScrollIndicator={false}
-                        defaultValue={
-                          !fromResource
-                            ? 'Select'
-                            : resourceHalfDay === 0
-                            ? none
-                            : resourceHalfDay === 1
-                            ? firstFalf
-                            : secondHalf
-                        }
-                        // defaultIndex={0}
-                        options={newDropDownOptions}
-                        dropdownStyle={styles.halfDayDropdownStyles}
-                        renderRow={renderRow}
-                        onSelect={(index, itemName) => {
-                          if (itemName !== none) {
-                            setTotalNumberOfLeaveDays(0.5);
-                          } else {
-                            setTotalNumberOfLeaveDays(1);
-                          }
-                          setHalfDay(itemName);
-                          totalNumberOfLeaveDays > 1 && setHalfDay(' None');
-                        }}
-                        renderRightComponent={
-                          !fromResource
-                            ? renderRightComponent
-                            : renderRightComponentResource
-                        }
-                      />
-                    </View>
+                          (!isEditOpenleave && fromOpenLeave)) &&
+                          styles.lessOpacity,
+                      ]}
+                    />
                   ),
                 })}
 
                 {card({
-                  zIndex: 1000,
+                  zIndex: 100,
                   leftLabel: 'Leave Type',
                   rightLabel: 'Number of Days',
                   selectableLeft: true,
@@ -1225,37 +1109,42 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
                     : earnedLeave,
                   resourseRightText: resourceData?.totalLeaveDays,
                   leftDropdown: (
-                    // <View>
-
-                    <ModalDropdown
-                      disabled={
-                        fromResource || (!isEditOpenleave && fromOpenLeave)
-                      }
-                      style={styles.selectLeaveDropdown}
-                      isFullWidth={true}
-                      showsVerticalScrollIndicator={false}
-                      defaultValue={
+                    <DropDownPicker
+                      disabled={!isApplyingLeave && !fromApproverEnd}
+                      listMode="SCROLLVIEW"
+                      dropDownDirection={'AUTO'}
+                      placeholder={
                         fromResource
                           ? resourceData.leaveType
                           : fromOpenLeave
                           ? openLeaveType
                           : 'Select'
                       }
-                      // options={allRemainingLeaves}
-                      options={leaveTypesNew}
-                      dropdownStyle={styles.selectLeaveDropdownStyle}
-                      animated={true}
-                      renderRow={renderRow}
-                      onSelect={(index, itemName) => {
+                      // placeholder={'Select Type....'}
+                      open={isLeaveTypeOpen}
+                      value={selectLeaveTypeValue}
+                      items={leaveTypesItems}
+                      setOpen={setIsLeaveTypeOpen}
+                      setValue={setSelectLeaveTypeValue}
+                      onSelectItem={itemName => {
+                        const index = allRemainingLeaves.findIndex(
+                          item => item.leaveType === itemName.value,
+                        );
+
                         flatListRef.current?.scrollToIndex({
                           animated: true,
                           index: index,
                           viewPosition: 0.5,
                         });
-                        setSelectedCard({leaveType: itemName});
-                        setLeaveType(itemName);
+                        setSelectedCard({leaveType: itemName.value});
                       }}
-                      renderRightComponent={renderRightComponent}
+                      containerStyle={{}}
+                      style={[
+                        styles.selectLeaveDropdown,
+                        !isApplyingLeave &&
+                          !fromApproverEnd &&
+                          styles.lessOpacity,
+                      ]}
                     />
                   ),
                 })}
@@ -1304,76 +1193,28 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
                     />
                   )}
                 </View>
-              </ScrollView>
-
-              <View style={styles.leaveApproverContainer}>
-                <Text style={styles.leaveApproverText}>Leave Approver:</Text>
-                {fromApproverEnd ? (
-                  <Text style={styles.leaveApproverName}>
-                    {approverUserName}
-                  </Text>
-                ) : isEditOpenleave ? (
-                  leaveApprovers?.length === 1 ? (
-                    <Text style={styles.leaveApproverName}>
-                      {leaveApproverFullName[0].firstName}
-                    </Text>
-                  ) : (
-                    <View>
-                      <View>
-                        <DropDownPicker
-                          placeholder={'Select....'}
-                          open={openLeaveApprovers}
-                          value={leaveApproversValue}
-                          items={leaveApproversList}
-                          setOpen={setOpenLeaveApproovers}
-                          setValue={setLeaveApproversValue}
-                          setItems={setLeaveApproversList}
-                          onSelectItem={onSelectLeaveApprover}
-                          containerStyle={{width: wp(50)}}
-                          style={styles.selectLeaveApproversDropdown}
-                        />
-                      </View>
-                    </View>
-                  )
-                ) : fromResource ? (
-                  <Text style={styles.leaveApproverName}>
-                    {`${resourceData?.leaveApproverFirstName} ${resourceData?.leaveApproverLastName}`}
-                  </Text>
-                ) : fromOpenLeave ? (
-                  <Text style={styles.leaveApproverName}>
-                    {`${openLeaveData?.leaveApproverFirstName} ${
-                      openLeaveData?.leaveApproverMiddleName
-                        ? openLeaveData?.leaveApproverMiddleName + ' '
-                        : ''
-                    }${openLeaveData?.leaveApproverLastName}`}
-                  </Text>
-                ) : isGuestLogin ? (
-                  <Text style={styles.leaveApproverName}>
-                    {guestProfileData?.managerInfoDto?.employeeName}
-                  </Text>
-                ) : leaveApprovers?.length === 1 ? (
-                  <Text style={styles.leaveApproverName}>
-                    {leaveApproverFullName && leaveApproverFullName}
-                  </Text>
-                ) : (
-                  <View>
-                    <View>
-                      <DropDownPicker
-                        placeholder={'Select....'}
-                        open={openLeaveApprovers}
-                        value={leaveApproversValue}
-                        items={leaveApproversList}
-                        setOpen={setOpenLeaveApproovers}
-                        setValue={setLeaveApproversValue}
-                        setItems={setLeaveApproversList}
-                        onSelectItem={onSelectLeaveApprover}
-                        containerStyle={{width: wp(50)}}
-                        style={styles.leaveApproverSelect}
-                      />
-                    </View>
-                  </View>
-                )}
               </View>
+
+              {!fromResource && !fromOpenLeave && (
+                <View style={styles.leaveApproverContainer}>
+                  <Text style={styles.leaveApproverText}>Leave Approver:</Text>
+
+                  <DropDownPicker
+                    listMode="SCROLLVIEW"
+                    scrollEnabled={true}
+                    placeholder={'Select....'}
+                    open={openLeaveApprovers}
+                    value={leaveApproversValue}
+                    items={leaveApproversList}
+                    setOpen={setOpenLeaveApproovers}
+                    setValue={setLeaveApproversValue}
+                    onSelectItem={onSelectLeaveApprover}
+                    // dropDownContainerStyle={{height: 160}}
+                    containerStyle={{width: wp(50)}}
+                    style={styles.leaveApproverSelect}
+                  />
+                </View>
+              )}
             </View>
 
             {fromResource ? (
@@ -1424,7 +1265,7 @@ const ApplyLeave = ({navigation, route = {}, fromApproverEnd = false}) => {
               </View>
             )}
           </View>
-        </View>
+        </ScrollView>
         {loading ? (
           <View style={styles.loaderContainer}>
             <View style={styles.loaderBackground} />

@@ -31,15 +31,6 @@ const AttendenceTab = ({employeeID, employeeName}) => {
       const outputAttendance = getDailyAttaindance.payload;
       setAttendenceArray(outputAttendance);
 
-      // const {dailyAttendance, employeeAttendance} =
-      //   (getDailyAttaindance?.payload &&
-      //     getDailyAttaindance?.payload?.length &&
-      //     getDailyAttaindance?.payload[0]) ||
-      //   {};
-
-      // setAttendenceArray(dailyAttendance);
-      // setEmployeeAttendance(employeeAttendance);
-
       if (getDailyAttaindance?.error) {
         ShowAlert({
           messageHeader: ERROR,

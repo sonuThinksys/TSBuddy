@@ -100,7 +100,7 @@ export default ({navigation}) => {
     },
     {
       screen: 'Salary Slip',
-      label: 'Salary Slip',
+      label: 'Finance',
       navigation,
       icon: MonthImages.salarySlipIcon,
       isVisible: true,

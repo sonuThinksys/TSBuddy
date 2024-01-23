@@ -42,7 +42,7 @@ import {useDrawerStatus} from '@react-navigation/drawer';
 import ApprovedIcon from 'assets/newDashboardIcons/circle-check.svg';
 import RejectedIcon from 'assets/newDashboardIcons/ban.svg';
 // import PendingIcon from 'assets/newDashboardIcons/circle-minus.svg';
-import {empFullName} from 'utils/utils';
+import {empFullName, getUniqueArrayOfObjects} from 'utils/utils';
 import CustomButton from 'navigation/CustomButton';
 
 const initialEndDate = {endDateStr: 'Select End Date'};
@@ -117,13 +117,19 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
             approver.leaveApproverLastName ? approver.leaveApproverLastName : ''
           }`;
 
+          // filter((obj, index, self) => {
+          //   return index === self.findIndex(o => o.value === obj.value);
+          // })
+
           return {
             value: approver.leaveApprover,
             label: approverName,
           };
         });
         setLeaveApprover(listOfLeaveApprovers);
-        setItems(listOfLeaveApprovers);
+        const finalLeaveApprovers =
+          getUniqueArrayOfObjects(listOfLeaveApprovers);
+        setItems(finalLeaveApprovers);
       })();
     }
   }, [dispatch, employeeID, token, fromApproverEnd]);
@@ -541,7 +547,8 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
         };
       });
       setLeaveApprover(listOfLeaveApprovers);
-      setItems(listOfLeaveApprovers);
+      const finalLeaveApprovers = getUniqueArrayOfObjects(listOfLeaveApprovers);
+      setItems(finalLeaveApprovers);
 
       // GET EMPLOYEE SHIFT:
       const employeeShift = await dispatch(
@@ -740,8 +747,12 @@ const ApplyWFH = ({navigation, fromApproverEnd}) => {
                     styles.dropDownMainStyles,
                     open && styles.borderRadius5,
                   ]}
-                  dropDownStyle={styles.dropDownStyle}
-                  labelStyle={styles.dropdownLabelStyle}
+                  dropDownContainerStyle={{
+                    borderWidth: 1,
+                    borderColor: Colors.grey,
+                  }}
+                  dropDownStyle={styles.dropDownStyle} //NO
+                  labelStyle={styles.dropdownLabelStyle} //NO
                 />
               </View>
             </View>
@@ -886,13 +897,6 @@ const renderListOfAppliedRequests = ({item, onDismissWFH}) => {
       <View style={styles.statusContainer}>
         {item.status?.toLowerCase() === 'open' ? (
           <View style={styles.pendingContainer}>
-            {/* <PendingIcon
-              fill={Colors.gold}
-              height={20}
-              width={20}
-              marginBottom={4}
-            />
-            <Text style={styles.pending}>Pending</Text> */}
             <CustomButton
               title="Dismiss"
               onPress={onDismissWFH.bind(null, {

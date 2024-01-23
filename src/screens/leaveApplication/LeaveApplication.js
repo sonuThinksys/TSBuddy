@@ -77,7 +77,7 @@ const LeaveApplication = ({navigation}) => {
   const getLeavesForManager = useCallback(
     async (type, isRefreshing, name) => {
       try {
-        let approver = {approverEmail: emailId};
+        let approver = {approverEmail: emailId, approverId: id};
         if (type === REGULARISATION || type === LEAVE_ALLOCATION) {
           approver = {approverId: id};
         }
@@ -87,8 +87,7 @@ const LeaveApplication = ({navigation}) => {
           getLeaveApplicationData({
             token,
             body: {
-              take: 151,
-              // take: name ? applicationData[selectedType].count : 12,
+              take: name ? applicationData[selectedType].count : 12,
               skip: isRefreshing ? 0 : applicationData[type].data.length,
               page: 1,
               name: name ?? null,
@@ -126,10 +125,10 @@ const LeaveApplication = ({navigation}) => {
   useEffect(() => {
     if (isFocussed) {
       (async () => {
-        await getLeavesForManager(selectedType, true);
+        await getLeavesForManager(LEAVE, true);
       })();
     }
-  }, [isFocussed, selectedType]);
+  }, [isFocussed]);
 
   const renderMoreLeaves = async () => {
     if (
@@ -141,7 +140,9 @@ const LeaveApplication = ({navigation}) => {
   };
 
   const onTabPress = async type => {
+    setShowTextInput(false);
     setSelectedType(type);
+
     if (applicationData[type]?.data?.length === 0) {
       await getLeavesForManager(type);
     }

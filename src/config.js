@@ -2,7 +2,7 @@ import {API_URL} from '@env';
 //let year = new Date().getFullYear();
 let year = new Date().getFullYear();
 let month = new Date().getMonth();
-
+// https://tsbuddyqa-api.thinksys.com/api/EmployeeProfile/GetEmployeeById?empId=10115
 export default {
   authTokenAPI: `${API_URL}/Account/login`,
   holidaysAPI: `${API_URL}/Holiday?year=${year}`,
@@ -46,7 +46,7 @@ export default {
   addMenuDetails: `${API_URL}/FoodRequest/AddToday'sMenu`,
   renewToken: `${API_URL}/Account/RenewToken`,
   getConfigData: `${API_URL}/FoodRequest/GetConfigDetails`,
-  // createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
+  createNewAttendance: `${API_URL}/Attendance/CreateAttendance`,
   getAllEmployeeForHR: `${API_URL}/EmployeeProfile/GetAllEmployee`,
   // getOpenRequestForHR: `${API_URL}/Attendance/GetOpenRequest`,
   getDailyAttendanceCount: `${API_URL}/Attendance/GetAttendance?date=`,

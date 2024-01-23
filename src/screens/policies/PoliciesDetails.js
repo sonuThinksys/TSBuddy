@@ -1,16 +1,12 @@
 import React from 'react';
 import CustomHeader from 'navigation/CustomHeader';
-import RenderHtml from 'react-native-render-html';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useWindowDimensions} from 'react-native';
-
+import WebView from 'react-native-webview';
 const PoliciesDetails = ({navigation, route}) => {
   const policy = route.params;
 
   const source = {
     html: policy,
   };
-  const {width} = useWindowDimensions();
   return (
     <>
       <CustomHeader
@@ -20,14 +16,16 @@ const PoliciesDetails = ({navigation, route}) => {
         isHome={false}
         showHeaderRight={true}
       />
-      <ScrollView>
-        <RenderHtml
+      {/* <ScrollView style={{flex: 1}}> */}
+      {/* <RenderHtml
           source={source}
           contentWidth={width}
           baseStyle={{margin: 20, color: 'black'}}
           ignoredDomTags={['o:p']}
-        />
-      </ScrollView>
+        /> */}
+
+      <WebView source={source} minimumFontSize={20} />
+      {/* </ScrollView> */}
     </>
   );
 };

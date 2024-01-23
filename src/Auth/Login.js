@@ -25,13 +25,7 @@ import {guestLoginStatus} from './LoginSlice';
 import {getUserToken, setIsRemeber, setBiometricEnable} from './LoginSlice';
 import LoadingScreen from 'component/LoadingScreen/LoadingScreen';
 import {useSelector} from 'react-redux';
-import {
-  COPY_RIGHT,
-  FORGOT_PASSWORD,
-  GUEST_LOGIN,
-  REMEMBER_ME,
-  ERROR,
-} from 'utils/string';
+import {COPY_RIGHT, GUEST_LOGIN, REMEMBER_ME, ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
@@ -40,7 +34,7 @@ const Login = ({navigation}) => {
   // const [showBiomatricModal, setshowBiomatricModal] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
-  const [username, setUserName] = useState('bisht.kalpana@thinksys.com');
+  const [username, setUserName] = useState('jain.rajiv@thinksys.com');
   const [password, setPassword] = useState('Thinksys@123');
 
   const {isRemember} = useSelector(state => state.auth);
@@ -228,9 +222,9 @@ const Login = ({navigation}) => {
           {/* )}
         /> */}
           <View style={styles.passwordView}>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Text style={styles.forgotPasswordText}>{FORGOT_PASSWORD}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={() => {
                 dispatch(setIsRemeber(!isRemember));

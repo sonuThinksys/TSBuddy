@@ -17,7 +17,6 @@ import WelcomeHeader from 'component/WelcomeHeader/WelcomeHeader';
 import CustomHeader from 'navigation/CustomHeader';
 import {useIsFocused} from '@react-navigation/native';
 import styles from './HomeStyles';
-import {Text} from 'react-native';
 // import {renewToken} from 'Auth/LoginSlice';
 
 let data = [
@@ -36,7 +35,6 @@ const Home = ({navigation}) => {
   const flatListRef = useRef(null);
   const isFocussed = useIsFocused();
   const {isGuestLogin} = useSelector(state => state.auth);
-
   useEffect(() => {
     if (isFocussed && flatListRef.current) {
       flatListRef.current.scrollToOffset({offset: 0, animated: true});

@@ -19,6 +19,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: Colors.whitishGray,
+    flexWrap: 'wrap',
   },
   header: {
     backgroundColor: Colors.parrotGreen,
@@ -39,6 +40,7 @@ export default StyleSheet.create({
   cardRightTextContainer: {
     justifyContent: 'center',
     paddingLeft: 10,
+    flex: 1,
   },
   downloadBTN: {
     width: wp(6),

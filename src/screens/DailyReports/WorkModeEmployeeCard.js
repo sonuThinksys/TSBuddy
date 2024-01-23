@@ -164,7 +164,7 @@ const WorkModeEmployeeCard = ({
                     style={styles.infoIcon}
                   />
                 </Pressable>
-                {el.isChangePossible && (
+                {/* {el.isChangePossible && (
                   <Pressable onPress={onHouseIconClickHandler}>
                     <HouseIcon
                       height={19}
@@ -172,7 +172,7 @@ const WorkModeEmployeeCard = ({
                       fill={Colors.lovelyPurple}
                     />
                   </Pressable>
-                )}
+                )} */}
               </View>
               <Modal
                 animationType="slide"

@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import {MonthImages} from 'assets/monthImage/MonthImage';
 import Modal from 'react-native-modal';
 import {Colors} from 'colors/Colors';
@@ -16,9 +9,10 @@ import {addMealFeedback} from 'redux/homeSlice';
 import {styles} from './FoodFeedbackStyles';
 import Loader from 'component/loader/Loader';
 
-const FoodFeedback = ({modalData, showModal}) => {
+const FoodFeedback = ({modalData}) => {
   const [text, setText] = useState('');
   const [reaction, setReaction] = useState(0);
+  console.log('reaction:', reaction);
   const [isLoading, setIsLoading] = useState(false);
   const [emojidata, setEmojiData] = useState([
     {
@@ -31,23 +25,23 @@ const FoodFeedback = ({modalData, showModal}) => {
     {image: MonthImages.smily, tag: 4, isSelected: false},
     {image: MonthImages.lovely, tag: 5, isSelected: false},
   ]);
+
   const {setShowModal, type, dailyMenuID, employeeID} = modalData || {};
-  console.log('emojidata:', emojidata);
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.userToken);
 
   const onSelectItem = (item, index) => {
-    let tempArr = [];
-    emojidata &&
-      emojidata.map((emoji, ind) => {
+    setEmojiData(prevEmojis => {
+      return prevEmojis.map((emoji, ind) => {
         if (index === ind) {
-          tempArr.push((emoji.isSelected = true));
+          return {...emoji, isSelected: true};
         } else {
-          emojidata[index].isSelected = false;
-          tempArr.push((emoji.isSelected = false));
+          return {...emoji, isSelected: false};
         }
       });
+    });
+
     setReaction(item.tag);
   };
 
@@ -61,14 +55,11 @@ const FoodFeedback = ({modalData, showModal}) => {
           <Image
             style={[
               styles.emojiImages,
-              {
-                borderWidth: 2,
-                // borderWidth: item.isSelected ? 2 : 0,
-                // borderColor: item.isSelected
-                //   ? Colors.blackishGreen
-                //   : Colors.white,
-                borderColor: 'black',
-              },
+              item.isSelected && styles.borderWidth,
+              // {
+              //   borderWidth: item.isSelected ? 2 : 0,
+              //   borderColor: Colors.black,
+              // },
             ]}
             source={item.image}
           />
@@ -108,7 +99,7 @@ const FoodFeedback = ({modalData, showModal}) => {
           {
             text: 'Ok',
             onPress: () => {
-              showModal = false;
+              return null;
             },
           },
         ]);
@@ -122,70 +113,62 @@ const FoodFeedback = ({modalData, showModal}) => {
   };
 
   return (
-    <>
-      {showModal ? (
-        <TouchableWithoutFeedback onPress={() => {}}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            closeOnClick={true}
-            isVisible={showModal}
-            onBackdropPress={() => {
-              onCancelModal();
-            }}
-            onBackButtonPress={() => {
-              onCancelModal();
-            }}
-            onRequestClose={() => {
-              onCancelModal();
+    <Modal
+      animationType="slide"
+      transparent={true}
+      closeOnClick={true}
+      isVisible={true}
+      onBackdropPress={() => {
+        onCancelModal();
+      }}
+      onBackButtonPress={() => {
+        onCancelModal();
+      }}
+      onRequestClose={() => {
+        onCancelModal();
+      }}>
+      <View style={styles.modalBackground}>
+        <Text style={styles.foodTypeText}>{type}</Text>
+        <View style={styles.emojiConteiner}>
+          <FlatList
+            data={emojidata}
+            renderItem={renderItem}
+            keyExtractor={item => item.tag}
+            horizontal={true}
+          />
+        </View>
+        <TextInput
+          style={styles.txtInputFeedback}
+          placeholder=" Write your feedback..."
+          onChangeText={e => {
+            setText(e);
+          }}
+        />
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.buttonCancel}
+            onPress={() => {
+              onCancelModal(false);
             }}>
-            <View style={styles.modalBackground}>
-              <Text style={styles.foodTypeText}>{type}</Text>
-              <View style={styles.emojiConteiner}>
-                <FlatList
-                  data={emojidata}
-                  renderItem={renderItem}
-                  keyExtractor={item => item.tag}
-                  horizontal={true}
-                />
-              </View>
-              <TextInput
-                style={styles.txtInputFeedback}
-                placeholder=" Write your feedback..."
-                onChangeText={e => {
-                  setText(e);
-                }}
-              />
-              <View style={styles.btnContainer}>
-                <TouchableOpacity
-                  style={styles.buttonCancel}
-                  onPress={() => {
-                    onCancelModal(false);
-                  }}>
-                  <Text style={[styles.textStyle, {color: Colors.dune}]}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
+            <Text style={[styles.textStyle, {color: Colors.dune}]}>Cancel</Text>
+          </TouchableOpacity>
 
-                <TouchableOpacity
-                  // disabled={reaction === 0 || text === ''}
-                  style={[
-                    styles.buttonCancel,
-                    styles.buttonSubmit,
-                    // {opacity: reaction === 0 || text === '' ? 0.5 : 1},
-                  ]}
-                  onPress={() => {
-                    handleSubmit();
-                  }}>
-                  <Text style={styles.textStyle}>Submit</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            {isLoading ? <Loader /> : null}
-          </Modal>
-        </TouchableWithoutFeedback>
-      ) : null}
-    </>
+          <TouchableOpacity
+            disabled={reaction === 0}
+            style={[
+              styles.buttonCancel,
+              styles.buttonSubmit,
+              reaction === 0 && styles.lessOpacity,
+            ]}
+            onPress={() => {
+              handleSubmit();
+            }}>
+            <Text style={styles.textStyle}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      {isLoading ? <Loader /> : null}
+    </Modal>
   );
 };
 

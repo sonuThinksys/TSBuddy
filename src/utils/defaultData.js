@@ -103,7 +103,11 @@ export const leaveTypes = [
   // 'Work From Home',
 ];
 
-export const newDropDownOptions = [firstFalf, secondHalf, none];
+export const newDropDownOptions = [
+  {value: firstFalf, label: firstFalf},
+  {value: secondHalf, label: secondHalf},
+  {value: none, label: none},
+];
 
 export const approver = 'Sandhya Sharma';
 

@@ -53,6 +53,8 @@ const UpComingHolidays = ({navigation}) => {
       [...holidaysData]?.sort(sortByFiscalYear)) ||
     [];
 
+  console.log('duplicateHolidays:', duplicateHolidays);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container}>
@@ -96,7 +98,7 @@ const renderItem = ({item, index}) => {
         <Image
           resizeMode="contain"
           source={
-            item.description === 'Republic day'
+            item.description.toLowerCase() === 'republic day'
               ? MonthImages.republicDay
               : item.description === 'Holi'
               ? MonthImages.holi

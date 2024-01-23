@@ -25,6 +25,9 @@ const LEAVE_APPROVER_FAIL_FETCH =
 const SELECT_LEAVE_APPROVER = 'Please Select Leave Approver.';
 const SELECT_LEAVE_TYPE = 'Please Select Leave Type.';
 const ENTER_REASON = 'Please Enter a Reason.';
+const LEAVE_LIMIT_EXHAUSTED =
+  'Applied Leave Days Is More Than Maximum Leave Days Allowed';
+const REASON_CHARACTER_LIMIT = 'Reason must be at least 5 characters';
 const OPEN = 'Open';
 const SELECT_FROM_DATE = 'Please Select From Date.';
 const SELECT_TO_DATE = 'Please Select To Date.';
@@ -54,6 +57,8 @@ export {
   SELECT_LEAVE_APPROVER,
   SELECT_LEAVE_TYPE,
   ENTER_REASON,
+  LEAVE_LIMIT_EXHAUSTED,
+  REASON_CHARACTER_LIMIT,
   OPEN,
   SELECT_FROM_DATE,
   SELECT_TO_DATE,

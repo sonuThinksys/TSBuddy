@@ -192,7 +192,13 @@ const UserDetail = ({navigation, route}) => {
               marginLeft: wp(2),
               color: Colors.lightBlue,
             }}>
-            {managerInfoDto?.employeeName}
+            {console.log(
+              'managerInfoDto?.employeeName',
+              managerInfoDto?.employeeName,
+            )}
+            {managerInfoDto?.employeeName.trim() === 'undefined'
+              ? 'N/A'
+              : managerInfoDto?.employeeName}
           </Text>
         </View>
         <Pressable onPress={addToContacts}>

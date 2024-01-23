@@ -86,6 +86,7 @@ const AllAttendance = ({navigation}) => {
   const [selectDate, setSelectDate] = useState({
     dateStr: 'DD-MM-YYYY',
   });
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectInTime, setSelectInTime] = useState({inTimeStr: 'HH:MM'});
   const [selectOutTime, setSelectOutTime] = useState({outTimeStr: 'HH:MM'});
   const [selectDateForInOut, setSelectDateForInOut] = useState();
@@ -93,6 +94,7 @@ const AllAttendance = ({navigation}) => {
   const [getInTime, setGetInTime] = useState();
   const [inTime, setInTime] = useState();
   const [outTime, setOutTime] = useState();
+  const [isModalLoading, setIsModalLoading] = useState(false);
 
   const {holidayData} = useSelector(state => state.home);
 
@@ -217,19 +219,22 @@ const AllAttendance = ({navigation}) => {
   };
   const handleSubmitNewAttendance = async () => {
     try {
+      const body = {
+        employeeId: selectedEmployee?.employeeId,
+        attendanceDate: attendanceDate,
+        inTime: inTime,
+        outTime: outTime,
+        totalHours: totalHours,
+        isRegularized: isChecked ? 1 : 0,
+      };
+
+      setIsModalLoading(true);
       const createNewAttendance =
         token &&
         (await dispatch(
           createAttendance({
             token,
-            body: {
-              employeeId: employeeID,
-              attendanceDate: attendanceDate,
-              inTime: inTime,
-              outTime: outTime,
-              totalHours: totalHours,
-              isRegularized: isChecked ? 1 : 0,
-            },
+            body,
           }),
         ));
 
@@ -241,6 +246,8 @@ const AllAttendance = ({navigation}) => {
             text: 'Ok',
             onPress: () => {
               setDatePickerVisible(false);
+              resetModalInputs();
+              setShowModal(false);
             },
           },
         ]);
@@ -248,6 +255,7 @@ const AllAttendance = ({navigation}) => {
     } catch (err) {
       console.log('errCreateNewAttendance:', err);
     } finally {
+      setIsModalLoading(false);
     }
   };
 
@@ -256,6 +264,7 @@ const AllAttendance = ({navigation}) => {
       <>
         <Pressable
           onPress={() => {
+            setSelectedEmployee(item);
             setText(
               `${item.firstName ? item.firstName : ''} ${
                 item.lastName ? item.lastName : ''
@@ -264,19 +273,13 @@ const AllAttendance = ({navigation}) => {
 
             setSearchResult([]);
           }}>
-          <View style={styles.searcheResultRow}>
-            <Text>
+          <View style={[styles.searcheResultRow, styles.borderBottom]}>
+            <Text style={styles.searchedName}>
               {item?.firstName ? item?.firstName : ''}{' '}
               {item?.lastName ? item?.lastName : ''}
             </Text>
-            <Text>{item?.employeeId}</Text>
+            <Text style={styles.searchedEmpId}>{item?.employeeId}</Text>
           </View>
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderColor: Colors.lightGray2,
-              marginBottom: 6,
-            }}></View>
         </Pressable>
       </>
     );
@@ -352,6 +355,15 @@ const AllAttendance = ({navigation}) => {
     setTotalHours(totalTimeflot);
   };
 
+  const resetModalInputs = () => {
+    setText('');
+    setSelectDate({
+      dateStr: 'DD-MM-YYYY',
+    });
+    setSelectInTime({inTimeStr: 'HH:MM'});
+    setSelectOutTime({outTimeStr: 'HH:MM'});
+  };
+
   return (
     <>
       <CustomHeader
@@ -378,12 +390,10 @@ const AllAttendance = ({navigation}) => {
                 },
               ]}>
               <Text
-                style={{
-                  color:
-                    selectedAttendanceType.type === MONTH_WISE
-                      ? Colors.white
-                      : null,
-                }}>
+                style={
+                  selectedAttendanceType.type === MONTH_WISE &&
+                  styles.textColorWhite
+                }>
                 Month Wise
               </Text>
             </Pressable>
@@ -401,12 +411,10 @@ const AllAttendance = ({navigation}) => {
                 },
               ]}>
               <Text
-                style={{
-                  color:
-                    selectedAttendanceType.type === DAY_WISE
-                      ? Colors.white
-                      : null,
-                }}>
+                style={
+                  selectedAttendanceType.type === DAY_WISE &&
+                  styles.textColorWhite
+                }>
                 Day Wise
               </Text>
             </Pressable>
@@ -441,6 +449,7 @@ const AllAttendance = ({navigation}) => {
               onBackButtonPress={() => {
                 setShowModal(false);
               }}>
+              {isModalLoading && <Loader />}
               <View style={styles.modalContainer}>
                 <Text style={styles.newAttendanceTitle}>New Attendance</Text>
                 <Text style={styles.headerText}>Employee:</Text>
@@ -465,7 +474,8 @@ const AllAttendance = ({navigation}) => {
                     />
                   </Pressable>
                 </View>
-                {text?.length !== 0 && searchResult.length != 0 ? (
+
+                {text?.length !== 0 && searchResult?.length !== 0 ? (
                   <View style={styles.searchResultBox}>
                     <FlatList
                       data={searchResult}
@@ -581,15 +591,7 @@ const AllAttendance = ({navigation}) => {
                   </Pressable>
                 </View>
                 <View style={styles.buttonContainer}>
-                  <Pressable
-                    onPress={() => {
-                      setText('');
-                      setSelectDate({
-                        dateStr: 'DD-MM-YYYY',
-                      });
-                      setSelectInTime({inTimeStr: 'HH:MM'});
-                      setSelectOutTime({outTimeStr: 'HH:MM'});
-                    }}>
+                  <Pressable onPress={setShowModal.bind(null, false)}>
                     <View
                       style={[
                         styles.btn,
@@ -612,7 +614,7 @@ const AllAttendance = ({navigation}) => {
                       ]}>
                       <Text
                         style={{
-                          color: 'white',
+                          color: Colors.white,
                           fontFamily: FontFamily.RobotoMedium,
                           fontSize: FontSize.h14,
                         }}>
@@ -648,7 +650,6 @@ const AllAttendance = ({navigation}) => {
             </Pressable>
 
             <DateTimePickerModal
-              // minimumDate={minimumDateLeaveApplication}
               maximumDate={new Date()}
               isVisible={isDateSelecting}
               mode="date"

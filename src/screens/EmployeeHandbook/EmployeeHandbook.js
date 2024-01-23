@@ -1,5 +1,4 @@
 import {Colors} from 'colors/Colors';
-import {styles} from 'modals/FoodFeedbackStyles';
 import CustomHeader from 'navigation/CustomHeader';
 import React, {useEffect, useState} from 'react';
 import {
@@ -19,16 +18,16 @@ let width = Dimensions.get('screen').width;
 let height = Dimensions.get('screen').height;
 
 const EmployeeHandbook = ({navigation}) => {
-  const [index, setIndex] = useState(0);
+  // const [index, setIndex] = useState(0);
   const ref = React.useRef(null);
 
-  useEffect(() => {
-    ref.current.scrollToIndex({
-      index,
-      animated: true,
-      viewPosition: 0.5,
-    });
-  }, [index]);
+  // useEffect(() => {
+  //   ref?.current?.scrollToIndex({
+  //     index,
+  //     animated: true,
+  //     viewPosition: 0.5,
+  //   });
+  // }, [index]);
 
   const renderItem = ({item}) => {
     return (
@@ -55,21 +54,22 @@ const EmployeeHandbook = ({navigation}) => {
     );
   };
 
-  const handleNext = () => {
-    if (employeeHandbookData.length - 1 == index) return;
+  // const handleNext = () => {
+  //   if (employeeHandbookData.length - 1 == index) return;
 
-    setIndex(index + 1);
-  };
+  //   setIndex(index + 1);
+  // };
 
-  const handlePriv = () => {
-    if (index == 0) return;
-    setIndex(index - 1);
-  };
+  // const handlePriv = () => {
+  //   if (index == 0) return;
+  //   setIndex(index - 1);
+  // };
 
-  const handleScroll = event => {
-    if (index == 0) return;
-    if (index == employeeHandbookData.length - 1) return;
-  };
+  // const handleScroll = event => {
+  //   console.log('event:', event);
+  //   if (index == 0) return;
+  //   if (index == employeeHandbookData.length - 1) return;
+  // };
   return (
     <>
       <CustomHeader
@@ -81,22 +81,22 @@ const EmployeeHandbook = ({navigation}) => {
       />
       <FlatList
         ref={ref}
-        initialScrollIndex={index}
-        onScroll={handleScroll}
+        // initialScrollIndex={index}
+        // onScroll={handleScroll}
         data={employeeHandbookData}
         pagingEnabled={true}
         renderItem={renderItem}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={index => index}
+        keyExtractor={ind => ind}
       />
-      <View
+      {/* <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-around',
           marginBottom: 20,
         }}>
-        <TouchableOpacity onPress={handlePriv} disabled={index == 0}>
+        <TouchableOpacity onPress={handlePriv} disabled={index === 0}>
           <View
             style={{
               width: wp(15),
@@ -112,7 +112,7 @@ const EmployeeHandbook = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleNext}
-          disabled={index == employeeHandbookData.length - 1}>
+          disabled={index === employeeHandbookData.length - 1}>
           <View
             style={{
               width: wp(15),
@@ -128,7 +128,7 @@ const EmployeeHandbook = ({navigation}) => {
             <Text style={{color: 'white', fontSize: 17}}>Next</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </>
   );
 };

@@ -77,6 +77,30 @@ const styles = StyleSheet.create({
   lateText: {
     color: Colors.gold,
   },
+  checkInOutContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    marginTop: 24,
+  },
+  checkInOutTitle: {
+    fontSize: FontSize.h14,
+    fontFamily: FontFamily.RobotoLight,
+  },
+  checkInTime: {
+    fontSize: FontSize.h20,
+    color: Colors.green,
+    fontFamily: FontFamily.RobotoRegular,
+    // borderWidth: 1,
+    marginTop: 10,
+  },
+  checkOutTime: {
+    fontSize: FontSize.h20,
+    color: Colors.primaryOrange,
+    fontFamily: FontFamily.RobotoRegular,
+    // borderWidth: 1,
+    marginTop: 10,
+  },
 });
 
 export default styles;

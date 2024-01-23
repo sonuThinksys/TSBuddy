@@ -21,13 +21,13 @@ const CarouselAutoScroll = ({navigation}) => {
   const [calenderEventData, setCalenderEventData] = useState([]);
   const {userToken: token, refreshToken} = useSelector(state => state.auth);
   const [loadingEvents, setLoadingEvents] = useState(false);
-  const {calendereventData: calenderData} = useSelector(state => state.home);
+  const [calenderData, setCalenderData] = useState({});
 
   const birthdays = calenderData?.calenderEvent;
   const anniversaries = calenderData?.anniversaryEvent;
 
   const keyOfObject = useCallback(
-    () => Object?.keys(calenderData),
+    () => Object.keys(calenderData),
     [calenderData],
   );
 
@@ -47,6 +47,8 @@ const CarouselAutoScroll = ({navigation}) => {
             dispatch,
             navigation,
           });
+        } else {
+          setCalenderData(events.payload);
         }
       } catch (err) {
         console.log('errorEvents:', err);

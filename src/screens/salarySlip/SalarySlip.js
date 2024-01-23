@@ -29,6 +29,7 @@ const SalarySlip = ({navigation}) => {
   const {isGuestLogin} = useSelector(state => state.auth);
 
   const [salarySlips, setSalarySlips] = useState([]);
+  console.log('salarySlips:', salarySlips);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -87,7 +88,7 @@ const SalarySlip = ({navigation}) => {
     <>
       <CustomHeader
         showDrawerMenu={true}
-        title="Salary Slips"
+        title="Finance"
         navigation={navigation}
         isHome={false}
         showHeaderRight={true}
@@ -100,7 +101,7 @@ const SalarySlip = ({navigation}) => {
         {!isAuthenticated ? (
           <SalarSlipModal submitPassword={submitPassword} />
         ) : (
-          salarySlips.map((salarySlip, ind) => {
+          salarySlips?.map((salarySlip, ind) => {
             const month = salarySlip.month;
             const fiscalYear = salarySlip.fiscalYear;
             const [firstYear, secondYear] = fiscalYear.split('-');

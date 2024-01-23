@@ -78,4 +78,10 @@ export const styles = StyleSheet.create({
     borderColor: Colors.lovelyPurple,
     marginLeft: wp(6),
   },
+  lessOpacity: {
+    opacity: 0.5,
+  },
+  borderWidth: {
+    borderWidth: 2,
+  },
 });

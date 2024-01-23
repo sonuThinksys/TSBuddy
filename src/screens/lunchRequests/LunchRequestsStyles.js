@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     paddingHorizontal: wp(4),
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   requestType: {
     marginLeft: 10,
@@ -44,6 +45,8 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     flexDirection: 'row',
+    flex: 1,
+    flexWrap: 'wrap',
   },
   empID: {
     marginRight: 16,
@@ -55,6 +58,9 @@ const styles = StyleSheet.create({
     fontSize: FontSize.h17,
     fontFamily: FontFamily.RobotoRegular,
     color: Colors.darkishPink,
+  },
+  requestTypeContainer: {
+    // flex: 1,
   },
   countText: {
     fontFamily: FontFamily.RobotoMedium,

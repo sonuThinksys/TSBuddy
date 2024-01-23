@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text} from 'react-native';
 import styles from './LeavesDetailsStyles';
 import CustomHeader from 'navigation/CustomHeader';
 import React from 'react';
@@ -23,9 +23,9 @@ const LeaveDetails = ({route, navigation}) => {
     firstName,
     middleName,
     lastName,
-    leaveApproverFirstName,
-    leaveApproverMiddleName,
-    leaveApproverLastName,
+    // leaveApproverFirstName,
+    // leaveApproverMiddleName,
+    // leaveApproverLastName,
   } = route.params;
 
   const empFullName =
@@ -37,14 +37,14 @@ const LeaveDetails = ({route, navigation}) => {
       ? `${firstName} ${middleName}`
       : firstName;
 
-  const approverFullName =
-    leaveApproverFirstName && leaveApproverMiddleName && leaveApproverLastName
-      ? `${leaveApproverFirstName} ${leaveApproverMiddleName} ${leaveApproverLastName}`
-      : leaveApproverFirstName && leaveApproverLastName
-      ? `${leaveApproverFirstName} ${leaveApproverLastName}`
-      : leaveApproverFirstName && leaveApproverMiddleName
-      ? `${leaveApproverFirstName} ${leaveApproverMiddleName}`
-      : leaveApproverFirstName;
+  // const approverFullName =
+  //   leaveApproverFirstName && leaveApproverMiddleName && leaveApproverLastName
+  //     ? `${leaveApproverFirstName} ${leaveApproverMiddleName} ${leaveApproverLastName}`
+  //     : leaveApproverFirstName && leaveApproverLastName
+  //     ? `${leaveApproverFirstName} ${leaveApproverLastName}`
+  //     : leaveApproverFirstName && leaveApproverMiddleName
+  //     ? `${leaveApproverFirstName} ${leaveApproverMiddleName}`
+  //     : leaveApproverFirstName;
 
   const applyingDate = `${new Date(data?.postingDate).getDate()}-${new Date(
     data.postingDate,
@@ -65,7 +65,7 @@ const LeaveDetails = ({route, navigation}) => {
 
   const details = [
     ['Employee Name', empFullName],
-    ['Leave Approver', approverFullName],
+    // ['Leave Approver', approverFullName],
     ['Leave Type', data?.leaveType],
     ['Leave Time Period', rangeOfdate(data)],
     ['Leave Status', data?.status],

@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
   const {isLoggedIn} = useSelector(state => state.auth);
-
+  console.log('isLoggedIn:', isLoggedIn);
   return (
     <NavigationContainer
       ref={ref => NavigationService.setTopLevelNavigator(ref)}>

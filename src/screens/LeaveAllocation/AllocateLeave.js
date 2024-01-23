@@ -18,7 +18,9 @@ import {
   ENTER_REASON,
   ERROR,
   LEAVE_APPROVER_FAIL_FETCH,
+  LEAVE_LIMIT_EXHAUSTED,
   OPEN,
+  REASON_CHARACTER_LIMIT,
   SELECT_FROM_DATE,
   SELECT_LEAVE_APPROVER,
   SELECT_LEAVE_TYPE,
@@ -97,15 +99,20 @@ const AllocateLeave = ({navigation}) => {
   };
 
   const giveReason = value => {
+    setError(null);
     setReason(value);
   };
   const leaveCountAdjuster = value => {
+    setError(null);
     setLeaveToAllocateCount(value);
   };
 
-  const onSelectLeaveApprover = selectedOption => {};
+  const onSelectLeaveApprover = selectedOption => {
+    setError(null);
+  };
 
   const onSelectLeaveType = selectedOption => {
+    setError(null);
     setLeaveToAllocateCount(selectedOption.value);
     setLeaveTypeSelected(selectedOption);
   };
@@ -137,9 +144,11 @@ const AllocateLeave = ({navigation}) => {
                 };
               })
               .filter((obj, index, self) => {
-                console.log('self:', self);
                 return index === self.findIndex(o => o.value === obj.value);
               });
+
+            const firstLAValue = listOfLeaveApprovers[0].value;
+            setLeaveApproverPickedId(firstLAValue);
 
             setLeaveApproverPicks(listOfLeaveApprovers);
           } catch (err) {
@@ -184,6 +193,15 @@ const AllocateLeave = ({navigation}) => {
     }
     if (reason?.trim()?.length === 0) {
       setError(ENTER_REASON);
+      return;
+    }
+
+    if (leaveTypeSelected.label === bereOff && +leaveToAllocateCount > 2) {
+      setError(LEAVE_LIMIT_EXHAUSTED);
+      return;
+    }
+    if (reason?.trim()?.length < 5) {
+      setError(REASON_CHARACTER_LIMIT);
       return;
     }
 
@@ -371,7 +389,8 @@ const AllocateLeave = ({navigation}) => {
             title: 'Leave to Allocate :',
             customComponent: (
               <TextInput
-                keyboardType="number-pad"
+                // keyboardType="number-pad"
+                keyboardType="numeric"
                 style={[
                   styles.leaveCountTextInput,
                   !leaveCountEditable && styles.lessOpacity60,

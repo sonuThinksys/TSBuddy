@@ -187,9 +187,9 @@ const UserProfile = ({route}) => {
 
       const managerInfo = {...managerInfoDto};
 
-      const managerEmployeeName = `${managerInfoDto.firstName} ${
-        managerInfoDto.middleName ? managerInfoDto.middleName + ' ' : ''
-      }${managerInfoDto.lastName ? managerInfoDto.lastName : ''}`;
+      const managerEmployeeName = `${managerInfoDto?.firstName} ${
+        managerInfoDto?.middleName ? managerInfoDto?.middleName + ' ' : ''
+      }${managerInfoDto?.lastName ? managerInfoDto?.lastName : ''}`;
       managerInfo.employeeName = managerEmployeeName;
       // console.log('managerInfoDto:', managerInfoDto);
       managerInfoDto = managerInfo;

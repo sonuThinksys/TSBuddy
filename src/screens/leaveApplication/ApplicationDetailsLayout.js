@@ -13,10 +13,13 @@ import {widthPercentageToDP as wp} from 'utils/Responsive';
 import Loader from 'component/loader/Loader';
 import jwt_decode from 'jwt-decode';
 import {getCurrentFiscalYear} from 'utils/utils';
+const RM = 'RM';
+const HOD = 'HOD';
+const HR = 'HR';
 
 const ApplicationDetailsLayout = ({route, navigation}) => {
   const isLeaveAllocationRequest = route.params.isLeaveAllocationRequest;
-  const {
+  let {
     employeeId,
     firstName,
     middleName,
@@ -28,7 +31,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     totalLeaveDays,
     status,
     description,
-    currentLeaveBalance,
+    // currentLeaveBalance,
     postingDate,
     leaveApproverFirstName,
     leaveApproverMiddleName,
@@ -44,6 +47,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     leaveAllocationId,
   } = route.params.item;
   const isAllocationOpen = route.params.item.status.toLowerCase() === 'open';
+  let leaveBalance = 0;
 
   const card = (leftText, rightText, index) => {
     return (
@@ -62,18 +66,29 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
 
   const dispatch = useDispatch();
   const {userToken: token} = useSelector(state => state.auth);
-  const {emailId, role, id: managerId} = jwt_decode(token);
+  const {role, id: managerId} = jwt_decode(token);
 
   let designation;
+
   if (role.includes('HR Manager')) {
-    designation = 'HR';
+    if (!route.params.item.rmApproval) {
+      designation = RM;
+      leaveBalance = 0;
+    } else if (!route.params.item.hodApproval) {
+      designation = HOD;
+      leaveBalance = 0;
+    } else {
+      designation = HR;
+      leaveBalance = totalLeaveDays;
+    }
   } else if (role.includes('Head Of Department')) {
-    designation = 'HOD';
+    designation = HOD;
+    leaveBalance = 0;
   } else if (role.includes('Leave Approver')) {
-    designation = 'RM';
+    designation = RM;
+    leaveBalance = 0;
   }
 
-  console.log('designation:', designation);
   const [isLoading, setIsLoading] = useState(false);
 
   const empFullName =
@@ -136,7 +151,7 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
     ],
     ['Leave Status', status],
     ['Number Of Leaves', totalLeaveDays],
-    ['Leave Balance', currentLeaveBalance || 'N/A'],
+    // ['Leave Balance', currentLeaveBalance || 'N/A'],
     ['Applying Date', applyingDate || 'N/A'],
     ['Reason', description || 'N/A'],
   ];
@@ -173,12 +188,8 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
                 approverId: managerId,
                 approvalDate: allocationDate,
                 fiscalYear: getCurrentFiscalYear(),
-                totalLeavesAllocated: role.includes('HR Manager')
-                  ? totalLeaveDays
-                  : 0,
-                currentLeaveBalance: role.includes('HR Manager')
-                  ? totalLeaveDays
-                  : 0,
+                totalLeavesAllocated: leaveBalance,
+                currentLeaveBalance: leaveBalance,
                 postingDate: allocationDate,
               },
             }),
@@ -199,9 +210,11 @@ const ApplicationDetailsLayout = ({route, navigation}) => {
           ));
       }
 
+      console.log('response:', response);
+
       if (response?.error) {
         // alert(response?.error?.message);
-        Alert.alert('Failed', `Leave ${finalStatus} failed!`, [
+        Alert.alert('Failed', response.error.message, [
           {
             text: 'Ok',
             onPress: () => {

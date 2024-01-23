@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 100,
     borderBottomRightRadius: 100,
   },
+  textColorWhite: {
+    color: Colors.white,
+  },
   selectedDateContainer: {
     backgroundColor: Colors.white,
     paddingVertical: 12,
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignSelf: 'center',
     borderRadius: 5,
-    height: '44.5%',
+    // height: '44.5%',
     width: '95%',
     padding: 20,
   },
@@ -136,17 +139,19 @@ const styles = StyleSheet.create({
   },
   searchBoxForEmployee: {
     padding: 8,
+    flex: 1,
   },
   searchResultBox: {
     position: 'absolute',
     zIndex: 1,
     backgroundColor: Colors.white,
-    height: '75.5%',
-    width: '100%',
+    height: '64%',
+    width: '101%',
     // borderWidth: 1,
     borderColor: Colors.lightGray1,
-    top: heightPercentageToDP(13.7),
-    left: widthPercentageToDP(5),
+    top: heightPercentageToDP(18),
+    left: widthPercentageToDP(4),
+    right: 0,
     paddingLeft: 7,
     paddingRight: 7,
     paddingTop: 7,
@@ -155,6 +160,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    paddingBottom: 6,
+    marginBottom: 6,
+    borderColor: Colors.lightGray2,
+  },
+  searchedName: {
+    fontSize: FontSize.h15,
+    fontFamily: FontFamily.RobotoMedium,
+  },
+  searchedEmpId: {
+    fontSize: FontSize.h14,
+    fontFamily: FontFamily.RobotoRegular,
   },
 });
 

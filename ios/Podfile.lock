@@ -1,6 +1,6 @@
 PODS:
   - boost (1.76.0)
-  - BVLinearGradient (2.6.2):
+  - BVLinearGradient (2.8.3):
     - React-Core
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -77,10 +77,6 @@ PODS:
   - glog (0.3.5)
   - hermes-engine (0.70.6)
   - libevent (2.1.12)
-  - lottie-ios (3.4.4)
-  - lottie-react-native (5.1.6):
-    - lottie-ios (~> 3.4.0)
-    - React-Core
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -308,26 +304,16 @@ PODS:
   - React-jsinspector (0.70.6)
   - React-logger (0.70.6):
     - glog
-  - react-native-biometrics (3.0.1):
+  - react-native-contacts (7.0.8):
     - React-Core
-  - react-native-contacts (7.0.5):
-    - React-Core
-  - react-native-date-picker (4.2.13):
+  - react-native-html-to-pdf (0.12.0):
     - React-Core
   - react-native-month-year-picker (1.9.0):
     - React
-  - react-native-netinfo (9.4.1):
+  - react-native-netinfo (9.5.0):
     - React-Core
-  - react-native-pdf (6.6.2):
+  - react-native-safe-area-context (4.8.1):
     - React-Core
-  - react-native-render-html (6.3.4):
-    - React-Core
-  - react-native-safe-area-context (4.5.3):
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - ReactCommon/turbomodule/core
   - react-native-splash-screen (3.3.0):
     - React-Core
   - react-native-video (5.2.1):
@@ -403,19 +389,13 @@ PODS:
     - React-jsi (= 0.70.6)
     - React-logger (= 0.70.6)
     - React-perflogger (= 0.70.6)
-  - RNCAsyncStorage (1.18.1):
+  - RNCAsyncStorage (1.21.0):
     - React-Core
-  - RNCMaskedView (0.1.11):
-    - React
   - RNDateTimePicker (6.7.5):
     - React-Core
-  - RNDeviceInfo (10.6.0):
+  - RNDeviceInfo (10.12.0):
     - React-Core
-  - RNFlashList (1.6.1):
-    - React-Core
-  - RNGestureHandler (2.10.1):
-    - React-Core
-  - RNKeychain (8.1.1):
+  - RNGestureHandler (2.14.0):
     - React-Core
   - RNReanimated (2.17.0):
     - DoubleConversion
@@ -444,16 +424,14 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.25.0):
+  - RNScreens (3.29.0):
     - React-Core
     - React-RCTImage
-  - RNSVG (13.9.0):
+  - RNSVG (13.14.0):
     - React-Core
   - RNVectorIcons (9.2.0):
     - React-Core
-  - SocketRocket (0.6.0)
-  - TouchID (4.4.1):
-    - React
+  - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -488,7 +466,6 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
-  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - OpenSSL-Universal (= 1.1.1100)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -507,13 +484,10 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
-  - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-contacts (from `../node_modules/react-native-contacts`)
-  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - react-native-html-to-pdf (from `../node_modules/react-native-html-to-pdf`)
   - react-native-month-year-picker (from `../node_modules/react-native-month-year-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
-  - react-native-pdf (from `../node_modules/react-native-pdf`)
-  - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-video (from `../node_modules/react-native-video`)
@@ -531,17 +505,13 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
-  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
-  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
-  - TouchID (from `../node_modules/react-native-touch-id`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -558,7 +528,6 @@ SPEC REPOS:
     - FlipperKit
     - fmt
     - libevent
-    - lottie-ios
     - OpenSSL-Universal
     - SocketRocket
     - YogaKit
@@ -578,8 +547,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes/hermes-engine.podspec"
-  lottie-react-native:
-    :path: "../node_modules/lottie-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -610,20 +577,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
-  react-native-biometrics:
-    :path: "../node_modules/react-native-biometrics"
   react-native-contacts:
     :path: "../node_modules/react-native-contacts"
-  react-native-date-picker:
-    :path: "../node_modules/react-native-date-picker"
+  react-native-html-to-pdf:
+    :path: "../node_modules/react-native-html-to-pdf"
   react-native-month-year-picker:
     :path: "../node_modules/react-native-month-year-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
-  react-native-pdf:
-    :path: "../node_modules/react-native-pdf"
-  react-native-render-html:
-    :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
@@ -658,18 +619,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
-  RNCMaskedView:
-    :path: "../node_modules/@react-native-community/masked-view"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
-  RNFlashList:
-    :path: "../node_modules/@shopify/flash-list"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
-  RNKeychain:
-    :path: "../node_modules/react-native-keychain"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -678,14 +633,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
-  TouchID:
-    :path: "../node_modules/react-native-touch-id"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
-  BVLinearGradient: 34a999fda29036898a09c6a6b728b0b4189e1a44
+  BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: 48289402952f4f7a4e235de70a9a590aa0b79ef4
@@ -703,8 +656,6 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 2af7b7a59128f250adfd86f15aa1d5a2ecd39995
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: e1866f61af7049eb3d8e08e8b133abd38bc1ca7a
@@ -721,17 +672,14 @@ SPEC CHECKSUMS:
   React-jsiexecutor: b4a65947391c658450151275aa406f2b8263178f
   React-jsinspector: 60769e5a0a6d4b32294a2456077f59d0266f9a8b
   React-logger: 1623c216abaa88974afce404dc8f479406bbc3a0
-  react-native-biometrics: 352e5a794bfffc46a0c86725ea7dc62deb085bdc
-  react-native-contacts: 0aa99963d8f29099d4725cd0d2f8b6ef5f0d9a2d
-  react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
+  react-native-contacts: cb4f3b823550adbce0802901b9e63bf1526ec0af
+  react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-month-year-picker: 948797e981ca502427024a34b17f545eb321bbff
-  react-native-netinfo: d62a8cf4744228e76aed6e5042ca200441ba40af
-  react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
-  react-native-render-html: 5af9f6852f5e0cf9b74127537da3370984da51ee
-  react-native-safe-area-context: 2f4cee1dc8828f67fcc33cc865a9093dfedab446
+  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
+  react-native-safe-area-context: cd1169d797a2ef722a00bfc5af10748d5b6c94f9
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  react-native-video: 79a186e378d327b6c08bc3982c17ef455c6bd75c
-  react-native-webview: e3b659a6d614bb37fb12a2de82c91a378c59d84b
+  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
+  react-native-webview: 9f111dfbcfc826084d6c507f569e5e03342ee1c1
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -744,22 +692,18 @@ SPEC CHECKSUMS:
   React-RCTVibration: c75ceef7aa60a33b2d5731ebe5800ddde40cefc4
   React-runtimeexecutor: 15437b576139df27635400de0599d9844f1ab817
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
-  RNCAsyncStorage: 138c9b908c5569e7e9f633df75aa71a089690a0c
-  RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
-  RNDateTimePicker: 74353cf8939677358c75d3473947002daff97934
-  RNDeviceInfo: 5a3cc16daa72631bb7bf37720b98ce861255caee
-  RNFlashList: f0a54f1cd50b2a20d7be6aed65cf90d2df6a1c2a
-  RNGestureHandler: 42ec7c28dd02d540ed6c9159c57a98ff016492dc
-  RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
+  RNDateTimePicker: 65e1d202799460b286ff5e741d8baf54695e8abd
+  RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
+  RNGestureHandler: 4279931048471f17faf46d912b2e96e10f1da99b
   RNReanimated: bec7736122a268883bdede07f1bf9cf4b40158db
-  RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
-  RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
+  RNScreens: fa9b582d85ae5d62c91c66003b5278458fed7aaa
+  RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
-  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
-  TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
+  SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 4f067b44e9dad71c0a281f324b9b8c62503bed06
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.3

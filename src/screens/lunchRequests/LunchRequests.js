@@ -12,6 +12,12 @@ import ShowAlert from 'customComponents/CustomError';
 import {useIsFocused} from '@react-navigation/native';
 import {ERROR} from 'utils/string';
 
+export const getUniqueArrayOfObjects = arr => {
+  return arr.filter((obj, index, self) => {
+    return index === self.findIndex(o => o.employeeId === obj.employeeId);
+  });
+};
+
 const LunchRequests = ({navigation}) => {
   const isFocussed = useIsFocused();
   const dispatch = useDispatch();
@@ -49,23 +55,12 @@ const LunchRequests = ({navigation}) => {
               dispatch,
               navigation,
             });
-          }
-          // if (
-          //   allLunchRequests?.error?.message?.toLowerCase() === 'token-expired'
-          // ) {
-          //   const newFetchedData = await renewCurrentToken({
-          //     dispatch,
-          //     renewToken,
-          //     refreshToken,
-          //     data: {date: todayDateStr},
-          //     apiCallAgain: getTodayLunchRequests,
-          //   });
+          } else {
+            const uniqueRequests = getUniqueArrayOfObjects(
+              allLunchRequests.payload,
+            );
 
-          //   setLunchRequests(newFetchedData);
-          // }
-          // ===================================================================
-          else {
-            setLunchRequests(allLunchRequests.payload);
+            setLunchRequests(uniqueRequests);
           }
         } catch (err) {
           console.error('error:', err);
@@ -113,7 +108,7 @@ const LunchRequests = ({navigation}) => {
                   <Text style={styles.empID}>{request.employeeId}</Text>
                   <Text style={styles.name}>{fullName}</Text>
                 </View>
-                <View>
+                <View style={styles.requestTypeContainer}>
                   <Text style={styles.requestType}>{request.requestType}</Text>
                 </View>
               </View>

@@ -71,4 +71,5 @@ export const Colors = {
   midGrey: '#999999',
   almostWhite: '#E8F6FF',
   whiteGreyTint: '#f8f9fa',
+  primaryOrange: '#BD5E00',
 };

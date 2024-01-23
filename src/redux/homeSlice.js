@@ -38,7 +38,7 @@ const initialState = {
   attendenceDataError: false,
   recentAppliedLeaves: [],
   remainingLeaves: [],
-  leaveMenuDetails: [],
+  leaveMenuDetails: {},
   menuDetailsLoading: false,
   foodMenuDatailsError: null,
   menuFeedbackError: null,
@@ -1356,6 +1356,8 @@ export const createAttendance = createAsyncThunk(
         'Content-Type': 'application/json',
       },
     };
+    console.log('body:', body, token);
+
     try {
       const {data, status} = await axios.post(
         endPoints.createNewAttendance,
@@ -1368,6 +1370,7 @@ export const createAttendance = createAsyncThunk(
         return Promise.reject('Something went wrong!');
       }
     } catch (err) {
+      console.log('err500:', err);
       let statusCode = 500;
       if (err?.response) {
         statusCode = err?.response?.status;
@@ -1816,7 +1819,7 @@ export const getResourcesEmployeesLeaves = createAsyncThunk(
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401) {
+        if (statusCode === 401) {
           return Promise.reject(err?.response?.data?.message);
         } else {
           return Promise.reject(new Error(err));
@@ -1850,7 +1853,7 @@ export const getAttReguarzationReason = createAsyncThunk(
         if (err?.response) {
           statusCode = err?.response.status;
         }
-        if (statusCode == 401) {
+        if (statusCode === 401) {
           return Promise.reject(err?.response?.data?.message);
         } else {
           return Promise.reject(new Error(err));
@@ -2004,7 +2007,7 @@ export const getEmployeeProfileData = createAsyncThunk(
 
 export const getCalendereventData = createAsyncThunk(
   'home/getCalendereventData',
-  async token => {
+  async ({token}) => {
     var config = {
       method: 'get',
       url: endPoints.calenderEventAPI,
@@ -2332,7 +2335,7 @@ const homeSlice = createSlice({
 
     builder.addCase(getTodayMenuDetails.rejected, (state, action) => {
       state.menuDetailsLoading = false;
-      state.leaveMenuDetails = [];
+      state.leaveMenuDetails = {};
       state.foodMenuDatailsError = action.payload;
     });
 
@@ -2373,19 +2376,19 @@ const homeSlice = createSlice({
       state.employeeProfile = {};
       state.employeeProfileError = action.payload;
     });
-    builder.addCase(getCalendereventData.pending, state => {
-      state.calendereventDataLoading = true;
-    });
-    builder.addCase(getCalendereventData.fulfilled, (state, action) => {
-      state.calendereventDataLoading = false;
-      state.calendereventData = action.payload;
-      state.calendereventDataError = undefined;
-    });
-    builder.addCase(getCalendereventData.rejected, (state, action) => {
-      state.calendereventDataLoading = false;
-      state.calendereventData = [];
-      state.calendereventDataError = action.payload;
-    });
+    // builder.addCase(getCalendereventData.pending, state => {
+    //   state.calendereventDataLoading = true;
+    // });
+    // builder.addCase(getCalendereventData.fulfilled, (state, action) => {
+    //   // state.calendereventDataLoading = false;
+    //   state.calendereventData = {};
+    //   state.calendereventDataError = undefined;
+    // });
+    // builder.addCase(getCalendereventData.rejected, (state, action) => {
+    //   state.calendereventDataLoading = false;
+    //   state.calendereventData = {};
+    //   state.calendereventDataError = action.payload;
+    // });
     builder.addCase(getAttendencaeData.pending, state => {
       state.attendenceDataPending = true;
     });

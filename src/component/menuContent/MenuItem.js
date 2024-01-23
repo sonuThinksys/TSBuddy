@@ -22,7 +22,12 @@ const MenuItem = ({navigation}) => {
 
   let {dailyMenuID} = useSelector(state => state.home);
 
-  const [todayMenu, setTodayMenu] = useState([]);
+  const {
+    leaveMenuDetails: {foodMenus: todayMenu},
+  } = useSelector(state => state.home);
+
+  const [todayMenuGuest, setTodayMenuGuest] = useState([]);
+  // console.log('todayMenu:', todayMenu, todayMenuFetch);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState({});
   const {userToken: token} = useSelector(state => state.auth);
@@ -40,27 +45,27 @@ const MenuItem = ({navigation}) => {
       (async () => {
         try {
           const menuDetails = await dispatch(getTodayMenuDetails(token));
-          const totalMenusLength = menuDetails.payload?.foodMenus?.length;
+          // const totalMenusLength = menuDetails.payload?.foodMenus?.length;
 
-          setTodayMenu([
-            {
-              type: breakfast,
-              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
-                ?.breakfast,
-              img_url: MonthImages.breakfastImgS,
-            },
-            {
-              type: lunch,
-              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]?.lunch,
-              img_url: MonthImages.Lunch,
-            },
-            {
-              type: snacks,
-              food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
-                ?.eveningSnack,
-              img_url: MonthImages.snacksS,
-            },
-          ]);
+          // setTodayMenu([
+          //   {
+          //     type: breakfast,
+          //     food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
+          //       ?.breakfast,
+          //     img_url: MonthImages.breakfastImgS,
+          //   },
+          //   {
+          //     type: lunch,
+          //     food: menuDetails.payload?.foodMenus[totalMenusLength - 1]?.lunch,
+          //     img_url: MonthImages.Lunch,
+          //   },
+          //   {
+          //     type: snacks,
+          //     food: menuDetails.payload?.foodMenus[totalMenusLength - 1]
+          //       ?.eveningSnack,
+          //     img_url: MonthImages.snacksS,
+          //   },
+          // ]);
 
           if (menuDetails?.error) {
             ShowAlert({
@@ -77,7 +82,7 @@ const MenuItem = ({navigation}) => {
         }
       })();
     } else {
-      setTodayMenu([
+      setTodayMenuGuest([
         {
           type: breakfast,
           food: 'N/A',
@@ -99,11 +104,11 @@ const MenuItem = ({navigation}) => {
 
   return (
     <View style={styles.mainContainer}>
-      <FoodFeedback modalData={modalData} showModal={showModal} />
+      {showModal ? <FoodFeedback modalData={modalData} /> : null}
       <FlatList
         showsHorizontalScrollIndicator={false}
         horizontal={true}
-        data={todayMenu}
+        data={token ? todayMenu : todayMenuGuest}
         keyExtractor={(item, index) => index}
         renderItem={({item, index}) => {
           return (

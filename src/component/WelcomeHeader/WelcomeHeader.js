@@ -14,12 +14,17 @@ import {ERROR} from 'utils/string';
 import ShowAlert from 'customComponents/CustomError';
 import styles from './WelcomeHeaderStyles';
 import Loader from 'component/loader/Loader';
+import {getTimeStringFromObject} from 'utils/utils';
 
 const WelcomeHeader = ({navigation}) => {
   const dispatch = useDispatch();
   const {employeeProfile: profileData = {}} = useSelector(state => state.home);
   const [loadingProfile, setLoadingProfile] = useState(false);
-
+  const [loadingCheckInDetails, setLoadingCheckInDetails] = useState(false);
+  const [checkInOutDetails, setCheckInOutDetails] = useState({
+    isCheckedIn: false,
+    isCheckedOut: false,
+  });
   // console.log('profileData:', profileData);
 
   const firstName = profileData?.firstName;
@@ -69,16 +74,78 @@ const WelcomeHeader = ({navigation}) => {
 
   const handleAppStateChange = useCallback(
     async nextState => {
-      console.log('Calling', 'UseEffect');
-
       if (nextState === 'active' || nextState === true) {
         try {
+          setLoadingCheckInDetails(true);
           const checkIn = await dispatch(
             getTodayCheckInTime({
               token,
             }),
           );
 
+          const {payload: checkInOutFullDetails} = checkIn;
+
+          const isCheckedOutAtleastOnce = checkInOutFullDetails.length > 1;
+
+          let lastCheckOutTime = '';
+          let isFinalCheckOut = false;
+
+          const lastActivity =
+            checkInOutFullDetails[checkInOutFullDetails.length - 1];
+          if (isCheckedOutAtleastOnce && lastActivity.attendanceState === 1) {
+            isFinalCheckOut = true;
+            lastCheckOutTime = getTimeStringFromObject(
+              new Date(lastActivity.time),
+            );
+
+            // ================
+            const checkInDateObj = new Date(checkInOutFullDetails[0]?.time);
+            const totalSpentTime = +(
+              new Date(lastActivity.time) - checkInDateObj
+            );
+
+            const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
+            const minutes = +Math.floor(
+              (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
+            );
+            const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
+
+            setCheckInDetails({
+              hours,
+              minutes,
+              seconds,
+              empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
+            });
+          } else {
+            console.log('inside:', 'else');
+            const checkInDateObj = new Date(checkIn?.payload[0]?.time);
+            const totalSpentTime = +(new Date() - checkInDateObj);
+
+            const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
+            const minutes = +Math.floor(
+              (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
+            );
+            const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
+
+            setCheckInDetails({
+              hours,
+              minutes,
+              seconds,
+              empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
+            });
+          }
+
+          const checkInTimeObj = new Date(checkInOutFullDetails[0].time);
+          const finalCheckInTimeStr = getTimeStringFromObject(checkInTimeObj);
+
+          setCheckInOutDetails(prevDetails => ({
+            ...prevDetails,
+            checkIn: finalCheckInTimeStr,
+            checkOut: lastCheckOutTime,
+            isCheckedIn: checkInOutFullDetails.length > 0,
+            isCheckedOut: isCheckedOutAtleastOnce,
+            isFinalCheckOut,
+          }));
           if (checkIn?.error) {
             ShowAlert({
               messageHeader: ERROR,
@@ -141,23 +208,10 @@ const WelcomeHeader = ({navigation}) => {
           if (checkIn.error) {
             throw new Error('Time not found.');
           }
-          const checkInDateObj = new Date(checkIn?.payload[0]?.time);
-          const totalSpentTime = +(new Date() - checkInDateObj);
-
-          const hours = +Math.floor(totalSpentTime / (1000 * 60 * 60));
-          const minutes = +Math.floor(
-            (totalSpentTime % (1000 * 60 * 60)) / (1000 * 60),
-          );
-          const seconds = +Math.floor((totalSpentTime % (1000 * 60)) / 1000);
-
-          setCheckInDetails({
-            hours,
-            minutes,
-            seconds,
-            empMachineCode: +checkIn?.payload[0]?.employeeMachineCode,
-          });
         } catch (err) {
           console.log('erroor:', err);
+        } finally {
+          setLoadingCheckInDetails(false);
         }
       }
     },
@@ -182,7 +236,7 @@ const WelcomeHeader = ({navigation}) => {
   }, [handleAppStateChange, isGuestLogin]);
 
   useEffect(() => {
-    if (!isGuestLogin) {
+    if (!isGuestLogin && !checkInOutDetails.isFinalCheckOut) {
       if (checkInDetails.hours !== undefined) {
         const timer = setInterval(() => {
           let currentSeconds = checkInDetails.seconds;
@@ -212,7 +266,7 @@ const WelcomeHeader = ({navigation}) => {
         };
       }
     }
-  }, [checkInDetails, isGuestLogin]);
+  }, [checkInDetails, isGuestLogin, checkInOutDetails.isFinalCheckOut]);
 
   const userName = `${firstName ? firstName : ''} ${
     middleName ? middleName + ' ' : ''
@@ -287,6 +341,20 @@ const WelcomeHeader = ({navigation}) => {
             }:${todayStatus?.lateSeconds || '00'}`}{' '}
             hours
           </Text>
+        </View>
+        <View style={styles.checkInOutContainer}>
+          <View>
+            <Text style={styles.checkInOutTitle}>Check In Time:</Text>
+            <Text style={styles.checkInTime}>
+              {checkInOutDetails?.checkIn || 'N/A'}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.checkInOutTitle}>Check Out Time:</Text>
+            <Text style={styles.checkOutTime}>
+              {checkInOutDetails?.checkOut || 'N/A'}
+            </Text>
+          </View>
         </View>
       </View>
       {loadingProfile ? <Loader /> : null}

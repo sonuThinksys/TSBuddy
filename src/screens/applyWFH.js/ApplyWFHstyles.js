@@ -56,7 +56,7 @@ export default StyleSheet.create({
     color: Colors.black,
   },
   dropDownContainer: {
-    // zIndex: 9999,
+    zIndex: 9999,
   },
   thirdView: {
     paddingVertical: hp(0.5),
@@ -206,7 +206,7 @@ export default StyleSheet.create({
   },
   daysContainer: {
     alignItems: 'center',
-    marginRight: wp(4),
+    marginRight: 8,
   },
   days: {
     fontSize: 25,
@@ -254,7 +254,7 @@ export default StyleSheet.create({
     borderRadius: 5,
   },
   dropDownContainerStyles: {
-    height: 40,
+    // height: 40,
   },
   dropDownStyle: {
     backgroundColor: Colors.lightBlue,
@@ -286,13 +286,13 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: wp(4),
+    zIndex: -1,
   },
   totalLeaveDays: {
     fontSize: 12,
     fontFamily: FontFamily.RobotoMedium,
   },
   dateContainer: {
-    marginLeft: 20,
     marginTop: 4,
   },
   formattedDate: {
@@ -322,11 +322,11 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   dismissButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
   },
   dismissTitle: {
-    fontSize: FontSize.h14,
+    fontSize: FontSize.h13,
   },
   pending: {
     fontSize: 12,

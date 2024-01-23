@@ -205,3 +205,25 @@ export const renderNoLeaves = ({styles, message}) => {
     </View>
   );
 };
+
+export function getDaysInMonth(monthIndex, year) {
+  console.log('monthIndex:', monthIndex);
+  const date = new Date(year, monthIndex - 1, 1);
+
+  date.setMonth(date.getMonth() + 1);
+  date.setDate(date.getDate() - 1);
+
+  return date.getDate();
+}
+
+export const getUniqueArrayOfObjects = arr => {
+  return arr.filter((obj, index, self) => {
+    return index === self.findIndex(o => o.value === obj.value);
+  });
+};
+export const getTimeStringFromObject = timeObj =>
+  `${timeObj.getHours() > 9 ? timeObj.getHours() : '0' + timeObj.getHours()}:${
+    timeObj.getMinutes() > 9 ? timeObj.getMinutes() : '0' + timeObj.getMinutes()
+  }:${
+    timeObj.getSeconds() > 9 ? timeObj.getSeconds() : '0' + timeObj.getSeconds()
+  }`;

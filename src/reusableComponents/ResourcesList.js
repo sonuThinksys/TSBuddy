@@ -1,6 +1,6 @@
 // import RenderListItem from 'component/useProfile/RenderList';
 import React from 'react';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useRef} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,49 +9,18 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {getEmployeesAtManagerEnd} from 'redux/homeSlice';
 import {Colors} from 'colors/Colors';
 import {heightPercentageToDP as hp} from 'utils/Responsive';
-import ShowAlert from 'customComponents/CustomError';
-import {ERROR} from 'utils/string';
 import {useNavigation} from '@react-navigation/native';
 import ResourceIcon from 'assets/allImage/user.svg';
 import Loader from 'component/loader/Loader';
 
 const ResourcesList = props => {
+  const {resourcesEmployeeData, isLoading} = props;
   const numValue = 1;
-  const [resourcesEmpiolyeeData, setResourcesEmpiolyeeData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const {userToken: token} = useSelector(state => state.auth);
-  const dispatch = useDispatch();
   const nav = useNavigation();
 
   const flatListRef = useRef(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const employeeData = await dispatch(getEmployeesAtManagerEnd(token));
-        // const employeeData = await dispatch(getEmployeesByLeaveApprover(token));
-        setResourcesEmpiolyeeData(employeeData?.payload);
-
-        if (employeeData?.error) {
-          ShowAlert({
-            messageHeader: ERROR,
-            messageSubHeader: employeeData?.error?.message,
-            buttonText: 'Close',
-            dispatch,
-            nav,
-          });
-        }
-      } catch (err) {
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [dispatch, nav, token]);
 
   const renderItem = useCallback(
     (
@@ -137,7 +106,7 @@ const ResourcesList = props => {
       onEndReachedThreshold={0.01}
       scrollsToTop={false}
       showsVerticalScrollIndicator={false}
-      data={resourcesEmpiolyeeData}
+      data={resourcesEmployeeData}
       numColumns={numValue}
       key={numValue}
       keyExtractor={(item, index) => index.toString()}
@@ -146,6 +115,29 @@ const ResourcesList = props => {
       }}
     />
   );
+
+  // return (
+  //   <View style={style.mainContainer}>
+  //     {resourcesEmployeeData.length > 0 ? (
+  //       <FlatList
+  //         ref={flatListRef}
+  //         legacyImplementation={false}
+  //         onEndReachedThreshold={0.01}
+  //         scrollsToTop={false}
+  //         showsVerticalScrollIndicator={false}
+  //         data={resourcesEmployeeData}
+  //         numColumns={numValue}
+  //         key={numValue}
+  //         keyExtractor={(item, index) => index.toString()}
+  //         renderItem={({item, index}) => {
+  //           return renderItem(item, index, nav);
+  //         }}
+  //       />
+  //     ) : (
+  //       <Text style={style.noEmployeeFound}> No Employee Found.</Text>
+  //     )}
+  //   </View>
+  // );
 };
 
 const style = StyleSheet.create({
@@ -197,9 +189,12 @@ const style = StyleSheet.create({
     fontSize: 16,
     color: Colors.lightBlue,
   },
+  mainContainer: {
+    // flex: 1,
+    alignItems: 'center',
+  },
   noEmployeeFound: {
-    color: 'black',
-    fontWeight: 'bold',
+    flex: 1,
   },
   noEmployeeCont: {
     height: hp(30),

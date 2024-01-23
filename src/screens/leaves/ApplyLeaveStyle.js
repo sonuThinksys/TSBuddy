@@ -39,6 +39,7 @@ export default StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 10,
+    marginBottom: 12,
   },
   fromToContainer: {
     flexDirection: 'row',
@@ -113,6 +114,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     marginTop: 8,
     justifyContent: 'center',
+    zIndex: 1000,
   },
   leaveApproverText: {
     fontWeight: 'bold',
@@ -285,10 +287,11 @@ export default StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 3,
     paddingVertical: 5,
-    height: 32,
+    // height: 32,
   },
   selectLeaveDropdownStyle: {
     width: '45%',
+    height: 0,
     paddingLeft: 6,
   },
   loaderContainer: {
@@ -309,8 +312,12 @@ export default StyleSheet.create({
   leaveApproverSelect: {
     borderRadius: 4,
   },
+
   resourceSelectContainerStyle: {
     width: '50%',
+  },
+  halfDayDropdownContainer: {
+    zIndex: 9999,
   },
   halfDayDropdown: {
     borderWidth: 1,
@@ -318,10 +325,10 @@ export default StyleSheet.create({
     // opacity: totalNumberOfLeaveDays === 1 ? 1 : 0.5,
     borderRadius: 3,
     paddingVertical: 5,
-    height: 32,
+    // height: 32,
   },
   lessOpacity: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   halfDayDropdownStyles: {
     width: '45%',
